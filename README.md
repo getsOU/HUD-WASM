@@ -6,17 +6,23 @@ The equivalent React implementation lives in [getsOU/sOU-HUD-React](https://gith
 
 ![Basic Blazor WebAssembly HUD over a checkerboard behind its transparent output](docs/preview.png)
 
-The screenshot shows the actual Release package with synthetic example data in an isolated local package host. The checkerboard sits behind the embedded HUD to demonstrate transparency; it is not included in the HUD.
+The screenshot shows the actual Release package with synthetic example data and the initial sOU panel state in an isolated local package host. Both player sections are enabled. The checkerboard sits behind the embedded HUD to demonstrate transparency; it is not included in the HUD.
 
 ## Use the HUD
 
-1. Download `sou-basic-wasm-0.1.1.souhud` from this repository's [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.1.2.souhud` from this repository's [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
 2. Open the [sOU desktop app](https://www.getsou.app/get-sou) and choose **HUDs → Paket importieren**. Select the `.souhud` file and install it.
 3. Open its output through sOU. Copy that local output URL into an OBS Browser Source with **1920 × 1080** dimensions. Keep the browser background transparent.
-4. In the HUD's **Panel**, set the scoreboard caption and choose whether team rosters and the observed player are visible.
+4. Team rosters and the observed player are enabled by default. In the HUD's **Panel**, set the scoreboard caption or check **Hide team rosters** / **Hide observed player** to hide a section. Save and apply your changes.
 5. Supply CS2 game data using sOU's normal setup. Before the first game snapshot, the overlay says **Waiting for game data**. Starting a separate development server does not connect it to a running cast.
 
-Package ID: `sou-basic-wasm`. Package version: `0.1.1`. Protocol: v2. Installed versions are immutable; increase the manifest version for a changed release.
+Package ID: `sou-basic-wasm`. Package version: `0.1.2`. Protocol: v2. Installed versions are immutable; increase the manifest version for a changed release.
+
+### Visibility defaults and upgrading to 0.1.2
+
+Earlier versions used **Show** checkboxes, which sOU initialized to unchecked and therefore hid the rosters and observed-player section on first use. Version `0.1.2` uses **Hide** checkboxes: unchecked or missing values leave both sections enabled, including after saving only a new caption. An observed-player card still requires an observed player in the game data.
+
+Your saved caption is inherited when sOU initializes the new version's panel. The visibility fields have new names, so set any desired hidden sections once again after upgrading. Prior releases, their saved settings and already running outputs are unchanged. Install `0.1.2`, select it and reopen the output to use the fix; no SDK or sOU desktop update is required.
 
 ### Black background in version 0.1.0
 
@@ -38,8 +44,8 @@ Missing values are `—`; missing health does not mean dead. The layout fits a t
 | Section / field | Type | Default |
 | --- | --- | --- |
 | `display.caption` | text | `sOU BASIC` (also used for blank text) |
-| `display.showRosters` | checkbox | visible unless explicitly `false` |
-| `display.showObservedPlayer` | checkbox | visible unless explicitly `false` |
+| `display.hideRosters` | checkbox · Hide team rosters | `false`; only `true` hides the rosters |
+| `display.hideObservedPlayer` | checkbox · Hide observed player | `false`; only `true` hides the observed player |
 
 Panel state is replayable. There are no action cues to replay. After a host reconnect, current panel state is applied again, including reset revision numbering.
 
@@ -56,8 +62,8 @@ pwsh ./scripts/Build.ps1
 The script restores locked dependencies, restores public `SOU.Hud.Tool`, verifies C# formatting, runs the focused tests, publishes the Release WASM app, creates the installable `.souhud`, validates it and writes a SHA-256 file. Outputs:
 
 ```text
-artifacts/sou-basic-wasm-0.1.1.souhud
-artifacts/sou-basic-wasm-0.1.1.souhud.sha256
+artifacts/sou-basic-wasm-0.1.2.souhud
+artifacts/sou-basic-wasm-0.1.2.souhud.sha256
 ```
 
 It refuses to overwrite an existing package or publish directory. For another build, choose a fresh directory:

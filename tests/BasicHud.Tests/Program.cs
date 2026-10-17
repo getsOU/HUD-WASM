@@ -43,8 +43,29 @@ var stats = reloading with { Stats = new(17, 3, 8, null, null) };
 Check(HudView.From(Snapshot(Game([stats]))).Ct.Players[0].Kda == "17 / 8 / 3", "statistics display kills / deaths / assists consistently");
 HudPanelState Panel(string json) => new(1, JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, JsonElement>>>(json)!);
 Check(DisplayOptions.FromPanel(Panel("{}")) == DisplayOptions.Default, "missing panel values retain visible defaults");
-Check(!DisplayOptions.FromPanel(Panel("{\"display\":{\"showRosters\":false}}")).ShowRosters, "an explicit false checkbox hides rosters");
-Check(DisplayOptions.FromPanel(Panel("{\"display\":{\"showRosters\":\"false\",\"caption\":\"  \"}}")) == DisplayOptions.Default, "malformed checkbox and blank caption use safe defaults");
+Check(DisplayOptions.FromPanel(Panel("{\"display\":{\"hideRosters\":\"true\",\"caption\":\"  \"}}")) == DisplayOptions.Default, "malformed checkbox and blank caption use safe defaults");
+var schema = JsonSerializer.Deserialize<HudPanelSection[]>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "panel.json")), new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+var fields = schema.Single(section => section.Name == "display").Inputs;
+Check(fields.Where(field => field.Type == HudPanelFieldType.Checkbox).Select(field => field.Name).Order().SequenceEqual(new[] { "hideObservedPlayer", "hideRosters" }), "shipped schema uses only the two opt-out visibility fields");
+// Model the documented host baseline from the actual shipped schema, rather than an empty
+// client-only state: the host sends false for every unset checkbox, including revision zero.
+HudPanelState HostDefault(long revision) => new(revision, schema.ToDictionary(section => section.Name,
+    section => section.Inputs.Where(field => field.Type != HudPanelFieldType.Action).ToDictionary(field => field.Name,
+        field => field.Type == HudPanelFieldType.Checkbox ? JsonSerializer.SerializeToElement(false) : JsonSerializer.SerializeToElement(""))));
+Check(DisplayOptions.FromPanel(HostDefault(0)) == DisplayOptions.Default, "host-normalized false checkboxes show both sections at first load");
+var captionOnly = HostDefault(1);
+captionOnly.Values["display"]["caption"] = JsonSerializer.SerializeToElement("My cast");
+Check(DisplayOptions.FromPanel(captionOnly) == new DisplayOptions("My cast", true, true), "saving only a caption keeps both sections visible at revision one");
+var rosterHidden = HostDefault(2);
+rosterHidden.Values["display"]["hideRosters"] = JsonSerializer.SerializeToElement(true);
+Check(DisplayOptions.FromPanel(rosterHidden) == new DisplayOptions("sOU BASIC", false, true), "true hides only rosters without hiding the observed player");
+var observedHidden = HostDefault(3);
+observedHidden.Values["display"]["hideObservedPlayer"] = JsonSerializer.SerializeToElement(true);
+Check(DisplayOptions.FromPanel(observedHidden) == new DisplayOptions("sOU BASIC", true, false), "true hides only the observed player without hiding rosters");
+rosterHidden.Values["display"]["hideRosters"] = JsonSerializer.SerializeToElement(false);
+observedHidden.Values["display"]["hideObservedPlayer"] = JsonSerializer.SerializeToElement(false);
+Check(DisplayOptions.FromPanel(rosterHidden) == DisplayOptions.Default && DisplayOptions.FromPanel(observedHidden) == DisplayOptions.Default,
+    "clearing each Hide checkbox shows its section again without revision special cases");
 
 var feed = new TestFeed();
 var hud = new HudSession(feed);

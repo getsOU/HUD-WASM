@@ -9,11 +9,12 @@ public sealed record DisplayOptions(string Caption, bool ShowRosters, bool ShowO
 
     public static DisplayOptions FromPanel(HudPanelState state) => new(
         state.Text("display", "caption")?.Trim() is { Length: > 0 } caption ? caption : Default.Caption,
-        ReadVisible(state, "showRosters"),
-        ReadVisible(state, "showObservedPlayer"));
+        ReadVisible(state, "hideRosters"),
+        ReadVisible(state, "hideObservedPlayer"));
 
-    // Flag() returns false for missing values. An unset checkbox means our visible default.
+    // The host normalizes unset checkboxes to false. Opt-out fields keep the HUD visible
+    // both before the first save and when an unrelated caption change is saved.
     private static bool ReadVisible(HudPanelState state, string name) =>
         !state.Values.TryGetValue("display", out var section) ||
-        !section.TryGetValue(name, out var value) || value.ValueKind != JsonValueKind.False;
+        !section.TryGetValue(name, out var value) || value.ValueKind != JsonValueKind.True;
 }

@@ -1,1 +1,1 @@
-{"id":"sou-basic-wasm","version":"0.1.1","name":"sOU Basic HUD (WASM)","apiVersion":2,"runtime":"blazor-wasm","entryPoint":"index.html"}
+{"id":"sou-basic-wasm","version":"0.1.2","name":"sOU Basic HUD (WASM)","apiVersion":2,"runtime":"blazor-wasm","entryPoint":"index.html"}

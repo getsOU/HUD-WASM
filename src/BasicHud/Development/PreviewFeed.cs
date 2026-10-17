@@ -27,7 +27,7 @@ internal sealed class PreviewFeed(string scenario) : IHudFeed
     public async IAsyncEnumerable<HudPanelMessage> WatchPanelAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         ConnectionChanged?.Invoke("panel", ConnectionState.Connected);
-        yield return new("sou-basic-wasm", "0.1.1", new(1, []));
+        yield return new("sou-basic-wasm", "0.1.2", new(1, []));
         await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
     }
 
