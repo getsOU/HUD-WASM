@@ -3,8 +3,8 @@ using SOU.Live.Contracts;
 
 namespace BasicHud.Core;
 
-public sealed record RadarMarker(string Key, string Label, double X, double Y, double? Angle, TeamSide? Side, bool Dead, string Kind);
-public sealed record RadarView(string Label, string? Overview, IReadOnlyList<RadarMarker> Markers);
+public sealed record RadarMarker(string Key, string Label, double X, double Y, double? Angle, TeamSide? Side, bool Dead, string Kind, string? Elevation = null);
+public sealed record RadarView(string Label, string? Overview, IReadOnlyList<RadarMarker> Markers, IReadOnlyList<RadarSite>? Sites = null);
 public sealed class RadarProjection
 {
     private string resetKey = "";
@@ -43,7 +43,7 @@ public sealed class RadarProjection
             var hlae = fresh && player.SteamId is { } id && !radar!.Players.IsDefault ? radar.Players.FirstOrDefault(item => item.SteamId == id) : null;
             var position = hlae?.Position ?? player.Position;
             var forward = hlae?.Forward ?? player.Forward;
-            var dead = player.Health is <= 0 || hlae?.Health is <= 0;
+            var dead = (hlae?.Health ?? player.Health) is <= 0;
             var key = player.SteamId;
             if (key is null || !Finite(position)) continue;
             if (dead)
@@ -78,10 +78,22 @@ public sealed class RadarProjection
         var calibrated = overview is not null && context.Text("radar", "mapName") == game?.Map &&
             Read(context, "minX", out var minX) && Read(context, "maxX", out var maxX) &&
             Read(context, "minY", out var minY) && Read(context, "maxY", out var maxY) && maxX > minX && maxY > minY;
+        var observedPosition = game?.ObservedPlayer?.Position ?? context.Players.FirstOrDefault(player => player.SteamId is not null && player.SteamId == game?.ObservedPlayer?.SteamId)?.Position;
+        double? observedZ = Finite(observedPosition) ? observedPosition!.Z : null;
+        if (fresh && game?.ObservedPlayer?.SteamId is { } observedId && !radar!.Players.IsDefault && radar.Players.FirstOrDefault(player => player.SteamId == observedId)?.Position is { } observedHlae && Finite(observedHlae)) observedZ = observedHlae.Z;
+        var selected = context.RadarCatalog.Select(game?.Map, observedZ);
+        RadarLayer? layer = null;
+        if (!calibrated && selected is { } automatic && context.ResolveAsset(automatic.Layer.Image) is { } automaticImage)
+        { overview = automaticImage; layer = automatic.Layer; }
         double x0 = 0, x1 = 1, y0 = 0, y1 = 1;
         if (calibrated)
         {
             Read(context, "minX", out x0); Read(context, "maxX", out x1); Read(context, "minY", out y0); Read(context, "maxY", out y1);
+        }
+        else if (layer is not null)
+        {
+            x0 = layer.PosX; x1 = layer.PosX + layer.Width * layer.Scale;
+            y1 = layer.PosY; y0 = layer.PosY - layer.Height * layer.Scale;
         }
         else if (raw.Count > 0)
         {
@@ -91,8 +103,9 @@ public sealed class RadarProjection
         var markers = raw.Select(item => new RadarMarker(item.Key, item.Label, (item.Position.X - x0) / (x1 - x0) * 100,
             (y1 - item.Position.Y) / (y1 - y0) * 100,
             Finite(item.Forward) && (item.Forward!.X != 0 || item.Forward.Y != 0) ? Math.Atan2(-item.Forward.Y, item.Forward.X) * 180 / Math.PI : null,
-            item.Side, item.Dead, item.Kind)).Where(item => item.X is >= 0 and <= 100 && item.Y is >= 0 and <= 100).ToArray();
-        return new($"{(calibrated ? "Calibrated overview" : "Relative world positions · no map")} · {(fresh ? "HLAE" : "GSI")}", calibrated ? overview : null, markers);
+            item.Side, item.Dead, item.Kind, layer?.MinZ is { } minZ && item.Position.Z < minZ ? "lower" : layer?.MaxZ is { } maxZ && item.Position.Z >= maxZ ? "higher" : null)).Where(item => item.X is >= 0 and <= 100 && item.Y is >= 0 and <= 100).ToArray();
+        var label = calibrated ? "Custom overview" : layer is not null && selected is { } chosen ? $"{chosen.Map.Name} · {layer.Id}{(chosen.FloorKnown ? "" : " · floor unknown")}" : "Relative positions · map unavailable";
+        return new($"{label} · {(fresh ? "HLAE" : "GSI")}", calibrated || layer is not null ? overview : null, markers, layer is not null ? selected?.Map.Sites : null);
     }
     private static bool Read(BroadcastContext context, string name, out double value) => double.TryParse(context.Text("radar", name), NumberStyles.Float, CultureInfo.InvariantCulture, out value) && double.IsFinite(value) && Math.Abs(value) < 100_000_000;
     private static bool Finite(Vector3State? vector) => vector is not null && double.IsFinite(vector.X) && double.IsFinite(vector.Y) && double.IsFinite(vector.Z) && Math.Abs(vector.X) < 100_000_000 && Math.Abs(vector.Y) < 100_000_000 && Math.Abs(vector.Z) < 100_000_000;

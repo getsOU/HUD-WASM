@@ -21,9 +21,9 @@ var t = new TeamSideResolution(TeamSide.Terrorists, TeamRecognitionStatus.Manual
 var mapped = Snapshot(Game()) with { ManagedMatch = Match(ct, t) };
 var view = HudView.From(mapped);
 Check(view.Ct.Name == "Bravo" && view.T.Name == "Alpha", "managed identity follows explicit side resolution rather than TeamA/B order");
-Check(HudView.From(mapped with { ManagedMatch = Match(ct with { Status = TeamRecognitionStatus.Conflicting }, t) }).Ct.Name == "COUNTER-TERRORISTS", "conflicting mapping does not invent a managed team");
-Check(HudView.From(mapped with { ManagedMatch = Match(ct with { TeamId = "b" }, t) }).Ct.Name == "COUNTER-TERRORISTS", "opaque team IDs are case-sensitive");
-Check(HudView.From(mapped with { ManagedMatch = Match(ct with { Side = TeamSide.Terrorists }, t) }).Ct.Name == "COUNTER-TERRORISTS", "incorrect side resolution is rejected");
+Check(HudView.From(mapped with { ManagedMatch = Match(ct with { Status = TeamRecognitionStatus.Conflicting }, t) }).Ct.Name == "CT", "conflicting mapping does not invent a managed team");
+Check(HudView.From(mapped with { ManagedMatch = Match(ct with { TeamId = "b" }, t) }).Ct.Name == "CT", "opaque team IDs are case-sensitive");
+Check(HudView.From(mapped with { ManagedMatch = Match(ct with { Side = TeamSide.Terrorists }, t) }).Ct.Name == "CT", "incorrect side resolution is rejected");
 Check(HudView.From(Snapshot(null) with { ManagedMatch = mapped.ManagedMatch }).Ct.Name == "Bravo", "managed match can be displayed before first GSI");
 Check(view.Ct.Score == "—" && view.Ct.Players.Count == 0 && view.Observed is null && view.Round == "ROUND —", "missing values never turn into zero statistics");
 Check(HudView.Time(double.NaN) == "—" && HudView.Time(double.PositiveInfinity) == "—" && HudView.Time(-1) == "—", "invalid source countdowns remain unknown");
@@ -96,6 +96,7 @@ await using (var brokenHud = new HudSession(broken))
 }
 await ShowcaseTests.Run(Check);
 await RenderTests.Run(Check);
+await CompactTests.Run(Check);
 Console.WriteLine($"{checks} checks passed.");
 
 static async Task Until(Func<bool> ready)

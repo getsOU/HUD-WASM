@@ -18,7 +18,7 @@ public sealed record HudView(SideView Ct, SideView T, string Map, string Round, 
         var match = snapshot?.ManagedMatch ?? game?.ManagedMatch;
         var players = game is not null && !game.Players.IsDefault ? game.Players : [];
         SideView Side(TeamSide side, SideState? source, TeamSideResolution? resolution) => new(side,
-            ResolveTeamName(match, resolution, side) ?? Text(source?.Name, side == TeamSide.CounterTerrorists ? "COUNTER-TERRORISTS" : "TERRORISTS"),
+            ResolveTeamName(match, resolution, side) ?? SideName(source?.Name, side),
             Number(source?.Score),
             players.Where(player => player.Side == side)
                 .OrderBy(player => ObserverOrder(player.ObserverSlot))
@@ -42,6 +42,8 @@ public sealed record HudView(SideView Ct, SideView T, string Map, string Round, 
     }
 
     private static int ObserverOrder(int? slot) => slot is >= 1 and <= 9 ? slot.Value : slot == 0 ? 10 : int.MaxValue;
+    private static string SideName(string? name, TeamSide side) => SourceText.Name(name, side == TeamSide.CounterTerrorists ? "CT" : "T") switch
+    { "COUNTER-TERRORISTS" => "CT", "TERRORISTS" => "T", var value => value };
 
     private static PlayerView Player(PlayerState source)
     {
@@ -49,7 +51,7 @@ public sealed record HudView(SideView Ct, SideView T, string Map, string Round, 
         var active = weapons is { IsDefault: false } ? weapons.Value.FirstOrDefault(w => w.State is WeaponStatus.Active or WeaponStatus.Reloading) : null;
         var name = active?.Name;
         if (name?.StartsWith("weapon_", StringComparison.Ordinal) == true) name = name[7..];
-        return new(source.SteamId ?? string.Empty, Text(source.Name), source.Side,
+        return new(source.SteamId ?? string.Empty, SourceText.Name(source.Name), source.Side,
             source.ObserverSlot is >= 0 and <= 9 ? Number(source.ObserverSlot) : "—",
             Number(source.Health), source.Health is { } health ? Math.Clamp((double)health, 0, 100) : null,
             Number(source.Armor), source.Money is { } money ? "$" + money.ToString("N0", CultureInfo.InvariantCulture) : "—",

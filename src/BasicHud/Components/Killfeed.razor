@@ -5,14 +5,12 @@
         <article class="kill-event" @key="item.Key">
             <span class="@PlayerPresentation.SideClass(kill.Killer?.Side)">@Participant(kill.Killer)</span>
             @if (kill.Assister is { } assist) { <small>+ @Participant(assist)</small> }
-            <b class="kill-weapon">@kill.Weapon</b><span class="@PlayerPresentation.SideClass(kill.Victim.Side)">@Participant(kill.Victim)</span>
-            <div class="kill-flags">@Flags(kill)</div>
+            <EquipmentIcon Name="@kill.Weapon" Class="kill-weapon" /><span class="kill-victim @PlayerPresentation.SideClass(kill.Victim.Side)">@Participant(kill.Victim)</span>
+            <span class="kill-flags">@if (kill.Headshot) { <StatusIcon Name="headshot" Label="Headshot" /> }@if (kill.Wallbang) { <StatusIcon Name="wallbang" Label="Wallbang" /> }@if (kill.AttackerBlind) { <StatusIcon Name="blind" Label="Attacker blind" /> }@if (kill.ThroughSmoke) { <StatusIcon Name="smoke" Label="Through smoke" /> }@if (kill.NoScope) { <StatusIcon Name="noscope" Label="No scope" /> }@if (kill.FlashAssist) { <StatusIcon Name="flashassist" Label="Flash assist" /> }</span>
         </article>
     }
 </section>
 @code {
     [Parameter] public IReadOnlyList<KillView> Entries { get; set; } = [];
-    private static string Participant(KillParticipant? participant) => participant is null ? "WORLD" : HudView.Text(participant.Name, HudView.Text(participant.SteamId));
-    private static string Flags(KillFeedEntry kill) => string.Join(" · ", new[] { kill.Headshot ? "HEADSHOT" : null, kill.Wallbang ? "WALLBANG" : null,
-        kill.AttackerBlind ? "BLIND" : null, kill.ThroughSmoke ? "THROUGH SMOKE" : null, kill.NoScope ? "NO SCOPE" : null, kill.FlashAssist ? "FLASH ASSIST" : null }.Where(flag => flag is not null));
+    private static string Participant(KillParticipant? participant) => participant is null ? "WORLD" : SourceText.Name(participant.Name, HudView.Text(participant.SteamId));
 }

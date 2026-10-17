@@ -2,7 +2,7 @@
 {
     <img class="local-image @Class" src="@Source" alt="@Label" @onerror="ImageFailed" />
 }
-else
+else if (!OmitFallback)
 {
     <span class="monogram @Class" aria-label="@Label">@Initial</span>
 }
@@ -10,6 +10,7 @@ else
     [Parameter] public string? Source { get; set; }
     [Parameter] public string Label { get; set; } = "";
     [Parameter] public string Class { get; set; } = "";
+    [Parameter] public bool OmitFallback { get; set; }
     private string? previous;
     private bool failed;
     private string Initial => string.IsNullOrWhiteSpace(Label) || Label == "—" ? "?" : System.Globalization.StringInfo.GetNextTextElement(Label.Trim()).ToUpperInvariant();

@@ -9,15 +9,12 @@
     <div class="hud scene-@scene @(session?.LowerThirdVisible == true ? "has-lower-third" : "")" aria-label="sOU Broadcast HUD">
         @if (scene == "live")
         {
-            <Branding Context="context" />
-            <Scoreboard View="View" Caption="@Options.Caption" Context="context" />
-            @if (Options.ShowEconomy) { <EconomyStrip Context="context" /> }
+            <Scoreboard View="View" Caption="@Options.Caption" Context="context" ShowSeries="Options.ShowSeries" />
             @if (Options.ShowRoundHistory) { <RoundHistory Context="context" /> }
             @if (Options.ShowRadar) { <Radar View="@RadarView(context)" OverviewFailed="OverviewFailed" /> }
             @if (Options.ShowKillfeed) { <Killfeed Entries="@(killfeedProjection.Project(context.Snapshot, now))" /> }
-            @if (Options.ShowRosters) { <Roster Side="View.Ct" Context="context" /><Roster Side="View.T" Context="context" /> }
+            @if (Options.ShowRosters) { <Roster Side="View.Ct" Context="context" ShowEconomy="Options.ShowEconomy" /><Roster Side="View.T" Context="context" ShowEconomy="Options.ShowEconomy" /> }
             @if (Options.ShowObservedPlayer && context.Game?.ObservedPlayer is { } observed) { <ObservedPlayer Player="observed" Context="context" /> }
-            @if (Options.ShowSeries) { <div class="live-series"><MapSeries Context="context" Compact="true" /></div> }
             @if (LiveProjection.RoundMessage(context.Game) is { Length: > 0 } message) { <div class="round-message">@message</div> }
             @if (!View.HasGame) { <div class="waiting"><p>@(openError ?? "Waiting for game data")</p></div> }
         }
@@ -49,7 +46,8 @@
     private string radarBinding = "";
     private HudSession? session;
     private BrowserHudFeed? browserFeed;
-    private Task metadataWork = Task.CompletedTask, clockWork = Task.CompletedTask;
+    private Task metadataWork = Task.CompletedTask, clockWork = Task.CompletedTask, radarCatalogWork = Task.CompletedTask;
+    private RadarCatalog radarCatalog = RadarCatalog.Empty;
     private MetadataCatalog metadata = MetadataCatalog.Empty;
     private string metadataBinding = "";
     private DateTimeOffset now = DateTimeOffset.UtcNow;
@@ -58,7 +56,12 @@
     private string? openError;
     private HudView View => session?.View ?? HudView.Empty;
     private DisplayOptions Options => session?.Options ?? DisplayOptions.Default;
-    private BroadcastContext Context => new(session?.Snapshot, session?.Panel, metadata, now, ResolveMedia);
+    private BroadcastContext Context => new(session?.Snapshot, session?.Panel, metadata, now, ResolveMedia) { RadarCatalog = radarCatalog, ResolveAsset = ResolveAsset };
+    private string? ResolveAsset(string path)
+    {
+        var asset = new Uri(new Uri(Navigation.BaseUri), path).AbsoluteUri;
+        return failedOverviews.Contains(asset) ? null : asset;
+    }
     private RadarView RadarView(BroadcastContext context) => radarProjection.Project(context with { ResolveMedia = path => {
         var image = context.ResolveMedia(path); return image is not null && failedOverviews.Contains(image) ? null : image;
     } });
@@ -78,6 +81,7 @@
     protected override void OnInitialized()
     {
         var address = new Uri(Navigation.Uri);
+        radarCatalogWork = LoadRadarCatalogAsync();
         IHudFeed? feed = null;
 #if DEBUG
         feed = Development.PreviewFeed.TryCreate(address);
@@ -96,6 +100,11 @@
 #endif
         if (browserFeed is not null) metadataWork = new MetadataPoller(Http, address).RunAsync(() => session?.Snapshot, UpdateMetadata, stop.Token);
         clockWork = RunClockAsync();
+    }
+    private async Task LoadRadarCatalogAsync()
+    {
+        var loaded = await RadarCatalogLoader.LoadAsync(Http, new Uri(Navigation.BaseUri), stop.Token);
+        if (!disposed) await InvokeAsync(() => { if (!disposed) { radarCatalog = loaded; StateHasChanged(); } });
     }
 
     private void Refresh()
@@ -131,7 +140,7 @@
         disposed = true;
         await stop.CancelAsync();
         if (session is not null) { session.Changed -= Refresh; await session.DisposeAsync(); }
-        await Task.WhenAll(metadataWork, clockWork);
+        await Task.WhenAll(metadataWork, clockWork, radarCatalogWork);
         browserFeed?.Dispose();
         stop.Dispose();
     }

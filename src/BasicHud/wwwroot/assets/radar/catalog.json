@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 1,
+  "maps": [
+    {
+      "map": "cs_italy",
+      "name": "Italy",
+      "sites": [],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/cs_italy.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -2647,
+          "posY": 2592,
+          "scale": 4.6,
+          "minZ": null,
+          "maxZ": null
+        }
+      ]
+    },
+    {
+      "map": "cs_office",
+      "name": "Office",
+      "sites": [],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/cs_office.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -1838,
+          "posY": 1858,
+          "scale": 4.1,
+          "minZ": null,
+          "maxZ": null
+        }
+      ]
+    },
+    {
+      "map": "de_ancient",
+      "name": "Ancient",
+      "sites": [
+        {
+          "label": "A",
+          "x": 0.31,
+          "y": 0.25
+        },
+        {
+          "label": "B",
+          "x": 0.8,
+          "y": 0.4
+        }
+      ],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_ancient.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -2953,
+          "posY": 2164,
+          "scale": 5,
+          "minZ": null,
+          "maxZ": null
+        }
+      ]
+    },
+    {
+      "map": "de_ancient_night",
+      "name": "Ancient Night",
+      "sites": [
+        {
+          "label": "A",
+          "x": 0.31,
+          "y": 0.25
+        },
+        {
+          "label": "B",
+          "x": 0.8,
+          "y": 0.4
+        }
+      ],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_ancient_night.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -2953,
+          "posY": 2164,
+          "scale": 5,
+          "minZ": null,
+          "maxZ": null
+        }
+      ]
+    },
+    {
+      "map": "de_ancient_v1",
+      "name": "Ancient (legacy)",
+      "sites": [
+        {
+          "label": "A",
+          "x": 0.31,
+          "y": 0.25
+        },
+        {
+          "label": "B",
+          "x": 0.8,
+          "y": 0.4
+        }
+      ],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_ancient_v1.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -2953,
+          "posY": 2164,
+          "scale": 5,
+          "minZ": null,
+          "maxZ": null
+        }
+      ]
+    },
+    {
+      "map": "de_anubis",
+      "name": "Anubis",
+      "sites": [],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_anubis.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -2796,
+          "posY": 3328,
+          "scale": 5.22,
+          "minZ": null,
+          "maxZ": null
+        }
+      ]
+    },
+    {
+      "map": "de_cache",
+      "name": "Cache",
+      "sites": [
+        {
+          "label": "A",
+          "x": 0.325,
+          "y": 0.26
+        },
+        {
+          "label": "B",
+          "x": 0.345,
+          "y": 0.79
+        }
+      ],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_cache.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -2000,
+          "posY": 3250,
+          "scale": 5.5,
+          "minZ": null,
+          "maxZ": null
+        }
+      ]
+    },
+    {
+      "map": "de_dust2",
+      "name": "Dust II",
+      "sites": [
+        {
+          "label": "A",
+          "x": 0.8,
+          "y": 0.16
+        },
+        {
+          "label": "B",
+          "x": 0.21,
+          "y": 0.12
+        }
+      ],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_dust2.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -2476,
+          "posY": 3239,
+          "scale": 4.4,
+          "minZ": null,
+          "maxZ": null
+        }
+      ]
+    },
+    {
+      "map": "de_inferno",
+      "name": "Inferno",
+      "sites": [
+        {
+          "label": "A",
+          "x": 0.81,
+          "y": 0.69
+        },
+        {
+          "label": "B",
+          "x": 0.49,
+          "y": 0.22
+        }
+      ],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_inferno.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -2087,
+          "posY": 3870,
+          "scale": 4.9,
+          "minZ": null,
+          "maxZ": null
+        }
+      ]
+    },
+    {
+      "map": "de_mirage",
+      "name": "Mirage",
+      "sites": [
+        {
+          "label": "A",
+          "x": 0.54,
+          "y": 0.76
+        },
+        {
+          "label": "B",
+          "x": 0.23,
+          "y": 0.28
+        }
+      ],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_mirage.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -3230,
+          "posY": 1713,
+          "scale": 5,
+          "minZ": null,
+          "maxZ": null
+        }
+      ]
+    },
+    {
+      "map": "de_nuke",
+      "name": "Nuke",
+      "sites": [
+        {
+          "label": "A",
+          "x": 0.58,
+          "y": 0.48
+        },
+        {
+          "label": "B",
+          "x": 0.58,
+          "y": 0.58
+        }
+      ],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_nuke.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -3453,
+          "posY": 2887,
+          "scale": 7,
+          "minZ": -495,
+          "maxZ": 10000
+        },
+        {
+          "id": "lower",
+          "image": "assets/radar/de_nuke_lower.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -3453,
+          "posY": 2887,
+          "scale": 7,
+          "minZ": -10000,
+          "maxZ": -495
+        }
+      ]
+    },
+    {
+      "map": "de_overpass",
+      "name": "Overpass",
+      "sites": [
+        {
+          "label": "A",
+          "x": 0.55,
+          "y": 0.23
+        },
+        {
+          "label": "B",
+          "x": 0.7,
+          "y": 0.31
+        }
+      ],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_overpass.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -4831,
+          "posY": 1781,
+          "scale": 5.2,
+          "minZ": null,
+          "maxZ": null
+        }
+      ]
+    },
+    {
+      "map": "de_train",
+      "name": "Train",
+      "sites": [
+        {
+          "label": "A",
+          "x": 0.63,
+          "y": 0.49
+        },
+        {
+          "label": "B",
+          "x": 0.52,
+          "y": 0.76
+        }
+      ],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_train.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -2308,
+          "posY": 2078,
+          "scale": 4.082077,
+          "minZ": -50,
+          "maxZ": 20000
+        },
+        {
+          "id": "lower",
+          "image": "assets/radar/de_train_lower.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -2308,
+          "posY": 2078,
+          "scale": 4.082077,
+          "minZ": -5000,
+          "maxZ": -50
+        }
+      ]
+    },
+    {
+      "map": "de_vertigo",
+      "name": "Vertigo",
+      "sites": [
+        {
+          "label": "A",
+          "x": 0.705,
+          "y": 0.585
+        },
+        {
+          "label": "B",
+          "x": 0.222,
+          "y": 0.223
+        }
+      ],
+      "layers": [
+        {
+          "id": "main",
+          "image": "assets/radar/de_vertigo.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -3168,
+          "posY": 1762,
+          "scale": 4,
+          "minZ": 11700,
+          "maxZ": 20000
+        },
+        {
+          "id": "lower",
+          "image": "assets/radar/de_vertigo_lower.png",
+          "width": 1024,
+          "height": 1024,
+          "posX": -3168,
+          "posY": 1762,
+          "scale": 4,
+          "minZ": -10000,
+          "maxZ": 11700
+        }
+      ]
+    }
+  ]
+}

@@ -3,8 +3,8 @@
     @foreach (var weapon in PlayerPresentation.Weapons(Player))
     {
         <span class="weapon-item @(weapon.State is WeaponStatus.Active or WeaponStatus.Reloading ? "active" : "")" title="@(weapon.State?.ToString() ?? "Unknown state")">
-            @BroadcastContext.WeaponName(weapon)
-            @if (weapon.AmmoClip is not null || weapon.AmmoReserve is not null) { <small>@BroadcastContext.Number(weapon.AmmoClip)/@BroadcastContext.Number(weapon.AmmoReserve)</small> }
+            <EquipmentIcon Name="@weapon.Name" /><span>@EquipmentPresentation.Label(weapon.Name)</span>
+            @if (EquipmentPresentation.UsesAmmo(weapon)) { <small>@EquipmentPresentation.Ammo(weapon)</small> }
             @if (weapon.State == WeaponStatus.Reloading) { <small>RELOAD</small> }
         </span>
     }

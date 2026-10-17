@@ -1,7 +1,7 @@
 <article class="player-card @PlayerPresentation.SideClass(Player.Side) @(Player.Health is <= 0 ? "is-dead" : "") @(Expanded ? "expanded" : "")">
     <div class="player-identity"><span class="observer-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span>
-        <ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Context.Name(Player)" Class="portrait" />
-        <strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong><span class="money">@Money</span></div>
+        <ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Name" Class="portrait" />
+        <strong class="player-name" title="@Name">@Name</strong><span class="money">@Money</span></div>
     <div class="player-vitals"><b>@BroadcastContext.Number(Player.Health) <small>HP</small></b><span>@BroadcastContext.Number(Player.Armor) ARM</span>
         @if (Player.Helmet == true) { <span title="Helmet">HELM</span> } @if (Player.DefuseKit == true) { <span title="Defuse kit">KIT</span> }
         @if (HasBomb) { <span title="Bomb carrier">BOMB</span> }
@@ -20,6 +20,8 @@
     [Parameter, EditorRequired] public PlayerState Player { get; set; } = null!;
     [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
     [Parameter] public bool Expanded { get; set; }
+    [Parameter] public string? DisplayName { get; set; }
+    private string Name => DisplayName ?? Context.Name(Player);
     private bool HasBomb => Context.Game?.Bomb?.PlayerSteamId is { } id && id == Player.SteamId && Context.Game.Bomb.State is BombStatus.Carried or BombStatus.Planting || PlayerPresentation.Weapons(Player).Any(weapon => weapon.Type == WeaponCategory.Bomb);
     private string Money => Player.Money is { } value ? "$" + value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—";
     private string Equipment => Player.EquipmentValue is { } value ? "$" + value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—";

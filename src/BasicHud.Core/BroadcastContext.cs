@@ -7,6 +7,8 @@ namespace BasicHud.Core;
 public sealed record BroadcastContext(LiveSnapshot? Snapshot, HudPanelState? Panel, MetadataCatalog Metadata,
     DateTimeOffset Now, Func<string?, string?> ResolveMedia)
 {
+    public RadarCatalog RadarCatalog { get; init; } = RadarCatalog.Empty;
+    public Func<string, string?> ResolveAsset { get; init; } = _ => null;
     public static BroadcastContext Empty { get; } = new(null, null, MetadataCatalog.Empty, DateTimeOffset.UtcNow, _ => null);
     public GameState? Game => Snapshot?.Game;
     public ManagedMatch? Match => Snapshot?.ManagedMatch ?? Game?.ManagedMatch;
@@ -15,7 +17,7 @@ public sealed record BroadcastContext(LiveSnapshot? Snapshot, HudPanelState? Pan
     public string TextOr(string section, string field, string fallback) => HudView.Text(Text(section, field), fallback);
     public HudPanelReference? Reference(string field) => Panel?.References.TryGetValue("feature", out var fields) == true && fields.TryGetValue(field, out var value) ? value : null;
     public string? ProfileImage(string? steamId) => steamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(steamId, out var player) ? ResolveMedia(player.Avatar) : null;
-    public string Name(PlayerState player) => player.SteamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(player.SteamId, out var profile) ? HudView.Text(profile.Name, HudView.Text(player.Name)) : HudView.Text(player.Name);
+    public string Name(PlayerState player) => player.SteamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(player.SteamId, out var profile) ? HudView.Text(profile.Name, SourceText.Name(player.Name)) : SourceText.Name(player.Name);
     public IReadOnlyList<PlayerState> TeamPlayers(ManagedTeam team)
     {
         if (Metadata.Matches(Match) && Metadata.Rosters.TryGetValue(team.Id, out var ids) && ids.Count > 0)

@@ -1,5 +1,5 @@
 <section class="presentation statistics-scene"><SceneHeader Title="Player statistics" Context="Context" />
     <p class="stats-context">@Context.Match?.Name · @Context.Game?.Map · K / D / A · recorded metrics retain their reported coverage</p>
-    <StatisticsTable Context="Context" /><RoundHistory Context="Context" />
+    <EconomyStrip Context="Context" /><StatisticsTable Context="Context" /><RoundHistory Context="Context" />
 </section>
 @code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

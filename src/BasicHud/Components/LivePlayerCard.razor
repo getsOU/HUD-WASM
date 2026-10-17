@@ -1,0 +1,18 @@
+<article class="live-player @PlayerPresentation.SideClass(Player.Side) @(Player.Health is <= 0 ? "is-dead" : "") @(Context.Game?.ObservedPlayer?.SteamId == Player.SteamId ? "is-observed" : "")">
+    <div class="live-player-top"><span class="observer-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span>
+        <ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Context.Name(Player)" Class="portrait" OmitFallback="true" />
+        <strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong>
+        <span class="live-hp" title="Health"><StatusIcon Name="health" Label="Health" />@BroadcastContext.Number(Player.Health)</span>
+        <span class="live-armor" title="Armor">@BroadcastContext.Number(Player.Armor)<StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="Armor" /></span>
+    </div>
+    <div class="live-player-bottom"><span class="money">@(Player.Money is { } money ? "$" + money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—")</span>
+        <EquipmentIcon Name="@EquipmentPresentation.Active(Player)?.Name" Class="active-weapon" />
+        <UtilityIcons Player="Player" /><PlayerEquipment Player="Player" Context="Context" ShowArmor="false" />
+        <span class="kda" title="Kills / deaths / assists">@PlayerPresentation.Kda(Player)</span>
+    </div>
+    <div class="health-track" aria-hidden="true"><span style="@($"width:{Math.Clamp(Player.Health ?? 0, 0, 100).ToString(System.Globalization.CultureInfo.InvariantCulture)}%")"></span></div>
+</article>
+@code {
+    [Parameter] public PlayerState Player { get; set; } = null!;
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+}

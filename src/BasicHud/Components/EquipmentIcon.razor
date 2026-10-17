@@ -1,0 +1,15 @@
+@if (!failed && EquipmentPresentation.Key(Name) is { } key)
+{
+    <img class="equipment-icon @Class" src="@($"assets/weapons/{key}.svg")" alt="@EquipmentPresentation.Label(Name)" title="@EquipmentPresentation.Label(Name)" @onerror="() => failed = true" />
+}
+else
+{
+    <StatusIcon Name="unknown" Label="@EquipmentPresentation.Label(Name)" Class="@Class" />
+}
+@code {
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string Class { get; set; } = "";
+    private string? previous;
+    private bool failed;
+    protected override void OnParametersSet() { if (previous != Name) { failed = false; previous = Name; } }
+}

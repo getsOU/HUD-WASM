@@ -3,9 +3,12 @@
     {
         @foreach (var round in rounds.TakeLast(30))
         {
-            <span class="history-round @PlayerPresentation.SideClass(round.Winner)" title="@($"Round {round.RoundNumber}: {round.Winner}, {round.Reason}")"><b>@round.RoundNumber</b><small>@(round.Winner == TeamSide.CounterTerrorists ? "CT" : round.Winner == TeamSide.Terrorists ? "T" : "?")</small></span>
+            <span class="history-round @PlayerPresentation.SideClass(round.Winner)" title="@($"Round {round.RoundNumber}: {round.Winner}, {round.Reason}")"><StatusIcon Name="@Reason(round.Reason)" Label="@($"Round {round.RoundNumber}: {round.Winner}, {round.Reason}")" /></span>
         }
     }
     else { <span class="muted">Round history —</span> }
 </section>
-@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }
+@code {
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    private static string Reason(RoundWinReason reason) => reason switch { RoundWinReason.Elimination => "dead", RoundWinReason.BombExploded => "bomb", RoundWinReason.BombDefused => "kit", RoundWinReason.TimeExpired => "time", _ => "unknown" };
+}

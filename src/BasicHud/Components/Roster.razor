@@ -1,10 +1,14 @@
 <section class="roster @PlayerPresentation.SideClass(Side.Side)" aria-label="@($"{Side.Name} roster")">
-    <div class="roster-heading"><span>@Side.Name</span><span>K / D / A</span></div>
+    <div class="roster-heading"><span>@Side.Name</span><span>@Economy.Alive ALIVE</span></div>
     @if (Players.Count == 0) { <div class="roster-empty">Waiting for players</div> }
-    @foreach (var player in Players) { <PlayerCard Player="player" Context="Context" /> }
+    @foreach (var player in Players.Take(5)) { <LivePlayerCard Player="player" Context="Context" /> }
+    @if (ShowEconomy) { <div class="roster-economy"><span title="Team money">@Economy.Money</span><span title="Team equipment value">EQ @Economy.Equipment</span><span title="Defuse kits"><StatusIcon Name="kit" Label="Kits" />@Economy.Kits</span><span title="Timeouts remaining">TO @BroadcastContext.Number(Source?.TimeoutsRemaining)</span></div> }
 </section>
 @code {
     [Parameter, EditorRequired] public SideView Side { get; set; } = HudView.Empty.Ct;
     [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter] public bool ShowEconomy { get; set; } = true;
     private IReadOnlyList<PlayerState> Players => PlayerPresentation.Ordered(Context.Players.Where(player => player.Side == Side.Side));
+    private EconomyView Economy => LiveProjection.ForSide(Context.Game, Side.Side);
+    private SideState? Source => Side.Side == TeamSide.CounterTerrorists ? Context.Game?.Ct : Context.Game?.T;
 }

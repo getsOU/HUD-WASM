@@ -2,11 +2,12 @@
     <svg viewBox="0 0 100 100" role="img" aria-label="@View.Label">
         <rect width="100" height="100" class="radar-surface" />
         @if (View.Overview is { } image) { <image href="@image" width="100" height="100" preserveAspectRatio="none" @onerror="() => OverviewFailed.InvokeAsync(image)" /> }
+        @foreach (var site in View.Sites ?? []) { <foreignObject x="@F(site.X * 100 - 3)" y="@F(site.Y * 100 - 3)" width="6" height="6"><div class="radar-site" xmlns="http://www.w3.org/1999/xhtml">@site.Label</div></foreignObject> }
         <path d="M0 25H100 M0 50H100 M0 75H100 M25 0V100 M50 0V100 M75 0V100" class="radar-grid" />
         @foreach (var marker in View.Markers)
         {
-            <g class="radar-marker @PlayerPresentation.SideClass(marker.Side) @marker.Kind" @key="marker.Key">
-                <title>@marker.Label @(marker.Dead ? "dead" : "")</title>
+            <g class="radar-marker @PlayerPresentation.SideClass(marker.Side) @marker.Kind @marker.Elevation" @key="marker.Key">
+                <title>@marker.Label @(marker.Dead ? "dead" : "") @(marker.Elevation is null ? "" : marker.Elevation + " level")</title>
                 @if (marker.Dead)
                 {
                     <path d="@Cross(marker.X, marker.Y)" class="death-marker" />
@@ -15,6 +16,7 @@
                 {
                     @if (marker.Angle is { } angle) { <line x1="@F(marker.X)" y1="@F(marker.Y)" x2="@F(marker.X + Math.Cos(angle * Math.PI / 180) * 5)" y2="@F(marker.Y + Math.Sin(angle * Math.PI / 180) * 5)" class="direction" /> }
                     <circle cx="@F(marker.X)" cy="@F(marker.Y)" r="@(marker.Kind is "grenade" or "flame" ? "1.5" : "2.6")" />
+                    @if (marker.Elevation is { } elevation) { <path d="@Level(marker.X, marker.Y, elevation == "higher")" class="elevation-marker" /> }
                     <foreignObject x="@F(marker.X - 2)" y="@F(marker.Y - 2)" width="4" height="4"><div class="radar-digit" xmlns="http://www.w3.org/1999/xhtml">@(marker.Kind is "grenade" or "flame" ? "" : marker.Label)</div></foreignObject>
                 }
             </g>
@@ -28,4 +30,5 @@
     [Parameter] public EventCallback<string> OverviewFailed { get; set; }
     private static string F(double value) => value.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
     private static string Cross(double x, double y) => $"M{F(x - 1.6)} {F(y - 1.6)}L{F(x + 1.6)} {F(y + 1.6)}M{F(x + 1.6)} {F(y - 1.6)}L{F(x - 1.6)} {F(y + 1.6)}";
+    private static string Level(double x, double y, bool higher) => higher ? $"M{F(x - 1.5)} {F(y - 3.5)}L{F(x)} {F(y - 5)}L{F(x + 1.5)} {F(y - 3.5)}" : $"M{F(x - 1.5)} {F(y + 3.5)}L{F(x)} {F(y + 5)}L{F(x + 1.5)} {F(y + 3.5)}";
 }

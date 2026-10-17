@@ -1,4 +1,16 @@
-# 0.2.1
+# 0.3.0
+
+Rebuilds the live composition around the game: compact two-line bottom-corner rosters, small header/series/history, compact observer card and sponsor rail, with economy in roster footers. The central game area remains clear during normal output. Missing live portraits and logos no longer create replacement boxes; presentation scenes retain neutral fallbacks.
+
+Adds recognizable local weapon/utility silhouettes and equipment/status/kill flags, actual firearm ammunition and known utility counts. Source GSI/HLAE names decode one entity layer and remain normal escaped text. All eight views, detailed inventories/statistics, optional metadata, panel defaults and lifecycle guards remain available.
+
+Known maps now automatically use original Valve radar images with their real fixed calibration, including Dust II. Nuke/Train/Vertigo use actual observed height for genuine floor layers, with unknown floors identified. Fresh HLAE/GSI positions, direction, observer digits, deaths, bomb, utility and flames stay connected. Custom exact-map calibration remains an override; unavailable maps/images use an honest compact fallback.
+
+Own HUD code stays MIT. Included original Valve game artwork is separately attributed in `LICENSES/VALVE-ASSETS.md` and `LICENSES/valve-assets.json`; no MIT relicensing or unrestricted artwork reuse is claimed. These notices and source hashes ship in the HUD archive.
+
+Install `sou-basic-wasm-0.3.0.souhud`, select version `0.3.0` and reopen outputs. Compatible saved captions/Hide choices remain supported. SDK packages stay at `0.2.0-preview.4`; previous releases and active outputs are unchanged. Browser verification is separate from native CS2/OBS capture.
+
+## 0.2.1
 
 Fixes image-load error handling: unavailable local player portraits, team/competition logos, branding and sponsor images now fall back to their neutral monograms. An unavailable calibrated overview returns the radar to its clearly labeled relative world-position plot. The existing centered spotlight fallback and transparent output are retained.
 

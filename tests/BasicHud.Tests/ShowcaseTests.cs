@@ -69,7 +69,7 @@ static class ShowcaseTests
         var stale = radar.Project(Context(freshGame, calibration, now.AddMilliseconds(751)));
         check(stale.Label.EndsWith("GSI", StringComparison.Ordinal) && stale.Markers.Single().X == 10, "HLAE expires after 750ms and falls back to real GSI positions");
         var wrongMap = radar.Project(Context(freshGame with { Map = "de_other" }, calibration));
-        check(wrongMap.Overview is null && wrongMap.Label.StartsWith("Relative world positions", StringComparison.Ordinal), "an overview is never shown for an unmatched map");
+        check(wrongMap.Overview is null && wrongMap.Label.StartsWith("Relative positions", StringComparison.Ordinal), "an overview is never shown for an unmatched map");
         var invalidBounds = State("{\"radar\":{\"overview\":\"/cast-media/map.png\",\"mapName\":\"de_example\",\"minX\":\"NaN\",\"maxX\":\"100\",\"minY\":\"0\",\"maxY\":\"100\"}}");
         check(radar.Project(Context(game, invalidBounds)).Overview is null, "non-finite overview boundaries cannot enable calibration");
         check(new RadarProjection().Project(Context(game with { Players = [player with { Position = new(500, 20, 0) }] }, calibration)).Markers.Count == 0, "out-of-bounds markers are omitted rather than clamped into fake corners");
@@ -78,7 +78,7 @@ static class ShowcaseTests
         check(new RadarProjection().Project(Context(flames, calibration)).Markers.Single().Kind == "flame", "real inferno flame points render even without a central grenade position");
         var failedImage = Context(game, calibration) with { ResolveMedia = _ => null };
         var fallbackPlot = new RadarProjection().Project(failedImage);
-        check(fallbackPlot.Overview is null && fallbackPlot.Label.StartsWith("Relative world positions", StringComparison.Ordinal), "an unavailable overview recomputes honest relative geometry and labeling");
+        check(fallbackPlot.Overview is null && fallbackPlot.Label.StartsWith("Relative positions", StringComparison.Ordinal), "an unavailable overview recomputes honest relative geometry and labeling");
         var deathRadar = new RadarProjection();
         _ = deathRadar.Project(Context(game, calibration));
         var deadGame = game with { Players = [player with { Health = 0, Position = new(90, 90, 0) }] };

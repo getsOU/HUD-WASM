@@ -1,8 +1,9 @@
 <section class="observed @PlayerPresentation.SideClass(Player.Side)" aria-label="Observed player">
-    <div class="observed-tag">OBSERVING · @BroadcastContext.Coverage(Player.RecordedStats)</div>
-    <PlayerCard Player="Player" Context="Context" Expanded="true" />
+    <div class="observed-identity"><span class="observer-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span><ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Context.Name(Player)" Class="portrait" OmitFallback="true" /><strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong><span class="observed-vitals"><StatusIcon Name="health" Label="Health" />@BroadcastContext.Number(Player.Health)<StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="Armor" />@BroadcastContext.Number(Player.Armor)</span></div>
+    <div class="observed-loadout"><EquipmentIcon Name="@Active?.Name" Class="observed-weapon" /><span class="observed-weapon-name">@EquipmentPresentation.Label(Active?.Name)</span><strong class="ammo">@EquipmentPresentation.Ammo(Active)</strong><UtilityIcons Player="Player" /><PlayerEquipment Player="Player" Context="Context" />@if (Active?.State == WeaponStatus.Reloading) { <span class="reload">RELOAD</span> }</div>
 </section>
 @code {
     [Parameter, EditorRequired] public PlayerState Player { get; set; } = null!;
     [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    private WeaponState? Active => EquipmentPresentation.Active(Player);
 }
