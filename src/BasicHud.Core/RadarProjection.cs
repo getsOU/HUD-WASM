@@ -5,6 +5,7 @@ namespace BasicHud.Core;
 
 public sealed record RadarMarker(string Key, string Label, double X, double Y, double? Angle, TeamSide? Side, bool Dead, string Kind, string? Elevation = null)
 {
+    public string MotionKey { get; init; } = "";
     public bool Observed { get; init; }
     public bool BombCarrier { get; init; }
     public bool Flashed { get; init; }
@@ -24,6 +25,8 @@ public sealed class RadarProjection
     private string timeline = "";
     private double lastGameTime = double.MinValue;
     private long lastSequence = long.MinValue;
+    private long motionGeneration;
+    private bool? previousFresh;
     private RoundPhase? previousPhase;
     private string lastFrame = "", blockedFrame = "";
     private readonly Dictionary<string, Vector3State> positions = [];
@@ -36,18 +39,23 @@ public sealed class RadarProjection
         var game = context.Game;
         var nextReset = $"{context.Snapshot?.SessionId}:{game?.Map}:{game?.RoundNumber}";
         if (resetKey != nextReset || game?.RoundPhase == RoundPhase.FreezeTime && previousPhase != RoundPhase.FreezeTime)
-        { positions.Clear(); deadPositions.Clear(); flashes.Clear(); timeline = ""; lastGameTime = double.MinValue; lastSequence = long.MinValue; resetKey = nextReset; blockedFrame = lastFrame; }
+        { positions.Clear(); deadPositions.Clear(); flashes.Clear(); timeline = ""; lastGameTime = double.MinValue; lastSequence = long.MinValue; resetKey = nextReset; blockedFrame = lastFrame; motionGeneration++; }
         previousPhase = game?.RoundPhase;
         var radar = game?.Radar;
         var frame = $"{radar?.ConnectionId}:{radar?.Epoch}:{radar?.Sequence}";
         var fresh = radar is not null && radar.ConnectionId != Guid.Empty && radar.Epoch >= 0 && radar.Sequence >= 0 && double.IsFinite(radar.GameTimeSeconds)
-            && frame != blockedFrame && context.Now >= radar.ReceivedAt && context.Now - radar.ReceivedAt <= TimeSpan.FromMilliseconds(750);
+            && frame != blockedFrame && context.Now >= radar.ReceivedAt && context.Now - radar.ReceivedAt < TimeSpan.FromMilliseconds(750);
         if (fresh)
         {
             var nextTimeline = $"{radar!.ConnectionId}:{radar.Epoch}";
             if (nextTimeline != timeline) { positions.Clear(); deadPositions.Clear(); timeline = nextTimeline; lastGameTime = double.MinValue; lastSequence = long.MinValue; }
             if (radar.GameTimeSeconds < lastGameTime || radar.Sequence < lastSequence) fresh = false;
             else { lastGameTime = radar.GameTimeSeconds; lastSequence = radar.Sequence; lastFrame = frame; }
+        }
+        if (previousFresh != fresh)
+        {
+            positions.Clear(); deadPositions.Clear(); motionGeneration++;
+            previousFresh = fresh;
         }
         var raw = new List<(string Key, string Label, Vector3State Position, Vector3State? Forward, TeamSide? Side, bool Dead, string Kind)>();
         var activeIds = context.Players.Take(64).Where(player => player.SteamId is not null).Select(player => player.SteamId!).ToHashSet(StringComparer.Ordinal);
@@ -56,8 +64,9 @@ public sealed class RadarProjection
         foreach (var player in context.Players.Take(64))
         {
             var hlae = fresh && player.SteamId is { } id && !radar!.Players.IsDefault ? radar.Players.FirstOrDefault(item => item.SteamId == id) : null;
-            var position = hlae?.Position ?? player.Position;
-            var forward = hlae?.Forward ?? player.Forward;
+            // Like NYXIA: a fresh HLAE frame is one coherent source. Missing pawns do not jump to older GSI poses.
+            var position = fresh ? hlae?.Position : player.Position;
+            var forward = fresh ? hlae?.Forward : player.Forward;
             var dead = (hlae?.Health ?? player.Health) is <= 0;
             var key = player.SteamId;
             if (key is null || !Finite(position)) continue;
@@ -146,6 +155,7 @@ public sealed class RadarProjection
             Finite(item.Forward) && (item.Forward!.X != 0 || item.Forward.Y != 0) ? Math.Atan2(-item.Forward.Y, item.Forward.X) * 180 / Math.PI : null,
             item.Side, item.Dead, item.Kind, layer?.MinZ is { } minZ && item.Position.Z < minZ ? "lower" : layer?.MaxZ is { } maxZ && item.Position.Z >= maxZ ? "higher" : null)
             {
+                MotionKey = $"{resetKey}:{motionGeneration}:{timeline}:{(fresh ? "hlae" : "gsi")}:{overview}:{(bolt is null ? -1 : Array.FindIndex(bolt.Metadata!.Splits, split => item.Position.Z > split.Bounds!.Bottom && item.Position.Z < split.Bounds.Top))}:{item.Dead}:{item.Key}",
                 Observed = player?.SteamId is { } id && id == game?.ObservedPlayer?.SteamId,
                 BombCarrier = player is not null && EquipmentPresentation.HasBomb(player, game),
                 Flashed = player?.Flashed is > 31,

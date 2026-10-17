@@ -100,6 +100,8 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .radar-widget > svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .radar-grid { fill: none; stroke: #a3b7cb; stroke-opacity: .2; stroke-width: .2; }
 .radar-marker.ct { --radar-side: #5ab8f4; }
+/* NYXIA's 50 ms linear target-to-target movement; keys reset discontinuities. */
+.radar-marker.player, .radar-marker.grenade { transition: transform 50ms linear; }
 .radar-marker.t { --radar-side: #f0c941; }
 .radar-marker.neutral { --radar-side: #c9d0d9; }
 .radar-marker .bolt-dot { position: absolute; inset: 0; background: var(--radar-side,#c9d0d9); border-radius: 100% 5% 100% 100%; box-shadow: 0 0 1px #0006; transform-origin: center; }
@@ -246,7 +248,8 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .series-wins { display: flex; gap: .18em; height: .18em; }
 .series-wins i { display: block; width: .7em; height: .18em; background: #ffffff25; }
 .series-wins i.won { background: var(--side); }
-.live-map-series { position: absolute; left: 1.25%; top: 29.62963%; width: 15%; height: 3.888889%; display: flex; gap: .13em; }
+.live-map-series { position: absolute; left: 1.25%; top: 29.62963%; width: 15%; height: 5.555556%; display: flex; gap: .13em; }
+.live-map-series .map-pick { max-width: 100%; padding-inline: .2em; font-size: .5em; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .live-map-series article { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgb(12 19 28 / 84%); border-bottom: .1em solid #75839655; color: #b8c4d1; gap: .1em; }
 .live-map-series article.is-current { border-color: #f0b775; color: #fff; }
 .live-map-series strong { display: block; max-width: 100%; font-size: .62em; line-height: 1.2; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-inline: .2em; }

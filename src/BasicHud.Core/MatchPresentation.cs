@@ -4,6 +4,21 @@ namespace BasicHud.Core;
 
 public static class MatchPresentation
 {
+    public static (string Label, string Description) MapPick(ManagedMatch match, ManagedMatchMap map)
+    {
+        var decisions = match.Vetos.Where(veto => !string.IsNullOrEmpty(map.Id) && veto.MapId == map.Id).ToArray();
+        if (decisions.Length != 1) return ("Pick unknown", "No unambiguous pick decision supplied");
+        var decision = decisions[0];
+        if (decision.PlayNumber is { } number && number != map.Number ||
+            !string.IsNullOrEmpty(decision.GameName) && !string.IsNullOrEmpty(map.GameName) && MapKey(decision.GameName) != MapKey(map.GameName))
+            return ("Pick unknown", "Conflicting map decision");
+        if (decision.Type == MapDecisionKind.Decider) return ("DECIDER", "Decider map");
+        if (decision.Type != MapDecisionKind.Pick) return ("Pick unknown", "No pick decision supplied");
+        var team = decision.TeamId == match.TeamA.Id ? match.TeamA : decision.TeamId == match.TeamB.Id ? match.TeamB : null;
+        if (team is null || match.TeamA.Id == match.TeamB.Id) return ("Pick unassigned", "Pick team not assigned");
+        return ($"PICK · {(string.IsNullOrWhiteSpace(team.ShortName) ? team.Name : team.ShortName)}", $"Picked by {team.Name}");
+    }
+
     public static bool ShowHistory(GameState? game)
     {
         if (game is null || game.RoundPhase == RoundPhase.Over ||

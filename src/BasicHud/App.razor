@@ -121,7 +121,7 @@
         if (binding != metadataBinding) { metadata = MetadataCatalog.Empty; metadataBinding = binding; }
         var nextRadarBinding = $"{session?.Snapshot?.SessionId}:{session?.Snapshot?.Game?.Map}";
         if (nextRadarBinding != radarBinding) { failedOverviews.Clear(); failedOverviewOrder.Clear(); radarBinding = nextRadarBinding; }
-        _ = InvokeAsync(StateHasChanged);
+        _ = InvokeAsync(() => { now = DateTimeOffset.UtcNow; StateHasChanged(); });
     }
     private void UpdateMetadata(MetadataCatalog next, Guid? expectedSession)
     {
@@ -134,7 +134,7 @@
     }
     private async Task RunClockAsync()
     {
-        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(250));
+        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(50));
         try {
             while (await timer.WaitForNextTickAsync(stop.Token))
                 await InvokeAsync(() => { if (!disposed) { now = DateTimeOffset.UtcNow; StateHasChanged(); } });

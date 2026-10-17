@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.2
+
+- Match NYXIA radar motion and coherent HLAE source selection; correct the WASM receipt clock.
+- Show explicit pick teams and deciders in all map-series displays, without guessing missing decisions.
+
 ## 0.4.1
 
 - Leave the current weapon area empty when an alive player has no active/reloading weapon. Holstered inventory is never used as a substitute.

@@ -6,6 +6,8 @@
         <div class="map-list">@foreach (var map in match.Maps.OrderBy(map => map.Number))
         {
             <article class="map-item"><span class="map-number">@map.Number</span><strong title="@map.Name">@map.Name</strong><span class="map-state">@(map.Status?.ToString() ?? "Unknown")</span>
+                @{ var pick = MatchPresentation.MapPick(match, map); }
+                <small class="map-pick" title="@pick.Description" aria-label="@pick.Description">@pick.Label</small>
                 @if (map.ScoreA is not null || map.ScoreB is not null) { <b>@BroadcastContext.Number(map.ScoreA):@BroadcastContext.Number(map.ScoreB)</b> }
                 @if (map.WinnerTeamId is { } id) { <small>Winner: @Context.TeamName(id)</small> }
             </article>

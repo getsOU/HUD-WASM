@@ -11,32 +11,32 @@
         @foreach (var site in View.Sites ?? []) { <foreignObject x="@F(site.X * 100 - 3)" y="@F(site.Y * 100 - 3)" width="6" height="6"><div class="radar-site" xmlns="http://www.w3.org/1999/xhtml">@site.Label</div></foreignObject> }
         @foreach (var marker in View.Markers)
         {
-            <g class="radar-marker @PlayerPresentation.SideClass(marker.Side) @marker.Kind @marker.Elevation @(marker.Observed ? "is-observed" : "")" @key="marker.Key">
+            <g class="radar-marker @PlayerPresentation.SideClass(marker.Side) @marker.Kind @marker.Elevation @(marker.Observed ? "is-observed" : "")" style="transform:translate(@F(marker.X)px,@F(marker.Y)px)" @key="(marker.Key, marker.MotionKey)">
                 <title>@marker.Label @(marker.Dead ? "dead" : "") @(marker.Observed ? "observed" : "") @(marker.BombCarrier ? "bomb carrier" : "") @(marker.Flashed ? "flashed" : "")</title>
                 @if (marker.Kind == "player")
                 {
-                    <foreignObject x="@F(marker.X - marker.Diameter / 2)" y="@F(marker.Y - marker.Diameter / 2)" width="@F(marker.Diameter)" height="@F(marker.Diameter)" overflow="visible">
+                    <foreignObject x="@F(-marker.Diameter / 2)" y="@F(-marker.Diameter / 2)" width="@F(marker.Diameter)" height="@F(marker.Diameter)" overflow="visible">
                         <div class="bolt-dot @(marker.Dead ? "dead" : "") @(marker.Observed ? "active" : "") @(marker.BombCarrier ? "carrier" : "") @(marker.Flashed ? "flashed" : "") @(marker.Angle is null ? "undirected" : "")" style="transform:rotate(@F(marker.Dead ? 0 : (marker.Angle ?? -45) + 45)deg)" xmlns="http://www.w3.org/1999/xhtml"></div>
                         @if (!marker.Dead) { <div class="bolt-digit" xmlns="http://www.w3.org/1999/xhtml">@marker.Label</div> }
                     </foreignObject>
                 }
                 else if (marker.Kind == "flash")
                 {
-                    <foreignObject x="@F(marker.X - marker.Diameter / 2)" y="@F(marker.Y - marker.Diameter / 2)" width="@F(marker.Diameter)" height="@F(marker.Diameter)"><div class="bolt-flash" style="opacity:@F(marker.EffectOpacity)" xmlns="http://www.w3.org/1999/xhtml"></div></foreignObject>
+                    <foreignObject x="@F(-marker.Diameter / 2)" y="@F(-marker.Diameter / 2)" width="@F(marker.Diameter)" height="@F(marker.Diameter)"><div class="bolt-flash" style="opacity:@F(marker.EffectOpacity)" xmlns="http://www.w3.org/1999/xhtml"></div></foreignObject>
                 }
                 else if (marker.Kind is "smoke" or "flame")
                 {
-                    <circle cx="@F(marker.X)" cy="@F(marker.Y)" r="@F(marker.Diameter / 2)" class="radar-effect" />
+                    <circle cx="0" cy="0" r="@F(marker.Diameter / 2)" class="radar-effect" />
                 }
                 else if (marker.Image is { } projectile)
                 {
-                    <image href="@projectile" x="@F(marker.X - 2)" y="@F(marker.Y - 2)" width="4" height="4" />
+                    <image href="@projectile" x="-2" y="-2" width="4" height="4" />
                 }
                 else if (marker.Kind is "bomb" or "bomb-defused")
                 {
-                    <foreignObject x="@F(marker.X - 2)" y="@F(marker.Y - 2)" width="4" height="4"><div class="radar-bomb @(marker.Kind == "bomb-defused" ? "defused" : "")" xmlns="http://www.w3.org/1999/xhtml"><StatusIcon Name="bomb" Label="Bomb" /></div></foreignObject>
+                    <foreignObject x="-2" y="-2" width="4" height="4"><div class="radar-bomb @(marker.Kind == "bomb-defused" ? "defused" : "")" xmlns="http://www.w3.org/1999/xhtml"><StatusIcon Name="bomb" Label="Bomb" /></div></foreignObject>
                 }
-                else { <circle cx="@F(marker.X)" cy="@F(marker.Y)" r="1.2" class="unknown-projectile" /> }
+                else { <circle cx="0" cy="0" r="1.2" class="unknown-projectile" /> }
             </g>
         }
     </svg>
