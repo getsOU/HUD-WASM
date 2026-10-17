@@ -1,129 +1,111 @@
-# sOU Basic HUD · Blazor WebAssembly
+# sOU Broadcast HUD · Blazor WebAssembly
 
-A small, readable CS2 broadcast HUD built with C# and Blazor WebAssembly. It consumes the **public** [SOU.Hud.Sdk](https://www.nuget.org/packages/SOU.Hud.Sdk/0.2.0-preview.4) and [SOU.Live.Contracts](https://www.nuget.org/packages/SOU.Live.Contracts/0.2.0-preview.4) NuGet packages, both pinned to `0.2.0-preview.4`. There are no references to sOU's private application source.
+A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk** and **SOU.Live.Contracts** NuGet packages `0.2.0-preview.4`; no private application source is required.
 
-The equivalent React implementation lives in [getsOU/sOU-HUD-React](https://github.com/getsOU/sOU-HUD-React). Both use the native sOU v2 protocol and the same panel fields.
+The equivalent [React implementation](https://github.com/getsOU/sOU-HUD-React) uses the same public contracts and panel. Both projects are MIT licensed and keep all scripts, fonts and assets local.
 
-![Basic Blazor WebAssembly HUD over a checkerboard behind its transparent output](docs/preview.png)
+![Actual Release HUD with synthetic example data over a checkerboard](docs/preview.png)
 
-The screenshot shows the actual Release package with synthetic example data and the initial sOU panel state in an isolated local package host. Both player sections are enabled. The checkerboard sits behind the embedded HUD to demonstrate transparency; it is not included in the HUD.
+The screenshot uses an isolated local host and synthetic data. Its checkerboard sits behind the embedded output to demonstrate transparency; it is not part of the HUD.
 
-## Use the HUD
+## Install and use
 
-1. Download `sou-basic-wasm-0.1.2.souhud` from this repository's [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
-2. Open the [sOU desktop app](https://www.getsou.app/get-sou) and choose **HUDs → Paket importieren**. Select the `.souhud` file and install it.
-3. Open its output through sOU. Copy that local output URL into an OBS Browser Source with **1920 × 1080** dimensions. Keep the browser background transparent.
-4. Team rosters and the observed player are enabled by default. In the HUD's **Panel**, set the scoreboard caption or check **Hide team rosters** / **Hide observed player** to hide a section. Save and apply your changes.
-5. Supply CS2 game data using sOU's normal setup. Before the first game snapshot, the overlay says **Waiting for game data**. Starting a separate development server does not connect it to a running cast.
+1. Download `sou-basic-wasm-0.2.0.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
+2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
+3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
+4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
+5. Supply CS2/HLAE data through sOU's normal setup. Optional data can remain absent; the HUD does not create missing players, game events or statistics.
 
-Package ID: `sou-basic-wasm`. Package version: `0.1.2`. Protocol: v2. Installed versions are immutable; increase the manifest version for a changed release.
+The stable package ID remains `sou-basic-wasm`; this feature release is **0.2.0**, protocol v2. Previous releases and active outputs are unchanged. Select the new version and reload/reopen outputs after installing. Compatible caption/Hide fields remain compatible; the seven additional output routes appear from this version.
 
-### Visibility defaults and upgrading to 0.1.2
+[Eight output views](docs/views.md) · [All panel fields](docs/panel.md) · [Feature/source matrix and limits](docs/features.md) · [Public author guide](https://www.getsou.app/docs/hud-entwicklung)
 
-Earlier versions used **Show** checkboxes, which sOU initialized to unchecked and therefore hid the rosters and observed-player section on first use. Version `0.1.2` uses **Hide** checkboxes: unchecked or missing values leave both sections enabled, including after saving only a new caption. An observed-player card still requires an observed player in the game data.
+## What's implemented
 
-Your saved caption is inherited when sOU initializes the new version's panel. The visibility fields have new names, so set any desired hidden sections once again after upgrading. Prior releases, their saved settings and already running outputs are unchanged. Install `0.1.2`, select it and reopen the output to use the fix; no SDK or sOU desktop update is required.
+- Current-side scoreboard and team logos, map/round/phase, actual round/bomb seconds, best-of and series score.
+- Rosters with observer digits, optional verified portraits, HP/armor, helmet/kit/bomb, inventory/ammo/utility, economy, K/D/A and actual round damage/kills and flash/smoke/burn status.
+- Actual observed player, detailed inventory and recorded ADR/HS with honest whole/partial coverage.
+- Per-side complete-or-unknown economy totals, alive/kit/utility information, timeouts/loss streak, actual round history and explicit round-win banners.
+- Real HLAE killfeed, keyed by connection/epoch/event ID, with all supplied modifier flags; no kills inferred from health changes.
+- Own MIT radar renderer with fresh HLAE → GSI fallback, directions/deaths/observer digits/bomb/grenades. Default is an honestly labeled relative world-position plot; an optional local overview needs an exact map name and valid explicit bounds.
+- Managed match/competition/season/section branding, team logos, explicit series maps and veto decisions, stored results and conditionally verified series winner.
+- Real prematch rosters and local profile pictures from optional, strictly match-bound local browser metadata; absent metadata does not break live output.
+- Full statistics, explicit player/team/match spotlight references, broadcast/sponsor images, ticker, manual replay/status text and deduplicated lower-third actions.
 
-### Black background in version 0.1.0
-
-Version `0.1.0` can show an opaque black background in an embedded sOU overlay despite transparent CSS backgrounds. Version `0.1.1` removes the root document's forced dark color scheme while keeping the HUD panels and text colors. Install `0.1.1`, select that version and reopen the output; an already running output keeps its original package version. The previous screenshot's dark background was not evidence that the embedded output was transparent.
-
-## What it shows
-
-- CT on the left in blue, T on the right in warm orange, with current-side scores.
-- Managed team names only when sOU explicitly resolves that team's current side; otherwise source-side names or CT/T labels. Team A is never assumed to be CT.
-- Map, round number, phase and a source-provided round or bomb countdown. Timer values are rounded up to `m:ss`; the HUD does not invent or locally extrapolate missing seconds.
-- Team rosters sorted by observer digits **1–9, then 0**, with health, armor, money, kills/deaths/assists, active/reloading weapon and ammunition.
-- Observed player details at the bottom. It does not substitute the local/menu player.
-- Separate transport and data-freshness status. Disconnected or stale data is clearly labeled; the last snapshot stays visible until replaced. A new session replaces old player and score state.
-
-Missing values are `—`; missing health does not mean dead. The layout fits a transparent 1920 × 1080 canvas and scales uniformly inside other 16:9 or letterboxed windows. This basic layout targets normal 5v5 casts. It has no radar, killfeed, external assets or gameplay inference.
-
-## Panel fields
-
-| Section / field | Type | Default |
-| --- | --- | --- |
-| `display.caption` | text | `sOU BASIC` (also used for blank text) |
-| `display.hideRosters` | checkbox · Hide team rosters | `false`; only `true` hides the rosters |
-| `display.hideObservedPlayer` | checkbox · Hide observed player | `false`; only `true` hides the observed player |
-
-Panel state is replayable. There are no action cues to replay. After a host reconnect, current panel state is applied again, including reset revision numbering.
+Missing values remain `—`. Team A is never assumed CT. Unknown health is not treated as death. The observed card never substitutes the local/menu player. No invented MVP, clutch, overtime, score, map geometry, player photo, win probability or source event is supplied. The [matrix](docs/features.md) identifies each real source and limitation.
 
 ## Build, test and package
 
-Install the **.NET SDK 10.0.402** and **PowerShell 7**. Packages come only from `nuget.org`; no private feed or credentials are required. `global.json`, lock files and the local tool manifest pin the SDK, package graph and packaging tool. The application targets .NET / ASP.NET Core **10.0.13**. Use this current SDK rather than an older SDK with a lower host runtime: Release trimming tools also need the matching runtime patch.
-
-From the repository root:
+Install **.NET SDK 10.0.402** and **PowerShell 7**. The application targets .NET/ASP.NET Core **10.0.13**. `NuGet.Config` permits only nuget.org; SDK/package/tool versions and dependency hashes are committed in `global.json`, lock files and the local tool manifest. No private feed or credentials are required.
 
 ```powershell
 pwsh ./scripts/Build.ps1
 ```
 
-The script restores locked dependencies, restores public `SOU.Hud.Tool`, verifies C# formatting, runs the focused tests, publishes the Release WASM app, creates the installable `.souhud`, validates it and writes a SHA-256 file. Outputs:
+The script performs locked restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata tests, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.1.2.souhud
-artifacts/sou-basic-wasm-0.1.2.souhud.sha256
+artifacts/sou-basic-wasm-0.2.0.souhud
+artifacts/sou-basic-wasm-0.2.0.souhud.sha256
 ```
 
-It refuses to overwrite an existing package or publish directory. For another build, choose a fresh directory:
+Existing output directories/packages are never overwritten. Repeat in a fresh directory:
 
 ```powershell
 pwsh ./scripts/Build.ps1 -OutputDirectory artifacts/check-2
 ```
 
-To run only the focused tests:
+Run only focused checks:
 
 ```powershell
 dotnet restore tests/BasicHud.Tests --configfile NuGet.Config --locked-mode
 dotnet run --project tests/BasicHud.Tests -c Release --no-restore
 ```
 
-Tests cover missing values, explicit side identities, conflicting mappings, observer ordering, timers, panel defaults, stale revisions, new-session reset, stream failure and cancellation/disposal of both subscriptions. Optional native WebAssembly AOT / `wasm-tools` optimization is not required by this build.
+Tests read the actual manifest/panel schema and exercise initial host false values, caption-only save, explicit Hide toggles, missing data, side mapping, scene routes, source totals, metadata matching/size/cancellation/session races, radar freshness/calibration/deaths/resets, killfeed identity/lifetime, equal-revision reference refreshes, action deduplication and subscription disposal. Release builds omit debug symbols and all preview fixtures. Optional native WASM AOT/`wasm-tools` optimization is not required.
 
-## Isolated visual preview
-
-Synthetic preview fixtures compile **only into Debug builds** and activate **only on a loopback address** with an explicit recognized query. They are read-only in the browser and never connect to or write into a cast, GSI input or sOU host.
+## Isolated Debug preview
 
 ```powershell
 dotnet restore src/BasicHud --configfile NuGet.Config --locked-mode
 dotnet run --project src/BasicHud --urls http://127.0.0.1:5178
 ```
 
-Open <http://127.0.0.1:5178/?preview=live>. Other scenarios: `waiting`, `stale`, `swapped`, `missing`, `bomb`. The **LOCAL PREVIEW** badge identifies synthetic data. Release packages exclude the fixture source and cannot activate it. Without preview mode, open the installed package through sOU rather than this development URL.
+Open <http://127.0.0.1:5178/?preview=live>. Scene previews: `prematch`, `lineups`, `veto`, `break`, `postmatch`, `statistics`, `spotlight`. Additional cases: `waiting`, `stale`, `swapped`, `missing`, `bomb`, `overview`, `production` (lower-third action). Fixtures include source weapons/stats, real-shaped metadata, local original synthetic SVG art, radar/grenades/kills, maps/veto, competition/sponsors and panel references.
+
+Preview activation requires **Debug compilation**, **loopback hostname** and an **explicit recognized query**. The **LOCAL PREVIEW** badge marks it. It is a read-only browser feed; it neither connects to nor injects fixtures into an actual cast/GSI host. Release excludes the preview classes and synthetic asset. Opening a normal development URL does not supply the installed sOU package identity/session. For actual subview routing/base/CSP testing, import the built Release package into an isolated sOU-compatible test host or the real desktop app; the development server does not replace that integration check.
 
 ## Code structure
 
 ```text
-src/BasicHud.Core/       immutable presentation models, panel defaults, subscription lifecycle
-src/BasicHud/            Razor components, public SDK adapter, local CSS and package manifest
-src/BasicHud/Development Debug-only synthetic fixtures
-tests/BasicHud.Tests/    executable focused checks, no UI or live game required
-scripts/Build.ps1       locked restore → tests → Release publish → pack → validate → hash
+src/BasicHud.Core/        snapshot/panel presentation, scene selection, metadata binding,
+                          complete totals, radar projection and event identity
+src/BasicHud/Components/  reusable scoreboard/player/inventory/radar/series/branding layers
+src/BasicHud/Views/       seven presentation scenes; main live composition is in App.razor
+src/BasicHud/MetadataPoller.cs narrow source-generated optional local metadata reader
+src/BasicHud/Development/ Debug-only synthetic feeds
+src/BasicHud/wwwroot/     local CSS, installed entry point, common panel schema
+                          (cast-media/preview.svg is Debug-only)
+tests/BasicHud.Tests/     focused executable checks and actual metadata reader tests
+scripts/Build.ps1         locked restore → format → test → publish → pack → validate → hash
 ```
 
-The SDK owns browser-session setup and live/panel reconnect behavior. The HUD owns only presentation. Both subscriptions share a long-lived `HttpClient`, are canceled and awaited on disposal, and unsubscribe their connection events. An unexpected consumer failure becomes a visible failed channel state rather than an unobserved task exception. CSS and scripts are local; the relative `<base href="./">` supports installed versioned package URLs.
+One public SDK live stream and one panel stream serve the chosen scene. Both are canceled/awaited on disposal, as are the bounded metadata poller and UI clock. The clock refreshes presentation freshness/planned start, not speculative GSI countdowns. A long-lived injected `HttpClient` supports browser sessions. Media resolve through the SDK's local path guard. No private types, external UI libraries or GPL HUD assets are copied.
 
-## Security and limits
+## Compatibility and security
 
-HUD packages execute code in the local sOU browser origin. Install packages only from authors you trust; validation is not isolation. This HUD requires no cloud token, diagnostic token, API key, external network service, tracking cookie or personal account data. Runtime requests go to the local sOU session and its native live/panel streams. Never paste account credentials into a HUD.
+HUD code executes in the trusted local sOU browser origin; package validation is not runtime isolation. Install packages only from authors you trust. This HUD embeds no cloud/diagnostic token, API key, external camera URL, tracker or account credentials. Optional metadata polls only the local session-protected options endpoint, with bounded size/time and source-context matching; failure gracefully removes optional metadata.
 
-Builds and synthetic/browser checks do not constitute a native CS2/OBS capture or long-session performance certification. Follow the [public HUD author guide](https://www.getsou.app/docs/hud-entwicklung) for the current host contract and installation details.
+All page backgrounds stay transparent. Version0.1.1 fixed the earlier root dark-color-scheme issue, and 0.1.2 corrected initial visibility defaults. Both fixes remain in 0.2.0. [Panel documentation](docs/panel.md) explains overview geometry, manual production controls, reference limits and the host's false checkbox defaults.
+
+Builds, synthetic tests and browser checks do not certify native CS2/OBS capture or long-session performance. No source contract guarantees complete live data in every viewing mode. Test the actual target capture setup before a broadcast.
 
 ## License
 
-MIT for this repository's own code and fixtures; see [LICENSE](LICENSE). Dependencies keep their licenses; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and `LICENSES/`. No rights to sOU trademarks or third-party game artwork are implied.
+MIT for this repository's own code, components, fixtures and original synthetic art. See [LICENSE](LICENSE), [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and `LICENSES/`. Dependencies retain their licenses. No rights to sOU trademarks or third-party game artwork are implied.
 
 ## Publishing a new version
 
-Update the HUD manifest version, then run the
-build and tests. Commit the reviewed source to `main`. An existing `vVERSION`
-tag matching `hud.json` starts the same checks, then publishes the built
-`.souhud` and its SHA-256 as a GitHub Release. Pull requests and ordinary branch
-builds only retain CI artifacts. Publication checks repository, event, tag,
-manifest and package hash; existing releases are never overwritten.
+Update the manifest and reviewed documentation, then run build/tests and the existing release guards. Commit the source to `main`, wait for its successful workflow, then create a matching `vVERSION` tag. Its workflow repeats validation and publishes the built `.souhud` and SHA-256 as a GitHub Release. Existing releases are never overwritten.
 
-The build job has read-only repository access. Only the release job can create
-release assets, using the automatic short-lived GitHub Actions token. No
-personal access token or NuGet publishing credential is required. Test the
-actual target CS2/OBS setup separately before using a changed HUD for a cast.
+Build jobs have read-only repository access. Only the release job can create release assets, using the automatic short-lived GitHub Actions token. No personal access token or NuGet publishing credential is required. Pull requests and ordinary branch builds keep CI artifacts without publishing a release.

@@ -1,4 +1,12 @@
-# 0.1.2
+# 0.2.0
+
+Expands the public HUD into a complete broadcast reference project: main live output plus seven real subviews for prematch, lineups, veto, break, results, statistics and spotlight. Adds inventories/utility/statuses, complete-or-unknown team economy, round history, explicit round-win banners, real HLAE killfeed, own MIT radar renderer, verified optional local lineup/portrait metadata, competition/series/results, public reference spotlights, sponsors/branding/ticker and deduplicated lower-third production actions.
+
+The common panel covers all nine public field types. Every Hide checkbox remains opt-out and defaults to enabled content; existing caption and Hide preferences remain compatible. Explicit subviews keep their own scene independently of the main-output selector. Missing source data is never fabricated. The default radar is clearly labeled as a relative world-position plot, with optional exact-map/local-image calibration.
+
+Package ID stays `sou-basic-wasm`. Install `sou-basic-wasm-0.2.0.souhud`, select the new version and reopen outputs. Earlier releases and active outputs remain unchanged. Public SDK packages stay at `0.2.0-preview.4`; the new authored components use no GPL HUD assets. Native CS2/OBS capture remains a separate practical check.
+
+## 0.1.2
 
 Team rosters and the observed-player section are now enabled by default, including after the first panel update or a caption-only save. The panel uses **Hide team rosters** and **Hide observed player**: only a checked Hide field disables its section. The observed-player card still requires an observed player in the source data.
 

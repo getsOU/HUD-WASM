@@ -13,5 +13,5 @@
     <Content Include="../../THIRD-PARTY-NOTICES.md" Link="THIRD-PARTY-NOTICES.md" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../../LICENSES/*" Link="LICENSES/%(Filename)%(Extension)" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' != 'Debug'"><Compile Remove="Development/**/*.cs" /></ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' != 'Debug'"><Compile Remove="Development/**/*.cs" /><Content Remove="wwwroot/cast-media/**" /></ItemGroup>
 </Project>

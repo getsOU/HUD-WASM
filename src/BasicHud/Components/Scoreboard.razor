@@ -1,15 +1,16 @@
 <header class="scoreboard">
     <div class="caption">@Caption</div>
     <div class="score-strip">
-        <div class="team-heading ct"><span class="side-tag">CT</span><span class="team-name" title="@View.Ct.Name">@View.Ct.Name</span></div>
+        <div class="team-heading ct"><span class="side-tag">CT</span><ImageTile Source="@Context.ResolveMedia(Context.SideTeam(TeamSide.CounterTerrorists)?.Logo)" Label="@View.Ct.Name" Class="team-logo" /><span class="team-name" title="@View.Ct.Name">@View.Ct.Name</span></div>
         <div class="score ct">@View.Ct.Score</div>
         <div class="clock @(View.Timer.IsBomb ? "bomb-clock" : "")"><span class="clock-label">@View.Timer.Label</span><strong>@View.Timer.Value</strong></div>
         <div class="score t">@View.T.Score</div>
-        <div class="team-heading t"><span class="team-name" title="@View.T.Name">@View.T.Name</span><span class="side-tag">T</span></div>
+        <div class="team-heading t"><span class="team-name" title="@View.T.Name">@View.T.Name</span><ImageTile Source="@Context.ResolveMedia(Context.SideTeam(TeamSide.Terrorists)?.Logo)" Label="@View.T.Name" Class="team-logo" /><span class="side-tag">T</span></div>
     </div>
-    <div class="match-meta"><span>@View.Map</span><span>@View.Round</span><span>@View.Phase</span></div>
+    <div class="match-meta"><span>@View.Map</span><span>@View.Round</span><span>@View.Phase</span>@if (Context.Match is { } match) { <span>@($"BO{match.BestOf} · {match.TeamA.SeriesWins}–{match.TeamB.SeriesWins}")</span> }</div>
 </header>
 @code {
     [Parameter, EditorRequired] public HudView View { get; set; } = HudView.Empty;
     [Parameter, EditorRequired] public string Caption { get; set; } = string.Empty;
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
 }

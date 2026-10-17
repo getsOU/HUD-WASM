@@ -1,0 +1,5 @@
+@if (Context.SponsorImages() is { Count: > 0 } images)
+{
+    <section class="sponsors" aria-label="Sponsors">@foreach (var image in images) { <ImageTile Source="@image" Label="Sponsor" Class="sponsor-image" /> }</section>
+}
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

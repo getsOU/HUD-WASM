@@ -1,9 +1,42 @@
 [
-  {
-    "name": "display", "label": "Display", "inputs": [
-      { "type": "text", "name": "caption", "label": "Scoreboard caption" },
-      { "type": "checkbox", "name": "hideRosters", "label": "Hide team rosters" },
-      { "type": "checkbox", "name": "hideObservedPlayer", "label": "Hide observed player" }
-    ]
-  }
+  {"name":"display","label":"Display","inputs":[
+    {"type":"text","name":"caption","label":"Scoreboard caption"},
+    {"type":"select","name":"scene","label":"Main output scene","values":[{"name":"live","label":"Live"},{"name":"prematch","label":"Prematch"},{"name":"lineups","label":"Lineups"},{"name":"veto","label":"Map veto"},{"name":"break","label":"Break"},{"name":"postmatch","label":"Results"},{"name":"statistics","label":"Statistics"},{"name":"spotlight","label":"Spotlight"}]},
+    {"type":"checkbox","name":"hideRosters","label":"Hide team rosters"},
+    {"type":"checkbox","name":"hideObservedPlayer","label":"Hide observed player"},
+    {"type":"checkbox","name":"hideRadar","label":"Hide radar"},
+    {"type":"checkbox","name":"hideKillfeed","label":"Hide killfeed"},
+    {"type":"checkbox","name":"hideEconomy","label":"Hide economy"},
+    {"type":"checkbox","name":"hideRoundHistory","label":"Hide round history"},
+    {"type":"checkbox","name":"hideSeries","label":"Hide map series"},
+    {"type":"checkbox","name":"hideSponsors","label":"Hide sponsors"}
+  ]},
+  {"name":"production","label":"Production","inputs":[
+    {"type":"text","name":"title","label":"Scene title"},
+    {"type":"text","name":"subtitle","label":"Scene subtitle"},
+    {"type":"text","name":"ticker","label":"Bottom ticker"},
+    {"type":"text","name":"replayLabel","label":"Replay/status label (manual)"},
+    {"type":"text","name":"lowerTitle","label":"Lower third title"},
+    {"type":"text","name":"lowerSubtitle","label":"Lower third subtitle"},
+    {"type":"action","name":"lowerThird","label":"Lower third","values":[{"name":"show","label":"Show now"},{"name":"hide","label":"Hide now"}]}
+  ]},
+  {"name":"feature","label":"Spotlight","inputs":[
+    {"type":"player","name":"player","label":"Featured player"},
+    {"type":"team","name":"team","label":"Featured team"},
+    {"type":"match","name":"match","label":"Featured match"},
+    {"type":"text","name":"headline","label":"Headline"},
+    {"type":"text","name":"subline","label":"Subline"}
+  ]},
+  {"name":"branding","label":"Branding","inputs":[
+    {"type":"image","name":"logo","label":"Broadcast logo"},
+    {"type":"images","name":"sponsors","label":"Additional sponsors"}
+  ]},
+  {"name":"radar","label":"Radar overview (optional)","inputs":[
+    {"type":"image","name":"overview","label":"Local overview image"},
+    {"type":"text","name":"mapName","label":"Exact map name"},
+    {"type":"text","name":"minX","label":"World X at image left"},
+    {"type":"text","name":"maxX","label":"World X at image right"},
+    {"type":"text","name":"minY","label":"World Y at image bottom"},
+    {"type":"text","name":"maxY","label":"World Y at image top"}
+  ]}
 ]

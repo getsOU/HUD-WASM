@@ -1,0 +1,14 @@
+<section class="presentation lineups-scene"><SceneHeader Title="Team lineups" Context="Context" />
+    @if (Context.Match is { } match)
+    {
+        <div class="lineup-columns">@foreach (var team in new[] { match.TeamA, match.TeamB })
+        {
+            <section class="lineup-team"><h2><ImageTile Source="@Context.ResolveMedia(team.Logo)" Label="@team.Name" Class="team-logo" />@team.Name</h2>
+                @if (Context.TeamPlayers(team).Count == 0) { <p class="empty-state">No verified roster available</p> }
+                @foreach (var player in PlayerPresentation.Ordered(Context.TeamPlayers(team))) { <PlayerCard Player="player" Context="Context" /> }
+            </section>
+        }</div>
+    }
+    else { <p class="empty-state">Waiting for an active managed match</p> }
+</section>
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

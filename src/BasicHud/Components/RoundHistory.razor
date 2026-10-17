@@ -1,0 +1,11 @@
+<section class="round-history" aria-label="Round history">
+    @if (Context.Game?.RoundWins is { IsDefault: false } rounds && rounds.Length > 0)
+    {
+        @foreach (var round in rounds.TakeLast(30))
+        {
+            <span class="history-round @PlayerPresentation.SideClass(round.Winner)" title="@($"Round {round.RoundNumber}: {round.Winner}, {round.Reason}")"><b>@round.RoundNumber</b><small>@(round.Winner == TeamSide.CounterTerrorists ? "CT" : round.Winner == TeamSide.Terrorists ? "T" : "?")</small></span>
+        }
+    }
+    else { <span class="muted">Round history —</span> }
+</section>
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

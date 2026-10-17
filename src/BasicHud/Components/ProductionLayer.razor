@@ -1,0 +1,10 @@
+@if (Context.Text("production", "replayLabel") is { Length: > 0 } replay) { <div class="replay-label"><small>MANUAL</small> @replay</div> }
+@if (Context.Text("production", "ticker") is { Length: > 0 } ticker) { <div class="ticker" title="@ticker">@ticker</div> }
+@if (LowerThirdVisible)
+{
+    <aside class="lower-third"><strong title="@Context.Text("production", "lowerTitle")">@Context.Text("production", "lowerTitle")</strong><span title="@Context.Text("production", "lowerSubtitle")">@Context.Text("production", "lowerSubtitle")</span></aside>
+}
+@code {
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter] public bool LowerThirdVisible { get; set; }
+}

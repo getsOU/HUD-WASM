@@ -1,0 +1,10 @@
+<div class="statistics-table-wrap"><table class="statistics-table"><thead><tr><th>Player</th><th>Side</th><th>K</th><th>D</th><th>A</th><th>MVP</th><th>Score</th><th>RK</th><th>DMG</th><th>Money</th><th>Equip.</th><th>ADR</th><th>HS%</th><th>Coverage</th></tr></thead><tbody>
+    @foreach (var player in Context.Players.OrderByDescending(player => player.Stats?.Kills).ThenBy(player => player.Name, StringComparer.Ordinal))
+    {
+        <tr class="@PlayerPresentation.SideClass(player.Side)"><th title="@Context.Name(player)">@Context.Name(player)</th><td>@(player.Side == TeamSide.CounterTerrorists ? "CT" : player.Side == TeamSide.Terrorists ? "T" : "—")</td>
+            <td>@BroadcastContext.Number(player.Stats?.Kills)</td><td>@BroadcastContext.Number(player.Stats?.Deaths)</td><td>@BroadcastContext.Number(player.Stats?.Assists)</td><td>@BroadcastContext.Number(player.Stats?.Mvps)</td><td>@BroadcastContext.Number(player.Stats?.Score)</td>
+            <td>@BroadcastContext.Number(player.RoundKills)</td><td>@BroadcastContext.Number(player.RoundDamage)</td><td>@BroadcastContext.Number(player.Money)</td><td>@BroadcastContext.Number(player.EquipmentValue)</td>
+            <td>@BroadcastContext.Decimal(player.RecordedStats?.AverageDamagePerRound)</td><td>@BroadcastContext.Decimal(player.RecordedStats?.HeadshotPercentage)</td><td>@BroadcastContext.Coverage(player.RecordedStats)</td></tr>
+    }
+</tbody></table>@if (Context.Players.Count == 0) { <p class="empty-state">Waiting for player statistics</p> }</div>
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

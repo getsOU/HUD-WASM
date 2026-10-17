@@ -1,0 +1,7 @@
+<header class="scene-header"><Branding Context="Context" /><h1 title="@Context.TextOr("production", "title", Title)">@Context.TextOr("production", "title", Title)</h1>
+    @if (Context.Text("production", "subtitle") is { Length: > 0 } subtitle) { <p>@subtitle</p> }
+</header>
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+}

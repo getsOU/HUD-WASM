@@ -1,0 +1,9 @@
+<section class="economy-strip" aria-label="Team economy">
+    @foreach (var side in new[] { TeamSide.CounterTerrorists, TeamSide.Terrorists })
+    {
+        var economy = LiveProjection.ForSide(Context.Game, side);
+        var source = side == TeamSide.CounterTerrorists ? Context.Game?.Ct : Context.Game?.T;
+        <div class="economy-side @PlayerPresentation.SideClass(side)"><strong>@(side == TeamSide.CounterTerrorists ? "CT" : "T")</strong><span>ALIVE @economy.Alive</span><span>@economy.Money</span><span>EQ @economy.Equipment</span><span>KITS @economy.Kits</span><span>UTILITY SLOTS @economy.Utility</span><span>TIMEOUTS @BroadcastContext.Number(source?.TimeoutsRemaining)</span><span>LOSS STREAK @BroadcastContext.Number(source?.ConsecutiveRoundLosses)</span></div>
+    }
+</section>
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

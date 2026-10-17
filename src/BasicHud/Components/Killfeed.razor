@@ -1,0 +1,18 @@
+<section class="killfeed" aria-label="Killfeed">
+    @foreach (var item in Entries)
+    {
+        var kill = item.Event;
+        <article class="kill-event" @key="item.Key">
+            <span class="@PlayerPresentation.SideClass(kill.Killer?.Side)">@Participant(kill.Killer)</span>
+            @if (kill.Assister is { } assist) { <small>+ @Participant(assist)</small> }
+            <b class="kill-weapon">@kill.Weapon</b><span class="@PlayerPresentation.SideClass(kill.Victim.Side)">@Participant(kill.Victim)</span>
+            <div class="kill-flags">@Flags(kill)</div>
+        </article>
+    }
+</section>
+@code {
+    [Parameter] public IReadOnlyList<KillView> Entries { get; set; } = [];
+    private static string Participant(KillParticipant? participant) => participant is null ? "WORLD" : HudView.Text(participant.Name, HudView.Text(participant.SteamId));
+    private static string Flags(KillFeedEntry kill) => string.Join(" · ", new[] { kill.Headshot ? "HEADSHOT" : null, kill.Wallbang ? "WALLBANG" : null,
+        kill.AttackerBlind ? "BLIND" : null, kill.ThroughSmoke ? "THROUGH SMOKE" : null, kill.NoScope ? "NO SCOPE" : null, kill.FlashAssist ? "FLASH ASSIST" : null }.Where(flag => flag is not null));
+}

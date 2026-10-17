@@ -1,0 +1,12 @@
+<section class="presentation veto-scene"><SceneHeader Title="Map veto" Context="Context" />
+    <MatchDuel Context="Context" />
+    <div class="veto-timeline">
+        @if (Context.Match?.Vetos.Count is not > 0) { <p class="empty-state">No pick or ban decisions supplied</p> }
+        @foreach (var veto in (Context.Match?.Vetos ?? []).OrderBy(veto => veto.Number).ThenBy(veto => veto.PlayNumber))
+        {
+            <article class="veto-card @veto.Type.ToString().ToLowerInvariant()"><span class="eyebrow">@veto.Number · @(veto.Type == MapDecisionKind.Unknown ? "OPEN" : veto.Type.ToString().ToUpperInvariant())</span><h3>@veto.Name</h3>@if (veto.Type != MapDecisionKind.Decider) { <p>@Context.TeamName(veto.TeamId)</p> }@if (veto.PlayNumber is { } order) { <small>Play order @order</small> }</article>
+        }
+    </div>
+    <MapSeries Context="Context" />
+</section>
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

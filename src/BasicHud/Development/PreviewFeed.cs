@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using BasicHud.Core;
 using SOU.Live.Contracts;
 
@@ -8,38 +9,80 @@ namespace BasicHud.Development;
 /// <summary>Local, read-only design fixtures. This file is excluded from Release compilation.</summary>
 internal sealed class PreviewFeed(string scenario) : IHudFeed
 {
+    private static readonly DateTimeOffset PlannedStart = DateTimeOffset.UtcNow.AddMinutes(5);
     public event Action<string, ConnectionState>? ConnectionChanged;
 
     public static PreviewFeed? TryCreate(Uri address)
     {
         if (!address.IsLoopback) return null;
         var mode = address.Query.TrimStart('?').Split('&').FirstOrDefault(value => value.StartsWith("preview=", StringComparison.Ordinal))?[8..];
-        return mode is "live" or "waiting" or "stale" or "swapped" or "missing" or "bomb" ? new PreviewFeed(mode) : null;
+        return mode is "live" or "prematch" or "lineups" or "veto" or "break" or "postmatch" or "statistics" or "spotlight" or "waiting" or "stale" or "swapped" or "missing" or "bomb" or "overview" or "production" ? new PreviewFeed(mode) : null;
     }
 
     public async IAsyncEnumerable<LiveSnapshot> WatchLiveAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         ConnectionChanged?.Invoke("live", ConnectionState.Connected);
-        yield return Snapshot(scenario);
-        await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+        var revision = 0L;
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            yield return Snapshot(scenario) with { Revision = ++revision };
+            await Task.Delay(TimeSpan.FromMilliseconds(250), cancellationToken);
+        }
     }
 
     public async IAsyncEnumerable<HudPanelMessage> WatchPanelAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         ConnectionChanged?.Invoke("panel", ConnectionState.Connected);
-        yield return new("sou-basic-wasm", "0.1.2", new(1, []));
+        JsonElement Text(string value) => JsonSerializer.SerializeToElement(value);
+        var values = new Dictionary<string, Dictionary<string, JsonElement>>
+        {
+            ["display"] = new() { ["scene"] = Text(SceneSelection.Valid(scenario)) },
+            ["production"] = new() { ["ticker"] = Text("Synthetic local preview · no game input"), ["lowerTitle"] = Text("Example analyst"), ["lowerSubtitle"] = Text("Operator-controlled lower third"), ["replayLabel"] = Text("Preview") },
+            ["feature"] = new() { ["player"] = Text("p2"), ["team"] = Text("a"), ["match"] = Text("preview-match"), ["headline"] = Text("Player spotlight"), ["subline"] = Text("Explicit production selection") },
+            ["branding"] = new() { ["logo"] = Text("/cast-media/preview.svg"), ["sponsors"] = JsonSerializer.SerializeToElement(new[] { "/cast-media/preview.svg" }) }
+        };
+        if (scenario == "overview") values["radar"] = new() { ["overview"] = Text("/cast-media/preview.svg"), ["mapName"] = Text("de_mirage"), ["minX"] = Text("0"), ["maxX"] = Text("2500"), ["minY"] = Text("0"), ["maxY"] = Text("2500") };
+        yield return new("sou-basic-wasm", "0.2.0", new(1, values)
+        {
+            References = new()
+            {
+                ["feature"] = new()
+                {
+                    ["player"] = new("p2", "Vale", "/cast-media/preview.svg", "a", false),
+                    ["team"] = new("a", "NORTHSTAR", "/cast-media/preview.svg", "a", false),
+                    ["match"] = new("preview-match", "Synthetic fixture", null, null, false)
+                }
+            }
+        });
+        if (scenario == "production") yield return new("sou-basic-wasm", "0.2.0", Action: new(Guid.Parse("9829d5b3-37c3-4f68-a489-bf6dece1cd31"), "production", "lowerThird", "show"));
         await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
     }
+
+    public static BrowserMetadata Metadata() => new()
+    {
+        Match = new() { Left = new() { Id = "a", SteamIds = ["p1", "p2", "p3", "p4", "p5"] }, Right = new() { Id = "b", SteamIds = ["p6", "p7", "p8", "p9", "p0"] } },
+        Players = new[] { ("p1", "Aster"), ("p2", "Vale"), ("p3", "Orion"), ("p4", "Mira"), ("p5", "Nova"), ("p6", "Flint"), ("p7", "Cinder"), ("p8", "Ash"), ("p9", "Sable"), ("p0", "Rook") }
+            .ToDictionary(item => item.Item1, item => new BrowserPlayer { Name = item.Item2, Avatar = "/cast-media/preview.svg" })
+    };
 
     private static LiveSnapshot Snapshot(string scenario)
     {
         var ct = scenario == "swapped" ? "b" : "a";
         var t = scenario == "swapped" ? "a" : "b";
         var match = new ManagedMatch("preview-match", "Synthetic fixture", 3,
-            new("a", "NORTHSTAR", "NTH", null, 0), new("b", "EMBER", "EMB", null, 0),
+            new("a", "NORTHSTAR", "NTH", "/cast-media/preview.svg", scenario == "postmatch" ? 2 : 1), new("b", "EMBER", "EMB", "/cast-media/preview.svg", 0),
             new(TeamSide.CounterTerrorists, TeamRecognitionStatus.Manual, ct, 0, 0),
-            new(TeamSide.Terrorists, TeamRecognitionStatus.Manual, t, 0, 0));
-        if (scenario == "waiting") return new(2, Guid.Parse("c6c10c64-2395-4ad0-9c3b-ef18b3f142af"), 1, null, DataFreshness.Waiting, null) { ManagedMatch = match };
+            new(TeamSide.Terrorists, TeamRecognitionStatus.Manual, t, 0, 0))
+        {
+            StartsAt = PlannedStart,
+            Maps = [new("m1", "Mirage", "de_mirage", 1) { Status = MapResultStatus.Completed, ScoreA = 13, ScoreB = 8, WinnerTeamId = "a" },
+                new("m2", "Nuke", "de_nuke", 2) { Status = scenario == "postmatch" ? MapResultStatus.Completed : MapResultStatus.Live, ScoreA = scenario == "postmatch" ? 13 : 11, ScoreB = 7, WinnerTeamId = scenario == "postmatch" ? "a" : null },
+                new("m3", "Dust II", "de_dust2", 3) { Status = MapResultStatus.Pending }],
+            Vetos = [new("b1", "Inferno", "de_inferno", MapDecisionKind.Ban, "a", 1, null), new("b2", "Ancient", "de_ancient", MapDecisionKind.Ban, "b", 2, null),
+                new("m1", "Mirage", "de_mirage", MapDecisionKind.Pick, "a", 3, 1), new("m2", "Nuke", "de_nuke", MapDecisionKind.Pick, "b", 4, 2), new("m3", "Dust II", "de_dust2", MapDecisionKind.Decider, null, 5, 3)],
+            Competition = new("c1", "Synthetic Championship", "s1", "Season 1", [new("division", "Premier", CompetitionSectionKind.Division)], "Final") { Logo = "/cast-media/preview.svg", Sponsors = [new("sponsor", "Synthetic sponsor", "/cast-media/preview.svg")] }
+        };
+        if (scenario is "waiting" or "prematch" or "lineups") return new(2, Guid.Parse("c6c10c64-2395-4ad0-9c3b-ef18b3f142af"), 1, null, DataFreshness.Waiting, null) { ManagedMatch = match };
         ImmutableArray<PlayerState> players = [
             Player("p1", "Aster", TeamSide.CounterTerrorists, 1, 100, "m4a1_silencer", 17, 3, 8),
             Player("p2", "Vale", TeamSide.CounterTerrorists, 2, 72, "awp", 12, 2, 10),
@@ -54,9 +97,15 @@ internal sealed class PreviewFeed(string scenario) : IHudFeed
         ];
         var game = new GameState("de_mirage", MatchPhase.Live, 19, RoundPhase.Live, new(null, 11), new(null, 7), players[1], players)
         {
+            AvailableSections = [GsiSection.Map, GsiSection.AllPlayers, GsiSection.Player, GsiSection.Round, GsiSection.Bomb, GsiSection.Grenades, GsiSection.PhaseCountdowns],
             Countdown = new(CountdownPhase.Live, 73.4),
-            Bomb = scenario == "bomb" ? new(BombStatus.Planted, "p6", null, 25.7) : null
+            Bomb = new(scenario == "bomb" ? BombStatus.Planted : BombStatus.Carried, "p6", new(1200, 1300, 0), scenario == "bomb" ? 25.7 : null),
+            Radar = new(Guid.Parse("84bb12b2-7165-49c7-909e-1cc877d587b4"), 1, 1, 125, DateTimeOffset.UtcNow, players.Select(player => new RadarPlayer(player.SteamId!, 1, player.Position!, player.Forward!, player.Health!.Value)).ToImmutableArray()),
+            Grenades = [new("smoke1", GrenadeKind.Smoke, "p3", new(600, 1300, 0), null, null, 5)],
+            RoundWins = Enumerable.Range(1, 18).Select(round => new RoundResult(round, round % 3 == 0 ? TeamSide.Terrorists : TeamSide.CounterTerrorists, round % 4 == 0 ? RoundWinReason.BombDefused : RoundWinReason.Elimination)).ToImmutableArray(),
+            KillFeed = [new(1, Guid.Parse("84bb12b2-7165-49c7-909e-1cc877d587b4"), 1, 124, new(1, "p1", "Aster", TeamSide.CounterTerrorists), new(2, "p7", "Cinder", TeamSide.Terrorists), new(3, "p2", "Vale", TeamSide.CounterTerrorists), "m4a1", WeaponKind.Unknown, true, true, false, false, false, false)]
         };
+        if (scenario == "postmatch") game = game with { Phase = MatchPhase.GameOver, RoundPhase = RoundPhase.Over, RoundWinner = TeamSide.CounterTerrorists, RoundWinReason = RoundWinReason.Elimination };
         if (scenario == "missing") game = new(null, MatchPhase.Unknown, null, RoundPhase.Unknown, new(null, null), new(null, null), new(null, null, null, null, null), [new(null, null, TeamSide.CounterTerrorists, null, null)]);
         return new(2, Guid.Parse("c6c10c64-2395-4ad0-9c3b-ef18b3f142af"), 1, DateTimeOffset.UtcNow,
             scenario == "stale" ? DataFreshness.Stale : DataFreshness.Live, game)
@@ -69,7 +118,19 @@ internal sealed class PreviewFeed(string scenario) : IHudFeed
             ObserverSlot = slot,
             Armor = hp == 0 ? 0 : 100,
             Money = 3200 + slot * 100,
-            Stats = new(kills, assists, deaths, null, null),
-            Weapons = [new("weapon_0", "weapon_" + weapon, WeaponCategory.Rifle, WeaponStatus.Active, null, hp == 0 ? 0 : 23, 30, 60)]
+            EquipmentValue = 4100,
+            Helmet = true,
+            DefuseKit = side == TeamSide.CounterTerrorists,
+            RoundKills = slot % 3,
+            RoundDamage = slot * 27,
+            Flashed = slot == 3 ? 45 : 0,
+            Smoked = slot == 8 ? 1 : 0,
+            Burning = slot == 0 ? 25 : 0,
+            Position = new(200 + slot * 180, 300 + slot % 4 * 450, 0),
+            Forward = new(Math.Cos(slot), Math.Sin(slot), 0),
+            Stats = new(kills, assists, deaths, slot % 3, kills * 2 + assists),
+            RecordedStats = new(12, 1200 + slot * 30, kills, kills / 2, false),
+            Weapons = [new("weapon_0", "weapon_" + weapon, WeaponCategory.Rifle, WeaponStatus.Active, null, hp == 0 ? 0 : 23, 30, 60),
+                new("weapon_1", "weapon_knife", WeaponCategory.Knife, WeaponStatus.Holstered, null, null, null, null), new("weapon_2", "weapon_flashbang", WeaponCategory.Grenade, WeaponStatus.Holstered, null, null, null, null)]
         };
 }

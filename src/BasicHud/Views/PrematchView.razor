@@ -1,0 +1,6 @@
+<section class="presentation prematch-scene"><SceneHeader Title="Match preview" Context="Context" />
+    <MatchDuel Context="Context" />
+    <div class="scheduled-start"><span>PLANNED START</span><strong>@Context.StartCountdown</strong>@if (Context.Match?.StartsAt is { } start) { <small>@start.ToUniversalTime().ToString("yyyy-MM-dd HH:mm 'UTC'", System.Globalization.CultureInfo.InvariantCulture)</small> }</div>
+    <MapSeries Context="Context" />
+</section>
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

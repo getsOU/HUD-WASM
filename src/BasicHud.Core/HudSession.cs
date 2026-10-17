@@ -21,9 +21,14 @@ public sealed class HudSession(IHudFeed feed) : IAsyncDisposable
     private long panelRevision = long.MinValue;
     private bool started;
     private bool disposed;
+    private readonly HashSet<Guid> actionIds = [];
+    private readonly Queue<Guid> actionOrder = [];
     public event Action? Changed;
     public HudView View { get; private set; } = HudView.Empty;
     public DisplayOptions Options { get; private set; } = DisplayOptions.Default;
+    public LiveSnapshot? Snapshot { get; private set; }
+    public HudPanelState? Panel { get; private set; }
+    public bool LowerThirdVisible { get; private set; }
     public ConnectionState LiveConnection { get; private set; } = ConnectionState.Connecting;
     public ConnectionState PanelConnection { get; private set; } = ConnectionState.Connecting;
 
@@ -44,8 +49,10 @@ public sealed class HudSession(IHudFeed feed) : IAsyncDisposable
             {
                 if (stop.IsCancellationRequested) break;
                 if (sessionId == snapshot.SessionId && snapshot.Revision <= revision) continue;
+                if (sessionId != snapshot.SessionId) { LowerThirdVisible = false; actionIds.Clear(); actionOrder.Clear(); }
                 sessionId = snapshot.SessionId;
                 revision = snapshot.Revision;
+                Snapshot = snapshot;
                 View = HudView.From(snapshot); // Replaces the entire view, including empty/new sessions.
                 Notify();
             }
@@ -61,8 +68,16 @@ public sealed class HudSession(IHudFeed feed) : IAsyncDisposable
             await foreach (var message in feed.WatchPanelAsync(stop.Token))
             {
                 if (stop.IsCancellationRequested) break;
+                if (message.Action is { Section: "production", Name: "lowerThird", Value: "show" or "hide" } action && actionIds.Add(action.Id))
+                {
+                    actionOrder.Enqueue(action.Id);
+                    if (actionOrder.Count > 1024) actionIds.Remove(actionOrder.Dequeue());
+                    LowerThirdVisible = action.Value == "show";
+                    Notify();
+                }
                 if (message.State is not { } state || state.Revision < panelRevision) continue;
                 panelRevision = state.Revision;
+                Panel = state;
                 Options = DisplayOptions.FromPanel(state);
                 Notify();
             }

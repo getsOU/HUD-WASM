@@ -2,4 +2,9 @@
   <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup><ProjectReference Include="../../src/BasicHud.Core/BasicHud.Core.csproj" /></ItemGroup>
   <ItemGroup><None Include="../../src/BasicHud/wwwroot/panel.json" Link="panel.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+  <ItemGroup>
+    <None Include="../../src/BasicHud/hud.json" Link="hud.json" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Include="../../src/BasicHud/MetadataPoller.cs" Link="MetadataPoller.cs" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,10 @@
+@if (Context.Match is { } match)
+{
+    <div class="match-duel">
+        <div class="duel-team"><ImageTile Source="@Context.ResolveMedia(match.TeamA.Logo)" Label="@match.TeamA.Name" Class="duel-logo" /><h2>@match.TeamA.Name</h2><span>@match.TeamA.ShortName</span></div>
+        <div class="duel-score"><strong>@match.TeamA.SeriesWins <span>:</span> @match.TeamB.SeriesWins</strong><span>BEST OF @match.BestOf</span><small>@match.Name</small></div>
+        <div class="duel-team"><ImageTile Source="@Context.ResolveMedia(match.TeamB.Logo)" Label="@match.TeamB.Name" Class="duel-logo" /><h2>@match.TeamB.Name</h2><span>@match.TeamB.ShortName</span></div>
+    </div>
+}
+else { <p class="empty-state">Waiting for an active managed match</p> }
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

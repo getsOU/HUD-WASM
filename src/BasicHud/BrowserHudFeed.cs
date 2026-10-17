@@ -17,6 +17,12 @@ internal sealed class BrowserHudFeed : IHudFeed, IDisposable
 
     public IAsyncEnumerable<LiveSnapshot> WatchLiveAsync(CancellationToken cancellationToken) => client.WatchAsync(cancellationToken);
     public IAsyncEnumerable<HudPanelMessage> WatchPanelAsync(CancellationToken cancellationToken) => client.WatchPanelAsync(cancellationToken);
+    public string? Media(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return null;
+        try { return client.Media(path).AbsoluteUri; }
+        catch (ArgumentException) { return null; }
+    }
     private void OnConnectionChanged(string channel, HudConnectionStatus status) => ConnectionChanged?.Invoke(channel, status switch
     {
         HudConnectionStatus.Connected => ConnectionState.Connected,

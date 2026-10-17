@@ -1,8 +1,8 @@
-<section class="observed @(Player.Side == TeamSide.CounterTerrorists ? "ct" : Player.Side == TeamSide.Terrorists ? "t" : "neutral")" aria-label="Observed player">
-    <div class="observed-tag">OBSERVING <span>@Player.Slot</span></div>
-    <div class="observed-main"><strong title="@Player.Name">@Player.Name</strong><span class="observed-health">@Player.Health <small>HP</small></span></div>
-    <div class="observed-details"><span>@Player.Armor ARM</span><span>@Player.Money</span><span>@Player.Kda</span><span class="observed-weapon">@Player.Weapon</span><b>@Player.Ammo</b></div>
+<section class="observed @PlayerPresentation.SideClass(Player.Side)" aria-label="Observed player">
+    <div class="observed-tag">OBSERVING · @BroadcastContext.Coverage(Player.RecordedStats)</div>
+    <PlayerCard Player="Player" Context="Context" Expanded="true" />
 </section>
 @code {
-    [Parameter, EditorRequired] public PlayerView Player { get; set; } = null!;
+    [Parameter, EditorRequired] public PlayerState Player { get; set; } = null!;
+    [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
 }

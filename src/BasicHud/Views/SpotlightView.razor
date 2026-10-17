@@ -1,0 +1,34 @@
+<section class="presentation spotlight-scene"><SceneHeader Title="Spotlight" Context="Context" />
+    <div class="spotlight-layout"><div class="spotlight-player">
+        <h2>@Context.TextOr("feature", "headline", "Player spotlight")</h2><p>@Context.Text("feature", "subline")</p>
+        @if (PlayerReference?.Missing == true) { <p class="empty-state">Selected player is no longer available</p> }
+        else if (Player is { } player)
+        {
+            <ImageTile Source="@(Context.ResolveMedia(PlayerReference?.Image) ?? Context.ProfileImage(player.SteamId))" Label="@Context.Name(player)" Class="spotlight-portrait" />
+            <PlayerCard Player="player" Context="Context" Expanded="true" />
+        }
+        else { <p class="empty-state">Select a player in the panel or observe a player</p> }
+    </div><div class="spotlight-references">
+        @foreach (var field in new[] { "team", "match" })
+        {
+            if (Context.Text("feature", field).Length == 0) continue;
+            var reference = Context.Reference(field);
+            <article class="feature-reference"><span class="eyebrow">SELECTED @field.ToUpperInvariant()</span>
+                @if (reference?.Missing == true) { <h3>No longer available</h3> }
+                else { <ImageTile Source="@Context.ResolveMedia(reference?.Image)" Label="@(reference?.Name ?? field)" Class="duel-logo" /><h3>@(reference?.Name ?? "Reference unavailable")</h3> }
+                @if (field == "team" && Context.Match is { } match && reference?.Id is { } id && (id == match.TeamA.Id || id == match.TeamB.Id))
+                {
+                    <p>@Context.TeamPlayers(id == match.TeamA.Id ? match.TeamA : match.TeamB).Count verified roster players</p>
+                }
+                @if (field == "match" && reference?.Id == Context.Match?.Id && Context.Match is not null) { <p>@($"BO{Context.Match.BestOf} · {Context.Match.TeamA.SeriesWins}:{Context.Match.TeamB.SeriesWins}")</p> }
+            </article>
+        }
+    </div></div>
+</section>
+@code {
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    private HudPanelReference? PlayerReference => Context.Reference("player");
+    private PlayerState? Player => Context.Text("feature", "player") is { Length: > 0 } id
+        ? Context.Players.FirstOrDefault(player => player.SteamId == id) ?? (Context.Game?.ObservedPlayer?.SteamId == id ? Context.Game.ObservedPlayer : new PlayerState(id, PlayerReference?.Name, null, null, null))
+        : Context.Game?.ObservedPlayer;
+}

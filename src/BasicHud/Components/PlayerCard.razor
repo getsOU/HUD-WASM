@@ -1,0 +1,27 @@
+<article class="player-card @PlayerPresentation.SideClass(Player.Side) @(Player.Health is <= 0 ? "is-dead" : "") @(Expanded ? "expanded" : "")">
+    <div class="player-identity"><span class="observer-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span>
+        <ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Context.Name(Player)" Class="portrait" />
+        <strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong><span class="money">@Money</span></div>
+    <div class="player-vitals"><b>@BroadcastContext.Number(Player.Health) <small>HP</small></b><span>@BroadcastContext.Number(Player.Armor) ARM</span>
+        @if (Player.Helmet == true) { <span title="Helmet">HELM</span> } @if (Player.DefuseKit == true) { <span title="Defuse kit">KIT</span> }
+        @if (HasBomb) { <span title="Bomb carrier">BOMB</span> }
+        <span class="kda">@PlayerPresentation.Kda(Player)</span></div>
+    <Inventory Player="Player" />
+    <div class="player-round"><span>EQ @Equipment</span><span>RK @BroadcastContext.Number(Player.RoundKills)</span><span>DMG @BroadcastContext.Number(Player.RoundDamage)</span></div>
+    @if (PlayerPresentation.Conditions(Player) is { Length: > 0 } conditions) { <div class="player-conditions">@conditions</div> }
+    @if (Expanded)
+    {
+        <div class="advanced-stats"><span>ADR <b>@BroadcastContext.Decimal(Player.RecordedStats?.AverageDamagePerRound)</b></span><span>HS <b>@BroadcastContext.Decimal(Player.RecordedStats?.HeadshotPercentage)%</b></span><span>MVP @BroadcastContext.Number(Player.Stats?.Mvps)</span></div>
+        <p class="coverage">@BroadcastContext.Coverage(Player.RecordedStats)</p>
+    }
+    <div class="health-track" aria-hidden="true"><span style="@HealthWidth"></span></div>
+</article>
+@code {
+    [Parameter, EditorRequired] public PlayerState Player { get; set; } = null!;
+    [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter] public bool Expanded { get; set; }
+    private bool HasBomb => Context.Game?.Bomb?.PlayerSteamId is { } id && id == Player.SteamId && Context.Game.Bomb.State is BombStatus.Carried or BombStatus.Planting || PlayerPresentation.Weapons(Player).Any(weapon => weapon.Type == WeaponCategory.Bomb);
+    private string Money => Player.Money is { } value ? "$" + value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—";
+    private string Equipment => Player.EquipmentValue is { } value ? "$" + value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—";
+    private string HealthWidth => "width:" + (Player.Health is { } value ? Math.Clamp(value, 0, 100) : 0).ToString(System.Globalization.CultureInfo.InvariantCulture) + "%";
+}

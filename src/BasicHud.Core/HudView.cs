@@ -74,10 +74,16 @@ public sealed record HudView(SideView Ct, SideView T, string Map, string Round, 
 
     private static TimerView CreateTimer(GameState? game)
     {
-        if (game?.Bomb?.State is BombStatus.Defused or BombStatus.Exploded)
-            return new(game.Bomb.State == BombStatus.Defused ? "BOMB DEFUSED" : "BOMB EXPLODED", Time(game.Bomb.SecondsRemaining), true);
-        if (game?.Bomb is { State: BombStatus.Planted or BombStatus.Planting or BombStatus.Defusing } bomb)
-            return new(bomb.State switch { BombStatus.Defusing => "DEFUSING", BombStatus.Planting => "PLANTING", _ => "BOMB" }, Time(bomb.SecondsRemaining), true);
+        var bombState = game?.Bomb?.State is null or BombStatus.Unknown ? game?.RoundBomb : game.Bomb.State;
+        if (bombState is BombStatus.Defused or BombStatus.Exploded)
+            return new(bombState == BombStatus.Defused ? "BOMB DEFUSED" : "BOMB EXPLODED", Time(game?.Bomb?.SecondsRemaining), true);
+        if (bombState is BombStatus.Planted or BombStatus.Planting or BombStatus.Defusing)
+        {
+            var seconds = game?.Bomb?.SecondsRemaining;
+            if (seconds is null && (bombState == BombStatus.Planted && game?.Countdown?.Phase == CountdownPhase.Bomb ||
+                bombState == BombStatus.Defusing && game?.Countdown?.Phase == CountdownPhase.Defuse)) seconds = game.Countdown.SecondsRemaining;
+            return new(bombState switch { BombStatus.Defusing => "DEFUSING", BombStatus.Planting => "PLANTING", _ => "BOMB" }, Time(seconds), true);
+        }
         return new(game?.Countdown?.Phase switch
         {
             CountdownPhase.Warmup => "WARMUP",

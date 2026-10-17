@@ -1,0 +1,6 @@
+<section class="presentation postmatch-scene"><SceneHeader Title="Results" Context="Context" />
+    <MatchDuel Context="Context" />
+    @if (Context.SeriesWinner is { } winner) { <div class="series-winner">SERIES WINNER <strong>@winner</strong></div> }
+    <MapSeries Context="Context" /><h3>Current player statistics</h3><StatisticsTable Context="Context" />
+</section>
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

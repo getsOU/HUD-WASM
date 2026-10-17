@@ -1,0 +1,18 @@
+@if (Context.Match is { } match)
+{
+    <section class="map-series @(Compact ? "compact" : "")" aria-label="Map series">
+        @if (!Compact) { <h3>@($"Map series · BO{match.BestOf}")</h3> }
+        @if (match.Maps.Count == 0) { <p class="muted">No series maps supplied</p> }
+        <div class="map-list">@foreach (var map in match.Maps.OrderBy(map => map.Number))
+        {
+            <article class="map-item"><span class="map-number">@map.Number</span><strong title="@map.Name">@map.Name</strong><span class="map-state">@(map.Status?.ToString() ?? "Unknown")</span>
+                @if (map.ScoreA is not null || map.ScoreB is not null) { <b>@BroadcastContext.Number(map.ScoreA):@BroadcastContext.Number(map.ScoreB)</b> }
+                @if (map.WinnerTeamId is { } id) { <small>Winner: @Context.TeamName(id)</small> }
+            </article>
+        }</div>
+    </section>
+}
+@code {
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter] public bool Compact { get; set; }
+}

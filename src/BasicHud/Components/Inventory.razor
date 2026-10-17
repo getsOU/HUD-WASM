@@ -1,0 +1,12 @@
+<div class="inventory" aria-label="Inventory">
+    @if (PlayerPresentation.Weapons(Player).Count == 0) { <span class="muted">Inventory —</span> }
+    @foreach (var weapon in PlayerPresentation.Weapons(Player))
+    {
+        <span class="weapon-item @(weapon.State is WeaponStatus.Active or WeaponStatus.Reloading ? "active" : "")" title="@(weapon.State?.ToString() ?? "Unknown state")">
+            @BroadcastContext.WeaponName(weapon)
+            @if (weapon.AmmoClip is not null || weapon.AmmoReserve is not null) { <small>@BroadcastContext.Number(weapon.AmmoClip)/@BroadcastContext.Number(weapon.AmmoReserve)</small> }
+            @if (weapon.State == WeaponStatus.Reloading) { <small>RELOAD</small> }
+        </span>
+    }
+</div>
+@code { [Parameter, EditorRequired] public PlayerState Player { get; set; } = null!; }

@@ -1,0 +1,4 @@
+<section class="presentation break-scene"><SceneHeader Title="We'll be right back" Context="Context" />
+    <MatchDuel Context="Context" /><div class="break-clock"><span>PLANNED MATCH START</span><strong>@Context.StartCountdown</strong></div><MapSeries Context="Context" />
+</section>
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

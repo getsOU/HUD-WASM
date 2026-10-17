@@ -1,1 +1,38 @@
-{"id":"sou-basic-wasm","version":"0.1.2","name":"sOU Basic HUD (WASM)","apiVersion":2,"runtime":"blazor-wasm","entryPoint":"index.html"}
+{
+  "id": "sou-basic-wasm",
+  "version": "0.2.0",
+  "name": "sOU Basic HUD (WASM)",
+  "apiVersion": 2,
+  "runtime": "blazor-wasm",
+  "entryPoint": "index.html",
+  "subviews": [
+    {
+      "name": "Prematch",
+      "route": "views/prematch"
+    },
+    {
+      "name": "Lineups",
+      "route": "views/lineups"
+    },
+    {
+      "name": "Veto",
+      "route": "views/veto"
+    },
+    {
+      "name": "Break",
+      "route": "views/break"
+    },
+    {
+      "name": "Postmatch",
+      "route": "views/postmatch"
+    },
+    {
+      "name": "Statistics",
+      "route": "views/statistics"
+    },
+    {
+      "name": "Spotlight",
+      "route": "views/spotlight"
+    }
+  ]
+}

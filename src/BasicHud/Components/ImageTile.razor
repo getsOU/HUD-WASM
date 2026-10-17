@@ -1,0 +1,18 @@
+@if (!failed && !string.IsNullOrWhiteSpace(Source))
+{
+    <img class="local-image @Class" src="@Source" alt="@Label" @onerror="ImageFailed" />
+}
+else
+{
+    <span class="monogram @Class" aria-label="@Label">@Initial</span>
+}
+@code {
+    [Parameter] public string? Source { get; set; }
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public string Class { get; set; } = "";
+    private string? previous;
+    private bool failed;
+    private string Initial => string.IsNullOrWhiteSpace(Label) || Label == "—" ? "?" : System.Globalization.StringInfo.GetNextTextElement(Label.Trim()).ToUpperInvariant();
+    protected override void OnParametersSet() { if (previous != Source) { failed = false; previous = Source; } }
+    private void ImageFailed() => failed = true;
+}

@@ -1,0 +1,9 @@
+<div class="branding">
+    @if (Context.ResolveMedia(Context.Text("branding", "logo")) is { } logo) { <ImageTile Source="@logo" Label="Broadcast logo" Class="broadcast-logo" /> }
+    @if (Context.Match?.Competition is { } competition)
+    {
+        @if (Context.ResolveMedia(competition.Logo) is { } image) { <ImageTile Source="@image" Label="@competition.Name" Class="competition-logo" /> }
+        <span class="competition-name" title="@Context.Competition">@Context.Competition</span>
+    }
+</div>
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

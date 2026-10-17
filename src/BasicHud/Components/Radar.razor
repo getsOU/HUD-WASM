@@ -1,0 +1,31 @@
+<section class="radar-widget" aria-label="Radar positions">
+    <svg viewBox="0 0 100 100" role="img" aria-label="@View.Label">
+        <rect width="100" height="100" class="radar-surface" />
+        @if (View.Overview is { } image) { <image href="@image" width="100" height="100" preserveAspectRatio="none" @onerror="() => OverviewFailed.InvokeAsync(image)" /> }
+        <path d="M0 25H100 M0 50H100 M0 75H100 M25 0V100 M50 0V100 M75 0V100" class="radar-grid" />
+        @foreach (var marker in View.Markers)
+        {
+            <g class="radar-marker @PlayerPresentation.SideClass(marker.Side) @marker.Kind" @key="marker.Key">
+                <title>@marker.Label @(marker.Dead ? "dead" : "")</title>
+                @if (marker.Dead)
+                {
+                    <path d="@Cross(marker.X, marker.Y)" class="death-marker" />
+                }
+                else
+                {
+                    @if (marker.Angle is { } angle) { <line x1="@F(marker.X)" y1="@F(marker.Y)" x2="@F(marker.X + Math.Cos(angle * Math.PI / 180) * 5)" y2="@F(marker.Y + Math.Sin(angle * Math.PI / 180) * 5)" class="direction" /> }
+                    <circle cx="@F(marker.X)" cy="@F(marker.Y)" r="@(marker.Kind is "grenade" or "flame" ? "1.5" : "2.6")" />
+                    <foreignObject x="@F(marker.X - 2)" y="@F(marker.Y - 2)" width="4" height="4"><div class="radar-digit" xmlns="http://www.w3.org/1999/xhtml">@(marker.Kind is "grenade" or "flame" ? "" : marker.Label)</div></foreignObject>
+                }
+            </g>
+        }
+    </svg>
+    <div class="radar-label">@View.Label</div>
+    @if (View.Markers.Count == 0) { <p class="radar-empty">Waiting for positions</p> }
+</section>
+@code {
+    [Parameter] public RadarView View { get; set; } = new("Relative world positions · no map", null, []);
+    [Parameter] public EventCallback<string> OverviewFailed { get; set; }
+    private static string F(double value) => value.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
+    private static string Cross(double x, double y) => $"M{F(x - 1.6)} {F(y - 1.6)}L{F(x + 1.6)} {F(y + 1.6)}M{F(x + 1.6)} {F(y - 1.6)}L{F(x - 1.6)} {F(y + 1.6)}";
+}
