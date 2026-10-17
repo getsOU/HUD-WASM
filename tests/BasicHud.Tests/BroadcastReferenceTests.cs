@@ -13,6 +13,12 @@ static class BroadcastReferenceTests
         var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
         var webroot = Path.Combine(root, "src/BasicHud/wwwroot");
         check(File.ReadAllText(Path.Combine(root, "LICENSES/valve-assets.json")) == File.ReadAllText(Path.Combine(webroot, "assets/valve-assets.json")), "packaged license provenance matches the actual original game asset inventory");
+        using var optical = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "docs/cs2-icon-geometry.json")));
+        var geometry = optical.RootElement.GetProperty("icons").EnumerateArray().ToArray();
+        var expectedIcons = new[] { "weapons", "ui", "killfeed" }.SelectMany(folder => Directory.GetFiles(Path.Combine(webroot, "assets", folder), "*.svg").Select(file => folder + "/" + Path.GetFileNameWithoutExtension(file))).ToHashSet(StringComparer.Ordinal);
+        check(geometry.Length == expectedIcons.Count && geometry.Select(icon => icon.GetProperty("key").GetString()!).ToHashSet(StringComparer.Ordinal).SetEquals(expectedIcons), "optical geometry covers every original game SVG without extra paths or duplicate identities");
+        check(geometry.All(icon => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(webroot, "assets", icon.GetProperty("key").GetString()! + ".svg")))).ToLowerInvariant() == icon.GetProperty("sha256").GetString()), "optical measurements remain bound to the exact original SVG bytes");
+        check(geometry.Where(icon => !icon.TryGetProperty("empty", out _)).All(icon => icon.GetProperty("x").GetDouble() >= 0 && icon.GetProperty("y").GetDouble() >= 0 && icon.GetProperty("width").GetDouble() > 0 && icon.GetProperty("height").GetDouble() > 0 && icon.GetProperty("x").GetDouble() + icon.GetProperty("width").GetDouble() <= 1.000001 && icon.GetProperty("y").GetDouble() + icon.GetProperty("height").GetDouble() <= 1.000001), "optical viewports contain the measured visible source geometry");
         var json = File.ReadAllText(Path.Combine(webroot, "assets/boltobserv/catalog.json"));
         var catalog = BoltRadarCatalog.Bind(JsonSerializer.Deserialize(json, RadarCatalogJson.Default.BoltRadarDocument));
         var dust = catalog.Find("de_dust2")!;

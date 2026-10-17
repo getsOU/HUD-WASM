@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.5
+
+- Balance visible original SVG contours instead of forcing different shapes into equal square boxes.
+- Align utility on a common baseline with consistent spacing and count placement.
+- Append new kills at the bottom; retain six newest events in chronological order.
+
+
 ## 0.4.4
 
 - Use original CS2 SVGs consistently for status, equipment, killfeed and round results. Add original clock and rescued-hostage artwork.

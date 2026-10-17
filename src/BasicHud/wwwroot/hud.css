@@ -1,7 +1,8 @@
+@import url("icon-layout.css");
 :root {
   font-family: "Segoe UI", Arial, sans-serif;
   color: #f5f5f7;
-  --icon-size: min(.833333vw, 1.481481vh);
+  --utility-height: min(.833333vw, 1.481481vh);
   --ct: #79c7ff;
   --t: #ffb065;
   --surface: rgb(12 19 28 / 93%);
@@ -20,8 +21,10 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .monogram { display: inline-grid; place-items: center; color: #c6d0dc; background: #293342; font-weight: 700; flex-shrink: 0; }
 .team-logo { width: 1.8em; height: 1.8em; flex-shrink: 0; }
 .portrait { width: 2.1em; height: 2.1em; object-fit: cover; border-radius: .15em; }
-.equipment-icon { display: inline-block; width: 2.5em; height: 1.2em; object-fit: contain; vertical-align: middle; flex-shrink: 0; filter: brightness(0) invert(1); }
-.status-icon { display: inline-block; width: var(--icon-size); height: var(--icon-size); object-fit: contain; vertical-align: middle; flex: 0 0 auto; filter: brightness(0) invert(1); }
+.cs2-icon { display: inline-block; position: relative; width: min(calc(var(--icon-height) * var(--icon-aspect, 1)), var(--icon-max-width, 9999px)); height: auto; aspect-ratio: var(--icon-aspect, 1); overflow: hidden; flex: 0 0 auto; vertical-align: middle; filter: brightness(0) invert(1); }
+.cs2-icon > .icon-source { position: absolute; display: block; left: var(--icon-image-left, 0%); top: var(--icon-image-top, 0%); width: var(--icon-image-width, 100%); height: var(--icon-image-height, 100%); max-width: none; border: 0; }
+.equipment-icon { --icon-height: 1em; --icon-max-width: 2.8em; }
+.status-icon { --icon-height: .75em; }
 .icon-label { display: inline-block; max-width: 7em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .7em; vertical-align: middle; }
 .observer-slot { display: inline-grid; place-items: center; width: 1.5em; height: 1.5em; background: #2a394b; font-weight: 700; color: #e5edf6; flex-shrink: 0; }
 .player-name { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
@@ -31,10 +34,11 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .health-track { position: absolute; left: 0; bottom: 0; width: 100%; height: .13em; background: #253242; }
 .health-track span { display: block; height: 100%; background: var(--side, #b6c1ce); }
 .player-equipment { display: inline-flex; align-items: center; gap: .15em; color: #d8e3ee; }
-.utility-icons { display: inline-flex; align-items: center; gap: .12em; min-width: 0; }
-.utility-item { position: relative; display: inline-flex; align-items: center; }
-.utility-item .equipment-icon { width: calc(var(--icon-size) * .75); height: calc(var(--icon-size) * 1.125); }
-.utility-item small { font-size: .66em; font-weight: 700; margin-left: -.2em; align-self: flex-end; }
+.utility-icons { display: inline-flex; align-items: flex-end; gap: calc(var(--utility-height) * .25); height: var(--utility-height); min-width: 0; }
+.utility-item { position: relative; display: inline-flex; align-items: flex-end; height: var(--utility-height); flex: 0 0 auto; }
+.utility-item.has-count { padding-right: .45em; }
+.utility-item .equipment-icon { --icon-height: var(--utility-height); --icon-max-width: 9999px; }
+.utility-item small { position: absolute; right: 0; bottom: -.1em; font-size: .65em; font-weight: 700; line-height: 1; text-shadow: 0 0 .2em #000; }
 
 /* Fixed 1920 x 1080 live composition. All measurements scale with the canvas. */
 .scoreboard { position: absolute; left: 25%; top: 2.222222%; width: 50%; height: 6.666667%; text-align: center; }
@@ -56,7 +60,7 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .scene-live > .round-history { position: absolute; top: 9.62963%; left: 37.5%; width: 25%; height: 3.333333%; gap: .25em; overflow: hidden; }
 .history-round { width: 1.55em; height: 1.875em; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .12em; padding: .15em; background: var(--surface); color: var(--side,#bdcbdc); border-bottom: .1em solid var(--side); flex-shrink: 1; }
 .history-round small { font-size: .55em; color: #d2dbe6; line-height: 1; }
-.history-round .status-icon { width: var(--icon-size); height: var(--icon-size); }
+.history-round .status-icon { --icon-height: .75em; }
 .round-message { position: absolute; left: 37.5%; top: 13.518519%; width: 25%; height: 1.1em; background: var(--surface); text-align: center; font-size: .625em; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .roster { position: absolute; top: 68.333333%; width: 16.25%; height: 29.444444%; overflow: hidden; }
@@ -77,7 +81,7 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .live-armor { color: #b1bfd0; }
 .live-player-bottom { gap: .24em; }
 .live-player-bottom .money { font-size: .59em; width: 3.9em; flex-shrink: 0; }
-.live-player-bottom .active-weapon { width: 2.8em; height: .95em; }
+.live-player-bottom .active-weapon { --icon-height: .9em; --icon-max-width: 2.8em; }
 .live-player-bottom .utility-icons { font-size: .68em; flex-shrink: 1; overflow: hidden; }
 .live-player-bottom .player-equipment { font-size: .63em; }
 .live-player-bottom .kda { margin-left: auto; font-size: .55em; }
@@ -91,7 +95,7 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .observed-identity .portrait { width: 1.5em; height: 1.5em; }
 .observed-identity .player-name { font-size: 1em; flex: 1; }
 .observed-vitals { display: inline-flex; align-items: center; gap: .3em; color: var(--side); font-size: .8em; }
-.observed-weapon { width: 3em; height: 1.3em; }
+.observed-weapon { --icon-height: 1em; --icon-max-width: 3em; }
 .observed-weapon-name { font-size: .68em; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .observed-loadout .ammo { font-size: 1em; margin-left: auto; white-space: nowrap; }
 .observed-loadout .utility-icons, .observed-loadout .player-equipment { font-size: .75em; }
@@ -130,14 +134,14 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .radar-marker.flash .radar-effect { fill: #fff9; stroke: #fc9f2d; }
 .radar-marker .unknown-projectile { fill: var(--radar-side,#ddd); stroke: #101821; stroke-width: .25; }
 .radar-bomb { width: 100%; height: 100%; color: #ff8200; filter: drop-shadow(0 0 .3px #000); }
-.radar-bomb .status-icon { width: 100%; height: 100%; }
+.radar-bomb .status-icon { --icon-height: 4px; --icon-max-width: 4px; }
 .radar-bomb.defused { color: #5ab8f4; opacity: .65; }
 .radar-unavailable { position: absolute; left: 0; right: 0; bottom: 0; padding: .3em; background: rgb(12 19 28 / 85%); color: #d0dae6; font-size: .53em; text-align: center; }
 .killfeed { position: absolute; left: 81.25%; top: 2.962963%; width: 17.5%; max-height: 16.666667%; display: flex; flex-direction: column; align-items: flex-end; gap: .12em; overflow: hidden; }
 .kill-event { display: flex; align-items: center; justify-content: flex-end; max-width: 100%; height: 1.45em; padding: .2em .4em; gap: .3em; background: var(--surface); border-right: .12em solid #b6c6d9; }
 .kill-event > span:not(.kill-flags) { min-width: 0; max-width: 8em; font-size: .65em; color: var(--side,#e0e5ec); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .kill-event > small { max-width: 5em; min-width: 0; font-size: .55em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.kill-weapon { width: 2.8em; height: var(--icon-size); }
+.kill-weapon { --icon-height: .7em; --icon-max-width: 2.8em; }
 .kill-flags { display: inline-flex; align-items: center; gap: .1em; font-size: .65em; }
 
 .branding { display: flex; align-items: center; gap: .6em; color: #d2dce8; font-size: .67em; min-width: 0; width: fit-content; max-width: 100%; padding: .5em .7em; background: rgb(13 20 30 / 94%); border: 1px solid #344357; }
@@ -268,3 +272,12 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .radar-widget.is-unavailable { height: auto; }
 .radar-unavailable { position: static; font-size: .64em; padding: .45em; }
 .bolt-flash { width: 100%; height: 100%; background: #fff; clip-path: polygon(15% 8%,40% 25%,50% 0%,60% 25%,85% 8%,74% 35%,100% 36%,78% 50%,100% 70%,72.5% 67%,77.5% 92.5%,60% 75%,50% 100%,40% 75%,22.5% 92.5%,27.5% 67%,0% 70%,22% 50%,0% 36%,26% 35%); box-shadow: inset 0 0 0 1.2px #fc9f2d,inset 0 0 3.5px #fea130; }
+
+.live-hp .status-icon, .live-armor .status-icon, .observed-vitals .status-icon { --icon-height: 1em; }
+.player-equipment .status-icon { --icon-height: 1em; }
+.roster-economy .status-icon, .kill-flags .status-icon { --icon-height: 1em; }
+
+.live-player-bottom { align-items: flex-end; }
+.live-player-bottom .utility-icons { --utility-height: min(.729167vw, 1.296296vh); }
+.observed-loadout { align-items: flex-end; }
+.radar-bomb { display: flex; align-items: center; justify-content: center; }

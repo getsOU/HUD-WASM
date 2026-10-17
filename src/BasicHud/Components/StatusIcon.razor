@@ -1,6 +1,6 @@
 @if (Cs2Icons.Status(Name) is { } source && failed != source)
 {
-    <img class="status-icon @Class" src="@($"assets/{source}.svg")" alt="@Label" aria-label="@Label" title="@Label" data-cs2-icon="@source" @onerror="() => failed = source" />
+    <span class="cs2-icon status-icon @Class" data-icon="@source" title="@Label"><img class="icon-source" src="@($"assets/{source}.svg")" alt="@Label" aria-label="@Label" data-cs2-icon="@source" @onerror="() => failed = source" /></span>
 }
 else
 {

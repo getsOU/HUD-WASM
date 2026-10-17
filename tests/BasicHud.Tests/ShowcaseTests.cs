@@ -98,6 +98,13 @@ static class ShowcaseTests
         check(kills.Project(Snapshot(game with { KillFeed = [kill] }), now.AddSeconds(9)).Count == 0, "replayed kill snapshots do not restart their visible lifetime");
         check(kills.Project(Snapshot(game with { Map = "new-map", KillFeed = [] }), now).Count == 0, "map reset removes previous kill state");
 
+        var orderedKills = new KillFeedProjection();
+        var events = Enumerable.Range(1, 7).Select(i => kill with { Id = i, GameTimeSeconds = 100 + i }).ToArray();
+        check(orderedKills.Project(Snapshot(game with { KillFeed = [events[2], events[0], events[1]] }), now).Select(item => item.Event.Id).SequenceEqual(new long[] { 1, 2, 3 }), "killfeed places older kills above new kills, even when a frame arrives unordered");
+        check(orderedKills.Project(Snapshot(game with { KillFeed = [.. events] }), now.AddMilliseconds(100)).Select(item => item.Event.Id).SequenceEqual(new long[] { 2, 3, 4, 5, 6, 7 }), "seventh kill appends at the bottom and evicts the oldest top row");
+        check(orderedKills.Project(Snapshot(game with { KillFeed = [.. events] }), now.AddSeconds(9)).Count == 0, "repeated chronological frames do not renew kill lifetime");
+        check(orderedKills.Project(Snapshot(game with { KillFeed = [kill with { Epoch = 2 }] }), now.AddSeconds(10)).Single().Event.Id == 1, "new epoch permits a restarted event ID without retaining old kills");
+
         var feed = new TestFeed();
         await using (var hud = new HudSession(feed))
         {

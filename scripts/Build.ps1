@@ -21,6 +21,7 @@ function Invoke-Dotnet([string[]]$Arguments) {
 
 Push-Location $repo
 try {
+    & (Join-Path $PSScriptRoot 'Generate-IconLayout.ps1') -Check
     Invoke-Dotnet @('restore', 'src/BasicHud/BasicHud.csproj', '--configfile', 'NuGet.Config', '--locked-mode')
     Invoke-Dotnet @('restore', 'tests/BasicHud.Tests/BasicHud.Tests.csproj', '--configfile', 'NuGet.Config', '--locked-mode')
     Invoke-Dotnet @('tool', 'restore', '--configfile', 'NuGet.Config')

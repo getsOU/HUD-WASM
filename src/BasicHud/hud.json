@@ -1,6 +1,6 @@
 {
   "id": "sou-basic-wasm",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "name": "sOU Broadcast HUD (WASM)",
   "apiVersion": 2,
   "runtime": "blazor-wasm",

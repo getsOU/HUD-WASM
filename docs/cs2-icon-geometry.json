@@ -1,0 +1,1161 @@
+{
+  "schemaVersion": 1,
+  "description": "Rendered bounds of original CS2 SVG geometry, normalized to the unchanged source viewport. Empty assets have no artwork. Source hashes prevent stale optical sizing.",
+  "icons": [
+    {
+      "height": 0.7985312938690186,
+      "key": "weapons/ak47",
+      "sourceHeight": 32,
+      "sourceWidth": 88.5,
+      "width": 0.9905875685524804,
+      "x": 0.007536721094853461,
+      "y": 0.13846874237060547,
+      "sha256": "d0f98522d69a90d2dae644e29e114e9520ec7186e0cd462f1541ab0ef3289bfe"
+    },
+    {
+      "height": 0.7070937156677246,
+      "key": "weapons/ammobox",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.96303129196167,
+      "x": 0.01653146743774414,
+      "y": 0.14153122901916504,
+      "sha256": "e2b141da4f8a74b1bb09a57ec97ded1fd15deab20cf09486db9f4286f71555e0"
+    },
+    {
+      "height": 0.7421278953552246,
+      "key": "weapons/ammobox_threepack",
+      "sourceHeight": 32,
+      "sourceWidth": 39.828125,
+      "width": 0.9669370954295802,
+      "x": 0.018627862642212632,
+      "y": 0.11529707908630372,
+      "sha256": "dd91da50e8c523cabb6e7541ad257ce789d97c4db066e541dad65d95ccb3bcaf"
+    },
+    {
+      "height": 0.9894679188728333,
+      "key": "weapons/armor",
+      "sourceHeight": 32,
+      "sourceWidth": 26,
+      "width": 0.9993497408353366,
+      "x": 0.00031691331129807694,
+      "y": 0.005281269550323486,
+      "sha256": "57e008aba6c52c6f8dc61f78599932072ec2f2101dcab754f75e7f0ac7d6d711"
+    },
+    {
+      "height": 0.9894991517066956,
+      "key": "weapons/armor_helmet",
+      "sourceHeight": 32,
+      "sourceWidth": 48.75,
+      "width": 1,
+      "x": 0,
+      "y": 0.005281269550323486,
+      "sha256": "bd10d6837ee1f23ab505c68aacf93e0d6dbd4b6c6021ccbd9325ac740b4881d0"
+    },
+    {
+      "height": 0.9906566619873048,
+      "key": "weapons/assaultsuit",
+      "sourceHeight": 40,
+      "sourceWidth": 58,
+      "width": 0.9918591729525862,
+      "x": 0,
+      "y": 0,
+      "sha256": "5763538a7a5fc0ecb8adb059ea6f81b79bf211b6039f9f2327493468cd62772a"
+    },
+    {
+      "height": 0.9906566619873048,
+      "key": "weapons/assaultsuit_helmet_only",
+      "sourceHeight": 40,
+      "sourceWidth": 58,
+      "width": 0.9918602252828664,
+      "x": 0,
+      "y": 0,
+      "sha256": "61a827021257dabfc335afb07e3dce963d366ffcec5ff474947ade25ccce31d4"
+    },
+    {
+      "height": 0.9713444709777832,
+      "key": "weapons/aug",
+      "sourceHeight": 32,
+      "sourceWidth": 75.828125,
+      "width": 0.9857524099139708,
+      "x": 0.008801538674531218,
+      "y": 0.020249366760253903,
+      "sha256": "145aa54e61b616544e86ec895ba303c7a6480a197c6176a07265f5f234b5bc52"
+    },
+    {
+      "height": 0.6437535285949707,
+      "key": "weapons/awp",
+      "sourceHeight": 32,
+      "sourceWidth": 109.5,
+      "width": 1,
+      "x": 0,
+      "y": 0.1510624885559082,
+      "sha256": "21e1c6ccbef3a93bc5e984587fa97a0de64417646a48a789864d0e5731a625d6"
+    },
+    {
+      "height": 0.6139373779296875,
+      "key": "weapons/bayonet",
+      "sourceHeight": 32,
+      "sourceWidth": 92,
+      "width": 0.9974133035411006,
+      "x": 0.0025866964588994565,
+      "y": 0.19303131103515625,
+      "sha256": "2dfdb1d3e1e2f9f3374d49cd7589b4fc450cfc91111e0670d5739327e82d2a86"
+    },
+    {
+      "height": 0.8568124771118164,
+      "key": "weapons/bizon",
+      "sourceHeight": 32,
+      "sourceWidth": 90,
+      "width": 0.9953111436631944,
+      "x": 0,
+      "y": 0.06087493896484375,
+      "sha256": "ae6259ba48323e132d37a2df13d162101898c35b3a1873e1b8913c8c193f9905"
+    },
+    {
+      "height": 1,
+      "key": "weapons/c4",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.75,
+      "x": 0.125,
+      "y": 0,
+      "sha256": "4ccfa5c0b98f54e3815f92779814d5ef3ddb6f01d2f3ccebd049372efb2ee310"
+    },
+    {
+      "height": 0.9123592376708984,
+      "key": "weapons/clothing_hands",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.9999997615814208,
+      "x": 0,
+      "y": 0.0625,
+      "sha256": "f3f30a156fdd1d25d081a89c91b1c5531aa169b3258c69e9583388835406c48a"
+    },
+    {
+      "height": 0.9708738327026368,
+      "key": "weapons/customplayer",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.4518842697143554,
+      "x": 0.3032722473144531,
+      "y": 0.01171875,
+      "sha256": "b315b00a57f83675312466bc5cc46d9795d4948322a369632bb430f4386a2abe"
+    },
+    {
+      "height": 0.925405502319336,
+      "key": "weapons/cz75a",
+      "sourceHeight": 32,
+      "sourceWidth": 47.875,
+      "width": 0.9917285411227154,
+      "x": 0.004323775089751959,
+      "y": 0.04006290435791016,
+      "sha256": "bc0fdaf5d7806adca94a9d4224d73d4819a6966ec989570682ffa62febcff89b"
+    },
+    {
+      "height": 0.8854808807373047,
+      "key": "weapons/deagle",
+      "sourceHeight": 32,
+      "sourceWidth": 50.75,
+      "width": 0.9956848445197044,
+      "x": 0.0031918680726600985,
+      "y": 0.05818748474121094,
+      "sha256": "5ab139d7151ceaa530deb352a08146ce625ce5a9f0fcf1b8554c57c42999b950"
+    },
+    {
+      "height": 0.9999961853027344,
+      "key": "weapons/decoy",
+      "sourceHeight": 32,
+      "sourceWidth": 30,
+      "width": 0.9404337565104168,
+      "x": 0.027787272135416662,
+      "y": 0.000003814697265625,
+      "sha256": "2d49015e12f7ad1217d89509fedd5801e0103c646a22d144509004147a3b67b0"
+    },
+    {
+      "height": 1,
+      "key": "weapons/defuser",
+      "sourceHeight": 32,
+      "sourceWidth": 36,
+      "width": 0.9961005316840278,
+      "x": 0,
+      "y": 0,
+      "sha256": "9810a89c92279b7eeeb1837d16a0a9a7a782114fb8e23aeb5d48872146bdf3be"
+    },
+    {
+      "height": 0.8173411976207386,
+      "key": "weapons/disconnect",
+      "sourceHeight": 33,
+      "sourceWidth": 32,
+      "width": 0.9999996423721312,
+      "x": 0,
+      "y": 0.0917376893939394,
+      "sha256": "910f6f369d70b385fb5f9cf1aaa98624035459181934fb7e30ac24cd45fb6f03"
+    },
+    {
+      "height": 0.8934555053710938,
+      "key": "weapons/dronegun",
+      "sourceHeight": 32,
+      "sourceWidth": 39.390625,
+      "width": 0.9090723857100356,
+      "x": 0.03839622173740579,
+      "y": 0.07796669006347656,
+      "sha256": "6a71bec1b76dca85e5307e2a909e47ab4c2b41385a544cae397d11e0892787f4"
+    },
+    {
+      "height": 0.7167186737060547,
+      "key": "weapons/elite",
+      "sourceHeight": 32,
+      "sourceWidth": 68.25,
+      "width": 0.9934945019173534,
+      "x": 0.003560607686584249,
+      "y": 0.1451873779296875,
+      "sha256": "f8e43a50d1b21bc30843c61b543bd965d108010d5f4998e6ffa44a9f96b3630f"
+    },
+    {
+      "height": 0.8722171783447266,
+      "key": "weapons/famas",
+      "sourceHeight": 32,
+      "sourceWidth": 77.828125,
+      "width": 0.9874938830054206,
+      "x": 0.004201120507930135,
+      "y": 0.06387615203857422,
+      "sha256": "ba5d5bed81d8efd6fcd049d8400c5a78a587a9f62f0585910b4cff593d8030ec"
+    },
+    {
+      "height": 0.8478813171386719,
+      "key": "weapons/firebomb",
+      "sourceHeight": 32,
+      "sourceWidth": 18.828125,
+      "width": 0.9784880705394192,
+      "x": 0.000006483402489626556,
+      "y": 0.13000202178955078,
+      "sha256": "c552e3193d26445e2811bb69ddbd55c64caa3e9a9cc7fbf9324beff8cb9e12a4"
+    },
+    {
+      "height": 0.8640823364257812,
+      "key": "weapons/fiveseven",
+      "sourceHeight": 32,
+      "sourceWidth": 39,
+      "width": 0.9906663161057692,
+      "x": 0,
+      "y": 0.06535530090332031,
+      "sha256": "7b9aa3b6fdb84329a43e537dff69275b224d548cbd73e7eb1272fa973322dcda"
+    },
+    {
+      "height": 1,
+      "key": "weapons/flair0",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.756165623664856,
+      "x": 0.125,
+      "y": 0,
+      "sha256": "c3eb9e115820a081d46fdb738cea10aaf28b2a08dd182b776456ef3491811ee6"
+    },
+    {
+      "height": 0.9999961853027344,
+      "key": "weapons/flashbang",
+      "sourceHeight": 32,
+      "sourceWidth": 30,
+      "width": 0.979755147298177,
+      "x": 0.007691446940104167,
+      "y": 0.000003814697265625,
+      "sha256": "bccb65a3452c6695a342654566510e6f20352d4449740ad477c2a4eeea3d3645"
+    },
+    {
+      "height": 0.724239948300843,
+      "key": "weapons/flashbang_assist",
+      "sourceHeight": 29.65625,
+      "sourceWidth": 30.875,
+      "width": 0.9595191121584008,
+      "x": 0.02025872975708502,
+      "y": 0.2543847553345627,
+      "sha256": "d539c69c5124a692478f1ae52c566663c88a1615dd909a96a73773f55d9342d0"
+    },
+    {
+      "height": 0.762507438659668,
+      "key": "weapons/g3sg1",
+      "sourceHeight": 32,
+      "sourceWidth": 93.25,
+      "width": 0.9881680158763404,
+      "x": 0.00804289544235925,
+      "y": 0.11682796478271484,
+      "sha256": "a4806843e5010f9cdf6349b58998a976703ec65d44b0862ddaf78673609d583a"
+    },
+    {
+      "height": 0.787938117980957,
+      "key": "weapons/galilar",
+      "sourceHeight": 32,
+      "sourceWidth": 90.25,
+      "width": 0.981409469139543,
+      "x": 0.007089546182479224,
+      "y": 0.12318706512451172,
+      "sha256": "935b679077b5a6ea4264e66541260fb905a058f5b999e82191b79e1d94452c56"
+    },
+    {
+      "height": 0.8646078109741211,
+      "key": "weapons/glock",
+      "sourceHeight": 32,
+      "sourceWidth": 44.875,
+      "width": 0.9863634879874652,
+      "x": 0.005503024895543176,
+      "y": 0.06865596771240234,
+      "sha256": "0ca4c81b4888d84e54e699cc4831a69992005e246dc24ffb9aa52cade6133692"
+    },
+    {
+      "height": 0.9392688320768484,
+      "key": "weapons/grenadepack",
+      "sourceHeight": 32.125,
+      "sourceWidth": 37.625,
+      "width": 0.9049301400929194,
+      "x": 0.09506975851977782,
+      "y": 0.03308912937743191,
+      "sha256": "3d31e8e3cd3c275de9c942f0f5f2f3a4e619c231a10ed50e3a9ac2214526b6bd"
+    },
+    {
+      "height": 0.8759765625,
+      "key": "weapons/grenadepack2",
+      "sourceHeight": 32.125,
+      "sourceWidth": 32.03125,
+      "width": 0.843674256859756,
+      "x": 0.07056354801829268,
+      "y": 0.08571140868190662,
+      "sha256": "1f877adcb33effad2203ae660cdfaa8512984f074858e1558a906f976535b673"
+    },
+    {
+      "height": 1,
+      "key": "weapons/healthshot",
+      "sourceHeight": 32,
+      "sourceWidth": 44,
+      "width": 0.9998522671786222,
+      "x": 0,
+      "y": 0,
+      "sha256": "340dd961ee5096e41860e1d3bc065043ccfdafb1b36c311522ce00b1823397ec"
+    },
+    {
+      "height": 0.999990463256836,
+      "key": "weapons/heavy_armor",
+      "sourceHeight": 32,
+      "sourceWidth": 48.75,
+      "width": 0.9521697215544872,
+      "x": 0.02733623798076923,
+      "y": 0.0000095367431640625,
+      "sha256": "22d52bb8f084aede00bad522c532d71f74d89137abef62d783699477b2fdfd1d"
+    },
+    {
+      "height": 0.9696988192471592,
+      "key": "weapons/hegrenade",
+      "sourceHeight": 33,
+      "sourceWidth": 25,
+      "width": 0.9618115234375,
+      "x": 0.035107421875,
+      "y": 0.013829086766098484,
+      "sha256": "8c33330ea8db7626d62fd6cd60139e2242be9e4b5adde54a5d43a967c462e479"
+    },
+    {
+      "height": 0.6508235931396484,
+      "key": "weapons/helmet",
+      "sourceHeight": 32,
+      "sourceWidth": 19.75,
+      "width": 0.9869400217563292,
+      "x": 0.006533079509493671,
+      "y": 0.1745929718017578,
+      "sha256": "23eb286e7922483ea7e1d3925faafa698f55f095888801b4d9742bf97ea6c529"
+    },
+    {
+      "height": 0.7574291229248047,
+      "key": "weapons/hkp2000",
+      "sourceHeight": 32,
+      "sourceWidth": 32.15625,
+      "width": 0.9979320114625092,
+      "x": 0,
+      "y": 0.12724685668945312,
+      "sha256": "66fe96c04579615f3491d662770511785d57557c2bcc21ac81dddfc0ba65238a"
+    },
+    {
+      "height": 1,
+      "key": "weapons/incgrenade",
+      "sourceHeight": 32,
+      "sourceWidth": 15,
+      "width": 0.956427001953125,
+      "x": 0,
+      "y": 0,
+      "sha256": "7c87dec72d1c0c622ba248fa88a6cd75f91671086a995e6a72201c9404a205d2"
+    },
+    {
+      "height": 0.7895180885529157,
+      "key": "weapons/inferno",
+      "sourceHeight": 28.9375,
+      "sourceWidth": 30.078125,
+      "width": 0.8177993100649351,
+      "x": 0.09099330357142855,
+      "y": 0.10282380534557237,
+      "sha256": "80d8a8d339b5fd2560705c0410f7c74101279a4fba9186e86712adcfcb3cd229"
+    },
+    {
+      "height": 0.9894676208496094,
+      "key": "weapons/kevlar",
+      "sourceHeight": 32,
+      "sourceWidth": 26,
+      "width": 0.9993497408353366,
+      "x": 0.00031691331129807694,
+      "y": 0.0052814483642578125,
+      "sha256": "77a0cbfea4fdd74bf0cf2785f4f373291c2a67de2d775326cf9087c0ec8c377e"
+    },
+    {
+      "height": 0.5495891571044922,
+      "key": "weapons/knife",
+      "sourceHeight": 32,
+      "sourceWidth": 76.828125,
+      "width": 0.996459985763677,
+      "x": 0,
+      "y": 0.2252368927001953,
+      "sha256": "865edd79e600f5812dbaf910438af1f4ca2fb74a75fa815cc00d95802de25185"
+    },
+    {
+      "height": 0.68499755859375,
+      "key": "weapons/knifegg",
+      "sourceHeight": 32,
+      "sourceWidth": 95.5625,
+      "width": 0.9986600208469588,
+      "x": 0,
+      "y": 0.1458454132080078,
+      "sha256": "e06db25069dcd0373c83cc919b367aeec5c236ad82ebf6cd17bdbc8261e6b012"
+    },
+    {
+      "height": 0.6310939788818359,
+      "key": "weapons/knife_bowie",
+      "sourceHeight": 32,
+      "sourceWidth": 100.5,
+      "width": 0.9952437367605332,
+      "x": 0.0022586993317105877,
+      "y": 0.20003128051757812,
+      "sha256": "4045c643ee98ed91a02ec90780e35ce38045c9aacb4cfa294a6d80588cb02e5c"
+    },
+    {
+      "height": 0.4276752471923828,
+      "key": "weapons/knife_butterfly",
+      "sourceHeight": 32,
+      "sourceWidth": 79.828125,
+      "width": 0.9880750039758268,
+      "x": 0.007064929841945586,
+      "y": 0.3045196533203125,
+      "sha256": "efe285cdfd79b518544ccf6fc0203b8c25517c4ae36f27d640caff37c1db34fc"
+    },
+    {
+      "height": 0.4790538877952756,
+      "key": "weapons/knife_canis",
+      "sourceHeight": 31.75,
+      "sourceWidth": 92.046875,
+      "width": 0.978486117594636,
+      "x": 0.0028844317603123407,
+      "y": 0.2859501876230315,
+      "sha256": "e67136c2bf4fe95c637fa5ef897ec22852419f7326a7a4b9a77d488b1faf675a"
+    },
+    {
+      "height": 0.32394884346900144,
+      "key": "weapons/knife_cord",
+      "sourceHeight": 33.015625,
+      "sourceWidth": 91.421875,
+      "width": 0.9740469043753204,
+      "x": 0.009307303238762605,
+      "y": 0.33800986452910553,
+      "sha256": "1ca8f25a7272c9ac68938409a23eb5e5cd6667d8c46167e1217ef7f34ff892ac"
+    },
+    {
+      "height": 0.4270057678222656,
+      "key": "weapons/knife_css",
+      "sourceHeight": 32,
+      "sourceWidth": 92.046875,
+      "width": 0.8849217821677134,
+      "x": 0.023104629943982345,
+      "y": 0.2519702911376953,
+      "sha256": "a5a8ae19f0d669524f63697b3364e3405dc0e233343b62fa3ed8eaed2a64dcd9"
+    },
+    {
+      "height": 0.6153430938720703,
+      "key": "weapons/knife_falchion",
+      "sourceHeight": 32,
+      "sourceWidth": 89,
+      "width": 0.9904497125175562,
+      "x": 0.0030339273174157305,
+      "y": 0.20790672302246097,
+      "sha256": "ae2f359bed8616c1d84e02c39211888a2ad2ca403e0fd6a9702a11d06e0223cc"
+    },
+    {
+      "height": 0.4597187042236328,
+      "key": "weapons/knife_flip",
+      "sourceHeight": 32,
+      "sourceWidth": 79.15625,
+      "width": 0.9956926962532076,
+      "x": 0.003006312765248717,
+      "y": 0.2702178955078125,
+      "sha256": "60d0c80a50a1c0bc868022a66b0dcf04f1581a15374f44bf7fb9e60b13a276de"
+    },
+    {
+      "height": 0.4193687438964844,
+      "key": "weapons/knife_gut",
+      "sourceHeight": 32,
+      "sourceWidth": 72,
+      "width": 0.9892637464735244,
+      "x": 0,
+      "y": 0.29031944274902344,
+      "sha256": "fd99f93a3f13ce2ea0707ecec0782b64df15800ddcdc48923f021450886e7b17"
+    },
+    {
+      "height": 0.5213558417862444,
+      "key": "weapons/knife_gypsy_jackknife",
+      "sourceHeight": 31.578125,
+      "sourceWidth": 91.90625,
+      "width": 0.893040672284087,
+      "x": 0.014491045243964638,
+      "y": 0.2582241928500742,
+      "sha256": "79fd9c5895ecd945a98f90c6da25d07bf564be0d1b0c75bbf92c8675c152161f"
+    },
+    {
+      "height": 0.7628116607666016,
+      "key": "weapons/knife_karambit",
+      "sourceHeight": 32,
+      "sourceWidth": 66,
+      "width": 0.9868940873579546,
+      "x": 0.008499607895359848,
+      "y": 0.1159687042236328,
+      "sha256": "6331908a5dd5b8133619910a8435bd4f466a9332d82971eb8cacc005637d00e2"
+    },
+    {
+      "height": 0.5502814345472441,
+      "key": "weapons/knife_kukri",
+      "sourceHeight": 31.75,
+      "sourceWidth": 92.046875,
+      "width": 0.9801876007893396,
+      "x": 0.009905868061449668,
+      "y": 0.22482275775098423,
+      "sha256": "6da3005441cf3b8070c191cf0c65249dae59dd7b7d6ba91043f621467c889bb3"
+    },
+    {
+      "height": 0.7103500366210938,
+      "key": "weapons/knife_m9_bayonet",
+      "sourceHeight": 32,
+      "sourceWidth": 87.15625,
+      "width": 0.9956147476694156,
+      "x": 0.001746537737540337,
+      "y": 0.14479446411132812,
+      "sha256": "24f15d95965434cd9335868ede8c0dcae120e7fcea028179e5039daeaac81ac8"
+    },
+    {
+      "height": 0.5679979699803149,
+      "key": "weapons/knife_outdoor",
+      "sourceHeight": 31.75,
+      "sourceWidth": 92,
+      "width": 0.9514566608097242,
+      "x": 0,
+      "y": 0.25278743233267714,
+      "sha256": "408f30849b86d7bf5a8ac190bf3588943b660df88d9dc8c4ad8bbb57a66fe395"
+    },
+    {
+      "height": 0.7474632263183594,
+      "key": "weapons/knife_push",
+      "sourceHeight": 32,
+      "sourceWidth": 82.5,
+      "width": 0.9859639485677084,
+      "x": 0.00941809451941288,
+      "y": 0.12639236450195312,
+      "sha256": "673892df666df0e5d1cbc470e00a19b123e9d05539ee10d063483d2c1cbe1645"
+    },
+    {
+      "height": 0.4946404404527559,
+      "key": "weapons/knife_skeleton",
+      "sourceHeight": 31.75,
+      "sourceWidth": 92.046875,
+      "width": 0.9397753856518418,
+      "x": 0.030113799121541333,
+      "y": 0.2526951587106299,
+      "sha256": "e9d657fa897d5976d9ceff048687e73a2097d76f96b12556c17d353703e31847"
+    },
+    {
+      "height": 0.3509928385416667,
+      "key": "weapons/knife_stiletto",
+      "sourceHeight": 31.5,
+      "sourceWidth": 92,
+      "width": 0.9846171503481658,
+      "x": 0.010763417119565218,
+      "y": 0.30332728794642855,
+      "sha256": "10f28d76011b29fa9bae8e539df3c6c8448bf6fc8f6e2f3f820471412e2f95f5"
+    },
+    {
+      "height": 0.3860282897949219,
+      "key": "weapons/knife_survival_bowie",
+      "sourceHeight": 32,
+      "sourceWidth": 61.1875,
+      "width": 1,
+      "x": 0,
+      "y": 0.32257843017578125,
+      "sha256": "7a6373010cb3e0f7426be334e01ae19beb684399b48ca2c5196be6ae72c38222"
+    },
+    {
+      "height": 0.5496711730957031,
+      "key": "weapons/knife_t",
+      "sourceHeight": 32,
+      "sourceWidth": 79.15625,
+      "width": 0.9925606987761548,
+      "x": 0.003372668278720884,
+      "y": 0.22517776489257812,
+      "sha256": "0eeccd8864c3398a05fa09817a86d93bb359d7f63b97155945da9f8c1cf9eae7"
+    },
+    {
+      "height": 0.6218070983886719,
+      "key": "weapons/knife_tactical",
+      "sourceHeight": 32,
+      "sourceWidth": 95.828125,
+      "width": 0.9943324981147074,
+      "x": 0.000012021925444317628,
+      "y": 0.20067596435546875,
+      "sha256": "2b115d5911c397c20fb3c7130c392ec27498c3b6b00fd59015bcd74ae40f6d02"
+    },
+    {
+      "height": 0.7365318959153543,
+      "key": "weapons/knife_twinblade",
+      "sourceHeight": 31.75,
+      "sourceWidth": 92.046875,
+      "width": 0.9802408135821592,
+      "x": 0.010526020889916825,
+      "y": 0.1400252214566929,
+      "sha256": "ac5ae164dd93119fcb8a5bfad7cea06f5c7a9d61710eefef0991af3e9d86e9c6"
+    },
+    {
+      "height": 0.423095703125,
+      "key": "weapons/knife_ursus",
+      "sourceHeight": 32,
+      "sourceWidth": 92.046875,
+      "width": 0.8296530857452046,
+      "x": 0.0024872421914785264,
+      "y": 0.2884407043457031,
+      "sha256": "9adbc60d84e303ff08c159330db3e31ae8c350292b9c261289e34b14bec7db63"
+    },
+    {
+      "height": 0.7913536658653846,
+      "key": "weapons/knife_widowmaker",
+      "sourceHeight": 32.5,
+      "sourceWidth": 92,
+      "width": 0.8052606997282609,
+      "x": 0.010760763417119566,
+      "y": 0.10430814302884615,
+      "sha256": "5c6d3a1a62f0cf2321cd6243ccf27e8512935d86154d91cdb6ae5e78ceb8f0c7"
+    },
+    {
+      "height": 0.8567390441894531,
+      "key": "weapons/m249",
+      "sourceHeight": 32,
+      "sourceWidth": 96.578125,
+      "width": 0.9999639773094968,
+      "x": 0,
+      "y": 0.09117507934570312,
+      "sha256": "7c1b49390f87bdf8ce3f4b1fa0f54ef058b42b52ece09c6e4da92b5cd5f49787"
+    },
+    {
+      "height": 0.7979583740234375,
+      "key": "weapons/m4a1",
+      "sourceHeight": 32,
+      "sourceWidth": 78.59375,
+      "width": 0.999987574552684,
+      "x": 0,
+      "y": 0.09761428833007812,
+      "sha256": "4e80e247608b65016e4606c00f49d55492a0f1dc34e71a6b7c7ca88d27cdc650"
+    },
+    {
+      "height": 0.7524986267089844,
+      "key": "weapons/m4a1_silencer",
+      "sourceHeight": 32,
+      "sourceWidth": 96.5,
+      "width": 0.9997616308340754,
+      "x": 0,
+      "y": 0.12918853759765625,
+      "sha256": "3565857c155b80c0d2289454c1f63c231994229b3e4b347ab594e67203f65035"
+    },
+    {
+      "height": 0.7523651123046875,
+      "key": "weapons/m4a1_silencer_off",
+      "sourceHeight": 32,
+      "sourceWidth": 79.796875,
+      "width": 0.9631866341541022,
+      "x": 0.015361880751909144,
+      "y": 0.15520477294921875,
+      "sha256": "ccc44d5f7c5b33704b24ada16f17420fbe471416454a0ac1e2e471e85f8bc341"
+    },
+    {
+      "height": 0.9717178344726562,
+      "key": "weapons/mac10",
+      "sourceHeight": 32,
+      "sourceWidth": 44.625,
+      "width": 0.9815574667366946,
+      "x": 0.014857017025560224,
+      "y": 0.0162506103515625,
+      "sha256": "2aafac43011b01bf92f05729bacd09dc939ed492b06e3b6f0a4c33b200d37362"
+    },
+    {
+      "height": 0.7657814025878906,
+      "key": "weapons/mag7",
+      "sourceHeight": 32,
+      "sourceWidth": 67.5,
+      "width": 0.984207718460648,
+      "x": 0.007407407407407408,
+      "y": 0.12287521362304688,
+      "sha256": "6c6324b36f5ba9512ea32334222f4a84e4c8f00efe3e7bd0bcd32aeacd5ea272"
+    },
+    {
+      "height": 1,
+      "key": "weapons/melee",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.9806575775146484,
+      "x": 0,
+      "y": 0,
+      "sha256": "598b1da2d938142a01bae59f44d37e0a13a31a95851400eadb025b3362532e9c"
+    },
+    {
+      "height": 1,
+      "key": "weapons/molotov",
+      "sourceHeight": 32,
+      "sourceWidth": 22,
+      "width": 0.9876542524857954,
+      "x": 0,
+      "y": 0,
+      "sha256": "bb4b5a04eefa1f4cbe7312969a09d2dc70dd2c2cc02b9938fa8e48c0ea4a2a4d"
+    },
+    {
+      "height": 0.9011573791503906,
+      "key": "weapons/movelinear",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.916656255722046,
+      "x": 0.046875,
+      "y": 0.052093505859375,
+      "sha256": "5d7c90f8fafb2b3a43061238c7f8c171e4c35216a9a344d4c472507ee5c087b8"
+    },
+    {
+      "height": 0.930239741413738,
+      "key": "weapons/mp5sd",
+      "sourceHeight": 39.125,
+      "sourceWidth": 92.578125,
+      "width": 0.96832805907173,
+      "x": 0.01287381329113924,
+      "y": 0.037561776158146966,
+      "sha256": "293459424fa4f707e2633db6e25897f34a12795bee702fc6caaf5e83902593d2"
+    },
+    {
+      "height": 0.9337501525878906,
+      "key": "weapons/mp7",
+      "sourceHeight": 32,
+      "sourceWidth": 49.125,
+      "width": 0.991186088581425,
+      "x": 0.006127122097646311,
+      "y": 0.042842864990234375,
+      "sha256": "21d90992afa8a726542e861a4dfb07a154a36a06c875d3096709944a85768813"
+    },
+    {
+      "height": 0.9076576232910156,
+      "key": "weapons/mp9",
+      "sourceHeight": 32,
+      "sourceWidth": 73.625,
+      "width": 0.9939822859189305,
+      "x": 0.0038846959889643463,
+      "y": 0.052280426025390625,
+      "sha256": "6e62964b1ebe9e50c2584a771e24eaa4c6f63fc5204648c3d178fb81a938c799"
+    },
+    {
+      "height": 0.9993820190429688,
+      "key": "weapons/negev",
+      "sourceHeight": 32,
+      "sourceWidth": 81.453125,
+      "width": 1,
+      "x": 0,
+      "y": 0.000072479248046875,
+      "sha256": "743eccc4dace49146e82a68c1dcd333a9b5be30aa08aba3c86db7fca9a360dc0"
+    },
+    {
+      "height": 0.6550331115722656,
+      "key": "weapons/nova",
+      "sourceHeight": 32,
+      "sourceWidth": 100.25,
+      "width": 0.9976365239245636,
+      "x": 0.0020249668796758105,
+      "y": 0.20624923706054688,
+      "sha256": "9a2d5e7db9dcf0211a588d73f6dbbfbff22d79d0a858bb8cc34b6de5302c6467"
+    },
+    {
+      "height": 0.8791656494140625,
+      "key": "weapons/p2000",
+      "sourceHeight": 32,
+      "sourceWidth": 37.875,
+      "width": 0.9834826378145628,
+      "x": 0.007399304078357054,
+      "y": 0.06067657470703125,
+      "sha256": "53f73f1453039e9b2f39d566a27df3a9151a2da6416e46305f2f4bd090a782df"
+    },
+    {
+      "height": 0.8891563415527344,
+      "key": "weapons/p250",
+      "sourceHeight": 32,
+      "sourceWidth": 37.75,
+      "width": 0.9878410693036008,
+      "x": 0.005297932403766557,
+      "y": 0.060657501220703125,
+      "sha256": "df86b3b3a4f2168610dfcde2796577f9aaa4049ad23f9b7cca60b8d78c4ee0ea"
+    },
+    {
+      "height": 0.8492622375488281,
+      "key": "weapons/p90",
+      "sourceHeight": 32,
+      "sourceWidth": 68.375,
+      "width": 0.9882120693841407,
+      "x": 0.0065373450354204755,
+      "y": 0.07531356811523438,
+      "sha256": "13d3a3fa692b16c280f08cceba7bad8bf89225526a70e9be10a00cd0c64c4057"
+    },
+    {
+      "height": 0.8697128295898438,
+      "key": "weapons/pet",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.8827648162841797,
+      "x": 0.031280517578125,
+      "y": 0.06531906127929688,
+      "sha256": "bb32c90f5d0a0c3d8a1f6be6360bfd643b2291aee204c6c90345dbdad26981b2"
+    },
+    {
+      "height": 0.8850229481641468,
+      "key": "weapons/planted_c4",
+      "sourceHeight": 28.9375,
+      "sourceWidth": 30.078125,
+      "width": 0.8347463474025975,
+      "x": 0.07443587662337663,
+      "y": 0.04722934665226782,
+      "sha256": "fa96cc9eefa17acb6e0e8891f76b50c9b3c3964d171e4e0125bd31c9617dae31"
+    },
+    {
+      "height": 0.8850229481641468,
+      "key": "weapons/prop_exploding_barrel",
+      "sourceHeight": 28.9375,
+      "sourceWidth": 30.078125,
+      "width": 0.8347443181818182,
+      "x": 0.07443587662337663,
+      "y": 0.04722934665226782,
+      "sha256": "fa96cc9eefa17acb6e0e8891f76b50c9b3c3964d171e4e0125bd31c9617dae31"
+    },
+    {
+      "height": 0.8819923400878906,
+      "key": "weapons/revolver",
+      "sourceHeight": 32,
+      "sourceWidth": 52.5,
+      "width": 0.9889913649786086,
+      "x": 0.006646655854724702,
+      "y": 0.06303024291992188,
+      "sha256": "e0c5ba5ba7b0cdad3b775dd345ec7cb34243346fb84645e2e17ea8a39194a855"
+    },
+    {
+      "height": 0.539154052734375,
+      "key": "weapons/sawedoff",
+      "sourceHeight": 32,
+      "sourceWidth": 84.75,
+      "width": 0.9899706095017514,
+      "x": 0.008118035870667404,
+      "y": 0.23431396484375,
+      "sha256": "45a3f55fa526d6948033d99a50cd965b7ecfa6c3eb810785f3d74ffb5556b061"
+    },
+    {
+      "height": 0.8019065856933594,
+      "key": "weapons/scar20",
+      "sourceHeight": 32,
+      "sourceWidth": 98,
+      "width": 0.9835407490632972,
+      "x": 0.005091764488998725,
+      "y": 0.09590530395507812,
+      "sha256": "177b6a4490be9a2d456f9cc933ae7aa14b7ff6d7fb858473fb7cae019a790b0e"
+    },
+    {
+      "height": 0.9695396423339844,
+      "key": "weapons/sg556",
+      "sourceHeight": 32,
+      "sourceWidth": 89.65625,
+      "width": 0.9909328435430464,
+      "x": 0.0018625827814569536,
+      "y": 0.021152496337890625,
+      "sha256": "6c0105235017802611d302d11bac4bdf9e83e9edeb6b5d91bbf449052128d3f3"
+    },
+    {
+      "height": 1,
+      "key": "weapons/smokegrenade",
+      "sourceHeight": 32,
+      "sourceWidth": 15,
+      "width": 0.96292724609375,
+      "x": 0,
+      "y": 0,
+      "sha256": "fdf505befaa9d3dbf04d27204088b93e5941ba62ed8744e9675c907aa69056f9"
+    },
+    {
+      "height": 1,
+      "key": "weapons/spray0",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.5138893127441406,
+      "x": 0.25,
+      "y": 0,
+      "sha256": "f8eb49ff4533a8952a14ff536c1cb522358aef32621493e9caab99d633a23cf3"
+    },
+    {
+      "height": 0.7907829284667969,
+      "key": "weapons/ssg08",
+      "sourceHeight": 32,
+      "sourceWidth": 99.75,
+      "width": 0.9980750119775758,
+      "x": 0,
+      "y": 0.122467041015625,
+      "sha256": "82bbb1b093f405a26f87c2e85d07909267814f117ce7a9035ef4ee3e23fd2ced"
+    },
+    {
+      "height": 0.8983905780780781,
+      "key": "weapons/stomp_damage",
+      "sourceHeight": 26.015625,
+      "sourceWidth": 39.390625,
+      "width": 0.9458180192631892,
+      "x": 0.028956375818127728,
+      "y": 0.04148836336336336,
+      "sha256": "56f56fe5418f902296de14d9d0770d458b560e454e058f203a90e4dd823c43a8"
+    },
+    {
+      "height": 0.9311447143554688,
+      "key": "weapons/taser",
+      "sourceHeight": 32,
+      "sourceWidth": 41.5,
+      "width": 0.985942794615964,
+      "x": 0.008466973362198794,
+      "y": 0.0425567626953125,
+      "sha256": "a3e119853a03ebbb0267ff7721246c5ae5132dd6b325ec21d74638dc72a7b7ec"
+    },
+    {
+      "height": 0.9311256408691406,
+      "key": "weapons/tec9",
+      "sourceHeight": 32,
+      "sourceWidth": 52.375,
+      "width": 0.9885819100536992,
+      "x": 0.006014366423031026,
+      "y": 0.037811279296875,
+      "sha256": "dce734f0a08b42aa6ebb7946d1c3653823c4c70da99d05f2b23afa6ba80b27a6"
+    },
+    {
+      "empty": true,
+      "key": "weapons/trigger_hurt",
+      "sha256": "bdd3edc2c08d461a950b33325066965bcabb854f82393aec13c646914a22394e"
+    },
+    {
+      "height": 0.9366569519042968,
+      "key": "weapons/ump45",
+      "sourceHeight": 32,
+      "sourceWidth": 83.5,
+      "width": 0.9961522267964072,
+      "x": 0.00002485263847305389,
+      "y": 0.038623809814453125,
+      "sha256": "db234c16c85e5f7aa81821cdd41303857783673ca96792072c9ba51205108124"
+    },
+    {
+      "height": 0.7945022583007812,
+      "key": "weapons/usp_silencer",
+      "sourceHeight": 32,
+      "sourceWidth": 69.25,
+      "width": 0.9932173856328972,
+      "x": 0.002594903057663019,
+      "y": 0.11056137084960938,
+      "sha256": "6f2693049050b883cbabeac89437fbcb8504520ec779156d4f7877e077ec3d7c"
+    },
+    {
+      "height": 0.79443359375,
+      "key": "weapons/usp_silencer_off",
+      "sourceHeight": 32,
+      "sourceWidth": 39.8125,
+      "width": 0.917704296261774,
+      "x": 0.04118196256868132,
+      "y": 0.102783203125,
+      "sha256": "6ea28119e8c9fedfe46d354389810200e2f9803eecc3c4e9c6a21ad290a2567d"
+    },
+    {
+      "empty": true,
+      "key": "weapons/world",
+      "sha256": "bdd3edc2c08d461a950b33325066965bcabb854f82393aec13c646914a22394e"
+    },
+    {
+      "empty": true,
+      "key": "weapons/worldent",
+      "sha256": "bdd3edc2c08d461a950b33325066965bcabb854f82393aec13c646914a22394e"
+    },
+    {
+      "height": 0.6686859130859375,
+      "key": "weapons/xm1014",
+      "sourceHeight": 32,
+      "sourceWidth": 97.875,
+      "width": 0.9971800666507024,
+      "x": 0,
+      "y": 0.16584396362304688,
+      "sha256": "ec202a1ccdda27830262f764ac741eba5349211eb72776e4f8e65e78ec0ccea5"
+    },
+    {
+      "height": 0.996002197265625,
+      "key": "ui/armor",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.8853111267089844,
+      "x": 0.053157806396484375,
+      "y": 0.00296783447265625,
+      "sha256": "d72ef46ab48ed755950567edd310640d59e944a47d40178810bef04b6ad14bb5"
+    },
+    {
+      "height": 0.9068641662597656,
+      "key": "ui/clock",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.909701406955719,
+      "x": 0.04546874761581421,
+      "y": 0.041046142578125,
+      "sha256": "f6aa334539c4034d128527aaf49bb8a86e763c092723bf8d5b7d68e4566c67a1"
+    },
+    {
+      "height": 0.8530387878417969,
+      "key": "ui/defuser_white",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.951575756072998,
+      "x": 0.032790184020996094,
+      "y": 0.07349395751953125,
+      "sha256": "a0bf37124f3da91fa71698274c54f854066d96cc962fba918fb34acde700b068"
+    },
+    {
+      "height": 0.8663444519042969,
+      "key": "ui/health",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.8663749694824219,
+      "x": 0.06681251525878906,
+      "y": 0.06681060791015625,
+      "sha256": "e40db2ae48790d54e922394943a25981d98f3b94ce816fba6faa9734bcf54e16"
+    },
+    {
+      "height": 0.9860305786132812,
+      "key": "ui/hostage_rescued",
+      "sourceHeight": 32,
+      "sourceWidth": 20,
+      "width": 0.9781494140625,
+      "x": 0.0072509765625,
+      "y": 0.00290679931640625,
+      "sha256": "71c293847410125c7b98dc347366a4bc90d58e0993d55184bd45d67d9fa34a09"
+    },
+    {
+      "height": 0.8333333333333334,
+      "key": "ui/stat_assists",
+      "sourceHeight": 18,
+      "sourceWidth": 27,
+      "width": 0.972556785300926,
+      "x": 0.027443214699074073,
+      "y": 0.05555555555555555,
+      "sha256": "d886b6b8373890570a441193f54fc171976c687632fd43ca0976979fce64e07b"
+    },
+    {
+      "height": 0.8066101669103314,
+      "key": "killfeed/blind_kill",
+      "sourceHeight": 32.0625,
+      "sourceWidth": 32.0625,
+      "width": 0.8446104410331384,
+      "x": 0.07058662280701754,
+      "y": 0.08642102217348928,
+      "sha256": "5a1233c62f605337ced75ec0f3a35f8d03341d3cfe14362f0b3d3f9fd33f4445"
+    },
+    {
+      "height": 0.9027862548828124,
+      "key": "killfeed/domination",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.9014861583709716,
+      "x": 0.04925537109375,
+      "y": 0.0486297607421875,
+      "sha256": "87d6e844e78b1f93faf06c826b9254b076c048fb692175a54abaa7dce1c32ec5"
+    },
+    {
+      "height": 0.8528366088867188,
+      "key": "killfeed/icon_headshot",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.9666247367858888,
+      "x": 0.02043771743774414,
+      "y": 0.133514404296875,
+      "sha256": "0ce669fdfc510b4463b9cc0a2759671be4c6e2d835676495713a30fa839f3557"
+    },
+    {
+      "height": 0.6841812133789062,
+      "key": "killfeed/icon_suicide",
+      "sourceHeight": 32,
+      "sourceWidth": 33.328125,
+      "width": 0.9863446070675106,
+      "x": 0.008801424050632911,
+      "y": 0.14633941650390625,
+      "sha256": "5e6268df5ff2f4e48f45ba52d63dc84942efe6285fc20bda186fd5cc0182b574"
+    },
+    {
+      "height": 0.8354958576998051,
+      "key": "killfeed/inairkill",
+      "sourceHeight": 32.0625,
+      "sourceWidth": 32.0625,
+      "width": 0.9625403569688108,
+      "x": 0.01870697794834308,
+      "y": 0.04742324561403509,
+      "sha256": "d465969e6038d23d3ff0346e55f43d3e57394c9b8126ff84677a2f3e4b7f22fb"
+    },
+    {
+      "height": 0.80661397417154,
+      "key": "killfeed/noscope",
+      "sourceHeight": 32.0625,
+      "sourceWidth": 32.0625,
+      "width": 0.8067948190789473,
+      "x": 0.09344161184210528,
+      "y": 0.06818804824561403,
+      "sha256": "44862d353644fc902970ecccf15bee653c4f75a284bb956a8a9e821bb53a7b9c"
+    },
+    {
+      "height": 0.9551239013671876,
+      "key": "killfeed/penetrate",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.8601226806640625,
+      "x": 0.07550048828125,
+      "y": 0.0188751220703125,
+      "sha256": "4cc7c84aae80072f40fb5ac26c7eff5a4999e0008e982b69bf4c382962eba60d"
+    },
+    {
+      "height": 0.901153564453125,
+      "key": "killfeed/revenge",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 0.916656255722046,
+      "x": 0.046875,
+      "y": 0.052093505859375,
+      "sha256": "5d7c90f8fafb2b3a43061238c7f8c171e4c35216a9a344d4c472507ee5c087b8"
+    },
+    {
+      "height": 1,
+      "key": "killfeed/smokegrenade_impact",
+      "sourceHeight": 32,
+      "sourceWidth": 32,
+      "width": 1,
+      "x": 0,
+      "y": 0,
+      "sha256": "83aad6d676cf2cce509eaac175238c0cf24ed18f95ae9ff496e885cd9efab249"
+    },
+    {
+      "height": 0.5984862329434698,
+      "key": "killfeed/smoke_kill",
+      "sourceHeight": 32.0625,
+      "sourceWidth": 32.0625,
+      "width": 0.9054371497319688,
+      "x": 0.06884099354288499,
+      "y": 0.17269736842105263,
+      "sha256": "156eebf34e2ed0337969d829276b7e4f5f987a89faf9dad8e66bef806416ee28"
+    }
+  ]
+}

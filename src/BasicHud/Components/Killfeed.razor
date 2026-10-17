@@ -2,7 +2,7 @@
     @foreach (var item in Entries)
     {
         var kill = item.Event;
-        <article class="kill-event" @key="item.Key">
+        <article class="kill-event" data-event-id="@kill.Id" @key="item.Key">
             <span class="@PlayerPresentation.SideClass(kill.Killer?.Side)">@Participant(kill.Killer)</span>
             @if (kill.Assister is { } assist) { <small>+ @Participant(assist)</small> }
             <EquipmentIcon Name="@kill.Weapon" Class="kill-weapon" /><span class="kill-victim @PlayerPresentation.SideClass(kill.Victim.Side)">@Participant(kill.Victim)</span>

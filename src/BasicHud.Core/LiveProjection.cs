@@ -42,11 +42,11 @@ public sealed class KillFeedProjection
         var nextKey = $"{snapshot?.SessionId}:{snapshot?.Game?.Map}:{latest?.ConnectionId}:{latest?.Epoch}";
         if (nextKey != resetKey) { seen.Clear(); resetKey = nextKey; }
         var entries = source.Where(entry => entry.ConnectionId == latest?.ConnectionId && entry.Epoch == latest?.Epoch)
-            .GroupBy(entry => (entry.ConnectionId, entry.Epoch, entry.Id)).Select(group => group.Last()).TakeLast(64).ToArray();
+            .GroupBy(entry => (entry.ConnectionId, entry.Epoch, entry.Id)).Select(group => group.Last()).OrderBy(entry => entry.Id).TakeLast(64).ToArray();
         var keys = entries.Select(entry => $"{entry.ConnectionId:N}:{entry.Epoch}:{entry.Id}").ToHashSet(StringComparer.Ordinal);
         foreach (var key in seen.Keys.Where(key => !keys.Contains(key)).ToArray()) seen.Remove(key);
         foreach (var key in keys) seen.TryAdd(key, now);
         return entries.Where(entry => now - seen[$"{entry.ConnectionId:N}:{entry.Epoch}:{entry.Id}"] <= TimeSpan.FromSeconds(8))
-            .TakeLast(6).Reverse().Select(entry => new KillView($"{entry.ConnectionId:N}:{entry.Epoch}:{entry.Id}", entry)).ToArray();
+            .TakeLast(6).Select(entry => new KillView($"{entry.ConnectionId:N}:{entry.Epoch}:{entry.Id}", entry)).ToArray();
     }
 }

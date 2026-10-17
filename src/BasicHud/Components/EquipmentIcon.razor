@@ -1,6 +1,6 @@
-@if (!failed && EquipmentPresentation.Key(Name) is { } key)
+@if (!failed && EquipmentPresentation.Key(Name) is { } key && key is not ("world" or "worldent" or "trigger_hurt"))
 {
-    <img class="equipment-icon @Class" src="@($"assets/weapons/{key}.svg")" alt="@EquipmentPresentation.Label(Name)" title="@EquipmentPresentation.Label(Name)" @onerror="() => failed = true" />
+    <span class="cs2-icon equipment-icon @Class" data-icon="@($"weapons/{key}")" title="@EquipmentPresentation.Label(Name)"><img class="icon-source" src="@($"assets/weapons/{key}.svg")" alt="@EquipmentPresentation.Label(Name)" @onerror="() => failed = true" /></span>
 }
 else
 {
