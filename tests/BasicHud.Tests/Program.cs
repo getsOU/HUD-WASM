@@ -95,6 +95,7 @@ await using (var brokenHud = new HudSession(broken))
     Check(brokenHud.LiveConnection == ConnectionState.Failed, "unexpected feed failures become a visible connection failure");
 }
 await ShowcaseTests.Run(Check);
+await RenderTests.Run(Check);
 Console.WriteLine($"{checks} checks passed.");
 
 static async Task Until(Func<bool> ready)

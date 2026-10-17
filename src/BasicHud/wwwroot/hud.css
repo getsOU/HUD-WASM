@@ -52,7 +52,7 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 
 .roster .inventory { flex-wrap: nowrap; overflow: hidden; }.roster .weapon-item { flex-shrink: 1; }.roster .weapon-item.active { flex-shrink: 0; max-width: 55%; }.roster .weapon-item small { font-size: .95em; }.compact .map-state, .compact .map-number { font-size: .95em; }
 
-.monogram.spotlight-portrait { display: grid; place-items: center; width: 5em; height: 5em; font-size: 1.8em; }.has-lower-third:not(.scene-live) .presentation { bottom: 24%; }.hud:not(.scene-live) .lower-third { left: 5%; bottom: 8%; width: 90%; font-size: .8em; }.lower-third strong, .lower-third span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.monogram.spotlight-portrait { display: grid; place-items: center; width: 5em; height: 5em; font-size: 1.8em; }.feature-reference .monogram.duel-logo { display: grid; place-items: center; }.has-lower-third:not(.scene-live) .presentation { bottom: 24%; }.hud:not(.scene-live) .lower-third { left: 5%; bottom: 8%; width: 90%; font-size: .8em; }.lower-third strong, .lower-third span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 @media (max-width: 1400px), (max-height: 800px) { .radar-widget { width: 15%; top: 17%; }.roster { top: 43%; }.roster .player-card { font-size: .9em; padding: .3em .5em .4em; }.roster .portrait { width: 1.9em; height: 1.9em; }.roster .player-vitals, .roster .inventory, .roster .player-round { margin-top: .15em; }.roster .player-conditions { position: absolute; bottom: .4em; right: .5em; background: #233143; padding: .1em .3em; }.roster .player-round { padding-right: 3em; } }
 

@@ -10,13 +10,13 @@ The screenshot uses an isolated local host and synthetic data. Its checkerboard 
 
 ## Install and use
 
-1. Download `sou-basic-wasm-0.2.0.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.2.1.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
 5. Supply CS2/HLAE data through sOU's normal setup. Optional data can remain absent; the HUD does not create missing players, game events or statistics.
 
-The stable package ID remains `sou-basic-wasm`; this feature release is **0.2.0**, protocol v2. Previous releases and active outputs are unchanged. Select the new version and reload/reopen outputs after installing. Compatible caption/Hide fields remain compatible; the seven additional output routes appear from this version.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.2.1**, protocol v2. Previous releases and active outputs are unchanged. Select the new version and reload/reopen outputs after installing. Caption/Hide fields remain compatible; the seven additional output routes were introduced in 0.2.0. Version 0.2.1 restores local image error fallbacks, including the radar's relative-position fallback when an overview image cannot load.
 
 [Eight output views](docs/views.md) · [All panel fields](docs/panel.md) · [Feature/source matrix and limits](docs/features.md) · [Public author guide](https://www.getsou.app/docs/hud-entwicklung)
 
@@ -42,11 +42,11 @@ Install **.NET SDK 10.0.402** and **PowerShell 7**. The application targets .NET
 pwsh ./scripts/Build.ps1
 ```
 
-The script performs locked restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata tests, publishes Release WASM, packs and validates the HUD and writes a checksum:
+The script performs locked restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.2.0.souhud
-artifacts/sou-basic-wasm-0.2.0.souhud.sha256
+artifacts/sou-basic-wasm-0.2.1.souhud
+artifacts/sou-basic-wasm-0.2.1.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:
@@ -86,7 +86,7 @@ src/BasicHud/MetadataPoller.cs narrow source-generated optional local metadata r
 src/BasicHud/Development/ Debug-only synthetic feeds
 src/BasicHud/wwwroot/     local CSS, installed entry point, common panel schema
                           (cast-media/preview.svg is Debug-only)
-tests/BasicHud.Tests/     focused executable checks and actual metadata reader tests
+tests/BasicHud.Tests/     model/lifecycle/metadata checks and actual Razor event dispatch tests
 scripts/Build.ps1         locked restore → format → test → publish → pack → validate → hash
 ```
 
@@ -96,7 +96,7 @@ One public SDK live stream and one panel stream serve the chosen scene. Both are
 
 HUD code executes in the trusted local sOU browser origin; package validation is not runtime isolation. Install packages only from authors you trust. This HUD embeds no cloud/diagnostic token, API key, external camera URL, tracker or account credentials. Optional metadata polls only the local session-protected options endpoint, with bounded size/time and source-context matching; failure gracefully removes optional metadata.
 
-All page backgrounds stay transparent. Version0.1.1 fixed the earlier root dark-color-scheme issue, and 0.1.2 corrected initial visibility defaults. Both fixes remain in 0.2.0. [Panel documentation](docs/panel.md) explains overview geometry, manual production controls, reference limits and the host's false checkbox defaults.
+All page backgrounds stay transparent. Version 0.1.1 fixed the earlier root dark-color-scheme issue, and 0.1.2 corrected initial visibility defaults. Both fixes remain in 0.2.1. [Panel documentation](docs/panel.md) explains overview geometry, manual production controls, reference limits and the host's false checkbox defaults.
 
 Builds, synthetic tests and browser checks do not certify native CS2/OBS capture or long-session performance. No source contract guarantees complete live data in every viewing mode. Test the actual target capture setup before a broadcast.
 

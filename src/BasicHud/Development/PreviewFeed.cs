@@ -42,7 +42,7 @@ internal sealed class PreviewFeed(string scenario) : IHudFeed
             ["branding"] = new() { ["logo"] = Text("/cast-media/preview.svg"), ["sponsors"] = JsonSerializer.SerializeToElement(new[] { "/cast-media/preview.svg" }) }
         };
         if (scenario == "overview") values["radar"] = new() { ["overview"] = Text("/cast-media/preview.svg"), ["mapName"] = Text("de_mirage"), ["minX"] = Text("0"), ["maxX"] = Text("2500"), ["minY"] = Text("0"), ["maxY"] = Text("2500") };
-        yield return new("sou-basic-wasm", "0.2.0", new(1, values)
+        yield return new("sou-basic-wasm", "0.2.1", new(1, values)
         {
             References = new()
             {
@@ -54,7 +54,7 @@ internal sealed class PreviewFeed(string scenario) : IHudFeed
                 }
             }
         });
-        if (scenario == "production") yield return new("sou-basic-wasm", "0.2.0", Action: new(Guid.Parse("9829d5b3-37c3-4f68-a489-bf6dece1cd31"), "production", "lowerThird", "show"));
+        if (scenario == "production") yield return new("sou-basic-wasm", "0.2.1", Action: new(Guid.Parse("9829d5b3-37c3-4f68-a489-bf6dece1cd31"), "production", "lowerThird", "show"));
         await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
     }
 

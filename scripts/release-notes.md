@@ -1,4 +1,10 @@
-# 0.2.0
+# 0.2.1
+
+Fixes image-load error handling: unavailable local player portraits, team/competition logos, branding and sponsor images now fall back to their neutral monograms. An unavailable calibrated overview returns the radar to its clearly labeled relative world-position plot. The existing centered spotlight fallback and transparent output are retained.
+
+Install `sou-basic-wasm-0.2.1.souhud`, select version `0.2.1` and reopen outputs. Saved compatible panel settings are inherited. Public SDK dependencies stay at `0.2.0-preview.4`; earlier release archives and already running outputs remain unchanged.
+
+## 0.2.0
 
 Expands the public HUD into a complete broadcast reference project: main live output plus seven real subviews for prematch, lineups, veto, break, results, statistics and spotlight. Adds inventories/utility/statuses, complete-or-unknown team economy, round history, explicit round-win banners, real HLAE killfeed, own MIT radar renderer, verified optional local lineup/portrait metadata, competition/series/results, public reference spotlights, sponsors/branding/ticker and deduplicated lower-third production actions.
 
