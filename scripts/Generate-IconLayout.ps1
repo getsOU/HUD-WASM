@@ -9,7 +9,7 @@ $lines = [Collections.Generic.List[string]]::new()
 $lines.Add('/* Derived from docs/cs2-icon-geometry.json; original SVG bytes are unchanged. */')
 function Number([double]$Value) { $Value.ToString('0.#######', [Globalization.CultureInfo]::InvariantCulture) }
 foreach ($icon in $document.icons) {
-    if ($icon.empty) { continue }
+    if ($icon.PSObject.Properties['empty'] -and $icon.empty) { continue }
     if ($icon.key -cnotmatch '^(weapons|ui|killfeed)/[a-z0-9_]+$') { throw 'Invalid icon key.' }
     $left = [Math]::Max(0, $icon.x - .02 * $icon.sourceHeight / $icon.sourceWidth)
     $top = [Math]::Max(0, $icon.y - .02)
