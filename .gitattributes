@@ -1,5 +1,7 @@
 * text=auto eol=lf
 *.png binary
 *.souhud binary
+# Preserve original game assets byte for byte against the provenance inventory.
+src/BasicHud/wwwroot/assets/** -text
 # Upstream license notices retain their original whitespace.
 LICENSES/** -whitespace
