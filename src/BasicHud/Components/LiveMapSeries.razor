@@ -1,0 +1,15 @@
+@if (Context.Match is { Maps.Count: > 0 } match)
+{
+    <section class="live-map-series" aria-label="@($"Best of {match.BestOf} map series; scores are {match.TeamA.Name} then {match.TeamB.Name}")">
+        @foreach (var map in match.Maps.OrderBy(map => map.Number).Take(9))
+        {
+            var current = MatchPresentation.IsCurrentMap(Context.Game, map);
+            <article class="@(current ? "is-current" : map.Status == MapResultStatus.Completed ? "is-complete" : "")" aria-current="@(current ? "step" : null)">
+                <strong title="@map.Name">@map.Name</strong>
+                @if (map.Status == MapResultStatus.Completed && map.ScoreA is >= 0 && map.ScoreB is >= 0) { <span class="map-result" aria-label="@($"{match.TeamA.Name} {map.ScoreA}, {match.TeamB.Name} {map.ScoreB}")">@map.ScoreA<span>:</span>@map.ScoreB</span> }
+                else if (current) { <span class="map-current-dot" aria-label="Current map"></span> }
+            </article>
+        }
+    </section>
+}
+@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

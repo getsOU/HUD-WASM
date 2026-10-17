@@ -3,13 +3,13 @@
 The `radar/`, `weapons/`, `killfeed/`, and `ui/` artwork was exported directly
 from the locally installed, public Counter-Strike 2 game archive on 2026-10-17.
 It is original game artwork, owned by Valve Corporation and the respective
-creators. It is **not covered by the HUD source code's MIT license**. No ownership,
+creators. It is **not relicensed by the HUD source license**. No ownership,
 endorsement, or unrestricted redistribution/commercial license is claimed.
 
 This HUD is an independent community project and is not endorsed by Valve.
 Counter-Strike and its marks belong to Valve Corporation. Anyone reusing the
 artwork must consider its owners' applicable terms separately from this project's
-MIT source license.
+source license.
 
 ## Provenance
 

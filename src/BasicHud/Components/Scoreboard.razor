@@ -1,17 +1,26 @@
-<header class="scoreboard">
-    <div class="caption" title="@Context.Competition">@if (Context.ResolveMedia(Context.Text("branding", "logo")) is { } logo) { <ImageTile Source="@logo" Label="Broadcast logo" Class="caption-logo" OmitFallback="true" /> }@Caption @if (Context.Competition is { Length: > 0 } competition) { <span> · @competition</span> }</div>
+<header class="scoreboard @(string.IsNullOrEmpty(Heading) ? "without-caption" : "")">
+    @if (!string.IsNullOrEmpty(Heading))
+    {
+        <div class="caption">@if (Context.ResolveMedia(Context.Text("branding", "logo")) is { } logo) { <ImageTile Source="@logo" Label="Broadcast logo" Class="caption-logo" OmitFallback="true" /> }@Heading</div>
+    }
     <div class="score-strip">
-        <div class="team-heading ct"><ImageTile Source="@Context.ResolveMedia(Context.SideTeam(TeamSide.CounterTerrorists)?.Logo)" Label="@View.Ct.Name" Class="team-logo" OmitFallback="true" /><span class="team-name" title="@View.Ct.Name">@View.Ct.Name</span></div>
+        <div class="team-heading ct"><ImageTile Source="@Context.ResolveMedia(Context.SideTeam(TeamSide.CounterTerrorists)?.Logo)" Label="@View.Ct.Name" Class="team-logo" OmitFallback="true" /><div class="team-identity"><span class="team-name" title="@View.Ct.Name">@View.Ct.Name</span>@SeriesWins(TeamSide.CounterTerrorists)</div></div>
         <div class="score ct">@View.Ct.Score</div>
-        <div class="clock @(View.Timer.IsBomb ? "bomb-clock" : "")"><span class="clock-label">@View.Timer.Label</span><strong>@View.Timer.Value</strong></div>
+        <div class="clock @(View.Timer.IsBomb ? "bomb-clock" : "")">@if (MatchPresentation.RoundLabel(Context.Game, View.Timer) is { Length: > 0 } label) { <span class="clock-label">@label</span> }<strong>@View.Timer.Value</strong></div>
         <div class="score t">@View.T.Score</div>
-        <div class="team-heading t"><span class="team-name" title="@View.T.Name">@View.T.Name</span><ImageTile Source="@Context.ResolveMedia(Context.SideTeam(TeamSide.Terrorists)?.Logo)" Label="@View.T.Name" Class="team-logo" OmitFallback="true" /></div>
+        <div class="team-heading t"><div class="team-identity"><span class="team-name" title="@View.T.Name">@View.T.Name</span>@SeriesWins(TeamSide.Terrorists)</div><ImageTile Source="@Context.ResolveMedia(Context.SideTeam(TeamSide.Terrorists)?.Logo)" Label="@View.T.Name" Class="team-logo" OmitFallback="true" /></div>
     </div>
-    <div class="match-meta"><span>@View.Map</span><span>@View.Round</span><span>@View.Phase</span>@if (Context.Match is { } match) { <span>@($"BO{match.BestOf} · {match.TeamA.SeriesWins}–{match.TeamB.SeriesWins}")</span>@if (ShowSeries && match.Maps.Count > 0) { <span class="inline-series" title="@string.Join(" · ", match.Maps.Select(map => map.Name))">@string.Join(" · ", match.Maps.OrderBy(map => map.Number).Select(map => $"{map.Name}{(map.ScoreA is not null || map.ScoreB is not null ? $" {BroadcastContext.Number(map.ScoreA)}:{BroadcastContext.Number(map.ScoreB)}" : "")}"))</span> } }</div>
 </header>
 @code {
     [Parameter, EditorRequired] public HudView View { get; set; } = HudView.Empty;
     [Parameter, EditorRequired] public string Caption { get; set; } = string.Empty;
     [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
     [Parameter] public bool ShowSeries { get; set; } = true;
+    private string Heading => MatchPresentation.Caption(Context, Caption);
+    private RenderFragment SeriesWins(TeamSide side) => @<text>
+        @if (ShowSeries && MatchPresentation.SeriesTarget(Context.Match) is { } target && Context.SideTeam(side) is { } team && team.SeriesWins >= 0 && team.SeriesWins <= target)
+        {
+            <span class="series-wins" role="img" aria-label="@($"{team.Name}: {team.SeriesWins} maps won in best of {Context.Match!.BestOf}")">@for (var index = 0; index < target; index++) { <i class="@(index < team.SeriesWins ? "won" : "")"></i> }</span>
+        }
+    </text>;
 }

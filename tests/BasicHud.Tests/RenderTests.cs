@@ -65,6 +65,30 @@ static class RenderTests
             check(overviewHandler != 0, "actual product Radar registers a native SVG image onerror callback");
             await renderer.DispatchEventAsync(overviewHandler, null, EventArgs.Empty);
             check(failedOverview == overview, "dispatching the SVG image error invokes OverviewFailed with the actual image identity");
+            await renderer.Render(radar, new() { [nameof(Radar.View)] = new RadarView("Relative positions", null, [new("one", "1", 50, 50, 0, TeamSide.CounterTerrorists, false, "player")]) });
+            check(!renderer.HasElement(radar, "svg") && renderer.HasMarkup(radar, "Radar unavailable"), "an unavailable map renders one compact exceptional indicator and no substitute grid or relative markers");
+
+            var referenceGame = new GameState("de_dust2", MatchPhase.Live, 5, RoundPhase.Live, new("CT", 3), new("T", 1), null, [])
+            { Countdown = new(CountdownPhase.Live, 90), RoundWins = [new(1, TeamSide.CounterTerrorists, RoundWinReason.TimeExpired)] };
+            var referenceMatch = new ManagedMatch("match", "Match", 3, new("a", "Alpha", "A", null, 1), new("b", "Bravo", "B", null, 0),
+                new(TeamSide.CounterTerrorists, TeamRecognitionStatus.Recognized, "b", 0, 0), new(TeamSide.Terrorists, TeamRecognitionStatus.Recognized, "a", 0, 0))
+            { Maps = [new("inferno", "Inferno", "de_inferno", 2)] };
+            BroadcastContext reference = new(new(2, Guid.NewGuid(), 1, null, DataFreshness.Live, referenceGame) { ManagedMatch = referenceMatch }, null, MetadataCatalog.Empty, DateTimeOffset.UtcNow, _ => null);
+            var scoreboard = renderer.Attach(new Scoreboard());
+            await renderer.Render(scoreboard, new() { [nameof(Scoreboard.Context)] = reference, [nameof(Scoreboard.View)] = HudView.From(reference.Snapshot), [nameof(Scoreboard.Caption)] = "Chosen caption" });
+            check(renderer.HasText(scoreboard, "Chosen caption") && renderer.HasText(scoreboard, "ROUND 5") && !renderer.HasText(scoreboard, "de_dust2") && !renderer.HasAttribute(scoreboard, "class", "match-meta"), "actual header renders one caption and central round without diagnostic map/phase/series strip");
+            check(renderer.HasAttribute(scoreboard, "aria-label", "Bravo: 0 maps won in best of 3") && renderer.HasAttribute(scoreboard, "aria-label", "Alpha: 1 maps won in best of 3"), "actual side-aligned series marks follow swapped team identities instead of TeamA order");
+            var series = renderer.Attach(new LiveMapSeries());
+            await renderer.Render(series, new() { [nameof(LiveMapSeries.Context)] = reference });
+            check(renderer.HasText(series, "Inferno") && !renderer.HasAttribute(series, "aria-current", "step") && !renderer.HasText(series, "Pending"), "actual compact map series does not mark unrelated Inferno current during Dust2 or expose technical status names");
+            var history = renderer.Attach(new RoundHistory());
+            await renderer.Render(history, new() { [nameof(RoundHistory.Context)] = reference });
+            check(!renderer.HasElement(history, "section"), "actual history component has no residual DOM during live combat");
+            var frozenReference = reference with { Snapshot = reference.Snapshot! with { Game = referenceGame with { RoundPhase = RoundPhase.FreezeTime, Countdown = new(CountdownPhase.FreezeTime, 12) } } };
+            await renderer.Render(history, new() { [nameof(RoundHistory.Context)] = frozenReference });
+            check(renderer.HasElement(history, "section") && renderer.HasText(history, "1") && renderer.HasDescendantText(history, "Time expired"), "actual freeze history renders numbered results and the correct result icon description");
+            await renderer.Render(history, new() { [nameof(RoundHistory.Context)] = reference, [nameof(RoundHistory.Always)] = true });
+            check(renderer.HasElement(history, "section"), "statistics history explicitly stays available independently of live-phase gating");
         });
         if (renderer.Exception is { } exception) throw new InvalidOperationException("Actual component render or event failed.", exception);
     }

@@ -1,3 +1,14 @@
+# 0.4.0
+
+Replaces the live header's technical metadata strip with one optional caption, central source round/state label and correctly side-aligned series-win marks. Actual timer and round scores remain dominant. Compact ordered map-series cells below the radar show complete stored scores and exact current-map identity; an unrelated source map never claims a current configured slot. No repeated phase, raw map ID or partial `13:—` result is broadcast.
+
+Numbered recent round results appear only during actual freeze/pause/team timeout/intermission. Live combat, bomb/defuse and round-over remove the area entirely. The statistics scene retains complete supplied history. Time-expired, hostage and unknown results no longer become elimination skulls.
+
+Adds the original Boltobserv radar maps, format-4 coordinates, transparent terrain/logo/buyzone layers, player marker shapes and utility images. Every object uses the original Nuke/Vertigo split offsets on the composite images. Buyzones follow source freeze/warmup; observed ring, observer digits, directions, bomb carrier, flashes/deaths, projectile icons, source smoke/flash effects and individual flames remain connected to actual public fields. Valid local custom maps and separate Valve fallbacks remain supported. Missing maps show a compact unavailable indicator, with no replacement grid or permanent diagnostics.
+
+This release is GPL-3.0-only following the original Boltobserv integration. Original source, map-specific license texts, provenance/hashes and separate Valve notices ship with the package. Earlier MIT releases and the MIT public SDK remain unchanged. See `LICENSING.md`.
+
+Install `sou-basic-wasm-0.4.0.souhud`, select the new version and reopen outputs. All eight views, saved compatible caption/Hide controls, transparent canvas and public SDK `0.2.0-preview.4` remain supported. Native CS2/OBS capture is a separate practical acceptance step.
 # 0.3.0
 
 Rebuilds the live composition around the game: compact two-line bottom-corner rosters, small header/series/history, compact observer card and sponsor rail, with economy in roster footers. The central game area remains clear during normal output. Missing live portraits and logos no longer create replacement boxes; presentation scenes retain neutral fallbacks.

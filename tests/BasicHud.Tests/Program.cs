@@ -58,10 +58,10 @@ captionOnly.Values["display"]["caption"] = JsonSerializer.SerializeToElement("My
 Check(DisplayOptions.FromPanel(captionOnly) == new DisplayOptions("My cast", true, true), "saving only a caption keeps both sections visible at revision one");
 var rosterHidden = HostDefault(2);
 rosterHidden.Values["display"]["hideRosters"] = JsonSerializer.SerializeToElement(true);
-Check(DisplayOptions.FromPanel(rosterHidden) == new DisplayOptions("sOU BASIC", false, true), "true hides only rosters without hiding the observed player");
+Check(DisplayOptions.FromPanel(rosterHidden) == new DisplayOptions("", false, true), "true hides only rosters without hiding the observed player");
 var observedHidden = HostDefault(3);
 observedHidden.Values["display"]["hideObservedPlayer"] = JsonSerializer.SerializeToElement(true);
-Check(DisplayOptions.FromPanel(observedHidden) == new DisplayOptions("sOU BASIC", true, false), "true hides only the observed player without hiding rosters");
+Check(DisplayOptions.FromPanel(observedHidden) == new DisplayOptions("", true, false), "true hides only the observed player without hiding rosters");
 rosterHidden.Values["display"]["hideRosters"] = JsonSerializer.SerializeToElement(false);
 observedHidden.Values["display"]["hideObservedPlayer"] = JsonSerializer.SerializeToElement(false);
 Check(DisplayOptions.FromPanel(rosterHidden) == DisplayOptions.Default && DisplayOptions.FromPanel(observedHidden) == DisplayOptions.Default,
@@ -97,6 +97,7 @@ await using (var brokenHud = new HudSession(broken))
 await ShowcaseTests.Run(Check);
 await RenderTests.Run(Check);
 await CompactTests.Run(Check);
+await BroadcastReferenceTests.Run(Check);
 Console.WriteLine($"{checks} checks passed.");
 
 static async Task Until(Func<bool> ready)

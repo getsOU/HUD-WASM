@@ -1,14 +1,13 @@
-<section class="round-history" aria-label="Round history">
-    @if (Context.Game?.RoundWins is { IsDefault: false } rounds && rounds.Length > 0)
-    {
-        @foreach (var round in rounds.TakeLast(30))
+@if ((Always || MatchPresentation.ShowHistory(Context.Game)) && MatchPresentation.History(Context.Game, Always) is { Count: > 0 } results)
+{
+    <section class="round-history" aria-label="Recent round results">
+        @foreach (var round in results)
         {
-            <span class="history-round @PlayerPresentation.SideClass(round.Winner)" title="@($"Round {round.RoundNumber}: {round.Winner}, {round.Reason}")"><StatusIcon Name="@Reason(round.Reason)" Label="@($"Round {round.RoundNumber}: {round.Winner}, {round.Reason}")" /></span>
+            <span class="history-round @PlayerPresentation.SideClass(round.Winner)" title="@($"Round {round.RoundNumber}: {round.Winner}, {MatchPresentation.Reason(round.Reason)}")"><small>@round.RoundNumber</small><StatusIcon Name="@MatchPresentation.ReasonIcon(round.Reason)" Label="@MatchPresentation.Reason(round.Reason)" /></span>
         }
-    }
-    else { <span class="muted">Round history —</span> }
-</section>
+    </section>
+}
 @code {
     [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
-    private static string Reason(RoundWinReason reason) => reason switch { RoundWinReason.Elimination => "dead", RoundWinReason.BombExploded => "bomb", RoundWinReason.BombDefused => "kit", RoundWinReason.TimeExpired => "time", _ => "unknown" };
+    [Parameter] public bool Always { get; set; }
 }

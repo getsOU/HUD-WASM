@@ -1,0 +1,671 @@
+{
+  "schemaVersion": 1,
+  "upstream": "https://github.com/boltgolt/boltobserv",
+  "revision": "0320883198e438cd6ae9fd490fa310027003727e",
+  "sourceArchive": {
+    "fileName": "BOLTOBSERV-SOURCE.zip",
+    "packagePaths": {
+      "wasm": "LICENSES/BOLTOBSERV-SOURCE.zip",
+      "react": "licenses/BOLTOBSERV-SOURCE.zip"
+    },
+    "bytes": 2269855,
+    "sha256": "c808f6601727d41040c17c4b640bca60dcdb68655638a6d00833e3f020acd65e"
+  },
+  "assets": [
+    {
+      "source": "src/img/adv-defuse.webp",
+      "path": "assets/boltobserv/img/adv-defuse.webp",
+      "bytes": 3550,
+      "sha256": "f2c4e703cf31fa4dfb80c439629495a75e9c8dbf6560f3b39990c216f2ba4a30",
+      "gitBlob": "269126f7045f884aea1b6e22c0d45890d6177474",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/adv-plant.webp",
+      "path": "assets/boltobserv/img/adv-plant.webp",
+      "bytes": 936,
+      "sha256": "efe5b6ab9a716d42f77441094b347abda1194b6dca092998fef993200248142a",
+      "gitBlob": "5b5f8243a92de0773ea25a16a41e0b94b918df73",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/adv-solesurvivor.webp",
+      "path": "assets/boltobserv/img/adv-solesurvivor.webp",
+      "bytes": 3030,
+      "sha256": "d3eb820bb68af7190bed2a907df8bc273106e28f3349f4b714ca728381e96768",
+      "gitBlob": "fff4be05689ff6cc35f3fb49681576ef3676b355",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/bomb-defused.webp",
+      "path": "assets/boltobserv/img/bomb-defused.webp",
+      "bytes": 904,
+      "sha256": "f05a66b90cdc535a2b98a3fe42a6c90a8c60d00a233e950c04b81317d43f1f7b",
+      "gitBlob": "637a9cda7c469ed0e9d47d410670ed3ba271317e",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/bomb-dropped.webp",
+      "path": "assets/boltobserv/img/bomb-dropped.webp",
+      "bytes": 984,
+      "sha256": "ad20d74b44952093a561f2857037cc338af27fd2433017345a9c12390cbeb7a0",
+      "gitBlob": "071e9cbabb62d7d0b52de97a69062caf74ee0291",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/bomb-planted.webp",
+      "path": "assets/boltobserv/img/bomb-planted.webp",
+      "bytes": 936,
+      "sha256": "dc4e5c2a642ed1f137b3f961748c46f01225e5fcbcd850c5dd8ed803a1769ce3",
+      "gitBlob": "2c4f3ded655b669d6a48b2c2c0ab1517c7ea12ed",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/empty.webp",
+      "path": "assets/boltobserv/img/empty.webp",
+      "bytes": 72,
+      "sha256": "78314b2a0afc11f8512802517d3497f25e333e4a858293af2e2deb62c99753ff",
+      "gitBlob": "229f709189f4cf01884464181ed626f6470e8d33",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-hc-firebomb-CT.webp",
+      "path": "assets/boltobserv/img/projectile-hc-firebomb-CT.webp",
+      "bytes": 1676,
+      "sha256": "3449f9fd413d45079bae2500899adf80b41358cfd964d4144b12285bd6fa6b8e",
+      "gitBlob": "2e3eb276d0e6fd00be81ec5725bf410ca30a6179",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-hc-firebomb-T.webp",
+      "path": "assets/boltobserv/img/projectile-hc-firebomb-T.webp",
+      "bytes": 1640,
+      "sha256": "09fb54513dd7001eecded4ce4865a01563096a377295a49f46fae2d9092a5a2e",
+      "gitBlob": "7f26f5c4c2a691f6befcb7928834297ad0e67a5b",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-hc-flashbang-CT.webp",
+      "path": "assets/boltobserv/img/projectile-hc-flashbang-CT.webp",
+      "bytes": 1118,
+      "sha256": "4c7497df9121c1e50a5b796a1fd8d1b3551c6e27b07f0d002bdeb1c3edb0929d",
+      "gitBlob": "c6f17f28cf3146031bd472a61b885c3c69c19d40",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-hc-flashbang-T.webp",
+      "path": "assets/boltobserv/img/projectile-hc-flashbang-T.webp",
+      "bytes": 1112,
+      "sha256": "c528b476e57c7e8137bebb3f1d4c447acfdb6805a99515a4dec3699257e935f0",
+      "gitBlob": "7d8872ec79de55cf964d1cd194607f177a085179",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-hc-frag-CT.webp",
+      "path": "assets/boltobserv/img/projectile-hc-frag-CT.webp",
+      "bytes": 1144,
+      "sha256": "531e6fc8d0da9781145a2cd1168556b8be7ed94553558c81c9f490f375526eaf",
+      "gitBlob": "53e93da7754d9da45700087e418424b7b8ff1535",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-hc-frag-T.webp",
+      "path": "assets/boltobserv/img/projectile-hc-frag-T.webp",
+      "bytes": 1160,
+      "sha256": "6ae4dfede4c66f0076d3043aafe7609999cdb1055dff2f8b4a05bf0aefe79227",
+      "gitBlob": "b1fd35a67da7f71861ab35ff36daa4a2cbc0bd33",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-hc-smoke-CT.webp",
+      "path": "assets/boltobserv/img/projectile-hc-smoke-CT.webp",
+      "bytes": 1930,
+      "sha256": "847f1db372128a359b4bc91e39aaf6108138cd5b96fc0267d15855a1ad83f2f0",
+      "gitBlob": "607919409f7c2954705da85c6238dcd94befe4b5",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-hc-smoke-T.webp",
+      "path": "assets/boltobserv/img/projectile-hc-smoke-T.webp",
+      "bytes": 1946,
+      "sha256": "3b403183461bdff0cab9c042c3968b3020eb5a29ab0262665a8d73d533d701fe",
+      "gitBlob": "c104e6a3b05674dbb240807cad8abfbf46e2f8c2",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-img-firebomb-CT.webp",
+      "path": "assets/boltobserv/img/projectile-img-firebomb-CT.webp",
+      "bytes": 1600,
+      "sha256": "59655e401be2be928b2acf14a69fbd591ac4196abe80c078c724572f225f6e5b",
+      "gitBlob": "10031065cd01ba6dc18bf11c4fd16b9cdcff5019",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-img-firebomb-T.webp",
+      "path": "assets/boltobserv/img/projectile-img-firebomb-T.webp",
+      "bytes": 1876,
+      "sha256": "a13e2d78fdde789aff16c9180d6a12da19e178d6d6d1a03211839f8ec616d028",
+      "gitBlob": "7876670eb3605ead009ae5b2de9ce759a11fd3c2",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-img-flashbang-CT.webp",
+      "path": "assets/boltobserv/img/projectile-img-flashbang-CT.webp",
+      "bytes": 2232,
+      "sha256": "35685ffee2cda9f2b095a5721810e0caa3984b691d253ba5f7d0c2fb5b4839a0",
+      "gitBlob": "719e14fdbe1407762c765a13ba321b7400427071",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-img-flashbang-T.webp",
+      "path": "assets/boltobserv/img/projectile-img-flashbang-T.webp",
+      "bytes": 2286,
+      "sha256": "7cb1885e027e479fafc560308994819f3b549e81df62f5c659c0a378f62a0360",
+      "gitBlob": "bf617e73d43b3bb1a9ac438569ba1cdee7c76d43",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-img-frag-CT.webp",
+      "path": "assets/boltobserv/img/projectile-img-frag-CT.webp",
+      "bytes": 1508,
+      "sha256": "f3e48b084036ac8d93bb0b1e2b89c4cb93e3d93e857b1b274cddc2da1cb6d356",
+      "gitBlob": "0885d37f99684d1d5d99a0c41e0c07ed72bf861f",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-img-frag-T.webp",
+      "path": "assets/boltobserv/img/projectile-img-frag-T.webp",
+      "bytes": 1548,
+      "sha256": "2f173a8ccdb2876c49e21c2820f73bd32f8bcb5da4bae9753d2f003cc17e014d",
+      "gitBlob": "3d9d5a0a14bafe961948a7e7cdb036479d992271",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-img-smoke-CT.webp",
+      "path": "assets/boltobserv/img/projectile-img-smoke-CT.webp",
+      "bytes": 1408,
+      "sha256": "13de02e50792a972d3670fd8490051cd8339293155752252ca7913478dc0c2a2",
+      "gitBlob": "2ac81f685cd7dadce17a72fa8ea62e120831715c",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/img/projectile-img-smoke-T.webp",
+      "path": "assets/boltobserv/img/projectile-img-smoke-T.webp",
+      "bytes": 1432,
+      "sha256": "f05d77e74c715738ecf84e0b54d862afe96e672265c1b6431c81cf570a3f797e",
+      "gitBlob": "613543564a9d35b23e677d44dd14f92cdabbd53e",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_ancient/LICENSE",
+      "path": "assets/boltobserv/maps/de_ancient/LICENSE",
+      "bytes": 1066,
+      "sha256": "d05cb177a8de5a1b3903dbeef22e35c8da1f05fa4ba9f7e38d9d5f8f8eeaa86c",
+      "gitBlob": "63aefbf3fe186ba1a7eba0409891cc84c58118de",
+      "license": "MIT"
+    },
+    {
+      "source": "src/maps/de_ancient/meta.json5",
+      "path": "assets/boltobserv/maps/de_ancient/meta.json5",
+      "bytes": 965,
+      "sha256": "e5072830f3286304b91136eac990234554f887907a70abeebb11502a30df0cb9",
+      "gitBlob": "f901c33f3eb89d79e43c8246fb2d60115ba13f1e",
+      "license": "MIT"
+    },
+    {
+      "source": "src/maps/de_ancient/overlay_buyzones.png",
+      "path": "assets/boltobserv/maps/de_ancient/overlay_buyzones.png",
+      "bytes": 24554,
+      "sha256": "7a308c0da0cb06b90efc3911fca271011254407f8d7f54f5e4a0d2ee3d1d6b6a",
+      "gitBlob": "ebf4201692441ed9ccc20b91b6ffb3914599dd59",
+      "license": "MIT"
+    },
+    {
+      "source": "src/maps/de_ancient/overlay_logos.png",
+      "path": "assets/boltobserv/maps/de_ancient/overlay_logos.png",
+      "bytes": 37102,
+      "sha256": "768b45e2e7ea91c0326024b9bb215e43c7645189fc20e39dcf6bcea7bde4f87a",
+      "gitBlob": "97bece28bbd2ce324d696f4d7d4fd4bedf059ffe",
+      "license": "MIT"
+    },
+    {
+      "source": "src/maps/de_ancient/radar.png",
+      "path": "assets/boltobserv/maps/de_ancient/radar.png",
+      "bytes": 200140,
+      "sha256": "34381b0349a145a75cf779ed8313425cd5602693a015b600d3d9b9bd2f0e6fe9",
+      "gitBlob": "c82e1b5ab06bc3d9385cd23df9e0a26fcb8b3dff",
+      "license": "MIT"
+    },
+    {
+      "source": "src/maps/de_anubis/LICENSE",
+      "path": "assets/boltobserv/maps/de_anubis/LICENSE",
+      "bytes": 1066,
+      "sha256": "d05cb177a8de5a1b3903dbeef22e35c8da1f05fa4ba9f7e38d9d5f8f8eeaa86c",
+      "gitBlob": "63aefbf3fe186ba1a7eba0409891cc84c58118de",
+      "license": "MIT"
+    },
+    {
+      "source": "src/maps/de_anubis/meta.json5",
+      "path": "assets/boltobserv/maps/de_anubis/meta.json5",
+      "bytes": 660,
+      "sha256": "c11bde50ae2df1aeb55e270720239f41326881afc9e45fd2831d8291fb215fb5",
+      "gitBlob": "5f447558dca0d562ee9ee97d841b57ef513fb799",
+      "license": "MIT"
+    },
+    {
+      "source": "src/maps/de_anubis/overlay_buyzones.png",
+      "path": "assets/boltobserv/maps/de_anubis/overlay_buyzones.png",
+      "bytes": 27088,
+      "sha256": "c5e1a96691448b4acb7c4941bde3f9897b4a98ac02ec6d4c5f776686fc031400",
+      "gitBlob": "fba2b62dfae5743b1d538fa9462bb9a8dadc7eab",
+      "license": "MIT"
+    },
+    {
+      "source": "src/maps/de_anubis/overlay_logos.png",
+      "path": "assets/boltobserv/maps/de_anubis/overlay_logos.png",
+      "bytes": 30984,
+      "sha256": "c6f5b0c3a221d9c9d312b5eb93b8c8120288d1502bb65e169b74d67c2bec352a",
+      "gitBlob": "5385b66b7c274863cce92251e924bbaeea725869",
+      "license": "MIT"
+    },
+    {
+      "source": "src/maps/de_anubis/radar.png",
+      "path": "assets/boltobserv/maps/de_anubis/radar.png",
+      "bytes": 361480,
+      "sha256": "a117c55fcd6690c74210125c2f409a32b9348c931213b388cf3ab5ed0c3d47ae",
+      "gitBlob": "693bd377b6b0b91559c3c67fe84b0ab11973cfee",
+      "license": "MIT"
+    },
+    {
+      "source": "src/maps/de_cache/meta.json5",
+      "path": "assets/boltobserv/maps/de_cache/meta.json5",
+      "bytes": 553,
+      "sha256": "ae33048c4229ff443a19cdaa3c0f38aa77c6ec699ecde3507d6dd86d2d95a7b8",
+      "gitBlob": "f12a8f5bd1f6f3223ed441d57c51c7ce87c251b2",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_cache/overlay_buyzones.png",
+      "path": "assets/boltobserv/maps/de_cache/overlay_buyzones.png",
+      "bytes": 24452,
+      "sha256": "fc77dbbf75cd748ce284db5abf7e1017449cc34b94a539af15a301423fd2955c",
+      "gitBlob": "4c12d50ac1c3516ac7b2b763430aca95939b90f8",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_cache/overlay_logos.png",
+      "path": "assets/boltobserv/maps/de_cache/overlay_logos.png",
+      "bytes": 38148,
+      "sha256": "26628c1ae16ba824c2bc9ebaf9f908525623db877bc8061f961d4a2b80af0666",
+      "gitBlob": "4f6713cbbee3fbb53d176c944bcb4a7cb975dd49",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_cache/radar.png",
+      "path": "assets/boltobserv/maps/de_cache/radar.png",
+      "bytes": 132550,
+      "sha256": "2f2e26043469a962a141e2f23b649c8750a71d02d3f4a7ab6a703e4046b27d2d",
+      "gitBlob": "4341e7a9e1f73a900b561f2118594aef98f3d023",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_dust2/meta.json5",
+      "path": "assets/boltobserv/maps/de_dust2/meta.json5",
+      "bytes": 968,
+      "sha256": "a4a6d5819d9951488c47f56e2cccc0ca90df3759450ec228cb2ebd1c62dcc3c5",
+      "gitBlob": "214566498241764d6776f4e378b0726fb22b7db4",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_dust2/overlay_buyzones.png",
+      "path": "assets/boltobserv/maps/de_dust2/overlay_buyzones.png",
+      "bytes": 30372,
+      "sha256": "ca917bb34f7d944befeca4817b96ce3cc7cef823fa97f3e00a28f087862e33bd",
+      "gitBlob": "3bc5990eba3c7ced08d23d83840cb5d811e83956",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_dust2/overlay_logos.png",
+      "path": "assets/boltobserv/maps/de_dust2/overlay_logos.png",
+      "bytes": 38158,
+      "sha256": "438ecdc2f2a80cf3d578d81a3b866b168be369cbf82391a73ed83b576ddcb387",
+      "gitBlob": "44817ab253d86d5cf1a160b4a5672a900fce051e",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_dust2/radar.png",
+      "path": "assets/boltobserv/maps/de_dust2/radar.png",
+      "bytes": 183510,
+      "sha256": "058db75547a934f35da928c20048edaa51152fd1028eba42a310bb4d6144f977",
+      "gitBlob": "6c4749e0c9e71969c6f4c6db39a80ad6fd6f768c",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_inferno/meta.json5",
+      "path": "assets/boltobserv/maps/de_inferno/meta.json5",
+      "bytes": 965,
+      "sha256": "21d47414a0cd718681807e3105fa9371db0b5782ec8a140a3e89294610e73872",
+      "gitBlob": "04a554aeac4ede6df562cf4620ac128913a561d3",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_inferno/overlay_buyzones.png",
+      "path": "assets/boltobserv/maps/de_inferno/overlay_buyzones.png",
+      "bytes": 31489,
+      "sha256": "21fe97f2a5938930efb5f4b5fdb795acaa6bb0ab5bc5f3fe36f10bc662400b26",
+      "gitBlob": "4ad134ad325356819ec5f2ca1449c5ca0278ebd2",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_inferno/overlay_logos.png",
+      "path": "assets/boltobserv/maps/de_inferno/overlay_logos.png",
+      "bytes": 38148,
+      "sha256": "26628c1ae16ba824c2bc9ebaf9f908525623db877bc8061f961d4a2b80af0666",
+      "gitBlob": "4f6713cbbee3fbb53d176c944bcb4a7cb975dd49",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_inferno/radar.png",
+      "path": "assets/boltobserv/maps/de_inferno/radar.png",
+      "bytes": 173365,
+      "sha256": "ebbb73cf9a73b80e699d7765476c7bb490ba2524189ead14db6ed2a1a0bacc99",
+      "gitBlob": "0443ec48c343bb74b9967e2a9dd0a9cc1e1ed12d",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_mirage/meta.json5",
+      "path": "assets/boltobserv/maps/de_mirage/meta.json5",
+      "bytes": 968,
+      "sha256": "36626324efc6e633ed957481615f1ab38ac0020055430ce6e56f766191c2cc4e",
+      "gitBlob": "605b8636bf02ee2bed8f4b69e98094d6585280d8",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_mirage/overlay_buyzones.png",
+      "path": "assets/boltobserv/maps/de_mirage/overlay_buyzones.png",
+      "bytes": 25844,
+      "sha256": "65263aed6d7e33b3e5f2314536b998807ae9ca9d9502044bb309622553e453aa",
+      "gitBlob": "b6dcd1f97825e7d4e74b34cdf45783b5d6429657",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_mirage/overlay_logos.png",
+      "path": "assets/boltobserv/maps/de_mirage/overlay_logos.png",
+      "bytes": 38148,
+      "sha256": "26628c1ae16ba824c2bc9ebaf9f908525623db877bc8061f961d4a2b80af0666",
+      "gitBlob": "4f6713cbbee3fbb53d176c944bcb4a7cb975dd49",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_mirage/radar.png",
+      "path": "assets/boltobserv/maps/de_mirage/radar.png",
+      "bytes": 119422,
+      "sha256": "13daee22f5807f0e3672bc42b606bfd273ef913dc01f5720b2215e6a2239063e",
+      "gitBlob": "f28cbef2a307362c7c10089fed3b0dbeb717ab51",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_nuke/meta.json5",
+      "path": "assets/boltobserv/maps/de_nuke/meta.json5",
+      "bytes": 1550,
+      "sha256": "32dc87a300f343b7c555167674f00571b1602c37d37e739c12c84b6487a30941",
+      "gitBlob": "1eac15f7428fe6e063c99726567b3c188a878a51",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_nuke/overlay_buyzones.png",
+      "path": "assets/boltobserv/maps/de_nuke/overlay_buyzones.png",
+      "bytes": 24559,
+      "sha256": "510af23404d77ec0f949e0a07814aa795806eee312dd9c5231ee1a30996bc946",
+      "gitBlob": "cb0d226f53af5fa9337aa9814f3a170d219645b9",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_nuke/overlay_logos.png",
+      "path": "assets/boltobserv/maps/de_nuke/overlay_logos.png",
+      "bytes": 38148,
+      "sha256": "26628c1ae16ba824c2bc9ebaf9f908525623db877bc8061f961d4a2b80af0666",
+      "gitBlob": "4f6713cbbee3fbb53d176c944bcb4a7cb975dd49",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_nuke/radar.png",
+      "path": "assets/boltobserv/maps/de_nuke/radar.png",
+      "bytes": 116890,
+      "sha256": "8e9651be759665480a91b35de036e57e7feeb6e8537f6c4fb95c3f953925f4b8",
+      "gitBlob": "ef632ef7f973b8556d307db013c2ff1a22e6cad7",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_overpass/meta.json5",
+      "path": "assets/boltobserv/maps/de_overpass/meta.json5",
+      "bytes": 965,
+      "sha256": "0367728ce03b604735f64289ff50bc7f8da24627e4bcdbec12012fdb003267c2",
+      "gitBlob": "7c2ebff94c7894ee84dab1498e39d2df572378e0",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_overpass/overlay_buyzones.png",
+      "path": "assets/boltobserv/maps/de_overpass/overlay_buyzones.png",
+      "bytes": 44755,
+      "sha256": "ccdb3475447c7fbdf41e4723888635b4af6995995074ab415d4456b6c1e7a368",
+      "gitBlob": "0effa1715bfb3f02c5c9054a0ed67d5270bac968",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_overpass/overlay_logos.png",
+      "path": "assets/boltobserv/maps/de_overpass/overlay_logos.png",
+      "bytes": 38148,
+      "sha256": "26628c1ae16ba824c2bc9ebaf9f908525623db877bc8061f961d4a2b80af0666",
+      "gitBlob": "4f6713cbbee3fbb53d176c944bcb4a7cb975dd49",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_overpass/radar.png",
+      "path": "assets/boltobserv/maps/de_overpass/radar.png",
+      "bytes": 308854,
+      "sha256": "b5d0f31e8d2258e342952a3412a225654a2be4ef9d261adca8dd78a657509177",
+      "gitBlob": "98d79d537d1aa2dc80c8c59d3210f2343fcb6e5b",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_train/meta.json5",
+      "path": "assets/boltobserv/maps/de_train/meta.json5",
+      "bytes": 966,
+      "sha256": "6c242698e8f29589260c71efc7770146f33b287f07ccd87fccf24950818e3b73",
+      "gitBlob": "ccefb7ff155e3d4eacfde20edf144b7e09d4f399",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_train/overlay_buyzones.png",
+      "path": "assets/boltobserv/maps/de_train/overlay_buyzones.png",
+      "bytes": 22348,
+      "sha256": "d3193d53edae40b0e616dc8b4d915c4fc43f58a0e247d74da14b8d2fdcbc1878",
+      "gitBlob": "fba5bc27d75ced0b1095d468dc46d065e3b7b2aa",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_train/overlay_logos.png",
+      "path": "assets/boltobserv/maps/de_train/overlay_logos.png",
+      "bytes": 30076,
+      "sha256": "bc96d56a1751b5deb82f7064f83b7bb7084684d87bcede771a8f5549544a57eb",
+      "gitBlob": "1a95fa612c215cfdfdd40656b85085bc40f46ec3",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_train/radar.png",
+      "path": "assets/boltobserv/maps/de_train/radar.png",
+      "bytes": 256114,
+      "sha256": "bbfd1d10931df7cc2f76ab676c6b0a7de4bd5f63f60efbc16c93ffba2eb3473d",
+      "gitBlob": "341016f90408a5626e8bfd8c128e5753cf68c3cc",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_vertigo/meta.json5",
+      "path": "assets/boltobserv/maps/de_vertigo/meta.json5",
+      "bytes": 1030,
+      "sha256": "8e44a65dfc388a53eb8c3efb89d134249f50ae6dc31de0af15e095c439d96cad",
+      "gitBlob": "07d9ed2c8cff2e005bcd7d65d388bc0566af13d0",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_vertigo/overlay_buyzones.png",
+      "path": "assets/boltobserv/maps/de_vertigo/overlay_buyzones.png",
+      "bytes": 22955,
+      "sha256": "76a8071c3873e682768cdcc150b227b343c9be216816ca782b94772c8f295bdb",
+      "gitBlob": "43015985e411ceeaebea65b6094ef3da203fc2d0",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_vertigo/overlay_logos.png",
+      "path": "assets/boltobserv/maps/de_vertigo/overlay_logos.png",
+      "bytes": 38549,
+      "sha256": "db5796bdbc9b1267ca7f52a9dd61e58f103727ea9349819a8bb5198ae96e13eb",
+      "gitBlob": "0f3351f8ebf2b2523ad969591bd34916bdcd7771",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/maps/de_vertigo/radar.png",
+      "path": "assets/boltobserv/maps/de_vertigo/radar.png",
+      "bytes": 88838,
+      "sha256": "1e713246692d74b22d8720cf2c0dfb99fac2e559d73d8a3b59a380d77362ce51",
+      "gitBlob": "6e7e964a4f1fe8956306d5c1675a685b131bdd22",
+      "license": "GPL-3.0"
+    }
+  ],
+  "generated": [
+    {
+      "path": "assets/boltobserv/maps.json",
+      "bytes": 6038,
+      "sha256": "a51b12ba07a6158d9a7a407484cb2e030dea4af440897e5f3ab07e76aa0fcc4f",
+      "derivedFrom": "src/maps/*/meta.json5 at pinned revision"
+    },
+    {
+      "path": "assets/boltobserv/catalog.json",
+      "bytes": 11263,
+      "sha256": "ebd7651850930f4d32e8d1b5cb6e658d175ae977c95c8a3a2fd323c417e45892",
+      "derivedFrom": "src/maps/*/meta.json5 at pinned revision"
+    }
+  ],
+  "referenceSources": [
+    {
+      "source": "LICENSE",
+      "bytes": 31876,
+      "sha256": "5c22b13febc62005211e021304c6d1ff95167d534440a77d6de90f921f1f1f4d",
+      "gitBlob": "8d1fbacdaaf13f952ba14031afde1afeb266bcbf",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "README.md",
+      "bytes": 7723,
+      "sha256": "5d66e08b52953f67de48cf46dc9ece4cd6e6e7958e79cb354bf6d445815141c1",
+      "gitBlob": "222c1988833437d34bab3f7df9a13888d7f4bd7c",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/config/config.json5",
+      "bytes": 5925,
+      "sha256": "8ce5e9eb352c97d670e134b5f4f69c7cad6b8285ca5e78753b9f552154e5356e",
+      "gitBlob": "3b60968122eb6772f2307a839ea1885204f33813",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/css/main.css",
+      "bytes": 493,
+      "sha256": "d7a551c25e61add5fd89bbb1ec14caadf399821ae252132e64fe9986ea0f2fe4",
+      "gitBlob": "88ce3e3501ff8e8875cf96f12bc1d3a8518ce5a8",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/css/map.css",
+      "bytes": 8880,
+      "sha256": "94e67c6ad3c8b195ec1fbb73d752ddff1aeb26acd4fa3b9ea5f41bd0db25d2cc",
+      "gitBlob": "11ca94627cb27cccc8ae972ddcf1362170cf3c0e",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/html/map.html",
+      "bytes": 2520,
+      "sha256": "b026faeb6b63283607a39cdb0c8eab333067f87ba5c872f13d1e438e029fbf58",
+      "gitBlob": "2ce6f9a0aa1f0e6f05b4e99a372fb14be45c0933",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/renderers/_global.js",
+      "bytes": 3138,
+      "sha256": "e343c4872a91f70a8ca93e485333ce40c24c0509801108b0b719127b28503f5b",
+      "gitBlob": "5cb9f0dce035b986f166f1b355e51cfcb93c7f6e",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/renderers/_init.js",
+      "bytes": 2826,
+      "sha256": "f6f65e70865bf9aef8e4d35c46a1668e94bd1d590c76d1dcbff7313eae8fe436",
+      "gitBlob": "ed266dc4b50f13a0cc8eccec9a08a7b05827caac",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/renderers/_map.js",
+      "bytes": 2624,
+      "sha256": "81e12566720d22f241e7e66a6a005b96a2c639241e29be43a19c84e96d67992f",
+      "gitBlob": "811b4c0998db67ec810f5f28e472941786764179",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/renderers/_socket.js",
+      "bytes": 3761,
+      "sha256": "801f30ff6fae9209bf773dfabd4106aec868ae4e10c19b2dd0a50f31b5e3dc8b",
+      "gitBlob": "39b0f6efcba303877439c3f7347f04d7b0608864",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/renderers/advisory.js",
+      "bytes": 1788,
+      "sha256": "5dd8fee36abe953d8e7a411ad0296fb787bd5c932a63b0fec8a1a52fc593dffb",
+      "gitBlob": "d4db656db5c75fa55142f513faab980be22275ee",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/renderers/bomb.js",
+      "bytes": 725,
+      "sha256": "873c1deee9fed827e7582673c9210798805f3a8c4d17b9b84e17070d05c1adb0",
+      "gitBlob": "0f332b156e7dc949d7b14c7945cae0c5780b70c9",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/renderers/loopFast.js",
+      "bytes": 5870,
+      "sha256": "f0acd8e78b3728b83aa112bebf7d485c70b37412ca8bdb2d1eebb72b802c2f43",
+      "gitBlob": "2b7ea33105013023709fea87f482ed35a471f932",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/renderers/loopSlow.js",
+      "bytes": 2802,
+      "sha256": "628e675f335ad664f4163fb58731155d27186d486d08623702ddae857048e4c6",
+      "gitBlob": "20819291ca61672a6e650da56858fdc435c2b328",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/renderers/playerPosition.js",
+      "bytes": 5720,
+      "sha256": "bd89044085cc965f2ddefc88614e3d013278c2504bb238d0087143db18f006be",
+      "gitBlob": "ee6756b5b8743cc52fecbbb1f80a50643da2a448",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/renderers/projectiles.js",
+      "bytes": 4875,
+      "sha256": "d316ec7f89a04bc9b01f891d0f95fdec2d1b32e376c37e02da877d8656c56e7c",
+      "gitBlob": "2aa498343afe43d6330046b192928ea26adcebb7",
+      "license": "GPL-3.0"
+    },
+    {
+      "source": "src/renderers/smokes.js",
+      "bytes": 7495,
+      "sha256": "19189f0a2d409bd646d388e841005ba250cc68cdfc248b922004b1a560f339db",
+      "gitBlob": "4f6435a2d66d832ece59e82a376023d4df5fa41d",
+      "license": "GPL-3.0"
+    }
+  ]
+}

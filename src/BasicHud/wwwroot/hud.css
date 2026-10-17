@@ -43,7 +43,7 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .score-strip { height: 77.777778%; display: grid; grid-template-columns: minmax(0,1fr) 3.2em 5.6em 3.2em minmax(0,1fr); background: var(--surface); }
 .team-heading { display: flex; align-items: center; gap: .6em; min-width: 0; padding: .2em .8em; border-top: .1em solid var(--side); }
 .team-heading.t { justify-content: flex-end; }
-.team-heading .team-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.02em; font-weight: 700; }
+.team-heading .team-name { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.02em; font-weight: 700; }
 .team-heading .team-logo { width: 1.5em; height: 1.5em; }
 .score { display: grid; place-items: center; color: var(--side); font-size: 1.9em; font-weight: 800; line-height: 1; background: color-mix(in srgb,var(--side) 9%,transparent); border-top: .055em solid var(--side); }
 .clock { display: flex; flex-direction: column; justify-content: center; background: #111e2c; }
@@ -51,14 +51,11 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .clock strong { font-size: 1.4em; line-height: 1.2; font-weight: 600; }
 .bomb-clock { background: #793026; }
 .bomb-clock .clock-label { color: #ffe0ca; }
-.match-meta { position: absolute; top: 105.555556%; width: 100%; height: 27.777778%; display: flex; justify-content: center; align-items: center; gap: .8em; padding: 0 .5em; background: var(--surface); font-size: .625em; color: #c5d1df; overflow: hidden; white-space: nowrap; }
-.match-meta > span { flex-shrink: 0; }
-.match-meta > .inline-series { min-width: 0; flex-shrink: 1; overflow: hidden; text-overflow: ellipsis; color: #9eafc4; }
 .round-history { display: flex; align-items: center; justify-content: center; gap: .1em; }
-.scene-live > .round-history { position: absolute; top: 11.851852%; left: 37.5%; width: 25%; height: 1.481481%; overflow: hidden; }
-.history-round { display: inline-grid; place-items: center; width: .733333em; height: .833333em; background: var(--surface); color: var(--side,#bdcbdc); border-bottom: .1em solid var(--side); flex-shrink: 1; }
-.history-round .status-icon { width: .6em; height: .6em; }
-.round-history > .muted { font-size: .58em; line-height: 1; }
+.scene-live > .round-history { position: absolute; top: 9.62963%; left: 37.5%; width: 25%; height: 3.333333%; gap: .25em; overflow: hidden; }
+.history-round { width: 1.55em; height: 1.875em; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .12em; padding: .15em; background: var(--surface); color: var(--side,#bdcbdc); border-bottom: .1em solid var(--side); flex-shrink: 1; }
+.history-round small { font-size: .55em; color: #d2dbe6; line-height: 1; }
+.history-round .status-icon { width: .8em; height: .8em; }
 .round-message { position: absolute; left: 37.5%; top: 13.518519%; width: 25%; height: 1.1em; background: var(--surface); text-align: center; font-size: .625em; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .roster { position: absolute; top: 68.333333%; width: 16.25%; height: 29.444444%; overflow: hidden; }
@@ -100,21 +97,31 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .reload { font-size: .55em; color: #ffd5a3; }
 
 .radar-widget { position: absolute; left: 1.25%; top: 2.222222%; width: 15%; height: 26.666667%; }
-.radar-widget > svg { display: block; width: 100%; height: 100%; border: 1px solid #536174; }
-.radar-surface { fill: rgb(13 21 30 / 80%); }
-.radar-grid { fill: none; stroke: #a3b7cb; stroke-opacity: .12; stroke-width: .2; }
-.radar-marker circle { fill: var(--side,#ddd); stroke: #101821; stroke-width: .45; }
-.radar-marker .direction { stroke: var(--side,#ddd); stroke-width: .65; }
-.death-marker { stroke: var(--side,#ddd); stroke-width: .9; }
-.radar-marker.bomb circle { fill: #ff7964; }
-.radar-marker.grenade circle { fill: #b2dc9b; }
-.radar-marker.flame circle { fill: #f68e57; stroke: #a03f29; }
-.radar-marker.higher circle, .radar-marker.lower circle { opacity: .48; }
-.elevation-marker { stroke: var(--side,#ddd); fill: none; stroke-width: .8; }
-.radar-digit { font: 700 2.7px/4px Arial,sans-serif; color: #111925; text-align: center; }
+.radar-widget > svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.radar-grid { fill: none; stroke: #a3b7cb; stroke-opacity: .2; stroke-width: .2; }
+.radar-marker.ct { --radar-side: #5ab8f4; }
+.radar-marker.t { --radar-side: #f0c941; }
+.radar-marker.neutral { --radar-side: #c9d0d9; }
+.radar-marker .bolt-dot { position: absolute; inset: 0; background: var(--radar-side,#c9d0d9); border-radius: 100% 5% 100% 100%; box-shadow: 0 0 1px #0006; transform-origin: center; }
+.bolt-dot.undirected { border-radius: 50%; }
+.radar-marker .bolt-dot.carrier { background: #ff8200; }
+.radar-marker .bolt-dot.active { box-shadow: 0 0 0 .2px #000e,0 0 0 .65px #ffffffe6,0 0 1.6px .8px #ffffff33; }
+.radar-marker .bolt-dot.flashed { box-shadow: inset 0 0 1.4px .7px #ffffffcc; }
+.radar-marker .bolt-dot.active.flashed { box-shadow: 0 0 0 .2px #000e,0 0 0 .65px #ffffffe6,0 0 1.6px .8px #ffffff33,inset 0 0 1.4px .7px #ffffffcc; }
+.radar-marker .bolt-dot.dead { border-radius: 0; clip-path: polygon(20% 0%,0% 20%,30% 50%,0% 80%,20% 100%,50% 70%,80% 100%,100% 80%,70% 50%,100% 20%,80% 0%,50% 30%); opacity: .4; box-shadow: none; }
+.bolt-digit { position: absolute; inset: 0; display: grid; place-items: center; color: #10202a; font: 700 3.1px/1 Arial,sans-serif; text-shadow: 0 0 .4px #fff3; }
 .radar-site { font: 800 5px/6px Arial,sans-serif; color: #ffe1a2; text-shadow: 0 0 1px #101820; text-align: center; }
-.radar-label { position: absolute; left: 0; right: 0; bottom: 0; padding: .2em .4em; background: rgb(12 19 28 / 88%); color: #d0dae6; font-size: .53em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.radar-empty { position: absolute; inset: 35% 5% auto; font-size: .7em; text-align: center; }
+.radar-marker .radar-effect { stroke-width: .2; }
+.radar-marker.smoke .radar-effect { fill: #9f9d9dcc; stroke: #d7d7d7; }
+.radar-marker.smoke.ct .radar-effect { fill: #678faacc; stroke: #77c5f6; }
+.radar-marker.smoke.t .radar-effect { fill: #ccba7dcc; stroke: #f1d369; }
+.radar-marker.flame .radar-effect { fill: #ff4848bf; stroke: #ce3f00; }
+.radar-marker.flash .radar-effect { fill: #fff9; stroke: #fc9f2d; }
+.radar-marker .unknown-projectile { fill: var(--radar-side,#ddd); stroke: #101821; stroke-width: .25; }
+.radar-bomb { width: 100%; height: 100%; color: #ff8200; filter: drop-shadow(0 0 .3px #000); }
+.radar-bomb .status-icon { width: 100%; height: 100%; }
+.radar-bomb.defused { color: #5ab8f4; opacity: .65; }
+.radar-unavailable { position: absolute; left: 0; right: 0; bottom: 0; padding: .3em; background: rgb(12 19 28 / 85%); color: #d0dae6; font-size: .53em; text-align: center; }
 .killfeed { position: absolute; left: 81.25%; top: 2.962963%; width: 17.5%; max-height: 16.666667%; display: flex; flex-direction: column; align-items: flex-end; gap: .12em; overflow: hidden; }
 .kill-event { display: flex; align-items: center; justify-content: flex-end; max-width: 100%; height: 1.45em; padding: .2em .4em; gap: .3em; background: var(--surface); border-right: .12em solid #b6c6d9; }
 .kill-event > span:not(.kill-flags) { min-width: 0; max-width: 8em; font-size: .65em; color: var(--side,#e0e5ec); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -199,7 +206,7 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .statistics-table th:first-child { max-width: 12em; text-align: left; overflow: hidden; text-overflow: ellipsis; color: var(--side,#dbe4f0); }
 .statistics-table td:last-child { font-size: .75em; color: #95a7be; }
 .stats-context { font-size: .7em; color: #a5b5ca; }
-.presentation > .round-history { margin-top: 2em; }
+.presentation > .round-history { margin-top: 2em; flex-wrap: wrap; }
 .series-winner { display: flex; gap: 1em; align-items: center; justify-content: center; padding: .8em; color: #adc9ac; font-size: .8em; }
 .series-winner strong { font-size: 1.4em; }
 .spotlight-layout { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 2em; }
@@ -233,3 +240,19 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 #blazor-error-ui { display: none; position: absolute; bottom: 0; width: 100%; background: #6f241e; color: #fff; padding: 12px; font: 14px "Segoe UI",Arial,sans-serif; }
 #blazor-error-ui button { float: right; background: transparent; border: 0; color: #fff; font-size: 18px; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+.without-caption .score-strip { height: 100%; }
+.team-identity { min-width: 0; flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: .23em; align-items: flex-start; }
+.team-heading.t .team-identity { align-items: flex-end; }
+.series-wins { display: flex; gap: .18em; height: .18em; }
+.series-wins i { display: block; width: .7em; height: .18em; background: #ffffff25; }
+.series-wins i.won { background: var(--side); }
+.live-map-series { position: absolute; left: 1.25%; top: 29.62963%; width: 15%; height: 3.888889%; display: flex; gap: .13em; }
+.live-map-series article { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgb(12 19 28 / 84%); border-bottom: .1em solid #75839655; color: #b8c4d1; gap: .1em; }
+.live-map-series article.is-current { border-color: #f0b775; color: #fff; }
+.live-map-series strong { display: block; max-width: 100%; font-size: .62em; line-height: 1.2; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-inline: .2em; }
+.map-result { display: flex; gap: .17em; font-size: .65em; color: #e2e9ef; font-weight: 650; }
+.map-result > span { color: #96a5b6; }
+.map-current-dot { display: block; width: .2em; height: .2em; background: #f0b775; border-radius: 50%; }
+.radar-widget.is-unavailable { height: auto; }
+.radar-unavailable { position: static; font-size: .64em; padding: .45em; }
+.bolt-flash { width: 100%; height: 100%; background: #fff; clip-path: polygon(15% 8%,40% 25%,50% 0%,60% 25%,85% 8%,74% 35%,100% 36%,78% 50%,100% 70%,72.5% 67%,77.5% 92.5%,60% 75%,50% 100%,40% 75%,22.5% 92.5%,27.5% 67%,0% 70%,22% 50%,0% 36%,26% 35%); box-shadow: inset 0 0 0 1.2px #fc9f2d,inset 0 0 3.5px #fea130; }

@@ -4,13 +4,13 @@ Select the installed HUD and the desired **Ansicht** in sOU, then use **OBS-Adre
 
 | Output | Relative route | Contents |
 | --- | --- | --- |
-| Main live | package root | Compact scoreboard/header series, two-line five-player corner rosters with weapon/utility icons and economy footers, compact observed player, round-history icons, real killfeed and automatically calibrated map radar. The central game area stays clear during normal output. |
+| Main live | package root | One compact scoreboard with central round/state and side-aligned series wins, two-line five-player corner rosters with weapon/utility icons and economy footers, compact observed player, numbered round history only during freeze/pause/timeout/intermission, real killfeed, original automatically calibrated Boltobserv radar and compact map-series cells below it. The central game area stays clear during normal output. |
 | Prematch | `views/prematch` | Managed teams/logos, series, competition and explicit planned-start countdown before GSI. |
 | Lineups | `views/lineups` | Actual metadata-bound team rosters and local portraits, with matching live values where available. |
 | Map veto | `views/veto` | Explicit ordered picks/bans/decider, acting team only when assigned, stored map order/status/results. |
 | Break | `views/break` | Operator scene title/subtitle, teams/series and explicit planned start. |
 | Results | `views/postmatch` | Managed series score, verified winner where supportable, stored map results and available player statistics. |
-| Statistics | `views/statistics` | Full player table with K/D/A/MVP/score, round damage/kills, full team economy summaries, recorded ADR/HS and honest coverage. |
+| Statistics | `views/statistics` | Full player table with K/D/A/MVP/score, round damage/kills, full team economy summaries, recorded ADR/HS and honest coverage, plus all supplied numbered round results regardless of the live phase. |
 | Spotlight | `views/spotlight` | Selected public player/team/match references, portrait and available matching live statistics; operator headline/subline. |
 
 The main output's **Main output scene** select can choose any scene; no selection means live. Explicit `views/*` URLs keep their own scene even when that select changes. This lets OBS keep separate prematch, live and statistics sources without switching every source together.

@@ -3,5 +3,8 @@
 *.souhud binary
 # Preserve original game assets byte for byte against the provenance inventory.
 src/BasicHud/wwwroot/assets/** -text
+src/BasicHud/wwwroot/assets/boltobserv/** -whitespace
 # Upstream license notices retain their original whitespace.
 LICENSES/** -whitespace
+LICENSES/BOLTOBSERV* -text -whitespace
+LICENSES/SOU-SDK-MIT.txt -text -whitespace

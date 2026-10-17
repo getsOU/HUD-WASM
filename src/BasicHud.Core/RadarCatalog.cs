@@ -45,7 +45,7 @@ public sealed class RadarCatalog
     }
     public (RadarMap Map, RadarLayer Layer, bool FloorKnown)? Select(string? map, double? z)
     {
-        if (map is null || !maps.TryGetValue(map, out var found)) return null;
+        if (MatchPresentation.MapKey(map) is not { } key || !maps.TryGetValue(key, out var found)) return null;
         var known = z is { } height && double.IsFinite(height);
         var layer = known ? found.Layers.FirstOrDefault(layer => layer.Contains(z!.Value)) : found.Layers.FirstOrDefault(layer => layer.Id == "main") ?? found.Layers[0];
         return layer is null ? null : (found, layer, known || found.Layers.All(layer => layer.MinZ is null && layer.MaxZ is null));

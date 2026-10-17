@@ -12,7 +12,7 @@ public sealed record DisplayOptions(string Caption, bool ShowRosters, bool ShowO
     public bool ShowRoundHistory { get; init; } = true;
     public bool ShowSeries { get; init; } = true;
     public bool ShowSponsors { get; init; } = true;
-    public static DisplayOptions Default { get; } = new("sOU BASIC", true, true);
+    public static DisplayOptions Default { get; } = new("", true, true);
 
     public static DisplayOptions FromPanel(HudPanelState state) => new(
         state.Text("display", "caption")?.Trim() is { Length: > 0 } caption ? caption : Default.Caption,

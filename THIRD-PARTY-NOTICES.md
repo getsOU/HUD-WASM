@@ -1,6 +1,6 @@
 # Third-party notices
 
-This project uses the following public packages. The MIT license in `LICENSE` covers this repository's own HUD code and synthetic development fixtures; it does not change upstream licenses or grant rights to sOU trademarks.
+This project uses the following public packages. From 0.4.0 the HUD is GPL-3.0-only under `LICENSE`. The SDK and other dependencies retain the licenses below. Earlier HUD releases remain under their original MIT terms; `LICENSING.md` explains the scope.
 
 | Dependency | Version | License / upstream |
 | --- | --- | --- |
@@ -14,4 +14,4 @@ This project uses the following public packages. The MIT license in `LICENSE` co
 
 The package includes original Counter-Strike 2 radar textures, factual overview calibration and equipment/UI/killfeed artwork exported directly from the game. These assets belong to Valve Corporation and their respective creators. They are **not MIT licensed by this project**; no unrestricted reuse, commercial distribution right, endorsement or ownership is claimed. Read [LICENSES/VALVE-ASSETS.md](LICENSES/VALVE-ASSETS.md) and the accompanying [source/hash inventory](LICENSES/valve-assets.json). Both files are installed with the HUD. Original overview configuration and the factual local catalog are included under `assets/radar/`.
 
-The HUD's own C#/Razor/CSS and small state-icon renderer remain MIT. No files were copied from GPL Default/DCM/NYXIA HUD bundles. No external fonts, player photos, team logos, CDN scripts, analytics or advertising libraries are included.
+The radar incorporates original GPLv3 Boltobserv map content and adaptations of the upstream marker/projection renderer at revision `0320883198e438cd6ae9fd490fa310027003727e`. Read `LICENSES/BOLTOBSERV-NOTICE.md` and `LICENSES/boltobserv-origins.json`. `LICENSES/BOLTOBSERV-SOURCE.zip` contains the complete original upstream source, and original map-specific notices are retained. HUD source is available in this repository; public SDK packages remain MIT. No Default/DCM/NYXIA bundle was copied. No external fonts, player photos, team logos, CDN scripts, analytics or advertising libraries are included.

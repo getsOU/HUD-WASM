@@ -1,34 +1,49 @@
-<section class="radar-widget" aria-label="Radar positions">
+@* Boltobserv marker shapes and layering are ported from upstream map.css; provenance ships in LICENSES. *@
+<section class="radar-widget @(View.IsBoltobserv ? "boltobserv-radar" : "") @(View.Overview is null ? "is-unavailable" : "")" aria-label="Radar positions">
+    @if (View.Overview is null) { <div class="radar-unavailable">Radar unavailable</div> }
+    else
+    {
     <svg viewBox="0 0 100 100" role="img" aria-label="@View.Label">
-        <rect width="100" height="100" class="radar-surface" />
+        @if (View.Logos is { } logos) { <image href="@logos" width="100" height="100" preserveAspectRatio="none" @onerror="() => OverviewFailed.InvokeAsync(logos)" /> }
         @if (View.Overview is { } image) { <image href="@image" width="100" height="100" preserveAspectRatio="none" @onerror="() => OverviewFailed.InvokeAsync(image)" /> }
+        @if (View.Buyzones is { } buyzones) { <image href="@buyzones" width="100" height="100" preserveAspectRatio="none" @onerror="() => OverviewFailed.InvokeAsync(buyzones)" /> }
+
         @foreach (var site in View.Sites ?? []) { <foreignObject x="@F(site.X * 100 - 3)" y="@F(site.Y * 100 - 3)" width="6" height="6"><div class="radar-site" xmlns="http://www.w3.org/1999/xhtml">@site.Label</div></foreignObject> }
-        <path d="M0 25H100 M0 50H100 M0 75H100 M25 0V100 M50 0V100 M75 0V100" class="radar-grid" />
         @foreach (var marker in View.Markers)
         {
-            <g class="radar-marker @PlayerPresentation.SideClass(marker.Side) @marker.Kind @marker.Elevation" @key="marker.Key">
-                <title>@marker.Label @(marker.Dead ? "dead" : "") @(marker.Elevation is null ? "" : marker.Elevation + " level")</title>
-                @if (marker.Dead)
+            <g class="radar-marker @PlayerPresentation.SideClass(marker.Side) @marker.Kind @marker.Elevation @(marker.Observed ? "is-observed" : "")" @key="marker.Key">
+                <title>@marker.Label @(marker.Dead ? "dead" : "") @(marker.Observed ? "observed" : "") @(marker.BombCarrier ? "bomb carrier" : "") @(marker.Flashed ? "flashed" : "")</title>
+                @if (marker.Kind == "player")
                 {
-                    <path d="@Cross(marker.X, marker.Y)" class="death-marker" />
+                    <foreignObject x="@F(marker.X - marker.Diameter / 2)" y="@F(marker.Y - marker.Diameter / 2)" width="@F(marker.Diameter)" height="@F(marker.Diameter)" overflow="visible">
+                        <div class="bolt-dot @(marker.Dead ? "dead" : "") @(marker.Observed ? "active" : "") @(marker.BombCarrier ? "carrier" : "") @(marker.Flashed ? "flashed" : "") @(marker.Angle is null ? "undirected" : "")" style="transform:rotate(@F(marker.Dead ? 0 : (marker.Angle ?? -45) + 45)deg)" xmlns="http://www.w3.org/1999/xhtml"></div>
+                        @if (!marker.Dead) { <div class="bolt-digit" xmlns="http://www.w3.org/1999/xhtml">@marker.Label</div> }
+                    </foreignObject>
                 }
-                else
+                else if (marker.Kind == "flash")
                 {
-                    @if (marker.Angle is { } angle) { <line x1="@F(marker.X)" y1="@F(marker.Y)" x2="@F(marker.X + Math.Cos(angle * Math.PI / 180) * 5)" y2="@F(marker.Y + Math.Sin(angle * Math.PI / 180) * 5)" class="direction" /> }
-                    <circle cx="@F(marker.X)" cy="@F(marker.Y)" r="@(marker.Kind is "grenade" or "flame" ? "1.5" : "2.6")" />
-                    @if (marker.Elevation is { } elevation) { <path d="@Level(marker.X, marker.Y, elevation == "higher")" class="elevation-marker" /> }
-                    <foreignObject x="@F(marker.X - 2)" y="@F(marker.Y - 2)" width="4" height="4"><div class="radar-digit" xmlns="http://www.w3.org/1999/xhtml">@(marker.Kind is "grenade" or "flame" ? "" : marker.Label)</div></foreignObject>
+                    <foreignObject x="@F(marker.X - marker.Diameter / 2)" y="@F(marker.Y - marker.Diameter / 2)" width="@F(marker.Diameter)" height="@F(marker.Diameter)"><div class="bolt-flash" style="opacity:@F(marker.EffectOpacity)" xmlns="http://www.w3.org/1999/xhtml"></div></foreignObject>
                 }
+                else if (marker.Kind is "smoke" or "flame")
+                {
+                    <circle cx="@F(marker.X)" cy="@F(marker.Y)" r="@F(marker.Diameter / 2)" class="radar-effect" />
+                }
+                else if (marker.Image is { } projectile)
+                {
+                    <image href="@projectile" x="@F(marker.X - 2)" y="@F(marker.Y - 2)" width="4" height="4" />
+                }
+                else if (marker.Kind is "bomb" or "bomb-defused")
+                {
+                    <foreignObject x="@F(marker.X - 2)" y="@F(marker.Y - 2)" width="4" height="4"><div class="radar-bomb @(marker.Kind == "bomb-defused" ? "defused" : "")" xmlns="http://www.w3.org/1999/xhtml"><StatusIcon Name="bomb" Label="Bomb" /></div></foreignObject>
+                }
+                else { <circle cx="@F(marker.X)" cy="@F(marker.Y)" r="1.2" class="unknown-projectile" /> }
             </g>
         }
     </svg>
-    <div class="radar-label">@View.Label</div>
-    @if (View.Markers.Count == 0) { <p class="radar-empty">Waiting for positions</p> }
+    }
 </section>
 @code {
     [Parameter] public RadarView View { get; set; } = new("Relative world positions · no map", null, []);
     [Parameter] public EventCallback<string> OverviewFailed { get; set; }
     private static string F(double value) => value.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
-    private static string Cross(double x, double y) => $"M{F(x - 1.6)} {F(y - 1.6)}L{F(x + 1.6)} {F(y + 1.6)}M{F(x + 1.6)} {F(y - 1.6)}L{F(x - 1.6)} {F(y + 1.6)}";
-    private static string Level(double x, double y, bool higher) => higher ? $"M{F(x - 1.5)} {F(y - 3.5)}L{F(x)} {F(y - 5)}L{F(x + 1.5)} {F(y - 3.5)}" : $"M{F(x - 1.5)} {F(y + 3.5)}L{F(x)} {F(y + 5)}L{F(x + 1.5)} {F(y + 3.5)}";
 }

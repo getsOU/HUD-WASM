@@ -6,15 +6,15 @@ Open the installed HUD's **Panel** in sOU. Edit the desired fields and use **Spe
 
 | Field | Behavior |
 | --- | --- |
-| `display.caption` | Scoreboard caption. Blank uses `sOU BASIC`. The existing saved caption remains compatible. |
+| `display.caption` | The only live header caption. Explicit text has priority; blank uses the current competition name, or omits the caption when none is available. Existing saved captions remain compatible. |
 | `display.scene` | Main output scene: `live`, `prematch`, `lineups`, `veto`, `break`, `postmatch`, `statistics`, `spotlight`. Blank means live; explicit subviews keep their scene. |
 | `display.hideRosters` | Hide both live team rosters. |
 | `display.hideObservedPlayer` | Hide the live observed-player card. |
-| `display.hideRadar` | Hide the live radar/position plot. |
+| `display.hideRadar` | Hide the live radar, including its unavailable indicator. |
 | `display.hideKillfeed` | Hide the live killfeed. |
 | `display.hideEconomy` | Hide the compact live economy footer beneath each roster. Full statistics remain available. |
-| `display.hideRoundHistory` | Hide the live round-history strip. |
-| `display.hideSeries` | Hide series-map detail in the compact live header line. |
+| `display.hideRoundHistory` | Hide recent numbered round results during freeze/pause/timeout/intermission. History is already absent during active/bomb/defuse rounds; the statistics view keeps full history. |
+| `display.hideSeries` | Hide the compact map-series cells below the radar and the team-aligned series-win marks in the header. |
 | `display.hideSponsors` | Hide sponsor images in every scene. |
 
 Every Hide checkbox is an opt-out: **only true hides**. False, missing and the host's initial unchecked defaults leave the component enabled. A caption-only save does not unexpectedly hide components. Source-dependent elements still need the corresponding real data.
@@ -43,13 +43,13 @@ The lower third is transient; a new source session clears it. It reserves space 
 
 ## Radar
 
-Known exact source map names automatically select an included original Valve radar image and fixed real world calibration. No setup is required for Dust II, Mirage, Inferno, Ancient, Anubis, Nuke, Overpass, Train, Vertigo, Italy, Office or Cache; additional explicit legacy/night IDs are listed in `assets/radar/catalog.json`. No map-name aliases are guessed. The catalog loads once from the installed package with a five-second deadline, bounded body and generated JSON metadata; failure leaves other HUD data running.
+The default is the original [Boltobserv](https://github.com/boltgolt/boltobserv) radar at revision `0320883198e438cd6ae9fd490fa310027003727e`: Ancient, Anubis, Cache, Dust II, Inferno, Mirage, Nuke, Overpass, Train and Vertigo. Original transparent terrain, logo and buyzone images are bundled without modifications. Radar maps are not fetched from the Internet. Exact source map names are used; only the documented `workshop/<numeric-id>/<exact-map-name>` form is normalized. Similar names or arbitrary paths do not select another map.
 
-Each catalog layer defines original image dimensions, `posX`, `posY` and world units per pixel (`scale`). Projection is `x=(worldX-posX)/(width*scale)` and `y=(posY-worldY)/(height*scale)`. Players moving across the map do not resize these bounds. Source-defined A/B sites are labeled when supplied by the local catalog.
+The original format-4 metadata uses `resolution` (world units per 1024px image pixel) and bottom-origin X/Y `offset`. SVG projection is `x=(worldX+offset.x)/resolution/1024*100`, `y=100-(worldY+offset.y)/resolution/1024*100`. Original Nuke and Vertigo images show both levels together: every object applies its own original strict Z split and X/Y percentage offset. Observing another floor never swaps the complete image. The exact metadata, original source archive and provenance hashes ship with the HUD.
 
-Nuke, Train and Vertigo include genuine vertical layers. The actual observed player's supplied Z coordinate selects a layer (`minZ` inclusive, `maxZ` exclusive); fresh matching HLAE Z has priority over GSI. A player on another level is dimmed and marked higher/lower. With no observed height, the main layer is shown with **floor unknown** rather than claiming the viewed floor. Flat maps do not need Z for layer selection.
+Buyzones are shown only during actual freeze/warmup states. Player direction drops, observer digits, observed-player ring, orange bomb carrier, flashed/dead markers and original projectile icons use supplied player/grenade data. Smoke with positive source effect time and flashes at the original 1.4-second source-lifetime threshold and individual flames use the original Bolt world sizes. Carried or exploded bombs are not displayed as dropped bombs. Each flash ID triggers the original 100/1200/2200ms presentation pulse once; repeated snapshots do not extend it. Source session/map/round resets clear the bounded (128 IDs per round) pulse state. No guessed buy duration, synchronized event, camera action or fabricated explosion is added.
 
-Player directions/observer digits/death markers, bomb, grenades and inferno flame points remain connected to actual source data. An unknown map, missing catalog or failed bundled image uses a compact plot labeled **Relative positions · map unavailable**. Its relative bounds follow the supplied positions; it does not claim to be an accurate minimap.
+A custom valid overview has priority. Otherwise a matching Bolt map is preferred, with the separately documented original Valve overview/calibration as fallback for additional supported maps or an unavailable Bolt image. Valve multi-image maps retain their actual observed-height selection. If no valid overview can load, a compact **Radar unavailable** indicator replaces the map; no empty grid or player-scaled pretend map is broadcast. The two local catalogs load once with bounded bodies, five-second deadlines and source-generated JSON parsing. Catalog/image failures leave the other HUD elements running.
 
 To override the automatic map with your own local overview, configure all six fields:
 
@@ -60,6 +60,6 @@ To override the automatic map with your own local overview, configure all six fi
 5. `radar.minY`: world Y at the image's bottom edge.
 6. `radar.maxY`: world Y at the top edge; must exceed minY.
 
-Use a decimal point for numeric values. All boundaries must be finite and within the renderer's safety range (absolute value below 100 million). Calibration assumes image right = positive X and image up = positive Y; no unconfigured rotation or coordinate transformation is guessed. Use an image for which you know these bounds and have distribution/use rights. A wrong/missing map name, invalid bounds or failed image falls back to the matching bundled overview when available, otherwise to the labeled relative plot. Markers outside calibrated bounds are omitted instead of clamped into fake map corners.
+Use a decimal point for numeric values. All boundaries must be finite and within the renderer's safety range (absolute value below 100 million). Calibration assumes image right = positive X and image up = positive Y; no unconfigured rotation or coordinate transformation is guessed. Use an image for which you know these bounds and have distribution/use rights. A wrong/missing map name, invalid bounds or failed image falls back to the matching bundled overview when available, otherwise to the compact unavailable indicator. Markers outside calibrated bounds are omitted instead of clamped into fake map corners.
 
 HLAE positions are preferred only for a fresh frame no older than 750ms and a valid timeline; otherwise actual GSI positions are used. Fresh HLAE does not change GSI data freshness. Last known live death positions are retained within the round, with session/map/round/freezetime/timeline resets. No unknown historical death location is reconstructed.

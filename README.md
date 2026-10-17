@@ -2,7 +2,7 @@
 
 A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk** and **SOU.Live.Contracts** NuGet packages `0.2.0-preview.4`; no private application source is required.
 
-The equivalent [React implementation](https://github.com/getsOU/sOU-HUD-React) uses the same public contracts and panel. Both projects' own code is MIT licensed and keeps all scripts, fonts and assets local. Included original Valve game artwork has separate copyright notices; it is not relicensed under MIT.
+The equivalent [React implementation](https://github.com/getsOU/sOU-HUD-React) uses the same public contracts and panel. Version 0.4.0 is GPL-3.0-only and includes the original Boltobserv radar maps, metadata, marker shapes and utility artwork with their notices and source archive. The public sOU SDK remains MIT. Valve game artwork retains its separate copyright notices; no ownership or unrestricted artwork license is claimed.
 
 ![Packaged HUD with calibrated map radar, local icons and compact edge displays over a CS2 reference scene](docs/preview.png)
 
@@ -10,25 +10,25 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 ## Install and use
 
-1. Download `sou-basic-wasm-0.3.0.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.0.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
 5. Supply CS2/HLAE data through sOU's normal setup. Optional data can remain absent; the HUD does not create missing players, game events or statistics.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.3.0**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.0**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
 
 [Eight output views](docs/views.md) · [All panel fields](docs/panel.md) · [Feature/source matrix and limits](docs/features.md) · [Public author guide](https://www.getsou.app/docs/hud-entwicklung)
 
 ## What's implemented
 
-- Current-side scoreboard and team logos, map/round/phase, actual round/bomb seconds, best-of and series score.
+- A single clear match header: real current-side team names/logos, large round scores, actual source timer and central round/state label. One explicit caption or competition name; no raw map/phase diagnostic strip. Series-win marks stay attached to their actual teams.
 - Compact two-line live rosters with observer digits, small optional portraits, HP/armor, real weapon silhouettes, utility/equipment/status icons, money and K/D/A. The complete inventory, round damage/kills and recorded metrics remain in presentation/statistics views.
 - Actual observed player with active weapon, firearm ammunition and utility icons. No grenade ammo fractions are invented.
-- Per-side complete-or-unknown economy in the roster footer, with full alive/kit/utility/timeouts/loss-streak detail in statistics; actual round history and explicit round-win banners remain in the header area.
+- Per-side complete-or-unknown economy in the roster footer, with full alive/kit/utility/timeouts/loss-streak detail in statistics; numbered recent round results appear only during freeze, pause, timeout or intermission; active rounds including bomb/defuse remain clear. The statistics view retains the complete supplied history.
 - Real HLAE killfeed, keyed by connection/epoch/event ID, with all supplied modifier flags; no kills inferred from health changes.
-- Own MIT radar renderer with fresh HLAE → GSI fallback, directions/deaths/observer digits/bomb/grenades/flames. Known maps automatically use a bundled original overview with fixed real world calibration. Nuke, Train and Vertigo select floors from actual observed height when provided. An explicitly calibrated local overview remains an override; unavailable/unknown maps are honestly labeled.
-- Managed match/competition/season/section branding, team logos, explicit series maps and veto decisions, stored results and conditionally verified series winner.
+- Original Boltobserv radar with the original transparent maps, coordinate metadata and object-specific Nuke/Vertigo split projection. Original-style direction drops, observer digits, observed ring, bomb carrier, flashed/dead markers and utility connect to actual public data. Buyzones appear only during source freeze/warmup. Fresh HLAE falls back to GSI; optional custom calibration and separately attributed Valve overview fallbacks remain available. No permanent technical radar caption or empty replacement grid.
+- Ordered compact map-series cells below the radar, explicit stored results, exact current-map highlighting and side-aligned series wins. Full maps/veto/results and competition details remain in their presentation views. An unrelated source map never claims a configured current series slot.
 - Real prematch rosters and local profile pictures from optional, strictly match-bound local browser metadata; absent metadata does not break live output.
 - Full statistics, explicit player/team/match spotlight references, broadcast/sponsor images, ticker, manual replay/status text and deduplicated lower-third actions.
 
@@ -47,8 +47,8 @@ pwsh ./scripts/Build.ps1
 The script performs locked restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.3.0.souhud
-artifacts/sou-basic-wasm-0.3.0.souhud.sha256
+artifacts/sou-basic-wasm-0.4.0.souhud
+artifacts/sou-basic-wasm-0.4.0.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:
@@ -64,7 +64,7 @@ dotnet restore tests/BasicHud.Tests --configfile NuGet.Config --locked-mode
 dotnet run --project tests/BasicHud.Tests -c Release --no-restore
 ```
 
-Tests read the actual manifest/panel schema and exercise initial host false values, caption-only save, explicit Hide toggles, missing data, side mapping, scene routes, source totals, metadata matching/size/cancellation/session races, fixed Dust2 projection/floor boundaries/catalog loading, radar freshness/deaths/resets, actual Razor image-error dispatch, compact image omission, safe one-pass source-name decoding, grenade counts, killfeed identity/lifetime, equal-revision reference refreshes, action deduplication and subscription disposal. Release builds omit debug symbols and all preview fixtures. Optional native WASM AOT/`wasm-tools` optimization is not required.
+Tests read the actual manifest/panel schema and exercise initial host false values, caption-only save, explicit Hide toggles, missing data, side mapping, scene routes, source totals, metadata matching/size/cancellation/session races, fixed Valve and original Bolt Dust2 projection, object-specific Nuke/Vertigo split boundaries, original asset hashes, header/history state rendering and bounded catalog loading, radar freshness/deaths/resets, actual Razor image-error dispatch, compact image omission, safe one-pass source-name decoding, grenade counts, killfeed identity/lifetime, equal-revision reference refreshes, action deduplication and subscription disposal. Release builds omit debug symbols and all preview fixtures. Optional native WASM AOT/`wasm-tools` optimization is not required.
 
 ## Isolated Debug preview
 
@@ -85,16 +85,17 @@ src/BasicHud.Core/        snapshot/panel presentation, scene selection, metadata
 src/BasicHud/Components/  reusable scoreboard/player/inventory/radar/series/branding layers
 src/BasicHud/Views/       seven presentation scenes; main live composition is in App.razor
 src/BasicHud/MetadataPoller.cs narrow source-generated optional local metadata reader
-src/BasicHud/RadarCatalogLoader.cs one-shot generated local overview-catalog reader
+src/BasicHud/RadarCatalogLoader.cs bounded generated local Bolt/Valve catalog readers
 src/BasicHud/Development/ Debug-only synthetic feeds
 src/BasicHud/wwwroot/     local CSS, installed entry point, common panel schema
-                          assets/radar and assets/weapons contain original Valve artwork
+                          assets/boltobserv contains original upstream radar content;
+                          assets/radar and assets/weapons retain Valve fallback artwork
                           (cast-media/preview.svg is Debug-only)
 tests/BasicHud.Tests/     model/lifecycle/metadata checks and actual Razor event dispatch tests
 scripts/Build.ps1         locked restore → format → test → publish → pack → validate → hash
 ```
 
-One public SDK live stream and one panel stream serve the chosen scene. Both are canceled/awaited on disposal, as are the bounded metadata poller, one-shot catalog loader and UI clock. The clock refreshes presentation freshness/planned start, not speculative GSI countdowns. A long-lived injected `HttpClient` supports browser sessions. Cast media resolve through the SDK's local path guard; bundled artwork stays within the installed package. No private types, external UI libraries or GPL HUD assets are copied.
+One public SDK live stream and one panel stream serve the chosen scene. Both are canceled/awaited on disposal, as are the bounded metadata poller, one-shot catalog loader and UI clock. The clock refreshes presentation freshness/planned start, not speculative GSI countdowns. A long-lived injected `HttpClient` supports browser sessions. Cast media resolve through the SDK's local path guard; bundled artwork stays within the installed package. No private application types or external UI runtime is required. The GPL Boltobserv radar port preserves source attribution and original upstream files in LICENSES/.
 
 ## Compatibility and security
 
@@ -106,7 +107,7 @@ Builds, synthetic tests and browser checks do not certify native CS2/OBS capture
 
 ## License
 
-MIT for this repository's own code, components, fixtures and original synthetic art. Included original Counter-Strike 2 artwork remains Valve/respective-owner content, separately documented in [LICENSES/VALVE-ASSETS.md](LICENSES/VALVE-ASSETS.md) with its [source/hash inventory](LICENSES/valve-assets.json); the MIT source license grants no rights to that artwork. See [LICENSE](LICENSE), [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and `LICENSES/`. Dependencies retain their licenses; no endorsement or rights to sOU/Valve trademarks are implied.
+GPL-3.0-only from 0.4.0, including the adapted Boltobserv radar. Previous releases through 0.3.0 remain under their original MIT terms. The public SDK packages remain MIT. See [LICENSING.md](LICENSING.md), [LICENSE](LICENSE), [Boltobserv provenance](LICENSES/BOLTOBSERV-NOTICE.md) and [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). Original map-specific MIT notices, original Boltobserv source archive and separate Valve copyright notices ship with the package. Dependencies and trademarks retain their respective terms.
 
 ## Publishing a new version
 
