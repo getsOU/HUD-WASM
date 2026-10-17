@@ -11,6 +11,7 @@ public sealed record RadarMarker(string Key, string Label, double X, double Y, d
     public bool Flashed { get; init; }
     public string? Image { get; init; }
     public double Diameter { get; init; } = 3.92;
+    public double Scale { get; init; } = .7;
     public double EffectOpacity { get; init; } = 1;
 }
 public sealed record RadarView(string Label, string? Overview, IReadOnlyList<RadarMarker> Markers, IReadOnlyList<RadarSite>? Sites = null)
@@ -160,6 +161,7 @@ public sealed class RadarProjection
                 BombCarrier = player is not null && EquipmentPresentation.HasBomb(player, game),
                 Flashed = player?.Flashed is > 31,
                 Image = image,
+                Scale = item.Dead || bolt is null ? .7 : BoltRadarCatalog.MarkerScale(bolt, item.Position.Z),
                 Diameter = diameter > 0 && double.IsFinite(worldUnits) && worldUnits > 0 ? diameter / worldUnits * 100 : item.Kind == "grenade" ? 4 : 3.92,
                 EffectOpacity = item.Kind == "flash" && flashes.TryGetValue(item.Key[6..], out var flash) ? FlashOpacity(context.Now - flash.StartedAt) : 1
             };

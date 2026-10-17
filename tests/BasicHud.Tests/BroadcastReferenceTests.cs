@@ -20,6 +20,9 @@ static class BroadcastReferenceTests
         var center = BoltRadarCatalog.Project(dust, new(-217.2, 997.8, 0));
         check(Math.Abs(center.X - 50) < .0001 && Math.Abs(center.Y - 50) < .0001, "original Dust2 projection maps bottom-origin world coordinates to SVG top-origin coordinates");
         var nuke = catalog.Find("de_nuke")!;
+        var heightFixture = new BoltRadarMap { Metadata = new() { ZRange = new() { Min = 0, Max = 100 }, Splits = [new() { Bounds = new() { Bottom = -200, Top = -100 }, ZRange = new() { Min = -190, Max = -110 } }] } };
+        check(Math.Abs(BoltRadarCatalog.MarkerScale(heightFixture, 0) - .525) < .00001 && Math.Abs(BoltRadarCatalog.MarkerScale(heightFixture, 100) - .875) < .00001 && Math.Abs(BoltRadarCatalog.MarkerScale(heightFixture, 50) - .7) < .00001, "original Boltobserv height scaling keeps the marker and upright number at the same scale");
+        check(Math.Abs(BoltRadarCatalog.MarkerScale(heightFixture, -150) - .7) < .00001 && BoltRadarCatalog.MarkerScale(heightFixture, double.NaN) == .7, "height scaling uses the matching strict split and safely handles missing height");
         var upper = BoltRadarCatalog.Project(nuke, new(0, 0, -482));
         var lower = BoltRadarCatalog.Project(nuke, new(0, 0, -483));
         check(Math.Abs(lower.Y - upper.Y - 46) < .0001 && BoltRadarCatalog.Project(nuke, new(0, 0, -2500)).Y == upper.Y, "Bolt Nuke projects each object into its composite image with original strict split bounds");

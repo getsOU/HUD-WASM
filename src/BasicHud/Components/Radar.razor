@@ -9,18 +9,11 @@
         @if (View.Buyzones is { } buyzones) { <image href="@buyzones" width="100" height="100" preserveAspectRatio="none" @onerror="() => OverviewFailed.InvokeAsync(buyzones)" /> }
 
         @foreach (var site in View.Sites ?? []) { <foreignObject x="@F(site.X * 100 - 3)" y="@F(site.Y * 100 - 3)" width="6" height="6"><div class="radar-site" xmlns="http://www.w3.org/1999/xhtml">@site.Label</div></foreignObject> }
-        @foreach (var marker in View.Markers)
+        @foreach (var marker in View.Markers.Where(marker => marker.Kind != "player"))
         {
             <g class="radar-marker @PlayerPresentation.SideClass(marker.Side) @marker.Kind @marker.Elevation @(marker.Observed ? "is-observed" : "")" style="transform:translate(@F(marker.X)px,@F(marker.Y)px)" @key="(marker.Key, marker.MotionKey)">
                 <title>@marker.Label @(marker.Dead ? "dead" : "") @(marker.Observed ? "observed" : "") @(marker.BombCarrier ? "bomb carrier" : "") @(marker.Flashed ? "flashed" : "")</title>
-                @if (marker.Kind == "player")
-                {
-                    <foreignObject x="@F(-marker.Diameter / 2)" y="@F(-marker.Diameter / 2)" width="@F(marker.Diameter)" height="@F(marker.Diameter)" overflow="visible">
-                        <div class="bolt-dot @(marker.Dead ? "dead" : "") @(marker.Observed ? "active" : "") @(marker.BombCarrier ? "carrier" : "") @(marker.Flashed ? "flashed" : "") @(marker.Angle is null ? "undirected" : "")" style="transform:rotate(@F(marker.Dead ? 0 : (marker.Angle ?? -45) + 45)deg)" xmlns="http://www.w3.org/1999/xhtml"></div>
-                        @if (!marker.Dead) { <div class="bolt-digit" xmlns="http://www.w3.org/1999/xhtml">@marker.Label</div> }
-                    </foreignObject>
-                }
-                else if (marker.Kind == "flash")
+                @if (marker.Kind == "flash")
                 {
                     <foreignObject x="@F(-marker.Diameter / 2)" y="@F(-marker.Diameter / 2)" width="@F(marker.Diameter)" height="@F(marker.Diameter)"><div class="bolt-flash" style="opacity:@F(marker.EffectOpacity)" xmlns="http://www.w3.org/1999/xhtml"></div></foreignObject>
                 }
@@ -40,6 +33,13 @@
             </g>
         }
     </svg>
+    @foreach (var marker in View.Markers.Where(marker => marker.Kind == "player"))
+    {
+        <div class="radar-player @PlayerPresentation.SideClass(marker.Side) @(marker.Dead ? "dead" : "") @(marker.Observed ? "active" : "") @(marker.BombCarrier ? "carrier" : "") @(marker.Flashed ? "flashed" : "")" style="left:@F(marker.X)%;top:@F(marker.Y)%;--marker-scale:@F(marker.Scale)" @key="(marker.Key, marker.MotionKey)" title="@marker.Label @(marker.Dead ? "dead" : "") @(marker.Observed ? "observed" : "")">
+            <div class="bolt-dot @(marker.Angle is null ? "undirected" : "")" style="transform:rotate(@F(marker.Dead ? 0 : (marker.Angle ?? -45) + 45)deg) scale(@F(marker.Scale)) translate(-50%,-50%)"></div>
+            @if (!marker.Dead) { <div class="bolt-digit">@marker.Label</div> }
+        </div>
+    }
     }
 </section>
 @code {

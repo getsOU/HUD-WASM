@@ -22,11 +22,13 @@ public sealed class BoltMapMetadata
     public BoltOffset? Offset { get; set; }
     public BoltSplit[] Splits { get; set; } = [];
     public BoltVersion? Version { get; set; }
+    public BoltZRange? ZRange { get; set; }
 }
 public sealed class BoltVersion { public int Format { get; set; } }
 public sealed class BoltOffset { public double X { get; set; } public double Y { get; set; } }
 public sealed class BoltBounds { public double Top { get; set; } public double Bottom { get; set; } }
-public sealed class BoltSplit { public BoltBounds? Bounds { get; set; } public BoltOffset? Offset { get; set; } }
+public sealed class BoltSplit { public BoltBounds? Bounds { get; set; } public BoltOffset? Offset { get; set; } public BoltZRange? ZRange { get; set; } }
+public sealed class BoltZRange { public double Min { get; set; } public double Max { get; set; } }
 
 /// <summary>Original Boltobserv format-4 calibration and object-specific split projection.</summary>
 public sealed class BoltRadarCatalog
@@ -57,6 +59,15 @@ public sealed class BoltRadarCatalog
             100 - ((position.Y + metadata.Offset.Y) / metadata.Resolution / 1024 * 100 + (split?.Offset?.Y ?? 0)));
     }
     private static bool Offset(BoltOffset? offset) => offset is not null && double.IsFinite(offset.X) && double.IsFinite(offset.Y) && Math.Abs(offset.X) < 100_000_000 && Math.Abs(offset.Y) < 100_000_000;
+    // Boltobserv loopFast.js: scale both the dot and its separate upright label.
+    public static double MarkerScale(BoltRadarMap map, double z)
+    {
+        var metadata = map.Metadata!;
+        var range = metadata.Splits.FirstOrDefault(split => z > split.Bounds!.Bottom && z < split.Bounds.Top)?.ZRange ?? metadata.ZRange;
+        if (!double.IsFinite(z) || range is null || !double.IsFinite(range.Min) || !double.IsFinite(range.Max) || range.Max <= range.Min) return .7;
+        var height = Math.Clamp((z - range.Min) / (range.Max - range.Min), 0, 1);
+        return .7 * ((height - .5) / 2 + 1);
+    }
     private static bool Path(string? path) => path is not null && path.StartsWith("assets/boltobserv/maps/", StringComparison.Ordinal) && path.EndsWith(".png", StringComparison.Ordinal) &&
         !path.Contains("..", StringComparison.Ordinal) && path.All(character => character is >= 'a' and <= 'z' or >= '0' and <= '9' or '_' or '-' or '/' or '.');
 }

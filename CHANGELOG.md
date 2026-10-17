@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.3
+
+- Restore original Boltobserv Arial numerals, line height, marker/label proportions, active size and shared height scaling.
+- Render WASM player dots and upright labels in a separate HTML layer, matching the original and React.
+
+
 ## 0.4.2
 
 - Match NYXIA radar motion and coherent HLAE source selection; correct the WASM receipt clock.
