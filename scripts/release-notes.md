@@ -1,5 +1,7 @@
-# 0.4.6
+# 0.4.7
 
-Remove the repeated active-weapon name beside the original observer icon. Reserve data areas with fixed CSS grid tracks: money, weapons, ammo, reload, utility, status, portraits, player names and numerical values stay in their own cells. Empty cells retain space. Known grenade types keep fixed slots and count positions.
+Compact utility and ammo inside stable outer data areas. Two flashbangs use two original icons without a numeric counter.
 
-Import 0.4.6 and reopen outputs. Original CS2 icons, radar, eight views and compatible panel values are retained. GPLv3 HUD code, separate artwork rights and MIT public SDK remain unchanged. Browser checks are separate from native CS2/OBS acceptance.
+The killfeed keeps complete names and all current events without a six-row cap. Eight-second lifetime does not restart on repeated snapshots. Assisters retain their own event-side color. Blind cue precedes the attacker; flash assist belongs to the assister; smoke, noscope, wallbang and headshot follow the weapon before the victim.
+
+Import 0.4.7 and reopen outputs. Compatible panel values and all eight views are retained. GPLv3 HUD code, separate artwork rights and MIT SDK remain unchanged. Browser checks do not replace native CS2/OBS acceptance.

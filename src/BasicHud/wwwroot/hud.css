@@ -34,10 +34,9 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .health-track { position: absolute; left: 0; bottom: 0; width: 100%; height: .13em; background: #253242; }
 .health-track span { display: block; height: 100%; background: var(--side, #b6c1ce); }
 .player-equipment { display: inline-flex; align-items: center; gap: .15em; color: #d8e3ee; }
-.utility-icons { display: grid; grid-template-columns: repeat(6, var(--utility-slot, 1.4em)); align-items: end; height: var(--utility-height); min-width: 0; }
-.utility-item { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) .45em; align-items: end; height: var(--utility-height); min-width: 0; }
+.utility-icons { display: inline-flex; gap: .25em; align-items: end; height: var(--utility-height); min-width: 0; }
+.utility-item { display: inline-flex; align-items: end; height: var(--utility-height); }
 .utility-item .equipment-icon { --icon-height: var(--utility-height); --icon-max-width: 9999px; }
-.utility-item small { text-align: right; font-size: .65em; font-weight: 700; line-height: 1; text-shadow: 0 0 .2em #000; }
 
 /* Fixed 1920 x 1080 live composition. All measurements scale with the canvas. */
 .scoreboard { position: absolute; left: 25%; top: 2.222222%; width: 50%; height: 6.666667%; text-align: center; }
@@ -83,19 +82,13 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .live-armor { grid-template-columns: minmax(0, 1fr) 1.6em; color: #b1bfd0; }
 .live-hp > span:last-child, .live-armor > span:first-child { text-align: right; }
 .live-player-top .kda { font-size: .55em; overflow: hidden; text-align: right; }
-.live-player-bottom { grid-template-columns: 2.4em 2.3em 6.25em minmax(0, 1fr); }
+.live-player-bottom { grid-template-columns: 2.4em 2.3em minmax(0, 1fr); }
 .live-player-bottom .money { font-size: .59em; overflow: hidden; }
 .weapon-cell { display: grid; align-items: end; justify-items: start; min-width: 0; overflow: hidden; height: 100%; }
 .live-player-bottom .active-weapon { --icon-height: .9em; --icon-max-width: 2.3em; }
-.live-player-bottom .utility-icons { --utility-slot: min(1.041667vw, 1.851852vh); font-size: .68em; }
+.live-player-bottom .utility-icons { font-size: .68em; }
 .live-player-bottom .player-equipment { font-size: .58em; }
-.live-player-bottom .player-equipment, .observed-loadout .player-equipment { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: end; gap: 0; height: 100%; }
-.player-equipment .equipment-kit { grid-column: 1; }
-.player-equipment .equipment-bomb { grid-column: 2; }
-.player-equipment .equipment-dead { grid-column: 3; }
-.player-equipment .equipment-blind { grid-column: 4; }
-.player-equipment .equipment-smoke { grid-column: 5; }
-.player-equipment .equipment-fire { grid-column: 6; }
+.live-player-bottom .player-equipment, .observed-loadout .player-equipment { display: inline-flex; align-items: end; gap: .25em; }
 .roster-economy { height: 1.25em; display: grid; grid-template-columns: 1fr 1.25fr .55fr .6fr; align-items: center; gap: .3em; padding: 0 .4em; background: var(--surface); }
 .roster-economy span { display: inline-flex; gap: .15em; align-items: center; font-size: .58em; white-space: nowrap; }
 .roster-empty { background: var(--surface); padding: .8em; text-align: center; color: var(--muted); font-size: .7em; }
@@ -106,18 +99,17 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .observed-identity .observer-slot { font-size: .65em; }
 .observed-identity .portrait { width: 1.5em; height: 1.5em; }
 .observed-identity .player-name { font-size: 1em; }
-.observed-vitals { display: grid; grid-template-columns: 1fr 1fr; gap: .3em; color: var(--side); font-size: .8em; }
-.observed-health, .observed-armor { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: center; gap: .15em; }
+.observed-vitals { display: flex; justify-content: flex-end; gap: .8em; color: var(--side); font-size: .8em; }
+.observed-health, .observed-armor { display: inline-flex; align-items: center; gap: .2em; }
 .observed-vitals > span > span:last-child { text-align: right; }
-.observed-loadout { grid-template-columns: 3.333333em 4.8em 2.6em 6.875em minmax(0, 1fr); }
+.observed-loadout { grid-template-columns: 3.333333em 6em minmax(0, 1fr); }
 .observed-weapon { --icon-height: 1em; --icon-max-width: 3em; }
-.ammo-cell { display: grid; align-items: end; height: 100%; min-width: 0; overflow: hidden; }
-.ammo { display: grid; grid-template-columns: minmax(0, 1fr) .8em minmax(0, 1fr); align-items: baseline; width: 100%; font-size: .9em; white-space: nowrap; text-align: right; }
+.ammo-cell { display: flex; align-items: end; gap: .4em; height: 100%; min-width: 0; }
+.ammo { display: inline-flex; gap: .18em; align-items: baseline; font-size: .9em; white-space: nowrap; text-align: right; }
 .ammo > span { min-width: 0; overflow: hidden; }
 .ammo > small { text-align: center; font-size: .7em; }
-.observed-loadout .utility-icons { --utility-slot: min(1.145833vw, 2.037037vh); }
 .observed-loadout .utility-icons, .observed-loadout .player-equipment { font-size: .75em; }
-.reload { display: grid; align-items: end; height: 100%; min-width: 0; overflow: hidden; white-space: nowrap; font-size: .55em; color: #ffd5a3; }
+.reload { display: inline-block; font-size: .55em; color: #ffd5a3; }
 
 .radar-widget { position: absolute; left: 1.25%; top: 2.222222%; width: 15%; height: 26.666667%; container-type: size; }
 .radar-widget > svg { display: block; width: 100%; height: 100%; overflow: visible; }
@@ -155,12 +147,13 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .radar-bomb .status-icon { --icon-height: 4px; --icon-max-width: 4px; }
 .radar-bomb.defused { color: #5ab8f4; opacity: .65; }
 .radar-unavailable { position: absolute; left: 0; right: 0; bottom: 0; padding: .3em; background: rgb(12 19 28 / 85%); color: #d0dae6; font-size: .53em; text-align: center; }
-.killfeed { position: absolute; left: 81.25%; top: 2.962963%; width: 17.5%; max-height: 16.666667%; display: flex; flex-direction: column; align-items: flex-end; gap: .12em; overflow: hidden; }
-.kill-event { display: flex; align-items: center; justify-content: flex-end; max-width: 100%; height: 1.45em; padding: .2em .4em; gap: .3em; background: var(--surface); border-right: .12em solid #b6c6d9; }
-.kill-event > span:not(.kill-flags) { min-width: 0; max-width: 8em; font-size: .65em; color: var(--side,#e0e5ec); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.kill-event > small { max-width: 5em; min-width: 0; font-size: .55em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.kill-weapon { --icon-height: .7em; --icon-max-width: 2.8em; }
-.kill-flags { display: inline-flex; align-items: center; gap: .1em; font-size: .65em; }
+.killfeed { position: absolute; right: 1.25%; top: 2.962963%; width: max-content; max-width: 97.5%; display: flex; flex-direction: column; align-items: flex-end; gap: .12em; }
+.kill-event { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; width: max-content; max-width: 100%; min-height: 2.23em; padding: .3em .6em; gap: .3em; background: var(--surface); border-right: .18em solid #b6c6d9; font-size: .65em; line-height: 1.3; }
+.kill-attacker, .kill-assist { display: inline-flex; align-items: center; gap: .25em; min-width: 0; max-width: 100%; color: var(--side, #e0e5ec); }
+.kill-name { min-width: 0; max-width: 100%; color: var(--side, #e0e5ec); font-weight: 650; white-space: normal; overflow-wrap: anywhere; }
+.kill-method { display: inline-flex; align-items: center; gap: .15em; flex: 0 0 auto; }
+.kill-weapon { --icon-height: 1em; --icon-max-width: 4em; }
+.kill-modifier { --icon-height: 1em; }
 
 .branding { display: flex; align-items: center; gap: .6em; color: #d2dce8; font-size: .67em; min-width: 0; width: fit-content; max-width: 100%; padding: .5em .7em; background: rgb(13 20 30 / 94%); border: 1px solid #344357; }
 .broadcast-logo, .competition-logo { width: 3em; height: 3em; object-fit: contain; }
@@ -293,22 +286,18 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 
 .live-hp .status-icon, .live-armor .status-icon, .observed-vitals .status-icon { --icon-height: 1em; }
 .player-equipment .status-icon { --icon-height: 1em; }
-.roster-economy .status-icon, .kill-flags .status-icon { --icon-height: 1em; }
+.roster-economy .status-icon { --icon-height: 1em; }
 
 .live-player-bottom { align-items: flex-end; }
 .live-player-bottom .utility-icons { --utility-height: min(.729167vw, 1.296296vh); }
 .observed-loadout { align-items: flex-end; }
 .radar-bomb { display: flex; align-items: center; justify-content: center; }
 
-/* Every known grenade keeps its own column, including when adjacent slots are empty. */
-.utility-item { grid-row: 1; }
-.utility-item[data-utility="flashbang"] { grid-column: 1; }
-.utility-item[data-utility="hegrenade"] { grid-column: 2; }
-.utility-item[data-utility="smokegrenade"] { grid-column: 3; }
-.utility-item[data-utility="molotov"] { grid-column: 4; }
-.utility-item[data-utility="incgrenade"] { grid-column: 5; }
-.utility-item[data-utility="decoy"] { grid-column: 6; }
-.live-player-bottom .player-equipment > *, .observed-loadout .player-equipment > * { grid-row: 1; --icon-max-width: 100%; }
+/* Fixed outer areas; related equipment remains a compact contiguous group. */
+.live-player-bottom .player-equipment > *, .observed-loadout .player-equipment > * { --icon-max-width: 100%; }
 .roster-economy span { min-width: 0; overflow: hidden; }
 .roster-economy span:last-child { justify-content: end; }
 .live-hp > span, .live-armor > span, .observed-vitals > span > span:last-child { min-width: 0; overflow: hidden; white-space: nowrap; }
+
+.loadout-details { display: flex; align-items: end; gap: .4em; min-width: 0; height: 100%; }
+.utility-icons:empty, .player-equipment:empty { display: none; }

@@ -3,7 +3,10 @@
     <span class="utility-icons" aria-label="Utility">
         @foreach (var utility in EquipmentPresentation.Utility(Player))
         {
-            <span class="utility-item" data-utility="@utility.Name" title="@(utility.Count is { } count ? $"{utility.Label} × {count}" : $"{utility.Label} · count not supplied")"><EquipmentIcon Name="@utility.Name" /><small>@if (utility.Count is 0 or > 1) { @utility.Count }</small></span>
+            @for (var copy = 0; copy < EquipmentPresentation.UtilityCopies(utility.Count); copy++)
+            {
+                <span class="utility-item" data-utility="@utility.Name" @key="(utility.Name, copy)" title="@utility.Label"><EquipmentIcon Name="@utility.Name" /></span>
+            }
         }
         @if (Player.Weapons is null || Player.Weapons.Value.IsDefault) { <span title="Utility not supplied">—</span> }
     </span>

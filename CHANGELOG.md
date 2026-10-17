@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.7
+
+- Keep utility and ammo compact within stable outer data areas; replace counts with repeated grenade icons.
+- Preserve complete killfeed names and every current event, with eight-second expiry and no six-row cap.
+- Color assisters by their own side; place blind/flash-assist cues by participants and shot modifiers before the victim.
+
 ## 0.4.6
 
 - Remove duplicate active-weapon text beside original observer icons.

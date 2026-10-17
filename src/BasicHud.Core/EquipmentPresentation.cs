@@ -5,6 +5,7 @@ namespace BasicHud.Core;
 public sealed record UtilityItem(string Name, string Label, int? Count);
 public static class EquipmentPresentation
 {
+    public static int UtilityCopies(int? count) => count is >= 0 and <= 10 ? count.Value : 1;
     public static WeaponState? Active(PlayerState player) => PlayerPresentation.Weapons(player).FirstOrDefault(weapon => weapon.State is WeaponStatus.Active or WeaponStatus.Reloading);
     public static string? Key(string? name)
     {

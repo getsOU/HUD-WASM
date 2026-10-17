@@ -3,11 +3,14 @@
     <div class="inventory" aria-label="Inventory">
         @foreach (var weapon in PlayerPresentation.Weapons(Player))
         {
+            @for (var copy = 0; copy < (weapon.Type == WeaponCategory.Grenade ? EquipmentPresentation.UtilityCopies(weapon.AmmoReserve) : 1); copy++)
+            {
             <span class="weapon-item @(weapon.State is WeaponStatus.Active or WeaponStatus.Reloading ? "active" : "")" title="@(weapon.State?.ToString() ?? "Unknown state")">
                 <EquipmentIcon Name="@weapon.Name" /><span>@EquipmentPresentation.Label(weapon.Name)</span>
                 @if (EquipmentPresentation.UsesAmmo(weapon)) { <small>@EquipmentPresentation.Ammo(weapon)</small> }
                 @if (weapon.State == WeaponStatus.Reloading) { <small>RELOAD</small> }
             </span>
+            }
         }
     </div>
 }

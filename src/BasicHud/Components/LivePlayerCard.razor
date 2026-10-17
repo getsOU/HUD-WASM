@@ -8,7 +8,7 @@
     </div>
     <div class="live-player-bottom"><span class="money">@(Player.Money is { } money ? "$" + money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—")</span>
         <span class="weapon-cell">@if (EquipmentPresentation.Active(Player) is { } active) { <EquipmentIcon Name="@active.Name" Class="active-weapon" /> }</span>
-        <UtilityIcons Player="Player" /><PlayerEquipment Player="Player" Context="Context" ShowArmor="false" />
+        <span class="loadout-details"><UtilityIcons Player="Player" /><PlayerEquipment Player="Player" Context="Context" ShowArmor="false" /></span>
     </div>
     <div class="health-track" aria-hidden="true"><span style="@($"width:{Math.Clamp(Player.Health ?? 0, 0, 100).ToString(System.Globalization.CultureInfo.InvariantCulture)}%")"></span></div>
 </article>

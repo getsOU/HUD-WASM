@@ -128,10 +128,21 @@ static class RenderTests
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = unknownWeaponPlayer, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
             check(renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && renderer.HasDescendantText(observedPlayer, "Unknown weapon") && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "actual supplied unknown active weapon keeps its distinct unknown text/name without inventing firearm ammunition");
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Weapons = [held with { State = WeaponStatus.Reloading }] }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
-            check(renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && renderer.HasAttribute(observedPlayer, "aria-label", "7 / 61") && renderer.HasAttribute(observedPlayer, "class", "reload"), "actual observed reload keeps source ammunition in separately aligned columns");
+            check(renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && renderer.HasAttribute(observedPlayer, "aria-label", "7 / 61") && (renderer.HasAttribute(observedPlayer, "class", "reload") || renderer.HasMarkup(observedPlayer, "class=\"reload\"")), "actual observed reload keeps grouped source ammunition and a reload cue");
             check(!renderer.HasAttribute(observedPlayer, "class", "observed-weapon-name") && !renderer.HasDescendantText(observedPlayer, "AK-47"), "observer has no duplicate weapon label beside its accessible original icon");
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Health = 0 }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
             check(!renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "transition from armed/reloading to dead clears the rendered current weapon and ammunition immediately");
+            var utility = renderer.Attach(new UtilityIcons());
+            await renderer.Render(utility, new() { [nameof(UtilityIcons.Player)] = weaponPlayer with { Weapons = [held with { Name = "weapon_flashbang", Type = WeaponCategory.Grenade, AmmoReserve = 2 }] } });
+            check(renderer.AltTexts(utility).SequenceEqual(new[] { "Flashbang", "Flashbang" }) && !renderer.HasDescendantText(utility, "2"), "actual compact utility renders two original flashbang icons instead of a number");
+            var feed = renderer.Attach(new Killfeed());
+            var longName = "Complete player name without any abbreviation or ellipsis";
+            var entry = new KillFeedEntry(1, Guid.NewGuid(), 1, 100, new(1, "killer", longName, TeamSide.CounterTerrorists), new(3, "victim", longName + " victim", TeamSide.Terrorists), new(2, "assist", longName + " assist", TeamSide.Terrorists), "weapon_ak47", WeaponKind.Ak47, true, true, true, true, true, true);
+            await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("key", entry) } });
+            check(renderer.HasAttribute(feed, "class", "kill-assist t") && renderer.HasText(feed, longName + " assist") && renderer.HasText(feed, longName + " victim"), "actual killfeed preserves full participant names and the assister's own side");
+            check(renderer.AltTexts(feed).SequenceEqual(new[] { "Attacker blind", "Flash assist", "AK-47", "Through smoke", "No scope", "Wallbang", "Headshot" }), "actual killfeed attaches blind and flash icons to participants and shot modifiers before the victim");
+            await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("key", entry with { Assister = null }) } });
+            check(!renderer.AltTexts(feed).Contains("Flash assist"), "a missing assister does not leave an unattached flash-assist icon");
         });
         if (renderer.Exception is { } exception) throw new InvalidOperationException("Actual component render or event failed.", exception);
     }
@@ -146,6 +157,7 @@ static class RenderTests
         public Task Render(int id, Dictionary<string, object?> parameters) => RenderRootComponentAsync(id, ParameterView.FromDictionary(parameters));
         public bool HasElement(int id, string name) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Element && frame.ElementName == name);
         public bool HasText(int id, string text) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Text && frame.TextContent == text);
+        public string[] AltTexts(int id) => Descendants(id).Where(frame => frame.FrameType == RenderTreeFrameType.Attribute && frame.AttributeName == "alt").Select(frame => frame.AttributeValue?.ToString() ?? "").ToArray();
         public bool HasAttribute(int id, string name, string value) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Attribute && frame.AttributeName == name && Equals(frame.AttributeValue, value));
         public bool HasComponent(int id, Type type) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Component && frame.ComponentType == type);
         public bool HasMarkup(int id, string text) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Markup && frame.MarkupContent.Contains(text, StringComparison.Ordinal));

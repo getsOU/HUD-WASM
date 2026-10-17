@@ -3,10 +3,16 @@
     {
         var kill = item.Event;
         <article class="kill-event" data-event-id="@kill.Id" @key="item.Key">
-            <span class="@PlayerPresentation.SideClass(kill.Killer?.Side)">@Participant(kill.Killer)</span>
-            @if (kill.Assister is { } assist) { <small>+ @Participant(assist)</small> }
-            <EquipmentIcon Name="@kill.Weapon" Class="kill-weapon" /><span class="kill-victim @PlayerPresentation.SideClass(kill.Victim.Side)">@Participant(kill.Victim)</span>
-            <span class="kill-flags">@if (kill.Headshot) { <StatusIcon Name="headshot" Label="Headshot" /> }@if (kill.Wallbang) { <StatusIcon Name="wallbang" Label="Wallbang" /> }@if (kill.AttackerBlind) { <StatusIcon Name="blind" Label="Attacker blind" /> }@if (kill.ThroughSmoke) { <StatusIcon Name="smoke" Label="Through smoke" /> }@if (kill.NoScope) { <StatusIcon Name="noscope" Label="No scope" /> }@if (kill.FlashAssist) { <StatusIcon Name="flashassist" Label="Flash assist" /> }</span>
+            <span class="kill-attacker @PlayerPresentation.SideClass(kill.Killer?.Side)">
+                @if (kill.AttackerBlind) { <StatusIcon Name="blind" Label="Attacker blind" Class="kill-modifier" /> }
+                <span class="kill-name" data-kill-role="killer" title="@Participant(kill.Killer)">@Participant(kill.Killer)</span>
+            </span>
+            @if (kill.Assister is { } assist)
+            {
+                <span class="kill-assist @PlayerPresentation.SideClass(assist.Side)"><span aria-hidden="true">+</span>@if (kill.FlashAssist) { <StatusIcon Name="flashassist" Label="Flash assist" Class="kill-modifier" /> }<span class="kill-name" data-kill-role="assister" title="@Participant(assist)">@Participant(assist)</span></span>
+            }
+            <span class="kill-method"><EquipmentIcon Name="@kill.Weapon" Class="kill-weapon" />@if (kill.ThroughSmoke) { <StatusIcon Name="smoke" Label="Through smoke" Class="kill-modifier" /> }@if (kill.NoScope) { <StatusIcon Name="noscope" Label="No scope" Class="kill-modifier" /> }@if (kill.Wallbang) { <StatusIcon Name="wallbang" Label="Wallbang" Class="kill-modifier" /> }@if (kill.Headshot) { <StatusIcon Name="headshot" Label="Headshot" Class="kill-modifier" /> }</span>
+            <span class="kill-name kill-victim @PlayerPresentation.SideClass(kill.Victim.Side)" data-kill-role="victim" title="@Participant(kill.Victim)">@Participant(kill.Victim)</span>
         </article>
     }
 </section>
