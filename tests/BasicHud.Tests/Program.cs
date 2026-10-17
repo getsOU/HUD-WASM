@@ -98,6 +98,7 @@ await ShowcaseTests.Run(Check);
 await RenderTests.Run(Check);
 await CompactTests.Run(Check);
 await BroadcastReferenceTests.Run(Check);
+WeaponPresenceTests.Run(Check);
 Console.WriteLine($"{checks} checks passed.");
 
 static async Task Until(Func<bool> ready)

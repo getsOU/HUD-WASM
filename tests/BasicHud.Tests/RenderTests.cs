@@ -89,6 +89,34 @@ static class RenderTests
             check(renderer.HasElement(history, "section") && renderer.HasText(history, "1") && renderer.HasDescendantText(history, "Time expired"), "actual freeze history renders numbered results and the correct result icon description");
             await renderer.Render(history, new() { [nameof(RoundHistory.Context)] = reference, [nameof(RoundHistory.Always)] = true });
             check(renderer.HasElement(history, "section"), "statistics history explicitly stays available independently of live-phase gating");
+
+            var held = new WeaponState("held", "weapon_ak47", WeaponCategory.Rifle, WeaponStatus.Active, null, 7, 30, 61);
+            var weaponPlayer = new PlayerState("weapon-player", "Player", TeamSide.CounterTerrorists, null, 100) { Weapons = [held] };
+            var observedPlayer = renderer.Attach(new ObservedPlayer());
+            var inventory = renderer.Attach(new Inventory());
+            foreach (var (description, source) in new[] {
+                ("dead with stale active rifle", weaponPlayer with { Health = 0 }),
+                ("alive with empty inventory", weaponPlayer with { Weapons = [] }),
+                ("alive with unavailable inventory", weaponPlayer with { Weapons = null }),
+                ("alive with holstered-only inventory", weaponPlayer with { Weapons = [held with { State = WeaponStatus.Holstered }] }) })
+            {
+                await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = source, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
+                await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = source, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
+                check(!renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && !renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && !renderer.HasAttribute(observedPlayer, "class", "ammo") && !renderer.HasDescendantText(observedPlayer, "Unknown weapon"), $"actual live/observer Razor omits active weapon, fallback and ammo for {description}");
+                if (source.Health is <= 0 || PlayerPresentation.Weapons(source).Count == 0)
+                {
+                    await renderer.Render(inventory, new() { [nameof(Inventory.Player)] = source });
+                    check(!renderer.HasElement(inventory, "div") && !renderer.HasComponent(inventory, typeof(EquipmentIcon)), $"actual detail inventory omits absent/stale weapon content for {description}");
+                }
+            }
+            var unknownWeaponPlayer = weaponPlayer with { Weapons = [held with { Name = null, Type = WeaponCategory.Unknown, Kind = WeaponKind.Unknown }] };
+            await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = unknownWeaponPlayer, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
+            await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = unknownWeaponPlayer, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
+            check(renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && renderer.HasDescendantText(observedPlayer, "Unknown weapon") && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "actual supplied unknown active weapon keeps its distinct unknown icon/name without inventing firearm ammunition");
+            await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Weapons = [held with { State = WeaponStatus.Reloading }] }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
+            check(renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && renderer.HasText(observedPlayer, "7 / 61") && renderer.HasMarkup(observedPlayer, "class=\"reload\""), "actual observed reload still renders its known weapon and source ammunition");
+            await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Health = 0 }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
+            check(!renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "transition from armed/reloading to dead clears the rendered current weapon and ammunition immediately");
         });
         if (renderer.Exception is { } exception) throw new InvalidOperationException("Actual component render or event failed.", exception);
     }

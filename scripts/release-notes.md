@@ -1,4 +1,10 @@
-# 0.4.0
+# 0.4.1
+
+Corrects absent weapon handling in the live rosters, observed-player card and detail inventory. Dead players no longer display stale weapon icons, names or ammunition. Alive players with no active/reloading weapon leave the current weapon area empty; holstered inventory is never substituted for a held weapon. A genuinely supplied active weapon with an unknown identity still uses its distinct fallback. Actual reloading weapons and source ammunition remain visible; unknown health is not treated as death. Historical killfeed weapons are unchanged.
+
+Install `sou-basic-wasm-0.4.1.souhud`, select the new version and reopen outputs. The 0.4.0 composition, original Boltobserv radar, all views/panels, GPL license and MIT public SDK `0.2.0-preview.4` remain unchanged. Previous release archives are preserved.
+
+## 0.4.0
 
 Replaces the live header's technical metadata strip with one optional caption, central source round/state label and correctly side-aligned series-win marks. Actual timer and round scores remain dominant. Compact ordered map-series cells below the radar show complete stored scores and exact current-map identity; an unrelated source map never claims a current configured slot. No repeated phase, raw map ID or partial `13:—` result is broadcast.
 

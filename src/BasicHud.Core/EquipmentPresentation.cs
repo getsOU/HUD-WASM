@@ -45,5 +45,6 @@ public static class EquipmentPresentation
         .GroupBy(weapon => Key(weapon.Name)!, StringComparer.Ordinal)
         .Select(group => new UtilityItem(group.Key, Label(group.Key), group.Any(weapon => weapon.AmmoReserve is null or < 0 or > 10) ? null : group.Sum(weapon => weapon.AmmoReserve!.Value)))
         .OrderBy(item => item.Name, StringComparer.Ordinal).Take(6).ToArray();
-    public static bool HasBomb(PlayerState player, GameState? game) => game?.Bomb?.PlayerSteamId is { } id && id == player.SteamId && game.Bomb.State is BombStatus.Carried or BombStatus.Planting || PlayerPresentation.Weapons(player).Any(weapon => weapon.Type == WeaponCategory.Bomb);
+    public static bool HasBomb(PlayerState player, GameState? game) => player.Health is not <= 0 &&
+        (game?.Bomb?.PlayerSteamId is { } id && id == player.SteamId && game.Bomb.State is BombStatus.Carried or BombStatus.Planting || PlayerPresentation.Weapons(player).Any(weapon => weapon.Type == WeaponCategory.Bomb));
 }

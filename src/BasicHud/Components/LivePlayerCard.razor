@@ -6,7 +6,7 @@
         <span class="live-armor" title="Armor">@BroadcastContext.Number(Player.Armor)<StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="Armor" /></span>
     </div>
     <div class="live-player-bottom"><span class="money">@(Player.Money is { } money ? "$" + money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—")</span>
-        <EquipmentIcon Name="@EquipmentPresentation.Active(Player)?.Name" Class="active-weapon" />
+        @if (EquipmentPresentation.Active(Player) is { } active) { <EquipmentIcon Name="@active.Name" Class="active-weapon" /> }
         <UtilityIcons Player="Player" /><PlayerEquipment Player="Player" Context="Context" ShowArmor="false" />
         <span class="kda" title="Kills / deaths / assists">@PlayerPresentation.Kda(Player)</span>
     </div>

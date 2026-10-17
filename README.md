@@ -2,7 +2,7 @@
 
 A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk** and **SOU.Live.Contracts** NuGet packages `0.2.0-preview.4`; no private application source is required.
 
-The equivalent [React implementation](https://github.com/getsOU/sOU-HUD-React) uses the same public contracts and panel. Version 0.4.0 is GPL-3.0-only and includes the original Boltobserv radar maps, metadata, marker shapes and utility artwork with their notices and source archive. The public sOU SDK remains MIT. Valve game artwork retains its separate copyright notices; no ownership or unrestricted artwork license is claimed.
+The equivalent [React implementation](https://github.com/getsOU/sOU-HUD-React) uses the same public contracts and panel. From version 0.4.0 the HUD is GPL-3.0-only and includes the original Boltobserv radar maps, metadata, marker shapes and utility artwork with their notices and source archive. The public sOU SDK remains MIT. Valve game artwork retains its separate copyright notices; no ownership or unrestricted artwork license is claimed.
 
 ![Packaged HUD with calibrated map radar, local icons and compact edge displays over a CS2 reference scene](docs/preview.png)
 
@@ -10,21 +10,21 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 ## Install and use
 
-1. Download `sou-basic-wasm-0.4.0.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.1.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
 5. Supply CS2/HLAE data through sOU's normal setup. Optional data can remain absent; the HUD does not create missing players, game events or statistics.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.0**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.1**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
 
-[Eight output views](docs/views.md) · [All panel fields](docs/panel.md) · [Feature/source matrix and limits](docs/features.md) · [Public author guide](https://www.getsou.app/docs/hud-entwicklung)
+[Changelog](CHANGELOG.md) · [Eight output views](docs/views.md) · [All panel fields](docs/panel.md) · [Feature/source matrix and limits](docs/features.md) · [Public author guide](https://www.getsou.app/docs/hud-entwicklung)
 
 ## What's implemented
 
 - A single clear match header: real current-side team names/logos, large round scores, actual source timer and central round/state label. One explicit caption or competition name; no raw map/phase diagnostic strip. Series-win marks stay attached to their actual teams.
 - Compact two-line live rosters with observer digits, small optional portraits, HP/armor, real weapon silhouettes, utility/equipment/status icons, money and K/D/A. The complete inventory, round damage/kills and recorded metrics remain in presentation/statistics views.
-- Actual observed player with active weapon, firearm ammunition and utility icons. No grenade ammo fractions are invented.
+- Actual observed player with active/reloading weapon, firearm ammunition and utility icons. Dead players show no stale current weapons or inventory; an alive player without an active weapon has an empty weapon area. Holstered equipment is never substituted for an active weapon. A genuinely supplied unknown active weapon keeps its own fallback. No grenade ammo fractions are invented.
 - Per-side complete-or-unknown economy in the roster footer, with full alive/kit/utility/timeouts/loss-streak detail in statistics; numbered recent round results appear only during freeze, pause, timeout or intermission; active rounds including bomb/defuse remain clear. The statistics view retains the complete supplied history.
 - Real HLAE killfeed, keyed by connection/epoch/event ID, with all supplied modifier flags; no kills inferred from health changes.
 - Original Boltobserv radar with the original transparent maps, coordinate metadata and object-specific Nuke/Vertigo split projection. Original-style direction drops, observer digits, observed ring, bomb carrier, flashed/dead markers and utility connect to actual public data. Buyzones appear only during source freeze/warmup. Fresh HLAE falls back to GSI; optional custom calibration and separately attributed Valve overview fallbacks remain available. No permanent technical radar caption or empty replacement grid.
@@ -47,8 +47,8 @@ pwsh ./scripts/Build.ps1
 The script performs locked restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.0.souhud
-artifacts/sou-basic-wasm-0.4.0.souhud.sha256
+artifacts/sou-basic-wasm-0.4.1.souhud
+artifacts/sou-basic-wasm-0.4.1.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:
@@ -64,7 +64,7 @@ dotnet restore tests/BasicHud.Tests --configfile NuGet.Config --locked-mode
 dotnet run --project tests/BasicHud.Tests -c Release --no-restore
 ```
 
-Tests read the actual manifest/panel schema and exercise initial host false values, caption-only save, explicit Hide toggles, missing data, side mapping, scene routes, source totals, metadata matching/size/cancellation/session races, fixed Valve and original Bolt Dust2 projection, object-specific Nuke/Vertigo split boundaries, original asset hashes, header/history state rendering and bounded catalog loading, radar freshness/deaths/resets, actual Razor image-error dispatch, compact image omission, safe one-pass source-name decoding, grenade counts, killfeed identity/lifetime, equal-revision reference refreshes, action deduplication and subscription disposal. Release builds omit debug symbols and all preview fixtures. Optional native WASM AOT/`wasm-tools` optimization is not required.
+Tests read the actual manifest/panel schema and exercise initial host false values, caption-only save, explicit Hide toggles, missing data, side mapping, scene routes, source totals, metadata matching/size/cancellation/session races, fixed Valve and original Bolt Dust2 projection, object-specific Nuke/Vertigo split boundaries, original asset hashes, header/history state rendering and bounded catalog loading, radar freshness/deaths/resets, actual Razor image-error dispatch, compact image omission, actual dead/stale-inventory and unarmed/holstered/unknown-weapon rendering, safe one-pass source-name decoding, grenade counts, killfeed identity/lifetime, equal-revision reference refreshes, action deduplication and subscription disposal. Release builds omit debug symbols and all preview fixtures. Optional native WASM AOT/`wasm-tools` optimization is not required.
 
 ## Isolated Debug preview
 

@@ -22,7 +22,7 @@
     [Parameter] public bool Expanded { get; set; }
     [Parameter] public string? DisplayName { get; set; }
     private string Name => DisplayName ?? Context.Name(Player);
-    private bool HasBomb => Context.Game?.Bomb?.PlayerSteamId is { } id && id == Player.SteamId && Context.Game.Bomb.State is BombStatus.Carried or BombStatus.Planting || PlayerPresentation.Weapons(Player).Any(weapon => weapon.Type == WeaponCategory.Bomb);
+    private bool HasBomb => EquipmentPresentation.HasBomb(Player, Context.Game);
     private string Money => Player.Money is { } value ? "$" + value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—";
     private string Equipment => Player.EquipmentValue is { } value ? "$" + value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—";
     private string HealthWidth => "width:" + (Player.Health is { } value ? Math.Clamp(value, 0, 100) : 0).ToString(System.Globalization.CultureInfo.InvariantCulture) + "%";

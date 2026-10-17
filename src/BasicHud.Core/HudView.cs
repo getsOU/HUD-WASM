@@ -47,8 +47,7 @@ public sealed record HudView(SideView Ct, SideView T, string Map, string Round, 
 
     private static PlayerView Player(PlayerState source)
     {
-        var weapons = source.Weapons;
-        var active = weapons is { IsDefault: false } ? weapons.Value.FirstOrDefault(w => w.State is WeaponStatus.Active or WeaponStatus.Reloading) : null;
+        var active = EquipmentPresentation.Active(source);
         var name = active?.Name;
         if (name?.StartsWith("weapon_", StringComparison.Ordinal) == true) name = name[7..];
         return new(source.SteamId ?? string.Empty, SourceText.Name(source.Name), source.Side,
@@ -56,7 +55,7 @@ public sealed record HudView(SideView Ct, SideView T, string Map, string Round, 
             Number(source.Health), source.Health is { } health ? Math.Clamp((double)health, 0, 100) : null,
             Number(source.Armor), source.Money is { } money ? "$" + money.ToString("N0", CultureInfo.InvariantCulture) : "—",
             $"{Number(source.Stats?.Kills)} / {Number(source.Stats?.Deaths)} / {Number(source.Stats?.Assists)}",
-            Text(name), $"{Number(active?.AmmoClip)} / {Number(active?.AmmoReserve)}", source.Health is <= 0);
+            active is null ? "" : Text(name, "Unknown weapon"), active is null ? "" : $"{Number(active.AmmoClip)} / {Number(active.AmmoReserve)}", source.Health is <= 0);
     }
 
     private static string FormatPhase(GameState? game) => game?.RoundPhase switch

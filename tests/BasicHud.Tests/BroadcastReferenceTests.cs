@@ -81,7 +81,7 @@ static class BroadcastReferenceTests
             return bytes.LongLength == asset.GetProperty("bytes").GetInt64() && Convert.ToHexStringLower(SHA256.HashData(bytes)) == asset.GetProperty("sha256").GetString();
         }), "all 65 original Bolt images, metadata and utility files remain byte-identical to their recorded upstream source");
         using var http = new HttpClient(new BoltHandler(json));
-        check((await RadarCatalogLoader.LoadBoltAsync(http, new Uri("http://127.0.0.1/hud-packages/sou-basic-wasm/0.4.0/"), CancellationToken.None)).Find("de_dust2") is not null, "actual source-generated bounded loader loads the package-local Bolt metadata without a JSON5 runtime");
+        check((await RadarCatalogLoader.LoadBoltAsync(http, new Uri("http://127.0.0.1/hud-packages/sou-basic-wasm/0.4.1/"), CancellationToken.None)).Find("de_dust2") is not null, "actual source-generated bounded loader loads the package-local Bolt metadata without a JSON5 runtime");
     }
     sealed class BoltHandler(string json) : HttpMessageHandler
     {
