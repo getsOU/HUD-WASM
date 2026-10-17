@@ -4,7 +4,7 @@
 }
 else
 {
-    <StatusIcon Name="unknown" Label="@EquipmentPresentation.Label(Name)" Class="@Class" />
+    <span class="icon-label @Class" title="@EquipmentPresentation.Label(Name)">@EquipmentPresentation.Label(Name)</span>
 }
 @code {
     [Parameter] public string? Name { get; set; }

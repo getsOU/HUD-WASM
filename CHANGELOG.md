@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.4
+
+- Use original CS2 SVGs consistently for status, equipment, killfeed and round results. Add original clock and rescued-hostage artwork.
+- Remove hand-drawn icon fallbacks; unavailable assets retain a text label. Preserve SVG aspect ratios and size status/utility icons for their HUD context.
+
+
 ## 0.4.3
 
 - Restore original Boltobserv Arial numerals, line height, marker/label proportions, active size and shared height scaling.

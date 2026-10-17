@@ -11,7 +11,7 @@
     "toolRepository": "https://github.com/ValveResourceFormat/ValveResourceFormat",
     "toolLicense": "MIT (tool only, not game artwork)"
   },
-  "rights": "Game artwork belongs to Valve Corporation and respective creators. Not covered by the HUD source MIT license. No ownership or general redistribution/commercial license is claimed.",
+  "rights": "Game artwork belongs to Valve Corporation and respective creators. Not covered by the HUD source license. No ownership or general redistribution/commercial license is claimed.",
   "files": [
     {
       "path": "assets/killfeed/blind_kill.svg",
@@ -392,6 +392,15 @@
       "sourceCrc32": "7a97b01c"
     },
     {
+      "path": "assets/ui/clock.svg",
+      "source": "panorama/images/icons/ui/clock.vsvg_c",
+      "operation": "Source2Viewer 20.0 SVG extraction; SVG text unchanged",
+      "bytes": 3064,
+      "sha256": "f6aa334539c4034d128527aaf49bb8a86e763c092723bf8d5b7d68e4566c67a1",
+      "sourceSha256": "8c585c667e49f00bb31a1b5b40edcc0bc728365c11baa432defddfe8c09af7a2",
+      "sourceCrc32": "17ca8518"
+    },
+    {
       "path": "assets/ui/defuser_white.svg",
       "source": "panorama/images/icons/ui/defuser_white.vsvg_c",
       "operation": "Source2Viewer 20.0 SVG extraction; SVG text unchanged",
@@ -408,6 +417,15 @@
       "sha256": "e40db2ae48790d54e922394943a25981d98f3b94ce816fba6faa9734bcf54e16",
       "sourceSha256": "5ec3ffafd53332e6ceb0aec9dcb717c006a2219457de9255ab703a406ca8e55b",
       "sourceCrc32": "c0f979a3"
+    },
+    {
+      "path": "assets/ui/hostage_rescued.svg",
+      "source": "panorama/images/icons/ui/hostage_rescued.vsvg_c",
+      "operation": "Source2Viewer 20.0 SVG extraction; SVG text unchanged",
+      "bytes": 3512,
+      "sha256": "71c293847410125c7b98dc347366a4bc90d58e0993d55184bd45d67d9fa34a09",
+      "sourceSha256": "51a357ae2619e951f0354bc570eb184058705117e044b04ea82224787ada1e99",
+      "sourceCrc32": "08247445"
     },
     {
       "path": "assets/ui/stat_assists.svg",

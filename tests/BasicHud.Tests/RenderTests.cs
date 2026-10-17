@@ -42,7 +42,21 @@ static class RenderTests
             await renderer.Render(weapon, new() { [nameof(EquipmentIcon.Name)] = "WEAPON_KNIFE_SURVIVAL_BOWIE" });
             check(renderer.HasAttribute(weapon, "src", "assets/weapons/knife_survival_bowie.svg") && renderer.ErrorHandler(weapon) != 0, "equipment Razor uses the original local silhouette with a real error callback");
             await renderer.DispatchEventAsync(renderer.ErrorHandler(weapon), null, EventArgs.Empty);
-            check(!renderer.HasElement(weapon, "img") && renderer.HasComponent(weapon, typeof(StatusIcon)), "unavailable equipment artwork gets a safe icon instead of a broken image or technical name");
+            check(!renderer.HasElement(weapon, "img") && !renderer.HasElement(weapon, "svg") && renderer.HasText(weapon, "Knife"), "unavailable equipment artwork retains its label without a fabricated replacement icon");
+
+            var status = renderer.Attach(new StatusIcon());
+            foreach (var name in new[] { "health", "armor", "helmet", "kit", "bomb", "dead", "headshot", "wallbang", "blind", "smoke", "noscope", "flashassist", "fire", "time", "hostage" })
+            {
+                await renderer.Render(status, new() { [nameof(StatusIcon.Name)] = name, [nameof(StatusIcon.Label)] = name });
+                check(renderer.HasAttribute(status, "src", $"assets/{Cs2Icons.Status(name)}.svg") && !renderer.HasElement(status, "svg") && renderer.ErrorHandler(status) != 0, $"actual {name} status renders an original SVG image, not a hand-drawn path");
+            }
+            await renderer.DispatchEventAsync(renderer.ErrorHandler(status), null, EventArgs.Empty);
+            check(!renderer.HasElement(status, "img") && !renderer.HasElement(status, "svg") && renderer.HasText(status, "hostage"), "failed status artwork retains text without substitute symbols");
+            await renderer.Render(status, new() { [nameof(StatusIcon.Name)] = "health", [nameof(StatusIcon.Label)] = "Health" });
+            check(renderer.HasElement(status, "img"), "a different original status asset remains available after an image error");
+            await renderer.Render(status, new() { [nameof(StatusIcon.Name)] = "future-status", [nameof(StatusIcon.Label)] = "Future status" });
+            check(!renderer.HasElement(status, "img") && !renderer.HasElement(status, "svg") && renderer.HasText(status, "Future status"), "unknown status uses its honest label without guessing artwork");
+
             var livePlayer = renderer.Attach(new LivePlayerCard());
             await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = new PlayerState("1", "Rogue &lt;script&gt;", TeamSide.CounterTerrorists, null, null), [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
             check(renderer.HasText(livePlayer, "Rogue <script>") && !renderer.HasMarkup(livePlayer, "Rogue"), "decoded source names remain actual Razor text, never markup");
@@ -86,7 +100,7 @@ static class RenderTests
             check(!renderer.HasElement(history, "section"), "actual history component has no residual DOM during live combat");
             var frozenReference = reference with { Snapshot = reference.Snapshot! with { Game = referenceGame with { RoundPhase = RoundPhase.FreezeTime, Countdown = new(CountdownPhase.FreezeTime, 12) } } };
             await renderer.Render(history, new() { [nameof(RoundHistory.Context)] = frozenReference });
-            check(renderer.HasElement(history, "section") && renderer.HasText(history, "1") && renderer.HasDescendantText(history, "Time expired"), "actual freeze history renders numbered results and the correct result icon description");
+            check(renderer.HasElement(history, "section") && renderer.HasText(history, "1") && renderer.HasDescendantAttribute(history, "alt", "Time expired"), "actual freeze history renders numbered results and the correct result icon description");
             await renderer.Render(history, new() { [nameof(RoundHistory.Context)] = reference, [nameof(RoundHistory.Always)] = true });
             check(renderer.HasElement(history, "section"), "statistics history explicitly stays available independently of live-phase gating");
 
@@ -112,7 +126,7 @@ static class RenderTests
             var unknownWeaponPlayer = weaponPlayer with { Weapons = [held with { Name = null, Type = WeaponCategory.Unknown, Kind = WeaponKind.Unknown }] };
             await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = unknownWeaponPlayer, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = unknownWeaponPlayer, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
-            check(renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && renderer.HasDescendantText(observedPlayer, "Unknown weapon") && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "actual supplied unknown active weapon keeps its distinct unknown icon/name without inventing firearm ammunition");
+            check(renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && renderer.HasDescendantText(observedPlayer, "Unknown weapon") && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "actual supplied unknown active weapon keeps its distinct unknown text/name without inventing firearm ammunition");
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Weapons = [held with { State = WeaponStatus.Reloading }] }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
             check(renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && renderer.HasText(observedPlayer, "7 / 61") && renderer.HasMarkup(observedPlayer, "class=\"reload\""), "actual observed reload still renders its known weapon and source ammunition");
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Health = 0 }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
@@ -134,6 +148,7 @@ static class RenderTests
         public bool HasAttribute(int id, string name, string value) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Attribute && frame.AttributeName == name && Equals(frame.AttributeValue, value));
         public bool HasComponent(int id, Type type) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Component && frame.ComponentType == type);
         public bool HasMarkup(int id, string text) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Markup && frame.MarkupContent.Contains(text, StringComparison.Ordinal));
+        public bool HasDescendantAttribute(int id, string name, string value) => Descendants(id).Any(frame => frame.FrameType == RenderTreeFrameType.Attribute && frame.AttributeName == name && Equals(frame.AttributeValue, value));
         public bool HasDescendantText(int id, string text) => Descendants(id).Any(frame => frame.FrameType == RenderTreeFrameType.Text && frame.TextContent == text);
         private IEnumerable<RenderTreeFrame> Descendants(int id)
         {

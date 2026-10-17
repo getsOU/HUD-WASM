@@ -61,3 +61,5 @@ one. Hostage maps without these fields have an empty `sites` array.
 
 These links identify the owners' policies; this notice does not grant or assert
 broader asset rights than those policies provide.
+
+Version 0.4.4 additionally exports original ui/clock.svg and ui/hostage_rescued.svg from the same installed CS2 build, without changing their SVG text. Status/equipment/killfeed/round-result images are original SVGs; unknown or failed images retain text labels without substitute artwork.

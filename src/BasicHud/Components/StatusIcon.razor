@@ -1,26 +1,14 @@
-<svg class="status-icon @Class" viewBox="0 0 24 24" role="img" aria-label="@Label"><title>@Label</title>
-    @switch (Name)
-    {
-        case "health": <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6Z" /> break;
-        case "armor": <path d="m5 4 4-2 3 4 3-4 4 2-2 5v12H7V9Z" /> break;
-        case "helmet": <path d="M3 13a9 9 0 0 1 18 0v4h-8v-5H8v7H4Z" /> break;
-        case "kit": <path d="m4 4 4 4 3-1 2-4 3 3-4 7 8 7-3 2-8-8-5 1-3-3 4-2Z" /> break;
-        case "bomb": <path d="M6 8h12v13H6Z M9 5h6v3H9Z M12 2h5v3h-5Z" /><path d="M9 11h6v2H9Z M9 16h2v2H9Z M13 16h2v2h-2Z" class="icon-cutout" /> break;
-        case "dead": <path d="M12 2a9 9 0 0 0-9 9v5l4 2v4h3v-4h4v4h3v-4l4-2v-5a9 9 0 0 0-9-9Zm-5 8h4v4H7Zm6 0h4v4h-4Z" /> break;
-        case "headshot": <path d="M10 2h4v4h-4Z M10 18h4v4h-4Z M2 10h4v4H2Z M18 10h4v4h-4Z M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z" /> break;
-        case "wallbang": <path d="M8 2h3v20H8Z M14 2h3v20h-3Z M2 10h20v4H2Z" /> break;
-        case "blind": <path d="m2 3 20 18-2 2L0 5Zm10 3c6 0 10 6 10 6l-4 4-3-3 1-1a4 4 0 0 0-4-4h-1L9 6Zm-7 5 3 3a4 4 0 0 0 4 2l3 3-3 1C5 20 1 12 1 12Z" /> break;
-        case "smoke": <path d="M6 20a5 5 0 0 1-2-9 5 5 0 0 1 7-6 5 5 0 0 1 9 6 5 5 0 0 1-1 9Z" /> break;
-        case "noscope": <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2" /><path d="M11 1h2v7h-2Z M11 16h2v7h-2Z M1 11h7v2H1Z M16 11h7v2h-7Z M2 2l20 20-2 2L0 4Z" /> break;
-        case "flashassist": <path d="m13 1-9 13h7l-1 9 10-14h-7Z" /> break;
-        case "fire": <path d="M13 1s2 6-2 8c-2-1-2-4-2-4S1 12 4 18c4 8 17 4 16-4-1-5-4-8-4-8s1 6-3 8c-2-3 0-5 0-13Z" /> break;
-        case "time": <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2" /><path d="M11 5h2v7l5 3-1 2-6-4Z" /> break;
-        case "hostage": <circle cx="12" cy="5" r="3" /><path d="M7 10h10l2 7h-4v6h-2v-6h-2v6H9v-6H5Z" /> break;
-        default: <path d="M3 4h18v16H3Zm7 3v2h3v2h-2v4h2v-2h2V7Zm1 10v2h2v-2Z" /> break;
-    }
-</svg>
+@if (Cs2Icons.Status(Name) is { } source && failed != source)
+{
+    <img class="status-icon @Class" src="@($"assets/{source}.svg")" alt="@Label" aria-label="@Label" title="@Label" data-cs2-icon="@source" @onerror="() => failed = source" />
+}
+else
+{
+    <span class="icon-label @Class" aria-label="@Label" title="@Label">@Label</span>
+}
 @code {
     [Parameter] public string Name { get; set; } = "unknown";
     [Parameter] public string Label { get; set; } = "Unknown";
     [Parameter] public string Class { get; set; } = "";
+    private string? failed;
 }

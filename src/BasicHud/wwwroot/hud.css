@@ -1,6 +1,7 @@
 :root {
   font-family: "Segoe UI", Arial, sans-serif;
   color: #f5f5f7;
+  --icon-size: min(.833333vw, 1.481481vh);
   --ct: #79c7ff;
   --t: #ffb065;
   --surface: rgb(12 19 28 / 93%);
@@ -20,8 +21,8 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .team-logo { width: 1.8em; height: 1.8em; flex-shrink: 0; }
 .portrait { width: 2.1em; height: 2.1em; object-fit: cover; border-radius: .15em; }
 .equipment-icon { display: inline-block; width: 2.5em; height: 1.2em; object-fit: contain; vertical-align: middle; flex-shrink: 0; filter: brightness(0) invert(1); }
-.status-icon { display: inline-block; width: 1em; height: 1em; fill: currentColor; color: inherit; vertical-align: middle; flex-shrink: 0; }
-.icon-cutout { fill: #162131; }
+.status-icon { display: inline-block; width: var(--icon-size); height: var(--icon-size); object-fit: contain; vertical-align: middle; flex: 0 0 auto; filter: brightness(0) invert(1); }
+.icon-label { display: inline-block; max-width: 7em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .7em; vertical-align: middle; }
 .observer-slot { display: inline-grid; place-items: center; width: 1.5em; height: 1.5em; background: #2a394b; font-weight: 700; color: #e5edf6; flex-shrink: 0; }
 .player-name { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .money { color: #c7d9c2; white-space: nowrap; }
@@ -32,7 +33,7 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .player-equipment { display: inline-flex; align-items: center; gap: .15em; color: #d8e3ee; }
 .utility-icons { display: inline-flex; align-items: center; gap: .12em; min-width: 0; }
 .utility-item { position: relative; display: inline-flex; align-items: center; }
-.utility-item .equipment-icon { width: 1em; height: 1.2em; }
+.utility-item .equipment-icon { width: calc(var(--icon-size) * .75); height: calc(var(--icon-size) * 1.125); }
 .utility-item small { font-size: .66em; font-weight: 700; margin-left: -.2em; align-self: flex-end; }
 
 /* Fixed 1920 x 1080 live composition. All measurements scale with the canvas. */
@@ -55,7 +56,7 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .scene-live > .round-history { position: absolute; top: 9.62963%; left: 37.5%; width: 25%; height: 3.333333%; gap: .25em; overflow: hidden; }
 .history-round { width: 1.55em; height: 1.875em; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .12em; padding: .15em; background: var(--surface); color: var(--side,#bdcbdc); border-bottom: .1em solid var(--side); flex-shrink: 1; }
 .history-round small { font-size: .55em; color: #d2dbe6; line-height: 1; }
-.history-round .status-icon { width: .8em; height: .8em; }
+.history-round .status-icon { width: var(--icon-size); height: var(--icon-size); }
 .round-message { position: absolute; left: 37.5%; top: 13.518519%; width: 25%; height: 1.1em; background: var(--surface); text-align: center; font-size: .625em; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .roster { position: absolute; top: 68.333333%; width: 16.25%; height: 29.444444%; overflow: hidden; }
@@ -136,7 +137,7 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .kill-event { display: flex; align-items: center; justify-content: flex-end; max-width: 100%; height: 1.45em; padding: .2em .4em; gap: .3em; background: var(--surface); border-right: .12em solid #b6c6d9; }
 .kill-event > span:not(.kill-flags) { min-width: 0; max-width: 8em; font-size: .65em; color: var(--side,#e0e5ec); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .kill-event > small { max-width: 5em; min-width: 0; font-size: .55em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.kill-weapon { width: 2.3em; height: .9em; }
+.kill-weapon { width: 2.8em; height: var(--icon-size); }
 .kill-flags { display: inline-flex; align-items: center; gap: .1em; font-size: .65em; }
 
 .branding { display: flex; align-items: center; gap: .6em; color: #d2dce8; font-size: .67em; min-width: 0; width: fit-content; max-width: 100%; padding: .5em .7em; background: rgb(13 20 30 / 94%); border: 1px solid #344357; }

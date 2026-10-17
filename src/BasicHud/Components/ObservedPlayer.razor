@@ -8,7 +8,7 @@
             @if (EquipmentPresentation.UsesAmmo(active)) { <strong class="ammo">@EquipmentPresentation.Ammo(active)</strong> }
             @if (active.State == WeaponStatus.Reloading) { <span class="reload">RELOAD</span> }
         }
-        <UtilityIcons Player="Player" /><PlayerEquipment Player="Player" Context="Context" />
+        <UtilityIcons Player="Player" /><PlayerEquipment Player="Player" Context="Context" ShowArmor="false" />
     </div>
 </section>
 @code {

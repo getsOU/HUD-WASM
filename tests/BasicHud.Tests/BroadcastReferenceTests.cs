@@ -12,6 +12,7 @@ static class BroadcastReferenceTests
     {
         var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
         var webroot = Path.Combine(root, "src/BasicHud/wwwroot");
+        check(File.ReadAllText(Path.Combine(root, "LICENSES/valve-assets.json")) == File.ReadAllText(Path.Combine(webroot, "assets/valve-assets.json")), "packaged license provenance matches the actual original game asset inventory");
         var json = File.ReadAllText(Path.Combine(webroot, "assets/boltobserv/catalog.json"));
         var catalog = BoltRadarCatalog.Bind(JsonSerializer.Deserialize(json, RadarCatalogJson.Default.BoltRadarDocument));
         var dust = catalog.Find("de_dust2")!;
