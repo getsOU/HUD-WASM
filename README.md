@@ -10,13 +10,13 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 ## Install and use
 
-1. Download `sou-basic-wasm-0.4.7.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.8.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
 5. Supply CS2/HLAE data through sOU's normal setup. Optional data can remain absent; the HUD does not create missing players, game events or statistics.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.7**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.8**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
 
 [Changelog](CHANGELOG.md) · [Eight output views](docs/views.md) · [All panel fields](docs/panel.md) · [Feature/source matrix and limits](docs/features.md) · [Public author guide](https://www.getsou.app/docs/hud-entwicklung)
 
@@ -24,7 +24,7 @@ The stable package ID remains `sou-basic-wasm`; the current version is **0.4.7**
 
 - A single clear match header: real current-side team names/logos, large round scores, actual source timer and central round/state label. One explicit caption or competition name; no raw map/phase diagnostic strip. Series-win marks stay attached to their actual teams.
 - Compact two-line live rosters with observer digits, small optional portraits, HP/armor, real weapon silhouettes, utility/equipment/status icons, money and K/D/A. The complete inventory, round damage/kills and recorded metrics remain in presentation/statistics views.
-- Actual observed player with active/reloading weapon, firearm ammunition and utility icons. Dead players show no stale current weapons or inventory; an alive player without an active weapon has an empty weapon area. Holstered equipment is never substituted for an active weapon. A genuinely supplied unknown active weapon keeps its own fallback. No grenade ammo fractions are invented.
+- Actual observed player with active/reloading weapon, firearm ammunition and utility icons. Dead players show no stale current weapons or inventory; an alive player without an active weapon has an empty weapon area. In the observer, holstered equipment is never substituted for an active weapon. Roster rows instead show carried primary firearm, otherwise pistol, otherwise knife, independently of held state. A genuinely supplied unknown active weapon keeps its own fallback. No grenade ammo fractions are invented.
 - Per-side complete-or-unknown economy in the roster footer, with full alive/kit/utility/timeouts/loss-streak detail in statistics; numbered recent round results appear only during freeze, pause, timeout or intermission; active rounds including bomb/defuse remain clear. The statistics view retains the complete supplied history.
 - Real HLAE killfeed, keyed by connection/epoch/event ID, with all supplied modifier flags; no kills inferred from health changes.
 - Original Boltobserv radar with the original transparent maps, coordinate metadata and object-specific Nuke/Vertigo split projection. Original-style direction drops, observer digits, observed ring, bomb carrier, flashed/dead markers and utility connect to actual public data. Buyzones appear only during source freeze/warmup. Fresh HLAE supplies the whole player frame; absent/expired HLAE falls back to GSI; optional custom calibration and separately attributed Valve overview fallbacks remain available. No permanent technical radar caption or empty replacement grid.
@@ -47,8 +47,8 @@ pwsh ./scripts/Build.ps1
 The script performs locked restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.7.souhud
-artifacts/sou-basic-wasm-0.4.7.souhud.sha256
+artifacts/sou-basic-wasm-0.4.8.souhud
+artifacts/sou-basic-wasm-0.4.8.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:
@@ -146,3 +146,7 @@ Known active weapons use the original icon without a repeated visible name. The 
 Fixed outer areas keep money, weapon, ammo and equipment stable; related information inside each area remains compact. Utility has no empty per-type columns. Two flashbangs render as two original icons with no count label, including full inventory views. Ammunition stays together as clip / reserve.
 
 The killfeed keeps complete names and all currently visible events without a six-row limit. Events expire eight seconds after first receipt; repeated snapshots do not renew them. New events appear at the bottom. Assisters use their own event-side color. Order follows NYXIA: blinded attacker icon, attacker, plus and flash-assist cue beside the assister, weapon, smoke, noscope, wallbang, headshot, victim. Long rows can grow leftwards and wrap at the canvas edge without ellipses.
+
+## Roster inventory priority (0.4.8)
+
+Roster rows show the carried primary firearm (rifle, sniper rifle, SMG, shotgun or machine gun), otherwise pistol, otherwise knife. Holding a knife or grenade does not hide a carried firearm. Dropping a weapon updates this selection. Dead players and absent/empty inventories show no weapon; unknown categories are not guessed. The observer continues to show the active/reloading weapon. A dedicated gutter separates the weapon from the compact utility group; two flashbangs still use two original icons.

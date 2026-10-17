@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.8
+
+- Show carried primary firearm, otherwise pistol, otherwise knife in roster rows, independently of the observer held weapon.
+- Separate weapon and compact utility with a dedicated gutter; preserve absent/dead inventory handling.
+
 ## 0.4.7
 
 - Keep utility and ammo compact within stable outer data areas; replace counts with repeated grenade icons.

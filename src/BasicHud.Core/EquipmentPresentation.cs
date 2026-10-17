@@ -7,6 +7,13 @@ public static class EquipmentPresentation
 {
     public static int UtilityCopies(int? count) => count is >= 0 and <= 10 ? count.Value : 1;
     public static WeaponState? Active(PlayerState player) => PlayerPresentation.Weapons(player).FirstOrDefault(weapon => weapon.State is WeaponStatus.Active or WeaponStatus.Reloading);
+    public static WeaponState? RosterWeapon(PlayerState player)
+    {
+        var weapons = PlayerPresentation.Weapons(player);
+        return weapons.FirstOrDefault(weapon => weapon.Type is WeaponCategory.Rifle or WeaponCategory.SniperRifle or WeaponCategory.SubmachineGun or WeaponCategory.Shotgun or WeaponCategory.MachineGun)
+            ?? weapons.FirstOrDefault(weapon => weapon.Type == WeaponCategory.Pistol)
+            ?? weapons.FirstOrDefault(weapon => weapon.Type == WeaponCategory.Knife);
+    }
     public static string? Key(string? name)
     {
         if (string.IsNullOrWhiteSpace(name)) return null;

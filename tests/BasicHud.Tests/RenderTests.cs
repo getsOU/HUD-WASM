@@ -111,8 +111,7 @@ static class RenderTests
             foreach (var (description, source) in new[] {
                 ("dead with stale active rifle", weaponPlayer with { Health = 0 }),
                 ("alive with empty inventory", weaponPlayer with { Weapons = [] }),
-                ("alive with unavailable inventory", weaponPlayer with { Weapons = null }),
-                ("alive with holstered-only inventory", weaponPlayer with { Weapons = [held with { State = WeaponStatus.Holstered }] }) })
+                ("alive with unavailable inventory", weaponPlayer with { Weapons = null }) })
             {
                 await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = source, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
                 await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = source, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
@@ -123,10 +122,16 @@ static class RenderTests
                     check(!renderer.HasElement(inventory, "div") && !renderer.HasComponent(inventory, typeof(EquipmentIcon)), $"actual detail inventory omits absent/stale weapon content for {description}");
                 }
             }
+            var holsteredPlayer = weaponPlayer with { Weapons = [held with { State = WeaponStatus.Holstered }] };
+            await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = holsteredPlayer, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
+            await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = holsteredPlayer, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
+            check(renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && !renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)), "actual roster shows a carried holstered rifle while observer keeps its held-weapon area empty");
             var unknownWeaponPlayer = weaponPlayer with { Weapons = [held with { Name = null, Type = WeaponCategory.Unknown, Kind = WeaponKind.Unknown }] };
             await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = unknownWeaponPlayer, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = unknownWeaponPlayer, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
-            check(renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && renderer.HasDescendantText(observedPlayer, "Unknown weapon") && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "actual supplied unknown active weapon keeps its distinct unknown text/name without inventing firearm ammunition");
+            check(!renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && renderer.HasDescendantText(observedPlayer, "Unknown weapon") && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "unknown category is not guessed as a roster firearm while observer preserves a supplied unknown held weapon");
+            await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = weaponPlayer with { Weapons = [held with { Name = "weapon_future_rifle" }] }, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
+            check(renderer.HasComponent(livePlayer, typeof(EquipmentIcon)), "a classified roster rifle with unknown artwork retains its honest fallback");
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Weapons = [held with { State = WeaponStatus.Reloading }] }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
             check(renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && renderer.HasAttribute(observedPlayer, "aria-label", "7 / 61") && (renderer.HasAttribute(observedPlayer, "class", "reload") || renderer.HasMarkup(observedPlayer, "class=\"reload\"")), "actual observed reload keeps grouped source ammunition and a reload cue");
             check(!renderer.HasAttribute(observedPlayer, "class", "observed-weapon-name") && !renderer.HasDescendantText(observedPlayer, "AK-47"), "observer has no duplicate weapon label beside its accessible original icon");

@@ -7,6 +7,19 @@ static class WeaponPresenceTests
     {
         var rifle = new WeaponState("rifle", "weapon_ak47", WeaponCategory.Rifle, WeaponStatus.Active, null, 7, 30, 61);
         var player = new PlayerState("player", "Player", TeamSide.CounterTerrorists, null, 100) { Weapons = [rifle] };
+        var pistol = rifle with { Name = "weapon_glock", Type = WeaponCategory.Pistol, State = WeaponStatus.Holstered };
+        var knife = rifle with { Name = "weapon_knife", Type = WeaponCategory.Knife };
+        var grenade = rifle with { Name = "weapon_flashbang", Type = WeaponCategory.Grenade };
+        foreach (var category in new[] { WeaponCategory.Rifle, WeaponCategory.SniperRifle, WeaponCategory.SubmachineGun, WeaponCategory.Shotgun, WeaponCategory.MachineGun })
+        {
+            var primary = rifle with { Type = category, State = WeaponStatus.Holstered };
+            check(EquipmentPresentation.RosterWeapon(player with { Weapons = [knife, grenade, pistol, primary] }) == primary, $"roster prioritizes carried {category} over the held knife and utility");
+        }
+        var loadout = player with { Weapons = [knife, pistol, rifle with { State = WeaponStatus.Holstered }] };
+        check(EquipmentPresentation.RosterWeapon(loadout)?.Type == WeaponCategory.Rifle && EquipmentPresentation.Active(loadout) == knife, "roster inventory and observer held weapon have independent selections");
+        check(EquipmentPresentation.RosterWeapon(player with { Weapons = [knife, pistol] }) == pistol && EquipmentPresentation.RosterWeapon(player with { Weapons = [grenade, knife] }) == knife, "dropping primary then secondary falls back to pistol then knife");
+        check(EquipmentPresentation.RosterWeapon(player with { Weapons = [grenade] }) is null && EquipmentPresentation.RosterWeapon(player with { Weapons = [] }) is null && EquipmentPresentation.RosterWeapon(player with { Weapons = null }) is null, "roster never substitutes utility or invents an unavailable inventory");
+        check(EquipmentPresentation.RosterWeapon(loadout with { Health = 0 }) is null && EquipmentPresentation.RosterWeapon(loadout with { Health = null })?.Type == WeaponCategory.Rifle, "roster suppresses known dead inventories while unknown health is not death");
         var dead = player with { Health = 0 };
         check(EquipmentPresentation.Active(dead) is null && PlayerPresentation.Weapons(dead).Count == 0, "known death suppresses stale active weapon and inventory rather than rendering yesterday's held weapon");
         check(EquipmentPresentation.Active(player with { Weapons = [] }) is null && EquipmentPresentation.Active(player with { Weapons = null }) is null, "an explicit empty or unavailable inventory has no fabricated active weapon");
