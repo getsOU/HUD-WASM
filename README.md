@@ -4,19 +4,23 @@ A small, readable CS2 broadcast HUD built with C# and Blazor WebAssembly. It con
 
 The equivalent React implementation lives in [getsOU/sOU-HUD-React](https://github.com/getsOU/sOU-HUD-React). Both use the native sOU v2 protocol and the same panel fields.
 
-![Basic Blazor WebAssembly HUD showing a synthetic example match](docs/preview.png)
+![Basic Blazor WebAssembly HUD over a checkerboard behind its transparent output](docs/preview.png)
 
-The screenshot uses only synthetic example data in an isolated local package host. The empty game area is transparent; it appears dark in this capture.
+The screenshot shows the actual Release package with synthetic example data in an isolated local package host. The checkerboard sits behind the embedded HUD to demonstrate transparency; it is not included in the HUD.
 
 ## Use the HUD
 
-1. Download `sou-basic-wasm-0.1.0.souhud` from this repository's [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.1.1.souhud` from this repository's [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
 2. Open the [sOU desktop app](https://www.getsou.app/get-sou) and choose **HUDs → Paket importieren**. Select the `.souhud` file and install it.
 3. Open its output through sOU. Copy that local output URL into an OBS Browser Source with **1920 × 1080** dimensions. Keep the browser background transparent.
 4. In the HUD's **Panel**, set the scoreboard caption and choose whether team rosters and the observed player are visible.
 5. Supply CS2 game data using sOU's normal setup. Before the first game snapshot, the overlay says **Waiting for game data**. Starting a separate development server does not connect it to a running cast.
 
-Package ID: `sou-basic-wasm`. Package version: `0.1.0`. Protocol: v2. Installed versions are immutable; increase the manifest version for a changed release.
+Package ID: `sou-basic-wasm`. Package version: `0.1.1`. Protocol: v2. Installed versions are immutable; increase the manifest version for a changed release.
+
+### Black background in version 0.1.0
+
+Version `0.1.0` can show an opaque black background in an embedded sOU overlay despite transparent CSS backgrounds. Version `0.1.1` removes the root document's forced dark color scheme while keeping the HUD panels and text colors. Install `0.1.1`, select that version and reopen the output; an already running output keeps its original package version. The previous screenshot's dark background was not evidence that the embedded output was transparent.
 
 ## What it shows
 
@@ -52,8 +56,8 @@ pwsh ./scripts/Build.ps1
 The script restores locked dependencies, restores public `SOU.Hud.Tool`, verifies C# formatting, runs the focused tests, publishes the Release WASM app, creates the installable `.souhud`, validates it and writes a SHA-256 file. Outputs:
 
 ```text
-artifacts/sou-basic-wasm-0.1.0.souhud
-artifacts/sou-basic-wasm-0.1.0.souhud.sha256
+artifacts/sou-basic-wasm-0.1.1.souhud
+artifacts/sou-basic-wasm-0.1.1.souhud.sha256
 ```
 
 It refuses to overwrite an existing package or publish directory. For another build, choose a fresh directory:

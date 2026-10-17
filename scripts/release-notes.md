@@ -1,17 +1,7 @@
-An MIT-licensed basic CS2 HUD using the public sOU SDK.
+# 0.1.1
 
-- Transparent scoreboard, map, round and reported countdown/bomb state.
-- CT/T player rosters and observed-player information.
-- Live caption and visibility settings in the sOU HUD panel.
-- Explicit missing, waiting, stale and connection states.
+Fixes an opaque black background when the HUD is embedded in sOU's overlay. The root document no longer forces a dark browser color scheme; the HUD's panel colors, transparent page backgrounds and layout remain the same.
 
-Download the `.souhud` file and import it in **sOU → HUDs → Paket importieren**.
-Use the browser-output URL provided by sOU for OBS (1920 × 1080).
-The adjacent `.sha256` file records the exact package checksum.
+Install `sou-basic-wasm-0.1.1.souhud`, select version `0.1.1` in sOU and reopen the output. Existing `0.1.0` packages and running outputs are unchanged. SDK dependencies remain at `0.2.0-preview.4`.
 
-Builds, model/lifecycle tests and isolated protocol-v2/CSP browser checks were
-performed with synthetic data. Test your own CS2/OBS setup before a live cast.
-This release does not claim a native CS2/OBS acceptance test.
-
-See the repository README for prerequisites, source builds, customization and
-the public SDK packages. Package versions are immutable.
+Source/build checks and isolated browser checks are separate from a native CS2/OBS capture test.
