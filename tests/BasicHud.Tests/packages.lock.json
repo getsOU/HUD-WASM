@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "SOU.Live.Contracts": {
+        "type": "Transitive",
+        "resolved": "0.2.0-preview.4",
+        "contentHash": "2uJBCVX9w2uDI+g0Ca/olcU3vP6MPkZy14kbCfpE8/SwW2X48knsf43kK+W4vw3pnb/DVSVmr0QQtYNYYPHLbQ=="
+      },
+      "basichud.core": {
+        "type": "Project",
+        "dependencies": {
+          "SOU.Live.Contracts": "[0.2.0-preview.4, )"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+:root { color-scheme: dark; font-family: "Segoe UI", Arial, sans-serif; color: #f5f5f7; --ct: #6ebeff; --t: #ffb065; --surface: rgb(15 20 29 / 94%); --muted: #a9b4c3; }
+* { box-sizing: border-box; }
+html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; background: transparent; }
+.viewport { width: 100%; height: 100%; display: grid; place-items: center; }
+.hud { position: relative; width: min(100vw, 177.777778vh); aspect-ratio: 16 / 9; font-size: min(1vw, 1.777778vh); font-variant-numeric: tabular-nums; }
+.ct { --side: var(--ct); }.t { --side: var(--t); }.neutral { --side: #c9d0d9; }
+.scoreboard { position: absolute; width: 70%; left: 15%; top: 3.1%; text-align: center; }
+.caption { display: inline-block; max-width: 70%; padding: .44em 1.6em; background: var(--surface); color: #c3ccd8; font-size: .66em; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.score-strip { display: grid; grid-template-columns: minmax(0, 1fr) 5.1em 7.1em 5.1em minmax(0, 1fr); min-height: 5em; background: var(--surface); box-shadow: 0 .3em 1.5em rgb(0 0 0 / 15%); }
+.team-heading { display: flex; align-items: center; justify-content: space-between; gap: .9em; padding: 0 1.1em; min-width: 0; border-top: .16em solid var(--side); }
+.team-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.12em; font-weight: 700; }
+.team-heading.t .team-name { text-align: right; }
+.side-tag { color: var(--side); font-size: .7em; font-weight: 800; letter-spacing: .1em; }
+.score { display: grid; place-items: center; color: var(--side); font-size: 3em; font-weight: 800; background: color-mix(in srgb, var(--side) 10%, transparent); border-top: .0534em solid var(--side); }
+.clock { display: flex; flex-direction: column; justify-content: center; background: #111925; }
+.clock strong { font-size: 2em; line-height: 1.1; font-weight: 600; }
+.clock-label { font-size: .52em; letter-spacing: .12em; font-weight: 700; color: var(--muted); padding-bottom: .4em; }
+.bomb-clock { background: #7f2c24; }.bomb-clock .clock-label { color: #ffcfbd; }
+.match-meta { display: inline-flex; max-width: 90%; background: var(--surface); align-items: center; gap: 1.4em; padding: .6em 1.6em; font-size: .65em; color: #c6cfdb; }
+.match-meta span + span { border-left: 1px solid #39414c; padding-left: 1.4em; }
+.roster { position: absolute; top: 35%; width: 20.8%; }.roster.ct { left: 1.8%; }.roster.t { right: 1.8%; }
+.roster-heading { display: flex; justify-content: space-between; align-items: center; gap: 1em; padding: .8em .9em; background: rgb(15 20 29 / 87%); border-top: .18em solid var(--side); color: var(--side); font-size: .66em; font-weight: 700; }
+.roster-heading span:first-child { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }.roster-heading span:last-child { flex-shrink: 0; font-size: .78em; color: var(--muted); }
+.player-row { position: relative; padding: .56em .7em .62em; background: var(--surface); margin-top: .2em; border-left: .17em solid var(--side); }
+.player-row.is-dead { opacity: .65; }.player-top, .player-middle, .player-bottom { display: flex; align-items: center; gap: .6em; }
+.player-name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: .91em; }.observer-slot { display: grid; place-items: center; width: 1.5em; height: 1.5em; background: #2b3340; font-size: .6em; flex-shrink: 0; color: #d6dce5; }
+.money { margin-left: auto; color: #c4d2bd; font-size: .7em; flex-shrink: 0; }
+.player-middle { justify-content: space-between; padding-top: .44em; font-size: .63em; color: var(--muted); }.player-middle b { color: var(--side); font-size: 1.28em; }.armor { margin-left: .65em; }.kda { white-space: nowrap; }
+.player-bottom { justify-content: space-between; padding-top: .4em; font-size: .62em; color: #bac4d2; }.weapon { text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }.ammo-small { color: #8d9aab; white-space: nowrap; }
+.health-track { position: absolute; left: 0; bottom: 0; width: 100%; height: .13em; background: #2a303a; }.health-track span { display: block; height: 100%; background: var(--side); }
+.roster-empty { background: var(--surface); padding: 1.5em; text-align: center; color: var(--muted); font-size: .75em; }
+.observed { position: absolute; left: 32%; bottom: 5.5%; width: 36%; background: var(--surface); border-top: .2em solid var(--side); padding: 0 1.1em .85em; }
+.observed-tag { padding-top: .7em; font-size: .53em; letter-spacing: .15em; color: var(--side); }.observed-tag span { margin-left: .6em; }.observed-main { display: flex; align-items: center; justify-content: space-between; gap: 1em; padding-top: .3em; }.observed-main strong { font-size: 1.65em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }.observed-health { color: var(--side); font-size: 1.6em; white-space: nowrap; }.observed-health small { font-size: .4em; }
+.observed-details { display: flex; align-items: center; gap: 1.3em; padding-top: .7em; font-size: .63em; color: #bcc6d3; }.observed-details span { flex-shrink: 0; }.observed-weapon { margin-left: auto; max-width: 35%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-transform: uppercase; }.observed-details b { color: #fff; white-space: nowrap; }
+.waiting { position: absolute; top: 43%; left: 28%; width: 44%; text-align: center; color: #d5dce7; }.waiting p { display: inline-block; padding: .8em 1.5em; background: var(--surface); font-size: .9em; }.waiting-mark { display: block; font-size: 2.5em; color: #6d7b8d; line-height: .8; }
+.connection { position: absolute; right: 1.8%; bottom: 1.5%; display: flex; align-items: center; gap: .55em; padding: .45em .7em; background: rgb(10 15 22 / 82%); color: #c0c9d5; font-size: .52em; }.connection-dot { width: .5em; height: .5em; border-radius: 50%; background: #d6a569; }.healthy { opacity: .65; }.healthy .connection-dot { background: #9bcca2; }.preview-badge { color: #f2b975; font-weight: 700; }
+.loading { position: absolute; bottom: 1em; right: 1em; color: #ddd; background: #111925; padding: .5em 1em; font: 14px "Segoe UI", Arial, sans-serif; }
+#blazor-error-ui { display: none; position: absolute; bottom: 0; width: 100%; background: #6f241e; color: #fff; padding: 12px; font: 14px "Segoe UI", Arial, sans-serif; }#blazor-error-ui button { float: right; background: transparent; border: 0; color: #fff; font-size: 18px; }

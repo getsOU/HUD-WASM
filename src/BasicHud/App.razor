@@ -1,0 +1,77 @@
+@implements IAsyncDisposable
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<main class="viewport">
+    <div class="hud" aria-label="sOU Basic HUD">
+        <Scoreboard View="View" Caption="@Options.Caption" />
+        @if (Options.ShowRosters)
+        {
+            <Roster Side="View.Ct" />
+            <Roster Side="View.T" />
+        }
+        @if (!View.HasGame)
+        {
+            <div class="waiting"><span class="waiting-mark" aria-hidden="true">+</span><p>@(openError ?? "Waiting for game data")</p></div>
+        }
+        @if (Options.ShowObservedPlayer && View.Observed is { } observed)
+        {
+            <ObservedPlayer Player="observed" />
+        }
+        <ConnectionIndicator View="View" Live="@(session?.LiveConnection ?? ConnectionState.Stopped)" Panel="@(session?.PanelConnection ?? ConnectionState.Stopped)" IsPreview="isPreview" />
+    </div>
+</main>
+
+@code {
+    private HudSession? session;
+    private IDisposable? feedLifetime;
+    private bool isPreview = false;
+    private bool disposed;
+    private string? openError;
+    private HudView View => session?.View ?? HudView.Empty;
+    private DisplayOptions Options => session?.Options ?? DisplayOptions.Default;
+
+    protected override void OnInitialized()
+    {
+        var address = new Uri(Navigation.Uri);
+        IHudFeed? feed = null;
+#if DEBUG
+        feed = Development.PreviewFeed.TryCreate(address);
+        isPreview = feed is not null;
+#endif
+        if (feed is null)
+        {
+            try
+            {
+                var browser = new BrowserHudFeed(Http, address);
+                feed = browser;
+                feedLifetime = browser;
+            }
+            catch (ArgumentException)
+            {
+                openError = "Open this HUD from an installed sOU package.";
+                return;
+            }
+        }
+        session = new HudSession(feed);
+        session.Changed += Refresh;
+        session.Start();
+    }
+
+    private void Refresh()
+    {
+        if (!disposed) _ = InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (disposed) return;
+        disposed = true;
+        if (session is not null)
+        {
+            session.Changed -= Refresh;
+            await session.DisposeAsync();
+        }
+        feedLifetime?.Dispose();
+    }
+}

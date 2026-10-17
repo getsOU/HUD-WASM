@@ -1,0 +1,20 @@
+<section class="roster @(Side.Side == TeamSide.CounterTerrorists ? "ct" : "t")" aria-label="@($"{Side.Name} roster")">
+    <div class="roster-heading"><span>@Side.Name</span><span>K / D / A</span></div>
+    @if (Side.Players.Count == 0)
+    {
+        <div class="roster-empty">Waiting for players</div>
+    }
+    @foreach (var player in Side.Players)
+    {
+        <article class="player-row @(player.IsDead ? "is-dead" : "")">
+            <div class="player-top"><span class="observer-slot">@player.Slot</span><strong class="player-name" title="@player.Name">@player.Name</strong><span class="money">@player.Money</span></div>
+            <div class="player-middle"><span><b>@player.Health</b> HP <span class="armor">@player.Armor ARM</span></span><span class="kda">@player.Kda</span></div>
+            <div class="player-bottom"><span class="weapon">@player.Weapon</span><span class="ammo-small">@player.Ammo</span></div>
+            <div class="health-track" aria-hidden="true"><span style="@HealthWidth(player.HealthPercent)"></span></div>
+        </article>
+    }
+</section>
+@code {
+    [Parameter, EditorRequired] public SideView Side { get; set; } = HudView.Empty.Ct;
+    private static string HealthWidth(double? value) => $"width: {(value ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture)}%";
+}
