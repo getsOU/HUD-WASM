@@ -1,14 +1,14 @@
 <article class="live-player @PlayerPresentation.SideClass(Player.Side) @(Player.Health is <= 0 ? "is-dead" : "") @(Context.Game?.ObservedPlayer?.SteamId == Player.SteamId ? "is-observed" : "")">
     <div class="live-player-top"><span class="observer-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span>
-        <ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Context.Name(Player)" Class="portrait" OmitFallback="true" />
+        <span class="portrait-cell"><ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Context.Name(Player)" Class="portrait" OmitFallback="true" /></span>
         <strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong>
-        <span class="live-hp" title="Health"><StatusIcon Name="health" Label="Health" />@BroadcastContext.Number(Player.Health)</span>
-        <span class="live-armor" title="Armor">@BroadcastContext.Number(Player.Armor)<StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="Armor" /></span>
+        <span class="live-hp" title="Health"><StatusIcon Name="health" Label="Health" /><span>@BroadcastContext.Number(Player.Health)</span></span>
+        <span class="live-armor" title="Armor"><span>@BroadcastContext.Number(Player.Armor)</span><StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="Armor" /></span>
+        <span class="kda" title="Kills / deaths / assists">@PlayerPresentation.Kda(Player)</span>
     </div>
     <div class="live-player-bottom"><span class="money">@(Player.Money is { } money ? "$" + money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—")</span>
-        @if (EquipmentPresentation.Active(Player) is { } active) { <EquipmentIcon Name="@active.Name" Class="active-weapon" /> }
+        <span class="weapon-cell">@if (EquipmentPresentation.Active(Player) is { } active) { <EquipmentIcon Name="@active.Name" Class="active-weapon" /> }</span>
         <UtilityIcons Player="Player" /><PlayerEquipment Player="Player" Context="Context" ShowArmor="false" />
-        <span class="kda" title="Kills / deaths / assists">@PlayerPresentation.Kda(Player)</span>
     </div>
     <div class="health-track" aria-hidden="true"><span style="@($"width:{Math.Clamp(Player.Health ?? 0, 0, 100).ToString(System.Globalization.CultureInfo.InvariantCulture)}%")"></span></div>
 </article>

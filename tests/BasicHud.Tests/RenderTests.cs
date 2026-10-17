@@ -128,7 +128,8 @@ static class RenderTests
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = unknownWeaponPlayer, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
             check(renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && renderer.HasDescendantText(observedPlayer, "Unknown weapon") && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "actual supplied unknown active weapon keeps its distinct unknown text/name without inventing firearm ammunition");
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Weapons = [held with { State = WeaponStatus.Reloading }] }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
-            check(renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && renderer.HasText(observedPlayer, "7 / 61") && renderer.HasMarkup(observedPlayer, "class=\"reload\""), "actual observed reload still renders its known weapon and source ammunition");
+            check(renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && renderer.HasAttribute(observedPlayer, "aria-label", "7 / 61") && renderer.HasAttribute(observedPlayer, "class", "reload"), "actual observed reload keeps source ammunition in separately aligned columns");
+            check(!renderer.HasAttribute(observedPlayer, "class", "observed-weapon-name") && !renderer.HasDescendantText(observedPlayer, "AK-47"), "observer has no duplicate weapon label beside its accessible original icon");
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Health = 0 }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
             check(!renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "transition from armed/reloading to dead clears the rendered current weapon and ammunition immediately");
         });

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.6
+
+- Remove duplicate active-weapon text beside original observer icons.
+- Reserve live roster, observer and economy data with fixed grid tracks, including empty cells.
+- Keep known utility and status types in stable slots; counts and weapon silhouettes cannot move adjacent fields.
+
 ## 0.4.5
 
 - Balance visible original SVG contours instead of forcing different shapes into equal square boxes.

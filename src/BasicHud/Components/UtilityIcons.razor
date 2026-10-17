@@ -3,9 +3,10 @@
     <span class="utility-icons" aria-label="Utility">
         @foreach (var utility in EquipmentPresentation.Utility(Player))
         {
-            <span class="utility-item @(utility.Count is 0 or > 1 ? "has-count" : "")" title="@(utility.Count is { } count ? $"{utility.Label} × {count}" : $"{utility.Label} · count not supplied")"><EquipmentIcon Name="@utility.Name" />@if (utility.Count is 0 or > 1) { <small>@utility.Count</small> }</span>
+            <span class="utility-item" data-utility="@utility.Name" title="@(utility.Count is { } count ? $"{utility.Label} × {count}" : $"{utility.Label} · count not supplied")"><EquipmentIcon Name="@utility.Name" /><small>@if (utility.Count is 0 or > 1) { @utility.Count }</small></span>
         }
         @if (Player.Weapons is null || Player.Weapons.Value.IsDefault) { <span title="Utility not supplied">—</span> }
     </span>
 }
+else { <span class="utility-icons" aria-label="Utility"></span> }
 @code { [Parameter] public PlayerState Player { get; set; } = null!; }

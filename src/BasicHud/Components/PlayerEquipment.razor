@@ -1,14 +1,15 @@
 <span class="player-equipment">
     @if (ShowArmor && Player.Armor is > 0) { <StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="@(Player.Helmet == true ? "Armor and helmet" : "Armor")" /> }
-    @if (Player.DefuseKit == true) { <StatusIcon Name="kit" Label="Defuse kit" /> }
-    @if (EquipmentPresentation.HasBomb(Player, Context.Game)) { <StatusIcon Name="bomb" Label="Bomb carrier" /> }
-    @if (Player.Health is <= 0) { <StatusIcon Name="dead" Label="Dead" /> }
-    @if (Player.Flashed is > 0) { <StatusIcon Name="blind" Label="Flashed" /> }
-    @if (Player.Smoked is > 0) { <StatusIcon Name="smoke" Label="In smoke" /> }
-    @if (Player.Burning is > 0) { <StatusIcon Name="fire" Label="Burning" /> }
+    @if (Player.DefuseKit == true) { <StatusIcon Name="kit" Class="equipment-kit" Label="Defuse kit" /> }
+    @if (EquipmentPresentation.HasBomb(Player, Context.Game)) { <StatusIcon Name="bomb" Class="equipment-bomb" Label="Bomb carrier" /> }
+    @if (Player.Health is <= 0) { <StatusIcon Name="dead" Class="equipment-dead" Label="Dead" /> }
+    @if (Player.Flashed is > 0) { <StatusIcon Name="blind" Class="equipment-blind" Label="Flashed" /> }
+    @if (Player.Smoked is > 0) { <StatusIcon Name="smoke" Class="equipment-smoke" Label="In smoke" /> }
+    @if (Player.Burning is > 0) { <StatusIcon Name="fire" Class="equipment-fire" Label="Burning" /> }
 </span>
 @code {
     [Parameter] public PlayerState Player { get; set; } = null!;
     [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
     [Parameter] public bool ShowArmor { get; set; } = true;
 }
+
