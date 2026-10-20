@@ -61,35 +61,48 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .history-round .status-icon { --icon-height: .75em; }
 .round-message { position: absolute; left: 37.5%; top: 13.518519%; width: 25%; height: 1.1em; background: var(--surface); text-align: center; font-size: .625em; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.roster { position: absolute; top: 68.333333%; width: 16.25%; height: 29.444444%; overflow: hidden; }
+.roster { position: absolute; top: 62.407407%; width: 16.25%; height: 35.37037%; overflow: hidden; }
 .roster.ct { left: 1.25%; }
 .roster.t { left: 82.5%; }
 .roster-heading { height: 1.145833em; padding: 0 .4em; display: flex; align-items: center; justify-content: space-between; gap: .6em; border-top: .1em solid var(--side); background: var(--surface); color: var(--side); }
 .roster-heading span { font-size: .625em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .roster-heading span:first-child { min-width: 0; font-weight: 700; }
 .roster-heading span:last-child { flex-shrink: 0; color: #afbdcd; }
-.live-player { position: relative; height: 2.8125em; padding: .15em .35em .2em; background: var(--surface); border-left: .13em solid var(--side); border-bottom: 1px solid #354253; }
-.live-player.is-observed { background: rgb(27 44 63 / 96%); box-shadow: inset .12em 0 var(--side); }
-.live-player-top, .live-player-bottom { height: 1.19em; display: grid; align-items: center; column-gap: .12em; min-width: 0; }
-.live-player-top { grid-template-columns: .85em 1em minmax(0, 1fr) 1.9em 2.25em 2.65em; }
-.live-player-top > *, .live-player-bottom > *, .observed-identity > *, .observed-loadout > * { min-width: 0; }
 .portrait-cell { display: grid; place-items: center; height: 100%; overflow: hidden; }
-.live-player-top .observer-slot { font-size: .55em; }
-.live-player-top .portrait { width: 1em; height: 1em; }
-.live-player-top .player-name { font-size: .75em; font-weight: 650; }
-.live-hp, .live-armor { display: grid; align-items: center; gap: .1em; font-size: .64em; }
-.live-hp { grid-template-columns: 1em minmax(0, 1fr); color: var(--side); }
-.live-armor { grid-template-columns: minmax(0, 1fr) 1.6em; color: #b1bfd0; }
-.live-hp > span:last-child, .live-armor > span:first-child { text-align: right; }
-.live-player-top .kda { font-size: .55em; overflow: hidden; text-align: right; }
-.live-player-bottom { grid-template-columns: 2.4em 2.3em minmax(0, 1fr); }
-.live-player-bottom > .loadout-details { margin-inline-start: .42em; }
-.live-player-bottom .money { font-size: .59em; overflow: hidden; }
 .weapon-cell { display: grid; align-items: end; justify-items: start; min-width: 0; overflow: hidden; height: 100%; }
-.live-player-bottom .roster-weapon { --icon-height: .9em; --icon-max-width: 2.3em; }
-.live-player-bottom .utility-icons { font-size: .68em; }
-.live-player-bottom .player-equipment { font-size: .58em; }
-.live-player-bottom .player-equipment, .observed-loadout .player-equipment { display: inline-flex; align-items: end; gap: .25em; }
+/* Mirrored roster cards: identity, portrait, then weapon/health and equipment. */
+.live-player { position: relative; display: grid; grid-template-columns: .55em 4.1em 2.85em minmax(0, 1fr); grid-template-areas: "slot identity portrait loadout"; gap: .12em; height: 3.333333em; padding: .1em .25em .15em 0; background: #101925ee; border-inline-start: .13em solid var(--side); overflow: hidden; }
+.live-player + .live-player { margin-top: .208333em; }
+.live-player.is-observed { background: #20354bf2; }
+.live-player.is-dead { opacity: .65; }
+.live-player > * { min-width: 0; }
+.card-slot { grid-area: slot; align-self: start; width: 100%; height: 1.15em; margin-top: .1em; background: transparent; color: #fff; font-size: .6em; }
+.card-identity { grid-area: identity; display: grid; grid-template-rows: 1fr 1fr 1fr; align-items: center; min-width: 0; }
+.card-identity .player-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .72em; line-height: 1.1; font-weight: 750; }
+.card-stats { color: var(--side); font-size: .6em; line-height: 1.1; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.card-money { color: #c9e591; font-size: .65em; line-height: 1.1; font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.card-portrait { grid-area: portrait; display: grid; align-items: end; height: 100%; min-width: 0; overflow: hidden; }
+.card-portrait .roster-portrait { display: block; width: 100%; height: 100%; max-height: 3.083333em; object-fit: contain; object-position: center bottom; border-radius: 0; }
+.card-loadout { grid-area: loadout; display: grid; grid-template-rows: 1.55em 1em; align-content: space-between; min-width: 0; margin-inline-start: .3em; }
+.card-armament { display: grid; grid-template-columns: minmax(0, 1fr) 2.5em; gap: .25em; align-items: center; min-width: 0; }
+.card-armament .weapon-cell { height: 1.15em; align-items: center; }
+.card-armament .roster-weapon { --icon-height: 1em; --icon-max-width: 3.8em; }
+.card-health { font-size: 1.5em; font-weight: 850; color: #fff; text-align: right; line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.card-equipment { display: flex; align-items: end; gap: .4em; min-width: 0; height: 1em; }
+.card-status, .card-status .player-equipment { display: inline-flex; align-items: end; gap: .2em; min-width: 0; }
+.card-status { flex: 0 0 auto; font-size: .65em; }
+.card-armor { display: inline-flex; align-items: end; }
+.card-status .status-icon { --icon-height: 1em; --icon-max-width: 2em; }
+.card-equipment .utility-icons { --utility-height: .729167em; flex: 0 0 auto; }
+.roster.t .live-player { grid-template-columns: minmax(0, 1fr) 2.85em 4.1em .55em; grid-template-areas: "loadout portrait identity slot"; padding: .1em 0 .15em .25em; border-inline-start: 0; border-inline-end: .13em solid var(--side); }
+.roster.t .health-track span { margin-inline-start: auto; }
+.roster.t .card-identity { text-align: right; }
+.roster.t .card-loadout { margin-inline-start: 0; margin-inline-end: .3em; }
+.roster.t .card-armament { grid-template-columns: 2.5em minmax(0, 1fr); }
+.roster.t .card-armament .weapon-cell { grid-column: 2; grid-row: 1; justify-items: end; }
+.roster.t .card-health { grid-column: 1; grid-row: 1; text-align: left; }
+.roster.t .card-equipment, .roster.t .card-status, .roster.t .card-status .player-equipment { flex-direction: row-reverse; }
+.roster.t .card-equipment .utility-icons { flex-direction: row-reverse; }
 .roster-economy { height: 1.25em; display: grid; grid-template-columns: 1fr 1.25fr .55fr .6fr; align-items: center; gap: .3em; padding: 0 .4em; background: var(--surface); }
 .roster-economy span { display: inline-flex; gap: .15em; align-items: center; font-size: .58em; white-space: nowrap; }
 .roster-empty { background: var(--surface); padding: .8em; text-align: center; color: var(--muted); font-size: .7em; }
@@ -285,20 +298,20 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .radar-unavailable { position: static; font-size: .64em; padding: .45em; }
 .bolt-flash { width: 100%; height: 100%; background: #fff; clip-path: polygon(15% 8%,40% 25%,50% 0%,60% 25%,85% 8%,74% 35%,100% 36%,78% 50%,100% 70%,72.5% 67%,77.5% 92.5%,60% 75%,50% 100%,40% 75%,22.5% 92.5%,27.5% 67%,0% 70%,22% 50%,0% 36%,26% 35%); box-shadow: inset 0 0 0 1.2px #fc9f2d,inset 0 0 3.5px #fea130; }
 
-.live-hp .status-icon, .live-armor .status-icon, .observed-vitals .status-icon { --icon-height: 1em; }
+.observed-vitals .status-icon { --icon-height: 1em; }
 .player-equipment .status-icon { --icon-height: 1em; }
 .roster-economy .status-icon { --icon-height: 1em; }
 
-.live-player-bottom { align-items: flex-end; }
-.live-player-bottom .utility-icons { --utility-height: min(.729167vw, 1.296296vh); }
+
+
 .observed-loadout { align-items: flex-end; }
 .radar-bomb { display: flex; align-items: center; justify-content: center; }
 
 /* Fixed outer areas; related equipment remains a compact contiguous group. */
-.live-player-bottom .player-equipment > *, .observed-loadout .player-equipment > * { --icon-max-width: 100%; }
+.observed-loadout .player-equipment > * { --icon-max-width: 100%; }
 .roster-economy span { min-width: 0; overflow: hidden; }
 .roster-economy span:last-child { justify-content: end; }
-.live-hp > span, .live-armor > span, .observed-vitals > span > span:last-child { min-width: 0; overflow: hidden; white-space: nowrap; }
+.observed-vitals > span > span:last-child { min-width: 0; overflow: hidden; white-space: nowrap; }
 
 .loadout-details { display: flex; align-items: end; gap: .4em; min-width: 0; height: 100%; }
 .utility-icons:empty, .player-equipment:empty { display: none; }

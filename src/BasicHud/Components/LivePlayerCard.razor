@@ -1,14 +1,23 @@
 <article class="live-player @PlayerPresentation.SideClass(Player.Side) @(Player.Health is <= 0 ? "is-dead" : "") @(Context.Game?.ObservedPlayer?.SteamId == Player.SteamId ? "is-observed" : "")">
-    <div class="live-player-top"><span class="observer-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span>
-        <span class="portrait-cell"><ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Context.Name(Player)" Class="portrait" OmitFallback="true" /></span>
+    <span class="observer-slot card-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span>
+    <div class="card-identity">
         <strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong>
-        <span class="live-hp" title="Health"><StatusIcon Name="health" Label="Health" /><span>@BroadcastContext.Number(Player.Health)</span></span>
-        <span class="live-armor" title="Armor"><span>@BroadcastContext.Number(Player.Armor)</span><StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="Armor" /></span>
-        <span class="kda" title="Kills / deaths / assists">@PlayerPresentation.Kda(Player)</span>
+        <span class="card-stats" aria-label="Kills / deaths / assists" title="Kills / deaths / assists">@PlayerPresentation.Kda(Player)</span>
+        <span class="card-money">@(Player.Money is { } money ? "$" + money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—")</span>
     </div>
-    <div class="live-player-bottom"><span class="money">@(Player.Money is { } money ? "$" + money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—")</span>
-        <span class="weapon-cell">@if (EquipmentPresentation.RosterWeapon(Player) is { } weapon) { <EquipmentIcon Name="@weapon.Name" Class="roster-weapon" /> }</span>
-        <span class="loadout-details"><UtilityIcons Player="Player" /><PlayerEquipment Player="Player" Context="Context" ShowArmor="false" /></span>
+    <span class="card-portrait"><ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Context.Name(Player)" Class="roster-portrait" OmitFallback="true" /></span>
+    <div class="card-loadout">
+        <div class="card-armament">
+            <span class="weapon-cell">@if (EquipmentPresentation.RosterWeapon(Player) is { } weapon) { <EquipmentIcon Name="@weapon.Name" Class="roster-weapon" /> }</span>
+            <strong class="card-health" aria-label="Health" title="Health">@BroadcastContext.Number(Player.Health)</strong>
+        </div>
+        <div class="card-equipment">
+            <UtilityIcons Player="Player" />
+            <span class="card-status">
+                @if (Player.Armor is > 0) { <span class="card-armor" aria-label="@($"Armor: {Player.Armor}")" title="@($"Armor: {Player.Armor}")"><StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="@(Player.Helmet == true ? "Armor and helmet" : "Armor")" /></span> }
+                <PlayerEquipment Player="Player" Context="Context" ShowArmor="false" />
+            </span>
+        </div>
     </div>
     <div class="health-track" aria-hidden="true"><span style="@($"width:{Math.Clamp(Player.Health ?? 0, 0, 100).ToString(System.Globalization.CultureInfo.InvariantCulture)}%")"></span></div>
 </article>

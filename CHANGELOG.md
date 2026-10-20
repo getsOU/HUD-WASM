@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.9
+
+- Mirror the two roster layouts around larger central portraits.
+- Separate name / K-D-A / cash, carried weapon with large health digits, and a compact utility/status row.
+- Keep stable areas for absent images, inventory changes and bounded long names; retain all previous equipment and killfeed behavior.
+
 ## 0.4.8
 
 - Show carried primary firearm, otherwise pistol, otherwise knife in roster rows, independently of the observer held weapon.

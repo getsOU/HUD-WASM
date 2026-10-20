@@ -10,20 +10,20 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 ## Install and use
 
-1. Download `sou-basic-wasm-0.4.8.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.9.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
 5. Supply CS2/HLAE data through sOU's normal setup. Optional data can remain absent; the HUD does not create missing players, game events or statistics.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.8**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.9**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
 
 [Changelog](CHANGELOG.md) · [Eight output views](docs/views.md) · [All panel fields](docs/panel.md) · [Feature/source matrix and limits](docs/features.md) · [Public author guide](https://www.getsou.app/docs/hud-entwicklung)
 
 ## What's implemented
 
 - A single clear match header: real current-side team names/logos, large round scores, actual source timer and central round/state label. One explicit caption or competition name; no raw map/phase diagnostic strip. Series-win marks stay attached to their actual teams.
-- Compact two-line live rosters with observer digits, small optional portraits, HP/armor, real weapon silhouettes, utility/equipment/status icons, money and K/D/A. The complete inventory, round damage/kills and recorded metrics remain in presentation/statistics views.
+- Compact mirrored live roster cards with observer digits, central optional portraits, HP/armor, real weapon silhouettes, utility/equipment/status icons, money and K/D/A. The complete inventory, round damage/kills and recorded metrics remain in presentation/statistics views.
 - Actual observed player with active/reloading weapon, firearm ammunition and utility icons. Dead players show no stale current weapons or inventory; an alive player without an active weapon has an empty weapon area. In the observer, holstered equipment is never substituted for an active weapon. Roster rows instead show carried primary firearm, otherwise pistol, otherwise knife, independently of held state. A genuinely supplied unknown active weapon keeps its own fallback. No grenade ammo fractions are invented.
 - Per-side complete-or-unknown economy in the roster footer, with full alive/kit/utility/timeouts/loss-streak detail in statistics; numbered recent round results appear only during freeze, pause, timeout or intermission; active rounds including bomb/defuse remain clear. The statistics view retains the complete supplied history.
 - Real HLAE killfeed, keyed by connection/epoch/event ID, with all supplied modifier flags; no kills inferred from health changes.
@@ -34,7 +34,7 @@ The stable package ID remains `sou-basic-wasm`; the current version is **0.4.8**
 
 Missing values remain `—`. Team A is never assumed CT. Unknown health is not treated as death. The observed card never substitutes the local/menu player. No invented MVP, clutch, overtime, score, map geometry, player photo, win probability or source event is supplied. The [matrix](docs/features.md) identifies each real source and limitation.
 
-The 1920×1080 live composition reserves the central game area (x360–1560, y160–930). The score header is 960×72; the radar is 288×288; each bottom-corner roster is at most 312×318 including five 54px rows and its economy footer; the observer card is 520×82. The whole composition scales proportionally in smaller or wider windows. Missing live portraits/logos consume no placeholder box; presentation scenes retain their neutral fallbacks. Only an explicit lower-third production action crosses the reserved game area.
+The 1920×1080 live composition reserves the central game area (x360–1560, y160–930). The score header is 960×72; the radar is 288×288; each bottom-corner roster is at most 312×382 including five 64px rows and its economy footer; the observer card is 520×82. The whole composition scales proportionally in smaller or wider windows. Missing live portraits/logos consume no placeholder box; presentation scenes retain their neutral fallbacks. Only an explicit lower-third production action crosses the reserved game area.
 
 ## Build, test and package
 
@@ -47,8 +47,8 @@ pwsh ./scripts/Build.ps1
 The script performs locked restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.8.souhud
-artifacts/sou-basic-wasm-0.4.8.souhud.sha256
+artifacts/sou-basic-wasm-0.4.9.souhud
+artifacts/sou-basic-wasm-0.4.9.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:
@@ -150,3 +150,9 @@ The killfeed keeps complete names and all currently visible events without a six
 ## Roster inventory priority (0.4.8)
 
 Roster rows show the carried primary firearm (rifle, sniper rifle, SMG, shotgun or machine gun), otherwise pistol, otherwise knife. Holding a knife or grenade does not hide a carried firearm. Dropping a weapon updates this selection. Dead players and absent/empty inventories show no weapon; unknown categories are not guessed. The observer continues to show the active/reloading weapon. A dedicated gutter separates the weapon from the compact utility group; two flashbangs still use two original icons.
+
+## Mirrored portrait player cards (0.4.9)
+
+The left roster places the observer slot and a three-line name / K-D-A / cash block on the outside, an optional portrait in the middle, and the carried weapon beside large white health digits on the inside. Compact utility and armor/kit/bomb/status icons occupy a separate row below the weapon, with a clear vertical gap. The right roster mirrors these areas without reversing text or original artwork. Armor values remain available in the icon title and accessible label; extended player details are in the presentation views.
+
+The 1920 × 1080 layout uses 312 × 64 pixel cards with 4 pixel gaps inside a 312 × 382 roster at y674. Missing or failed portraits leave the same empty image area without fallback artwork. Long names truncate within the name cell; values, portraits and inventories do not move adjacent regions. Weapon priority, repeated grenade icons and the complete chronological killfeed remain unchanged. Import 0.4.9 and reopen outputs.
