@@ -1,5 +1,10 @@
 # sOU Broadcast HUD · Blazor WebAssembly
 
+Maintainers: [configure automatic sOU Creator uploads](docs/sou-upload.md).
+Only the `SOU_CREATOR_API_KEY` repository secret is needed. Future published tags
+upload automatically; the manual **Upload release to sOU** workflow also accepts
+existing release tags without rebuilding their immutable packages. Uploads await sOU review.
+
 A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk** and **SOU.Live.Contracts** NuGet packages `0.2.0-preview.4`; no private application source is required.
 
 The equivalent [React implementation](https://github.com/getsOU/sOU-HUD-React) uses the same public contracts and panel. From version 0.4.0 the HUD is GPL-3.0-only and includes the original Boltobserv radar maps, metadata, marker shapes and utility artwork with their notices and source archive. The public sOU SDK remains MIT. Valve game artwork retains its separate copyright notices; no ownership or unrestricted artwork license is claimed.

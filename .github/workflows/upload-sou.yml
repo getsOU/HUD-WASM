@@ -1,0 +1,50 @@
+name: Upload release to sOU
+on:
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        required: true
+    secrets:
+      SOU_CREATOR_API_KEY:
+        required: true
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing published release tag, for example v0.4.9'
+        type: string
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: sou-creator-upload-${{ inputs.tag }}
+  cancel-in-progress: false
+jobs:
+  upload:
+    if: github.repository == 'getsOU/sOU-HUD-WASM' && ((github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify uploader without credentials or network access
+        run: python3 -m unittest discover -s tests/upload -v
+      - name: Download the existing immutable GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RELEASE_TAG -cnotmatch '\Av(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\z') { throw 'Invalid stable release tag.' }
+          $release = gh release view $env:RELEASE_TAG --repo getsOU/sOU-HUD-WASM --json tagName,isDraft,isPrerelease | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or $release.tagName -cne $env:RELEASE_TAG -or $release.isDraft -or $release.isPrerelease) { throw 'Expected an existing published stable release.' }
+          $name = 'sou-basic-wasm-' + $env:RELEASE_TAG.Substring(1) + '.souhud'
+          gh release download $env:RELEASE_TAG --repo getsOU/sOU-HUD-WASM --pattern $name --pattern "$name.sha256" --dir release-artifacts
+          if ($LASTEXITCODE -ne 0) { throw 'Release download failed.' }
+      - name: Upload package to the configured sOU HUD
+        env:
+          SOU_CREATOR_API_KEY: ${{ secrets.SOU_CREATOR_API_KEY }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: python3 scripts/upload_sou.py --tag "$RELEASE_TAG" --directory release-artifacts

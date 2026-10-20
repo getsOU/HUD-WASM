@@ -5,3 +5,5 @@ artifacts/
 .idea/
 *.user
 *.suo
+__pycache__/
+*.pyc
