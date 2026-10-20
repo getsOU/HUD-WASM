@@ -80,4 +80,4 @@ python3 -m unittest discover -s tests/upload -v
 The HUD SDK and package version are unchanged by this integration. Authenticated
 production upload remains unverified until a run with the configured secret succeeds.
 
-[Public Creator API reference](https://www.getsou.app/docs/workspace-api#creator-api).
+[Public Creator API reference](https://www.getsou.app/docs/workspace-api#creator).
