@@ -6,6 +6,7 @@ public static class Cs2Icons
     public static string? Status(string? name) => name switch
     {
         "health" => "ui/health",
+        "kills" => "ui/crosshair_circle",
         "armor" => "ui/armor",
         "helmet" => "weapons/armor_helmet",
         "kit" => "ui/defuser_white",

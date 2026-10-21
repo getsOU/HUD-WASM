@@ -60,6 +60,9 @@ static class RenderTests
             var livePlayer = renderer.Attach(new LivePlayerCard());
             await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = new PlayerState("1", "Rogue &lt;script&gt;", TeamSide.CounterTerrorists, null, null), [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
             check(renderer.HasText(livePlayer, "Rogue <script>") && !renderer.HasMarkup(livePlayer, "Rogue"), "decoded source names remain actual Razor text, never markup");
+            await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = new PlayerState("1", "Dead player", TeamSide.CounterTerrorists, null, 0), [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
+            check((renderer.HasAttribute(livePlayer, "class", "card-death") || renderer.HasMarkup(livePlayer, "class=\"card-death\"")) && !renderer.HasAttribute(livePlayer, "class", "card-loadout") && !renderer.HasAttribute(livePlayer, "class", "card-health"), "dead reference card retains identity but replaces health and loadout with the death cue");
+            check(renderer.HasDescendantAttribute(livePlayer, "data-icon", "ui/crosshair_circle") && renderer.HasDescendantAttribute(livePlayer, "data-icon", "killfeed/icon_suicide"), "reference card uses original kill and death artwork for statistics");
             var spotlight = renderer.Attach(new SpotlightView());
             var profilePanel = new HudPanelState(1, new() { ["feature"] = new() { ["player"] = JsonSerializer.SerializeToElement("offline-player") } })
             { References = new() { ["feature"] = new() { ["player"] = new("offline-player", "Alice &amp; Bob", null, null, false) } } };

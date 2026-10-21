@@ -6,7 +6,7 @@
     var scene = SceneSelection.Resolve(Navigation.ToBaseRelativePath(Navigation.Uri), Options.Scene);
 }
 <main class="viewport">
-    <div class="hud scene-@scene @(session?.LowerThirdVisible == true ? "has-lower-third" : "")" aria-label="sOU Broadcast HUD">
+    <div class="hud scene-@scene @(session?.LowerThirdVisible == true ? "has-lower-third" : "")" aria-label="sOU Default HUD">
         @if (scene == "live")
         {
             <Scoreboard View="View" Caption="@Options.Caption" Context="context" ShowSeries="Options.ShowSeries" />

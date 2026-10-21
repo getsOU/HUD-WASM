@@ -1,4 +1,4 @@
-# sOU Broadcast HUD · Blazor WebAssembly
+# sOU Default HUD · Blazor WebAssembly
 
 Maintainers: [configure automatic sOU Creator uploads](docs/sou-upload.md).
 Only the `SOU_CREATOR_API_KEY` repository secret is needed. Future published tags
@@ -15,13 +15,15 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 ## Install and use
 
-1. Download `sou-basic-wasm-0.4.9.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
+The installed HUD is named **sOU Default HUD**; its stable package ID remains `sou-basic-wasm`.
+
+1. Download `sou-basic-wasm-0.4.10.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
 5. Supply CS2/HLAE data through sOU's normal setup. Optional data can remain absent; the HUD does not create missing players, game events or statistics.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.9**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.10**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
 
 [Changelog](CHANGELOG.md) · [Eight output views](docs/views.md) · [All panel fields](docs/panel.md) · [Feature/source matrix and limits](docs/features.md) · [Public author guide](https://www.getsou.app/docs/hud-entwicklung)
 
@@ -52,8 +54,8 @@ pwsh ./scripts/Build.ps1
 The script performs locked restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.9.souhud
-artifacts/sou-basic-wasm-0.4.9.souhud.sha256
+artifacts/sou-basic-wasm-0.4.10.souhud
+artifacts/sou-basic-wasm-0.4.10.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:
@@ -161,3 +163,19 @@ Roster rows show the carried primary firearm (rifle, sniper rifle, SMG, shotgun 
 The left roster places the observer slot and a three-line name / K-D-A / cash block on the outside, an optional portrait in the middle, and the carried weapon beside large white health digits on the inside. Compact utility and armor/kit/bomb/status icons occupy a separate row below the weapon, with a clear vertical gap. The right roster mirrors these areas without reversing text or original artwork. Armor values remain available in the icon title and accessible label; extended player details are in the presentation views.
 
 The 1920 × 1080 layout uses 312 × 64 pixel cards with 4 pixel gaps inside a 312 × 382 roster at y674. Missing or failed portraits leave the same empty image area without fallback artwork. Long names truncate within the name cell; values, portraits and inventories do not move adjacent regions. Weapon priority, repeated grenade icons and the complete chronological killfeed remain unchanged. Import 0.4.9 and reopen outputs.
+
+
+### Cast reference layout (0.4.10)
+
+The live scene follows the user-supplied broadcast reference: a narrow central blue scoreboard with upright series markers, a compact map/pick strip above the larger Boltobserv radar, and mirrored blue/gold rosters at the bottom edges. Each 320 × 76.8 reference-pixel card has an outer slot strip, identity/stats/cash, a fixed central portrait crop, and weapon/large HP above grouped utility and status icons. The background fill follows actual health; dead players retain their existing empty inventory behavior. Optional team economy remains in a slim rail above the rosters.
+
+The centered observed-player card uses an optional existing portrait, active weapon, ammo and a bottom name/HP strip. No webcam, camera feed, event/club branding, video frames or portraits from the private reference are shipped. Dynamic media still comes from the workspace. Missing media keeps fixed empty areas; unknown game values remain unknown. Other presentation scenes, source selection, radar interpolation, roster weapon priority and chronological killfeed are unchanged.
+
+The layout is in broadcast-layout.css and scoped to the live scene. This layout ships in 0.4.10; existing v0.4.9 release assets are unchanged.
+
+
+#### Player-card structure correction (0.4.10)
+
+The card structure now follows the detailed reference: name, original CS2 kill/death icons with counts, and cash on the outside; portrait in the middle; large carried weapon and HP above utility on the inside. Assists remain in the full statistics title and accessible label. Utility is anchored beside the portrait, with a separate kit/bomb/armor group at the inner edge. Transient conditions use their own small indicator row rather than pushing the equipment group. Health fill is confined to the loadout area; identity and portrait do not lose their background with health.
+
+Known-dead players use a 224.64-pixel grey card, no visible slot number, no health/loadout and a large original CS2 death icon. Row height and identity/portrait areas remain fixed. On the right the short card remains anchored to the outside edge; text and artwork stay upright and kills still precede deaths. The observed player uses a white outline. Missing health does not become death, and missing portraits keep their own empty area.

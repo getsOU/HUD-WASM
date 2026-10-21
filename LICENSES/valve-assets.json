@@ -401,6 +401,15 @@
       "sourceCrc32": "17ca8518"
     },
     {
+      "path": "assets/ui/crosshair_circle.svg",
+      "source": "panorama/images/icons/ui/crosshair_circle.vsvg_c",
+      "operation": "Source2Viewer 20.0 SVG extraction; SVG text unchanged",
+      "bytes": 3261,
+      "sha256": "87d6e844e78b1f93faf06c826b9254b076c048fb692175a54abaa7dce1c32ec5",
+      "sourceSha256": "ef0cb9b0dfb3fbad6932224f61ed669ea0ec4860e3890362cf739494408bd6d5",
+      "sourceCrc32": "872caa09"
+    },
+    {
       "path": "assets/ui/defuser_white.svg",
       "source": "panorama/images/icons/ui/defuser_white.vsvg_c",
       "operation": "Source2Viewer 20.0 SVG extraction; SVG text unchanged",

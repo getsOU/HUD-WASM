@@ -55,6 +55,7 @@ if ($ValidateOnly) { return }
 
 # GITHUB_TOKEN is supplied only to the release step; never persist or print it.
 $notes = Join-Path $PSScriptRoot 'release-notes.md'
+$title = "sOU Default HUD $version"
 & gh release create "v$version" $archive $checksum --repo $expectedRepository --verify-tag `
-    --title "sOU Basic HUD $version" --notes-file $notes
+    --title $title --notes-file $notes
 if ($LASTEXITCODE -ne 0) { throw 'GitHub release creation failed; existing releases are never overwritten.' }

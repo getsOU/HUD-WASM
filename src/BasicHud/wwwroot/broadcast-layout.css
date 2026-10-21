@@ -1,0 +1,102 @@
+/* Cast reference layout. Geometry uses a 1920 x 1080 canvas; game artwork stays original.
+   Live scene only: presentation views retain their existing layouts. */
+.hud.scene-live { container-type: inline-size; --broadcast-blue: #071c50; --ct-fill: #12336d; --t-fill: #655b20; }
+.hud.scene-live .ct { --side: #b6def5; --card-fill: var(--ct-fill); --card-empty: #09152bd9; }
+.hud.scene-live .t { --side: #eee1a0; --card-fill: var(--t-fill); --card-empty: #25241ad9; }
+.hud.scene-live .scoreboard { left: 39.25%; top: 1.25cqw; width: 21.5%; height: 5.3cqw; overflow: hidden; background: var(--broadcast-blue); border: .08cqw solid #b6def5; }
+.hud.scene-live .live-map-series { left: .8cqw; top: 1.25cqw; width: 22cqw; height: 1.7cqw; gap: .08cqw; }
+.hud.scene-live .live-map-series article { flex-direction: row; flex-wrap: wrap; align-content: center; align-items: center; justify-content: center; gap: 0 .25cqw; padding: .08cqw .15cqw; background: #071c50ed; border: 0; border-bottom: .1cqw solid transparent; }
+.hud.scene-live .live-map-series article[aria-current="step"] { background: #102d64f5; border-bottom-color: var(--side,#eee1a0); color: #fff; }
+.hud.scene-live .live-map-series strong { padding: 0; font-size: .65cqw; text-transform: uppercase; }
+.hud.scene-live .live-map-series .map-pick { display: block; width: 100%; font-size: .5cqw; line-height: 1.1; color: #d6deec; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hud.scene-live .roster { top: 58.333333%; width: 16.666667%; height: 40.2%; overflow: visible; }
+.hud.scene-live .roster.ct { left: .8%; }
+.hud.scene-live .roster.t { left: 82.533333%; }
+.hud.scene-live .roster-economy { position: absolute; left: 0; right: 0; top: -1.1cqw; bottom: auto; height: 1cqw; background: #091a3bbf; }
+.hud.scene-live .roster-heading, .hud.scene-live .roster-title { position: relative; inset: auto; height: 1.3cqw; padding: 0; background: transparent; border: 0; align-items: center; color: #fff; }
+.hud.scene-live .roster-heading span:first-child, .hud.scene-live .roster-title > span { display: inline-block; max-width: 78%; padding: .12cqw .3cqw; color: #102137; background: var(--side); font-size: .7cqw; font-weight: 800; text-transform: uppercase; }
+.hud.scene-live .roster-heading span:last-child, .hud.scene-live .roster-title small { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.hud.scene-live .roster.t .roster-heading, .hud.scene-live .roster.t .roster-title { flex-direction: row-reverse; }
+.hud.scene-live .roster .live-player { isolation: isolate; position: relative; display: grid; grid-template-columns: .5cqw 4.35cqw 3.3cqw minmax(0,1fr); grid-template-areas: "slot identity portrait loadout"; gap: .12cqw; height: 4cqw; padding: 0; background: var(--card-fill); border: .06cqw solid #aab9cc77; border-inline-start: 0; overflow: hidden; }
+.hud.scene-live .roster .live-player + .live-player { margin-top: .32cqw; }
+.hud.scene-live .roster .card-slot { grid-area: slot; align-items: start; align-self: stretch; margin: 0; height: 100%; padding-top: .16cqw; font-size: .75cqw; font-weight: 800; background: var(--side); color: #17283b; }
+.hud.scene-live .roster .card-identity { grid-area: identity; display: grid; grid-template-rows: 1.25cqw 1.1cqw 1.1cqw; align-content: center; min-width: 0; }
+.hud.scene-live .roster .player-name { font-family: "Arial Narrow", "Bahnschrift Condensed", sans-serif; font-size: .9cqw; font-weight: 750; text-transform: uppercase; }
+.hud.scene-live .roster .card-stats { overflow: hidden; display: flex; align-items: center; gap: .4cqw; font-size: .82cqw; color: var(--side); }
+.hud.scene-live .roster .card-stats > span { display: inline-flex; align-items: center; gap: .17cqw; }
+.hud.scene-live .roster .card-stats .status-icon { --icon-height: .78cqw; --icon-max-width: 1cqw; }
+.hud.scene-live .roster .card-money { font-size: .85cqw; color: #d4edb2; }
+.hud.scene-live .roster .card-portrait { grid-area: portrait; min-width: 0; height: 100%; overflow: hidden; }
+.hud.scene-live .roster .card-portrait .roster-portrait { width: 100%; height: 100%; max-height: 4cqw; object-fit: cover; object-position: center bottom; }
+.hud.scene-live .roster .card-loadout { grid-area: loadout; position: relative; isolation: isolate; margin: 0; height: 100%; padding: .16cqw .12cqw .2cqw; display: grid; grid-template-rows: 2.1cqw 1.15cqw; row-gap: .28cqw; align-content: center; background: var(--card-empty); }
+.hud.scene-live .roster .card-armament, .hud.scene-live .roster .card-equipment { position: relative; z-index: 1; }
+.hud.scene-live .roster .card-armament { display: grid; grid-template-columns: minmax(0,1fr) 2.65cqw; gap: .2cqw; align-items: center; }
+.hud.scene-live .roster .card-armament .weapon-cell { height: 1.6cqw; }
+.hud.scene-live .roster .card-armament .roster-weapon { --icon-height: 1.6cqw; --icon-max-width: 4.7cqw; }
+.hud.scene-live .roster .card-health { font-family: Impact,"Arial Narrow",sans-serif; font-size: 2.2cqw; font-weight: 400; color: #fff; }
+.hud.scene-live .roster .card-equipment { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: end; height: 1.15cqw; gap: .4cqw; }
+.hud.scene-live .roster .card-equipment .utility-icons { --utility-height: 1cqw; justify-self: start; }
+.hud.scene-live .roster .card-status { display: inline-flex; align-items: end; gap: .25cqw; font-size: .85cqw; justify-self: end; }
+.hud.scene-live .roster .card-status .status-icon { --icon-height: .95cqw; --icon-max-width: 1.45cqw; }
+.hud.scene-live .roster .card-status .equipment-badges { gap: .25cqw; }
+.hud.scene-live .roster .card-loadout > .health-track { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; z-index: 0; border: 0; pointer-events: none; background: var(--card-empty); }
+.hud.scene-live .roster .card-loadout > .health-track span { height: 100%; margin: 0; background: var(--card-fill); }
+.hud.scene-live .roster .card-conditions { position: absolute; left: 6cqw; top: .12cqw; display: flex; align-items: center; gap: .12cqw; z-index: 2; }
+.hud.scene-live .roster .card-conditions .status-icon { --icon-height: .55cqw; --icon-max-width: .7cqw; }
+.hud.scene-live .roster .live-player.is-observed { background: var(--card-fill); outline: .06cqw solid #fff; outline-offset: -.06cqw; box-shadow: 0 0 .4cqw #d3eeff99; }
+.hud.scene-live .roster .live-player.is-dead { width: 11.7cqw; grid-template-columns: .5cqw 4.35cqw 3.3cqw minmax(0,1fr); grid-template-areas: "slot identity portrait death"; background: #454545b8; filter: grayscale(1); opacity: .8; }
+.hud.scene-live .roster .live-player.is-dead .card-money { color: #ddd; }
+.hud.scene-live .roster .card-death { grid-area: death; display: grid; place-items: center; min-width: 0; overflow: hidden; }
+.hud.scene-live .roster .card-death .status-icon { --icon-height: 3.8cqw; --icon-max-width: 3.3cqw; opacity: .35; }
+.hud.scene-live .roster.t .live-player { padding: 0; border-inline-start: .06cqw solid #aab9cc77; border-inline-end: 0; grid-template-columns: minmax(0,1fr) 3.3cqw 4.35cqw .5cqw; grid-template-areas: "loadout portrait identity slot"; }
+.hud.scene-live .roster.t .card-loadout { margin: 0; }
+.hud.scene-live .roster.t .card-armament { grid-template-columns: 2.65cqw minmax(0,1fr); }
+.hud.scene-live .roster.t .card-stats { justify-content: end; flex-direction: row; }
+.hud.scene-live .roster.t .card-stats > span { flex-direction: row-reverse; }
+.hud.scene-live .roster.t .card-equipment { grid-template-columns: auto minmax(0,1fr); }
+.hud.scene-live .roster.t .card-equipment .utility-icons { grid-column: 2; grid-row: 1; justify-self: end; }
+.hud.scene-live .roster.t .card-status { grid-column: 1; grid-row: 1; justify-self: start; }
+.hud.scene-live .roster.t .card-loadout > .health-track { transform: scaleX(-1); }
+.hud.scene-live .roster.t .card-conditions { left: auto; right: 6cqw; }
+.hud.scene-live .roster.t .live-player.is-dead { margin-inline-start: auto; grid-template-columns: minmax(0,1fr) 3.3cqw 4.35cqw .5cqw; grid-template-areas: "death portrait identity slot"; }
+.hud.scene-live .round-history { top: 7cqw; }
+.hud.scene-live .killfeed { right: .8%; top: 8cqw; }
+.hud.scene-live .sponsors, .hud.scene-live .sponsor-rail { left: auto; right: 1.2%; top: 1.25cqw; width: 20cqw; height: 2.2cqw; background: transparent; justify-content: flex-end; }
+.hud.scene-live .signature { display: none; }
+
+.hud.scene-live .caption { height: 1.1cqw; font-size: .65cqw; line-height: 1.6; color: #fff; background: #061641; }
+.hud.scene-live .score-strip { height: 4.1cqw; grid-template-columns: minmax(0,1fr) 2.8cqw 4.4cqw 2.8cqw minmax(0,1fr); background: var(--broadcast-blue); }
+.hud.scene-live .without-caption .score-strip { height: 100%; }
+.hud.scene-live .team-heading { position: relative; display: grid; grid-template-columns: 3.2cqw .6cqw; padding: .15cqw .25cqw; gap: .2cqw; border: 0; }
+.hud.scene-live .team-heading.t { grid-template-columns: .6cqw 3.2cqw; }
+.hud.scene-live .team-heading:not(:has(.team-logo)) { display: flex; }
+.hud.scene-live .team-heading:not(:has(.team-logo)) .team-name { font-size: .8cqw; }
+.hud.scene-live .team-heading .team-logo { width: 3.2cqw; height: 3.2cqw; }
+.hud.scene-live .team-heading:has(.team-logo) .team-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.hud.scene-live .team-heading .team-identity { display: flex; align-items: center; }
+.hud.scene-live .team-heading .series-wins { height: auto; display: flex; flex-direction: column; gap: .25cqw; margin: 0; }
+.hud.scene-live .series-wins i { width: .4cqw; height: .4cqw; background: #536986; }
+.hud.scene-live .series-wins i.won { background: #fff; }
+.hud.scene-live .score { font-family: Impact,"Arial Narrow",sans-serif; font-size: 2.65cqw; font-weight: 400; color: #fff; background: none; border: 0; }
+.hud.scene-live .clock { background: none; text-align: center; }
+.hud.scene-live .clock-label { font-size: .72cqw; color: #fff; }
+.hud.scene-live .clock strong { font-size: 1.25cqw; color: #fff; }
+.hud.scene-live .bomb-clock { background: #8b3023; }
+.hud.scene-live .radar-widget { left: .8cqw; top: 3.15cqw; width: 22cqw; height: 22cqw; }
+.hud.scene-live .live-map-series .map-result { font-size: .65cqw; }
+.hud.scene-live .live-map-series .map-current-dot { width: .3cqw; height: .3cqw; margin: 0; }
+.hud.scene-live .roster .health-track span { margin-inline-start: 0; }
+.hud.scene-live .observed { left: 41.15%; top: auto; bottom: 1cqw; width: 17.7%; height: 7cqw; padding: 0; background: #091a3be8; border: .06cqw solid #b6def577; }
+.hud.scene-live .observed::before { content: ""; position: absolute; bottom: 0; width: 100%; height: 1.65cqw; background: var(--card-fill); }
+.hud.scene-live .observed-identity, .hud.scene-live .observed-loadout, .hud.scene-live .observed-vitals { display: contents; }
+.hud.scene-live .observed .portrait-cell { position: absolute; left: 0; top: 0; width: 6cqw; height: 5.3cqw; }
+.hud.scene-live .observed .portrait { width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
+.hud.scene-live .observed .observer-slot { position: absolute; left: .2cqw; bottom: .2cqw; width: 1cqw; height: 1.2cqw; font-size: .7cqw; }
+.hud.scene-live .observed .player-name { position: absolute; left: 1.4cqw; bottom: .15cqw; width: 12cqw; height: 1.3cqw; font-size: 1cqw; text-transform: uppercase; }
+.hud.scene-live .observed-health { position: absolute; bottom: .15cqw; right: .5cqw; font: 1.3cqw Impact,"Arial Narrow",sans-serif; color: #fff; }
+.hud.scene-live .observed-health .status-icon { display: none; }
+.hud.scene-live .observed-armor { position: absolute; top: 4.3cqw; left: .3cqw; font-size: .6cqw; color: #fff; }
+.hud.scene-live .observed-loadout > .weapon-cell { position: absolute; right: .5cqw; top: .6cqw; width: 5cqw; height: 1.2cqw; }
+.hud.scene-live .observed-loadout > .ammo-cell { position: absolute; right: .5cqw; top: 2.3cqw; height: 1.3cqw; }
+.hud.scene-live .observed .ammo { font-size: 1.15cqw; }
+.hud.scene-live .observed .loadout-details { position: absolute; left: 6.4cqw; right: .3cqw; top: 4.2cqw; height: .9cqw; }

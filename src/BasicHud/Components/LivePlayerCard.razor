@@ -1,27 +1,45 @@
-<article class="live-player @PlayerPresentation.SideClass(Player.Side) @(Player.Health is <= 0 ? "is-dead" : "") @(Context.Game?.ObservedPlayer?.SteamId == Player.SteamId ? "is-observed" : "")">
-    <span class="observer-slot card-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span>
+<article class="live-player @PlayerPresentation.SideClass(Player.Side) @(Dead ? "is-dead" : "") @(Observed ? "is-observed" : "")">
+    <span class="observer-slot card-slot" aria-label="@($"Observer slot {Player.ObserverSlot}")">@if (!Dead) { @(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—") }</span>
     <div class="card-identity">
         <strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong>
-        <span class="card-stats" aria-label="Kills / deaths / assists" title="Kills / deaths / assists">@PlayerPresentation.Kda(Player)</span>
+        <span class="card-stats" aria-label="@($"Kills / deaths / assists: {PlayerPresentation.Kda(Player)}")" title="@($"Kills / deaths / assists: {PlayerPresentation.Kda(Player)}")">
+            <span><StatusIcon Name="kills" Label="Kills" />@BroadcastContext.Number(Player.Stats?.Kills)</span>
+            <span><StatusIcon Name="dead" Label="Deaths" />@BroadcastContext.Number(Player.Stats?.Deaths)</span>
+        </span>
         <span class="card-money">@(Player.Money is { } money ? "$" + money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—")</span>
     </div>
     <span class="card-portrait"><ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Context.Name(Player)" Class="roster-portrait" OmitFallback="true" /></span>
-    <div class="card-loadout">
-        <div class="card-armament">
-            <span class="weapon-cell">@if (EquipmentPresentation.RosterWeapon(Player) is { } weapon) { <EquipmentIcon Name="@weapon.Name" Class="roster-weapon" /> }</span>
-            <strong class="card-health" aria-label="Health" title="Health">@BroadcastContext.Number(Player.Health)</strong>
+    @if (Dead)
+    {
+        <span class="card-death"><StatusIcon Name="dead" Label="Dead" /></span>
+    }
+    else
+    {
+        <div class="card-loadout">
+            <div class="health-track" aria-hidden="true"><span style="@($"width:{Math.Clamp(Player.Health ?? 0, 0, 100).ToString(System.Globalization.CultureInfo.InvariantCulture)}%")"></span></div>
+            <div class="card-armament">
+                <span class="weapon-cell">@if (EquipmentPresentation.RosterWeapon(Player) is { } weapon) { <EquipmentIcon Name="@weapon.Name" Class="roster-weapon" /> }</span>
+                <strong class="card-health" aria-label="Health" title="Health">@BroadcastContext.Number(Player.Health)</strong>
+            </div>
+            <div class="card-equipment">
+                <UtilityIcons Player="Player" />
+                <span class="card-status">
+                    @if (Player.DefuseKit == true) { <StatusIcon Name="kit" Label="Defuse kit" /> }
+                    @if (EquipmentPresentation.HasBomb(Player, Context.Game)) { <StatusIcon Name="bomb" Label="Bomb carrier" /> }
+                    @if (Player.Armor is > 0) { <span class="card-armor" aria-label="@($"Armor: {Player.Armor}")" title="@($"Armor: {Player.Armor}")"><StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="@(Player.Helmet == true ? "Armor and helmet" : "Armor")" /></span> }
+                </span>
+            </div>
         </div>
-        <div class="card-equipment">
-            <UtilityIcons Player="Player" />
-            <span class="card-status">
-                @if (Player.Armor is > 0) { <span class="card-armor" aria-label="@($"Armor: {Player.Armor}")" title="@($"Armor: {Player.Armor}")"><StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="@(Player.Helmet == true ? "Armor and helmet" : "Armor")" /></span> }
-                <PlayerEquipment Player="Player" Context="Context" ShowArmor="false" />
-            </span>
-        </div>
-    </div>
-    <div class="health-track" aria-hidden="true"><span style="@($"width:{Math.Clamp(Player.Health ?? 0, 0, 100).ToString(System.Globalization.CultureInfo.InvariantCulture)}%")"></span></div>
+        <span class="card-conditions" aria-label="Player conditions">
+            @if (Player.Flashed is > 0) { <StatusIcon Name="blind" Label="Flashed" /> }
+            @if (Player.Smoked is > 0) { <StatusIcon Name="smoke" Label="In smoke" /> }
+            @if (Player.Burning is > 0) { <StatusIcon Name="fire" Label="Burning" /> }
+        </span>
+    }
 </article>
 @code {
     [Parameter] public PlayerState Player { get; set; } = null!;
     [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    private bool Dead => Player.Health is <= 0;
+    private bool Observed => Player.SteamId is { Length: > 0 } && Context.Game?.ObservedPlayer?.SteamId == Player.SteamId;
 }

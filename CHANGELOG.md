@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.10
+
+- Correct the actual player-card structure: kill/death icon groups, portrait, larger weapon/HP, utility near the portrait and kit/bomb/armor at the inner edge. Keep assists accessible.
+- Confine health fill to the loadout, shorten known-dead cards with a large death cue, and use a white observed-player outline. Mirror regions without reversing statistic order.
+- Add one unchanged original CS2 crosshair SVG with archive provenance and measured optical bounds.
+
+- Rebuild the live-scene layout around the supplied cast reference: narrow central scoreboard, vertical series markers, larger radar and map/pick strip above it.
+- Use mirrored blue/gold rosters, health-driven background fill, central portraits and compact equipment rows. Preserve optional economy in a slim rail above each roster.
+- Center the observed player in a compact portrait/loadout card with a bottom name/HP strip; no webcam or reference-video assets.
+- Preserve other scenes, transparent output, source logic, original icons and existing inventory/killfeed behavior.
+
 ## 0.4.9
 
 - Mirror the two roster layouts around larger central portraits.
