@@ -1,0 +1,17 @@
+/* The image and its effect mask use the same source, fit and position, including fallbacks. */
+.avatar-frame { --avatar-fit: cover; --avatar-position: center; position: relative; isolation: isolate; overflow: hidden; }
+.avatar-frame > .avatar-image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: inherit; object-position: inherit; border-radius: inherit; }
+.avatar-effects { position: absolute; inset: 0; pointer-events: none; mask-image: var(--avatar-mask); mask-mode: alpha; mask-size: var(--avatar-fit); mask-position: var(--avatar-position); mask-repeat: no-repeat; -webkit-mask-image: var(--avatar-mask); -webkit-mask-size: var(--avatar-fit); -webkit-mask-position: var(--avatar-position); -webkit-mask-repeat: no-repeat; }
+.avatar-effect { position: absolute; inset: 0; pointer-events: none; }
+.avatar-smoke { background: radial-gradient(ellipse at 25% 30%, #e1e6e9c9, transparent 60%), radial-gradient(ellipse at 80% 75%, #a5afb8d9, transparent 65%), linear-gradient(#707b8759, #c6cdd78c); background-size: 180% 160%, 160% 180%, 100% 100%; animation: avatar-smoke-drift 3.6s ease-in-out infinite alternate; }
+.avatar-fire { background: radial-gradient(ellipse at 20% 110%, #ffe091f2 0, #ff7a16d9 25%, transparent 60%), radial-gradient(ellipse at 80% 110%, #ffd056e6 0, #ed391ac9 30%, transparent 65%), linear-gradient(to top, #ef431b99, transparent 80%); background-size: 120% 160%, 120% 180%, 100% 100%; animation: avatar-flame-rise 1.3s ease-in-out infinite alternate; }
+.avatar-flash { background: radial-gradient(ellipse at 40% 25%, #fff 0, #fff9 65%, #e7f2ff80); animation: avatar-flash-glare 1.8s ease-in-out infinite alternate; }
+@keyframes avatar-smoke-drift { from { background-position: 0% 10%, 100% 90%, 0 0; opacity: .6; } to { background-position: 100% 85%, 0% 10%, 0 0; opacity: .9; } }
+@keyframes avatar-flame-rise { from { background-position: 0% 100%, 100% 100%, 0 0; opacity: .65; } to { background-position: 35% 0%, 65% 20%, 0 0; opacity: 1; } }
+@keyframes avatar-flash-glare { from { opacity: .55; } to { opacity: .9; } }
+@media (prefers-reduced-motion: reduce) {
+  .avatar-effect { animation: none; }
+  .avatar-smoke { opacity: .7; }
+  .avatar-fire { opacity: .8; }
+  .avatar-flash { opacity: .65; }
+}

@@ -1,6 +1,23 @@
 @if (CurrentSource is { } source)
 {
-    <img class="local-image @Class" src="@source" alt="@(source == FallbackSource ? $"{Label} (placeholder)" : Label)" data-image-fallback="@(source == FallbackSource ? "true" : null)" @onerror="() => ImageFailed(source)" />
+    @if (Effects is not null)
+    {
+        <span class="local-image avatar-frame @Class">
+            <img class="avatar-image" src="@source" alt="@ImageLabel(source)" data-image-fallback="@(source == FallbackSource ? "true" : null)" @onerror="() => ImageFailed(source)" />
+            @if (Effects.Any)
+            {
+                <span class="avatar-effects" style="@MaskStyle(source)" aria-hidden="true">
+                    @if (Effects.Smoke) { <span class="avatar-effect avatar-smoke"></span> }
+                    @if (Effects.Fire) { <span class="avatar-effect avatar-fire"></span> }
+                    @if (Effects.Flash) { <span class="avatar-effect avatar-flash"></span> }
+                </span>
+            }
+        </span>
+    }
+    else
+    {
+        <img class="local-image @Class" src="@source" alt="@ImageLabel(source)" data-image-fallback="@(source == FallbackSource ? "true" : null)" @onerror="() => ImageFailed(source)" />
+    }
 }
 else if (!OmitFallback)
 {
@@ -12,6 +29,7 @@ else if (!OmitFallback)
     [Parameter] public string Label { get; set; } = "";
     [Parameter] public string Class { get; set; } = "";
     [Parameter] public bool OmitFallback { get; set; }
+    [Parameter] public PortraitEffects? Effects { get; set; }
     private string? previous;
     private string? previousFallback;
     private bool failed;
@@ -19,6 +37,8 @@ else if (!OmitFallback)
     private string? CurrentSource => !failed && !string.IsNullOrWhiteSpace(Source) ? Source
         : !fallbackFailed && !string.IsNullOrWhiteSpace(FallbackSource) ? FallbackSource : null;
     private string Initial => string.IsNullOrWhiteSpace(Label) || Label == "—" ? "?" : System.Globalization.StringInfo.GetNextTextElement(Label.Trim()).ToUpperInvariant();
+    private string ImageLabel(string source) => source == FallbackSource ? $"{Label} (placeholder)" : Label;
+    private static string MaskStyle(string source) => "--avatar-mask:url(\"" + source.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\r", "\\d ").Replace("\n", "\\a ").Replace("\f", "\\c ") + "\")";
     protected override void OnParametersSet()
     {
         if (previous != Source) { failed = false; previous = Source; }

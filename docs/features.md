@@ -8,6 +8,10 @@ Player portraits use the supplied local image first. Missing or failed portraits
 
 The optional Display checkbox **Nur Agenten anzeigen** (`display.agentsOnly`) suppresses all supplied player photos, including explicit spotlight references, while preserving their names and statistics. Turn it off to restore normal photo priority. Agent fallback remains active in both modes; team logos and sponsor images are unaffected.
 
+Player portraits animate the explicitly supplied `Smoked`, `Flashed` and `Burning` conditions while data freshness is `Live`. A moving smoke veil, soft white flash glare and rising orange fire can coexist. Each effect is clipped to the alpha channel of the currently displayed image, with the same cover/contain crop and object position; transparent holes and margins remain untouched. Opaque photos receive the effect across their opaque rectangle. Failed images switch the mask to the same agent fallback, and a failed final image leaves no effect layer. Dead players, stale/unavailable data and cleared conditions remove the effect. Operating-system reduced-motion preferences disable movement while retaining a static condition cue.
+
+The public contracts do not provide a cause-specific nonfatal HE damage event. Health loss and nearby explosions are not treated as proof of a grenade hit, so no HE avatar animation is inferred.
+
 | Feature | Actual source | Missing-data behavior |
 | --- | --- | --- |
 | Scoreboard | `Game.Ct/T`, map, round, phases, countdown; reliable `ManagedMatch.Ct/T.TeamId` | Side labels fall back to source names or CT/T. Team A is never assumed CT. |

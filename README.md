@@ -21,13 +21,13 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 The installed HUD is named **sOU Default HUD**; its stable package ID remains `sou-basic-wasm`.
 
-1. Download `sou-basic-wasm-0.4.12.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.13.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
 5. Supply CS2/HLAE data through sOU's normal setup. Optional data can remain absent; the HUD does not create missing players, game events or statistics.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.12**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.13**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
 
 The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) in `hud.json` under `outlineColors`. With a supporting sOU/HLAE host, opening the HUD through **Über CS2 anzeigen** selects these colors for X-Ray/outlines, utility trails and derived smoke coloring. Browser/OBS output alone does not select the in-game palette. Trails and smoke created after the palette is applied use the colors; existing effects may retain their previous appearance. See the [sOU HLAE color documentation](https://www.getsou.app/docs/cs2-hlae#hud-farben).
 
@@ -60,8 +60,8 @@ pwsh ./scripts/Build.ps1
 The script performs locked restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.12.souhud
-artifacts/sou-basic-wasm-0.4.12.souhud.sha256
+artifacts/sou-basic-wasm-0.4.13.souhud
+artifacts/sou-basic-wasm-0.4.13.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:

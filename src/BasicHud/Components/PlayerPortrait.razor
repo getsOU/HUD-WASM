@@ -1,0 +1,9 @@
+<ImageTile Source="@Context.ProfileImage(Player.SteamId, ReferenceImage)" FallbackSource="@AgentPortraits.For(Player)" Label="@(DisplayName ?? Context.Name(Player))" Class="@Class" OmitFallback="OmitFallback" Effects="@PortraitEffects.From(Player, Context.Snapshot?.Freshness)" />
+@code {
+    [Parameter, EditorRequired] public PlayerState Player { get; set; } = null!;
+    [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter] public string? ReferenceImage { get; set; }
+    [Parameter] public string? DisplayName { get; set; }
+    [Parameter] public string Class { get; set; } = "";
+    [Parameter] public bool OmitFallback { get; set; }
+}

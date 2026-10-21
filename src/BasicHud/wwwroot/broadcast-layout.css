@@ -27,7 +27,7 @@
 .hud.scene-live .roster .card-stats .status-icon { --icon-height: .78cqw; --icon-max-width: 1cqw; }
 .hud.scene-live .roster .card-money { font-size: .95cqw; color: #d4edb2; }
 .hud.scene-live .roster .card-portrait { grid-area: portrait; min-width: 0; height: 100%; overflow: hidden; }
-.hud.scene-live .roster .card-portrait .roster-portrait { width: 100%; height: 100%; max-height: 3.9cqw; object-fit: cover; object-position: center bottom; }
+.hud.scene-live .roster .card-portrait .roster-portrait { width: 100%; height: 100%; max-height: 3.9cqw; --avatar-fit: cover; --avatar-position: center bottom; object-fit: cover; object-position: center bottom; }
 .hud.scene-live .roster .card-loadout { grid-area: loadout; position: relative; isolation: isolate; margin: 0; height: 100%; padding: .25cqw .25cqw .3cqw .12cqw; display: grid; grid-template-rows: minmax(0,1fr) 1.15cqw; row-gap: .25cqw; align-content: stretch; background: var(--card-empty); }
 .hud.scene-live .roster .card-armament, .hud.scene-live .roster .card-equipment { position: relative; z-index: 1; }
 .hud.scene-live .roster .card-armament { display: grid; grid-template-columns: minmax(0,1fr) max-content; gap: .2cqw; align-items: start; }
@@ -91,7 +91,7 @@
 .hud.scene-live .observed::before { content: ""; position: absolute; bottom: 0; width: 100%; height: 1.65cqw; background: var(--card-fill); }
 .hud.scene-live .observed-identity, .hud.scene-live .observed-loadout, .hud.scene-live .observed-vitals { display: contents; }
 .hud.scene-live .observed .portrait-cell { position: absolute; left: 0; top: 0; width: 6cqw; height: 5.3cqw; }
-.hud.scene-live .observed .portrait { width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
+.hud.scene-live .observed .portrait { width: 100%; height: 100%; --avatar-fit: cover; --avatar-position: center bottom; object-fit: cover; object-position: center bottom; }
 .hud.scene-live .observed .observer-slot { position: absolute; left: .2cqw; bottom: .2cqw; width: 1cqw; height: 1.2cqw; font-size: .7cqw; }
 .hud.scene-live .observed .player-name { position: absolute; left: 1.4cqw; bottom: .15cqw; width: 12cqw; height: 1.3cqw; font-size: 1cqw; text-transform: uppercase; }
 .hud.scene-live .observed-health { position: absolute; bottom: .15cqw; right: .5cqw; font: 1.3cqw Impact,"Arial Narrow",sans-serif; color: #fff; }

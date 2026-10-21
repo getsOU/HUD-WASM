@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.13
+
+- Add animated smoke, flash glare and rising fire overlays to player portraits across live rosters, observer cards, lineups and spotlight. Effects use only positive, fresh source condition flags; dead/stale/cleared states remove them.
+- Mask the combined effect layer with the alpha channel of the actually displayed player/agent image, using the same crop and position. Image failures and the agents-only panel option update both the image and mask together. Reduced-motion preferences keep a static effect.
+- Do not infer HE hits from health loss: grenade-hit animation remains deferred until a reliable cause-specific event is available.
+
 ## 0.4.12
 
 - Declare the live HUD's CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) in the package's `outlineColors` palette, allowing sOU to apply matching HLAE X-Ray, utility-trail and derived smoke colors for the active CS2 desktop overlay.

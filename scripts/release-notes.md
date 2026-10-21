@@ -1,14 +1,15 @@
-# 0.4.12
+# 0.4.13
 
-This release improves observed-player visibility and utility sizing, adds an agents-only panel option and supplies matching in-game colors.
+This release adds animated, alpha-masked condition effects to player portraits and agent placeholders.
 
-- Remove borders from inactive roster cards. Only the observed player has a white outline and a small drop shadow, on either side.
-- Align utility on one horizontal baseline and match visible grenade heights to Flashbang. Fix the optical-layout generator's floating-point bounds so SVG whitespace no longer makes symbols appear undersized.
-- Add **Display → Nur Agenten anzeigen** (`display.agentsOnly`). When enabled, all player photos, including spotlight references, use the corresponding CT/T observer-slot agent. When disabled, supplied photos take priority and agents remain the missing/failed-photo fallback. Names, statistics, logos and sponsors are unaffected.
-- Declare CT blue `#B6DEF5` and T gold `#EEE1A0` in the package's `outlineColors` palette. Supporting sOU/HLAE hosts use it for X-Ray/outlines, utility trails and derived smoke colors when this HUD is opened through **Über CS2 anzeigen**. New effects pick up the colors; existing effects may retain their previous appearance.
+- Add moving smoke, soft white flash glare and rising fire-color overlays to live rosters, observed-player cards, lineups and spotlight portraits. Multiple conditions can appear together.
+- Use the actually displayed image's alpha channel as the effect mask. Transparent margins and holes stay untouched; mask sizing and position match the image's crop. Opaque photos receive the effect across their opaque rectangle.
+- Keep the mask synchronized with player photos, selected spotlight images and agent fallbacks, including the **Nur Agenten anzeigen** panel option. Failed final images leave no orphan effect layer.
+- Render effects only for positive condition flags in fresh live data. Death, cleared conditions and stale/unavailable feeds remove them. Reduced-motion preferences retain static cues without animation.
+- Defer HE-hit animation until a reliable cause-specific event exists; health loss is not treated as evidence of a grenade hit.
 
 All eight views, existing panel settings, source handling, radar, inventory selection and chronological killfeed remain available. The public SDK stays at 0.2.0-preview.4; the package ID remains `sou-basic-wasm`. Artwork retains the separately documented upstream rights.
 
-Validation: locked restore, formatting, 246 model/component/asset checks, Release publish, package validation, uploader tests and release guards. Browser checks cover observed/inactive card styling on both sides and visible utility heights/baselines. In-game HLAE color application requires the supporting sOU desktop host.
+Validation: locked restore, formatting, 261 model/component/asset checks, Release publish, package validation, uploader tests and release guards. Browser checks verify animation changes over time, live-state selection, fallback/crop alignment and reduced-motion behavior. Pixel comparisons confirm no effect pixels in transparent margins or holes.
 
-Import **0.4.12** and reopen outputs. Browser verification does not replace native CS2/OBS acceptance.
+Import **0.4.13** and reopen outputs. Browser verification does not replace native CS2/OBS acceptance.
