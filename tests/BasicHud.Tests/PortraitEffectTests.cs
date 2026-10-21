@@ -16,6 +16,6 @@ static class PortraitEffectTests
         check(new DataFreshness?[] { null, DataFreshness.Stale, DataFreshness.Waiting, DataFreshness.Disconnected }.All(freshness => PortraitEffects.From(affected, freshness) == PortraitEffects.None), "stale, waiting or unavailable feeds never animate old portrait statuses");
         check(PortraitEffects.From(player with { Health = 80 }, DataFreshness.Live) == PortraitEffects.None, "health loss alone never invents a grenade hit effect");
         check(PortraitEffects.From(affected with { Health = null }, DataFreshness.Live).Any, "unknown health does not discard explicitly supplied live statuses as death");
-        check(PortraitEffects.From(affected with { Smoked = 0, Flashed = 0, Burning = 0 }, DataFreshness.Live) == PortraitEffects.None, "cleared source conditions immediately remove portrait effects");
+        check(PortraitEffects.From(affected with { Smoked = 0, Flashed = 0, Burning = 0 }, DataFreshness.Live) == PortraitEffects.None, "cleared source conditions immediately clear the requested effect state");
     }
 }

@@ -6,6 +6,7 @@ This project uses the following public packages. From 0.4.0 the HUD is GPL-3.0-o
 
 | Dependency | Version | License / upstream |
 | --- | --- | --- |
+| Motion | 14.5.0 | MIT, Motion B.V.; [source](https://github.com/motiondivision/motion); bundled locally, license in `LICENSES/MOTION-MIT.txt` |
 | SOU.Hud.Sdk | 0.2.0-preview.4 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Hud.Sdk/0.2.0-preview.4) |
 | SOU.Live.Contracts | 0.2.0-preview.4 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Live.Contracts/0.2.0-preview.4) |
 | SOU.Hud.Tool (build only) | 0.2.0-preview.4 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Hud.Tool/0.2.0-preview.4) |

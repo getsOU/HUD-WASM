@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.14
+
+- Replace portrait color washes with procedural canvas smoke clouds, deforming flames/sparks and an expanding circular flash. Bundle Motion 14.5.0 locally with its MIT license.
+- Start all smoke clouds simultaneously at the same height below the avatar; reach their distinct destinations together over 3450ms. Higher clouds move faster, and all clouds keep drifting and changing shape while active.
+- Give flames broad curved bodies and distinct points. Fire reaches one-third at its original speed, pauses for 250ms, then grows slowly over three seconds. Smoke and fire enter as moving elements with no rolling reveal boundary.
+- Expand flash from the bottom-left corner across the avatar. Fade opacity at the reached radius when cleared, with no shrinking back toward the origin.
+- Keep all transitions interruptible, including reactivation during exit. Preserve the actual image's alpha mask, crop and fallback selection; reset on player/image/round changes, death or stale data. Stop animation frames when hidden and honor reduced-motion preferences.
+- Add a Debug-only cycling preview for full effects and interrupted exits. HE-hit effects remain deferred until reliable cause-specific events are available.
+
 ## 0.4.13
 
 - Add animated smoke, flash glare and rising fire overlays to player portraits across live rosters, observer cards, lineups and spotlight. Effects use only positive, fresh source condition flags; dead/stale/cleared states remove them.

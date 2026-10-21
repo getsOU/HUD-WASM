@@ -4,12 +4,10 @@
     {
         <span class="local-image avatar-frame @Class">
             <img class="avatar-image" src="@source" alt="@ImageLabel(source)" data-image-fallback="@(source == FallbackSource ? "true" : null)" @onerror="() => ImageFailed(source)" />
-            @if (Effects.Any)
+            @if (EffectsAllowed)
             {
                 <span class="avatar-effects" style="@MaskStyle(source)" aria-hidden="true">
-                    @if (Effects.Smoke) { <span class="avatar-effect avatar-smoke"></span> }
-                    @if (Effects.Fire) { <span class="avatar-effect avatar-fire"></span> }
-                    @if (Effects.Flash) { <span class="avatar-effect avatar-flash"></span> }
+                    <canvas class="avatar-particles" data-portrait-effects="true" data-binding="@(EffectsBinding + ":" + source)" data-smoke="@Flag(Effects.Smoke)" data-flash="@Flag(Effects.Flash)" data-fire="@Flag(Effects.Fire)"></canvas>
                 </span>
             }
         </span>
@@ -30,6 +28,9 @@ else if (!OmitFallback)
     [Parameter] public string Class { get; set; } = "";
     [Parameter] public bool OmitFallback { get; set; }
     [Parameter] public PortraitEffects? Effects { get; set; }
+    [Parameter] public string? EffectsBinding { get; set; }
+    [Parameter] public bool EffectsAllowed { get; set; } = true;
+    private static string Flag(bool active) => active ? "true" : "false";
     private string? previous;
     private string? previousFallback;
     private bool failed;

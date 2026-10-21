@@ -56,12 +56,15 @@ static class RenderTests
             var weapon = renderer.Attach(new EquipmentIcon());
             var effectImage = renderer.Attach(new ImageTile());
             await renderer.Render(effectImage, new() { [nameof(ImageTile.Source)] = "/cast-media/portrait.png", [nameof(ImageTile.FallbackSource)] = "assets/agents/ct-1.png", [nameof(ImageTile.Effects)] = new PortraitEffects(true, true, true), [nameof(ImageTile.OmitFallback)] = true });
-            check((renderer.HasAttribute(effectImage, "class", "avatar-effect avatar-smoke") || renderer.HasMarkup(effectImage, "avatar-effect avatar-smoke")) && (renderer.HasAttribute(effectImage, "class", "avatar-effect avatar-fire") || renderer.HasMarkup(effectImage, "avatar-effect avatar-fire")) && (renderer.HasAttribute(effectImage, "class", "avatar-effect avatar-flash") || renderer.HasMarkup(effectImage, "avatar-effect avatar-flash")), "actual avatar renders independent simultaneous smoke, fire and flash layers");
+            check(renderer.HasElement(effectImage, "canvas") && renderer.HasAttribute(effectImage, "data-smoke", "true") && renderer.HasAttribute(effectImage, "data-fire", "true") && renderer.HasAttribute(effectImage, "data-flash", "true"), "actual avatar passes independent simultaneous conditions to the procedural Motion renderer");
             check(renderer.HasAttribute(effectImage, "style", "--avatar-mask:url(\"/cast-media/portrait.png\")") && renderer.HasAttribute(effectImage, "aria-hidden", "true"), "avatar mask uses the actual supplied image and decorative layers stay out of accessibility text");
             await renderer.DispatchEventAsync(renderer.ErrorHandler(effectImage), null, EventArgs.Empty);
             check(renderer.HasAttribute(effectImage, "src", "assets/agents/ct-1.png") && renderer.HasAttribute(effectImage, "style", "--avatar-mask:url(\"assets/agents/ct-1.png\")"), "failed profile image updates both portrait and alpha mask to the agent fallback");
             await renderer.Render(effectImage, new() { [nameof(ImageTile.Effects)] = PortraitEffects.None });
-            check(renderer.HasElement(effectImage, "img") && !renderer.HasAttribute(effectImage, "class", "avatar-effects"), "cleared statuses remove effect layers while retaining the selected portrait");
+            check(renderer.HasElement(effectImage, "canvas") && renderer.HasAttribute(effectImage, "data-smoke", "false") && renderer.HasAttribute(effectImage, "data-flash", "false") && renderer.HasAttribute(effectImage, "data-fire", "false"), "cleared live conditions retain the canvas for Motion to reverse from its current intensity");
+            await renderer.Render(effectImage, new() { [nameof(ImageTile.EffectsAllowed)] = false });
+            check(renderer.HasElement(effectImage, "img") && !renderer.HasElement(effectImage, "canvas"), "dead or stale portraits immediately remove the effect canvas while keeping the image");
+            await renderer.Render(effectImage, new() { [nameof(ImageTile.EffectsAllowed)] = true });
             await renderer.Render(effectImage, new() { [nameof(ImageTile.Effects)] = new PortraitEffects(true, false, false) });
             await renderer.DispatchEventAsync(renderer.ErrorHandler(effectImage), null, EventArgs.Empty);
             check(!renderer.HasElement(effectImage, "img") && !renderer.HasAttribute(effectImage, "class", "avatar-effects"), "a failed fallback leaves no orphan avatar effect or image retry loop");

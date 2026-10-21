@@ -16,16 +16,31 @@ internal sealed class PreviewFeed(string scenario) : IHudFeed
     {
         if (!address.IsLoopback) return null;
         var mode = address.Query.TrimStart('?').Split('&').FirstOrDefault(value => value.StartsWith("preview=", StringComparison.Ordinal))?[8..];
-        return mode is "live" or "prematch" or "lineups" or "veto" or "break" or "postmatch" or "statistics" or "spotlight" or "waiting" or "stale" or "swapped" or "missing" or "bomb" or "overview" or "production" ? new PreviewFeed(mode) : null;
+        return mode is "live" or "prematch" or "lineups" or "veto" or "break" or "postmatch" or "statistics" or "spotlight" or "waiting" or "stale" or "swapped" or "missing" or "bomb" or "overview" or "production" or "avatar-effects" ? new PreviewFeed(mode) : null;
     }
 
     public async IAsyncEnumerable<LiveSnapshot> WatchLiveAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         ConnectionChanged?.Invoke("live", ConnectionState.Connected);
         var revision = 0L;
+        var previewClock = System.Diagnostics.Stopwatch.StartNew();
         while (!cancellationToken.IsCancellationRequested)
         {
-            yield return Snapshot(scenario) with { Revision = ++revision };
+            var snapshot = Snapshot(scenario);
+            if (scenario == "avatar-effects" && snapshot.Game is { } game)
+            {
+                // Debug-only source pulses exercise full cycles and reversals halfway through exit.
+                var phase = previewClock.Elapsed.TotalSeconds % 8;
+                var active = phase < 2 || phase is >= 2.25 and < 2.5 || phase is >= 4 and < 5.5;
+                var players = game.Players.Select(player => player with
+                {
+                    Smoked = active && player.ObserverSlot == 8 ? 1 : 0,
+                    Flashed = active && player.ObserverSlot == 3 ? 45 : 0,
+                    Burning = active && player.ObserverSlot == 0 ? 25 : 0
+                }).ToImmutableArray();
+                snapshot = snapshot with { Game = game with { Players = players } };
+            }
+            yield return snapshot with { Revision = ++revision };
             await Task.Delay(TimeSpan.FromMilliseconds(250), cancellationToken);
         }
     }
