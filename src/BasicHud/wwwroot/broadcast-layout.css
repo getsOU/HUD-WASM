@@ -41,8 +41,6 @@
 .hud.scene-live .roster .card-status .equipment-badges { gap: .25cqw; }
 .hud.scene-live .roster .card-loadout > .health-track { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; z-index: 0; border: 0; pointer-events: none; background: var(--card-empty); }
 .hud.scene-live .roster .card-loadout > .health-track span { height: 100%; margin: 0; background: var(--card-fill); }
-.hud.scene-live .roster .card-conditions { position: absolute; left: 6cqw; top: .12cqw; display: flex; align-items: center; gap: .12cqw; z-index: 2; }
-.hud.scene-live .roster .card-conditions .status-icon { --icon-height: .55cqw; --icon-max-width: .7cqw; }
 .hud.scene-live .roster .live-player.is-observed { z-index: 1; background: var(--card-fill); outline: .08cqw solid #fff; outline-offset: 0; box-shadow: 0 .12cqw .35cqw #0009, 0 0 .18cqw #fff6; }
 .hud.scene-live .roster .live-player.is-dead { width: 11.7cqw; grid-template-columns: .65cqw 4.35cqw 3.75cqw minmax(0,1fr); grid-template-areas: "slot identity portrait death"; background: #454545b8; filter: grayscale(1); opacity: .8; }
 .hud.scene-live .roster .live-player.is-dead .card-money { color: #ddd; }
@@ -57,8 +55,8 @@
 .hud.scene-live .roster.t .card-equipment { grid-template-columns: auto minmax(0,1fr); }
 .hud.scene-live .roster.t .card-equipment .utility-icons { grid-column: 2; grid-row: 1; justify-self: end; }
 .hud.scene-live .roster.t .card-status { grid-column: 1; grid-row: 1; justify-self: start; }
-.hud.scene-live .roster.t .card-loadout > .health-track { transform: scaleX(-1); }
-.hud.scene-live .roster.t .card-conditions { left: auto; right: 6cqw; }
+/* Align the T fill directly: mirroring the layer creates a dark subpixel seam. */
+.hud.scene-live .roster.t .card-loadout > .health-track span { margin-inline-start: auto; }
 .hud.scene-live .roster.t .live-player.is-dead { margin-inline-start: auto; grid-template-columns: minmax(0,1fr) 3.75cqw 4.35cqw .65cqw; grid-template-areas: "death portrait identity slot"; }
 .hud.scene-live .round-history { top: 7cqw; }
 .hud.scene-live .killfeed { right: .8%; top: 8cqw; }

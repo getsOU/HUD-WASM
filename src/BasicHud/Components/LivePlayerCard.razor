@@ -30,11 +30,6 @@
                 </span>
             </div>
         </div>
-        <span class="card-conditions" aria-label="Player conditions">
-            @if (Player.Flashed is > 0) { <StatusIcon Name="blind" Label="Flashed" /> }
-            @if (Player.Smoked is > 0) { <StatusIcon Name="smoke" Label="In smoke" /> }
-            @if (Player.Burning is > 0) { <StatusIcon Name="fire" Label="Burning" /> }
-        </span>
     }
 </article>
 @code {

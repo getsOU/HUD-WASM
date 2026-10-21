@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.15
+
+- Remove redundant smoke, flash and fire status badges from roster cards and the observed player's equipment; portrait animations already display these conditions.
+- Remove the dark vertical seam beside T-side portraits at fractional card positions. Right-align the health fill directly instead of mirroring its background layer; preserve the mirrored health direction.
+
 ## 0.4.14
 
 - Replace portrait color washes with procedural canvas smoke clouds, deforming flames/sparks and an expanding circular flash. Bundle Motion 14.5.0 locally with its MIT license.
