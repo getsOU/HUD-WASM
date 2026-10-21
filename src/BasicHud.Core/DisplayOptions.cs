@@ -12,6 +12,7 @@ public sealed record DisplayOptions(string Caption, bool ShowRosters, bool ShowO
     public bool ShowRoundHistory { get; init; } = true;
     public bool ShowSeries { get; init; } = true;
     public bool ShowSponsors { get; init; } = true;
+    public bool ShowPlayerImages { get; init; } = true;
     public static DisplayOptions Default { get; } = new("", true, true);
 
     public static DisplayOptions FromPanel(HudPanelState state) => new(
@@ -25,8 +26,11 @@ public sealed record DisplayOptions(string Caption, bool ShowRosters, bool ShowO
         ShowEconomy = ReadVisible(state, "hideEconomy"),
         ShowRoundHistory = ReadVisible(state, "hideRoundHistory"),
         ShowSeries = ReadVisible(state, "hideSeries"),
-        ShowSponsors = ReadVisible(state, "hideSponsors")
+        ShowSponsors = ReadVisible(state, "hideSponsors"),
+        ShowPlayerImages = PlayerImagesVisible(state)
     };
+
+    public static bool PlayerImagesVisible(HudPanelState? state) => state is null || ReadVisible(state, "agentsOnly");
 
     // The host normalizes unset checkboxes to false. Opt-out fields keep the HUD visible
     // both before the first save and when an unrelated caption change is saved.

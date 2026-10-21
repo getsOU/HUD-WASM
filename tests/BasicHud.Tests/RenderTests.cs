@@ -87,6 +87,17 @@ static class RenderTests
             check((renderer.HasAttribute(livePlayer, "class", "card-death") || renderer.HasMarkup(livePlayer, "class=\"card-death\"")) && !renderer.HasAttribute(livePlayer, "class", "card-loadout") && !renderer.HasAttribute(livePlayer, "class", "card-health"), "dead reference card retains identity but replaces health and loadout with the death cue");
             check(renderer.HasDescendantAttribute(livePlayer, "data-icon", "ui/crosshair_circle") && renderer.HasDescendantAttribute(livePlayer, "data-icon", "ui/skull"), "reference card uses OpenHud kill and skull artwork for statistics");
             var spotlight = renderer.Attach(new SpotlightView());
+            var agentPanel = new HudPanelState(1, new() { ["feature"] = new() { ["player"] = JsonSerializer.SerializeToElement("agent") }, ["display"] = new() { ["agentsOnly"] = JsonSerializer.SerializeToElement(false) } })
+            { References = new() { ["feature"] = new() { ["player"] = new("agent", "Agent player", "/cast-media/featured.png", null, false) } } };
+            var agentContext = new BroadcastContext(new(2, Guid.NewGuid(), 1, DateTimeOffset.UtcNow, DataFreshness.Live, new GameState(null, MatchPhase.Live, 1, RoundPhase.Live, new("CT", 0), new("T", 0), agentPlayer, [agentPlayer])), agentPanel, MetadataCatalog.Empty, DateTimeOffset.UtcNow, path => path);
+            await renderer.Render(spotlight, new() { [nameof(SpotlightView.Context)] = agentContext });
+            check(renderer.HasDescendantAttribute(spotlight, "src", "/cast-media/featured.png"), "actual spotlight displays its supplied player image in normal mode");
+            agentPanel.Values["display"]["agentsOnly"] = JsonSerializer.SerializeToElement(true);
+            await renderer.Render(spotlight, new() { [nameof(SpotlightView.Context)] = agentContext });
+            check(!renderer.HasDescendantAttribute(spotlight, "src", "/cast-media/featured.png") && renderer.HasDescendantAttribute(spotlight, "src", "assets/agents/ct-0.png"), "actual spotlight switches its featured image to the side/slot agent on panel changes");
+            agentPanel.Values["display"]["agentsOnly"] = JsonSerializer.SerializeToElement(false);
+            await renderer.Render(spotlight, new() { [nameof(SpotlightView.Context)] = agentContext });
+            check(renderer.HasDescendantAttribute(spotlight, "src", "/cast-media/featured.png"), "disabling agents-only restores the selected image in the existing Razor component");
             var profilePanel = new HudPanelState(1, new() { ["feature"] = new() { ["player"] = JsonSerializer.SerializeToElement("offline-player") } })
             { References = new() { ["feature"] = new() { ["player"] = new("offline-player", "Alice &amp; Bob", null, null, false) } } };
             await renderer.Render(spotlight, new() { [nameof(SpotlightView.Context)] = BroadcastContext.Empty with { Panel = profilePanel } });

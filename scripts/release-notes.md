@@ -1,15 +1,14 @@
-# 0.4.11
+# 0.4.12
 
-This release updates the icons, adds side-specific player portrait placeholders and corrects the live player-card proportions.
+This release improves observed-player visibility and utility sizing, adds an agents-only panel option and supplies matching in-game colors.
 
-- Import 81 weapon, grenade, status and killfeed SVGs from OpenHud-React-Hud, with reviewed optical sizing and packaged source/license records. Repair Flashbang's missing SVG namespace so it loads as a standalone image.
-- Add twenty local CS2 agent portraits from CSGOSKINS.GG: a different CT and T agent for each observer digit 0–9. Supplied player portraits take priority; missing or failed images use the actual side/slot placeholder. Side changes update the agent. Unknown side/slot values retain their existing final fallback.
-- Match player-card proportions, portrait widths, identity insets, loadout padding and row gaps to the broadcast reference. Keep three-digit Health values fully visible on both sides, including scaled outputs and fallback fonts.
-- Remove the bottom-right connection/preview status overlay in all scenes.
-- Set `infoUrl` to https://github.com/getsOU/HUD-WASM.
+- Remove borders from inactive roster cards. Only the observed player has a white outline and a small drop shadow, on either side.
+- Align utility on one horizontal baseline and match visible grenade heights to Flashbang. Fix the optical-layout generator's floating-point bounds so SVG whitespace no longer makes symbols appear undersized.
+- Add **Display → Nur Agenten anzeigen** (`display.agentsOnly`). When enabled, all player photos, including spotlight references, use the corresponding CT/T observer-slot agent. When disabled, supplied photos take priority and agents remain the missing/failed-photo fallback. Names, statistics, logos and sponsors are unaffected.
+- Declare CT blue `#B6DEF5` and T gold `#EEE1A0` in the package's `outlineColors` palette. Supporting sOU/HLAE hosts use it for X-Ray/outlines, utility trails and derived smoke colors when this HUD is opened through **Über CS2 anzeigen**. New effects pick up the colors; existing effects may retain their previous appearance.
 
 All eight views, existing panel settings, source handling, radar, inventory selection and chronological killfeed remain available. The public SDK stays at 0.2.0-preview.4; the package ID remains `sou-basic-wasm`. Artwork retains the separately documented upstream rights.
 
-Validation: locked restore, formatting, 237 model/component/asset checks, Release publish, package validation, uploader tests and release guards. Browser checks cover missing/failed portraits, side changes and player-card bounds at 1280×720, 1920×1080, 2560×1440 and 2560×1080 with the normal and fallback fonts.
+Validation: locked restore, formatting, 246 model/component/asset checks, Release publish, package validation, uploader tests and release guards. Browser checks cover observed/inactive card styling on both sides and visible utility heights/baselines. In-game HLAE color application requires the supporting sOU desktop host.
 
-Import **0.4.11** and reopen outputs. Browser verification does not replace native CS2/OBS acceptance.
+Import **0.4.12** and reopen outputs. Browser verification does not replace native CS2/OBS acceptance.

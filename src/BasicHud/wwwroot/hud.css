@@ -35,8 +35,8 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; backg
 .health-track { position: absolute; left: 0; bottom: 0; width: 100%; height: .13em; background: #253242; }
 .health-track span { display: block; height: 100%; background: var(--side, #b6c1ce); }
 .player-equipment { display: inline-flex; align-items: center; gap: .15em; color: #d8e3ee; }
-.utility-icons { display: inline-flex; gap: .25em; align-items: end; height: var(--utility-height); min-width: 0; }
-.utility-item { display: inline-flex; align-items: end; height: var(--utility-height); }
+.utility-icons { display: inline-flex; flex-wrap: nowrap; gap: .25em; align-items: flex-end; height: var(--utility-height); min-width: 0; line-height: 0; }
+.utility-item { display: inline-flex; align-items: flex-end; height: var(--utility-height); line-height: 0; }
 .utility-item .equipment-icon { --icon-height: var(--utility-height); --icon-max-width: 9999px; }
 
 /* Fixed 1920 x 1080 live composition. All measurements scale with the canvas. */

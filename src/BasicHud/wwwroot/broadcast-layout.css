@@ -17,7 +17,7 @@
 .hud.scene-live .roster-heading span:first-child, .hud.scene-live .roster-title > span { display: inline-block; max-width: 78%; padding: .12cqw .3cqw; color: #102137; background: var(--side); font-size: .7cqw; font-weight: 800; text-transform: uppercase; }
 .hud.scene-live .roster-heading span:last-child, .hud.scene-live .roster-title small { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .hud.scene-live .roster.t .roster-heading, .hud.scene-live .roster.t .roster-title { flex-direction: row-reverse; }
-.hud.scene-live .roster .live-player { isolation: isolate; position: relative; display: grid; grid-template-columns: .65cqw 4.35cqw 3.75cqw minmax(0,1fr); grid-template-areas: "slot identity portrait loadout"; gap: 0; height: 3.9cqw; padding: 0; background: var(--card-fill); border: .06cqw solid #aab9cc77; border-inline-start: 0; overflow: hidden; }
+.hud.scene-live .roster .live-player { isolation: isolate; position: relative; display: grid; grid-template-columns: .65cqw 4.35cqw 3.75cqw minmax(0,1fr); grid-template-areas: "slot identity portrait loadout"; gap: 0; height: 3.9cqw; padding: 0; background: var(--card-fill); border: 0; outline: none; box-shadow: none; overflow: hidden; }
 .hud.scene-live .roster .live-player + .live-player { margin-top: .625cqw; }
 .hud.scene-live .roster .card-slot { grid-area: slot; align-items: start; align-self: stretch; margin: 0; height: 100%; padding-top: .2cqw; font-size: .9cqw; font-weight: 800; background: var(--side); color: #17283b; }
 .hud.scene-live .roster .card-identity { grid-area: identity; display: grid; grid-template-rows: 1.1cqw 1.1cqw 1.1cqw; align-content: center; min-width: 0; padding-inline: .35cqw 0; font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif; }
@@ -43,12 +43,12 @@
 .hud.scene-live .roster .card-loadout > .health-track span { height: 100%; margin: 0; background: var(--card-fill); }
 .hud.scene-live .roster .card-conditions { position: absolute; left: 6cqw; top: .12cqw; display: flex; align-items: center; gap: .12cqw; z-index: 2; }
 .hud.scene-live .roster .card-conditions .status-icon { --icon-height: .55cqw; --icon-max-width: .7cqw; }
-.hud.scene-live .roster .live-player.is-observed { background: var(--card-fill); outline: .06cqw solid #fff; outline-offset: -.06cqw; box-shadow: 0 0 .4cqw #d3eeff99; }
+.hud.scene-live .roster .live-player.is-observed { z-index: 1; background: var(--card-fill); outline: .08cqw solid #fff; outline-offset: 0; box-shadow: 0 .12cqw .35cqw #0009, 0 0 .18cqw #fff6; }
 .hud.scene-live .roster .live-player.is-dead { width: 11.7cqw; grid-template-columns: .65cqw 4.35cqw 3.75cqw minmax(0,1fr); grid-template-areas: "slot identity portrait death"; background: #454545b8; filter: grayscale(1); opacity: .8; }
 .hud.scene-live .roster .live-player.is-dead .card-money { color: #ddd; }
 .hud.scene-live .roster .card-death { grid-area: death; display: grid; place-items: center; min-width: 0; overflow: hidden; }
 .hud.scene-live .roster .card-death .status-icon { --icon-height: 3.8cqw; --icon-max-width: 3.3cqw; opacity: .35; }
-.hud.scene-live .roster.t .live-player { padding: 0; border-inline-start: .06cqw solid #aab9cc77; border-inline-end: 0; grid-template-columns: minmax(0,1fr) 3.75cqw 4.35cqw .65cqw; grid-template-areas: "loadout portrait identity slot"; }
+.hud.scene-live .roster.t .live-player { padding: 0; border: 0; grid-template-columns: minmax(0,1fr) 3.75cqw 4.35cqw .65cqw; grid-template-areas: "loadout portrait identity slot"; }
 .hud.scene-live .roster.t .card-identity { padding-inline: 0 .35cqw; }
 .hud.scene-live .roster.t .card-loadout { margin: 0; padding-inline: .25cqw .12cqw; }
 .hud.scene-live .roster.t .card-armament { grid-template-columns: max-content minmax(0,1fr); }

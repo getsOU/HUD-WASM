@@ -11,10 +11,11 @@ function Number([double]$Value) { $Value.ToString('0.#######', [Globalization.Cu
 foreach ($icon in $document.icons) {
     if ($icon.PSObject.Properties['empty'] -and $icon.empty) { continue }
     if ($icon.key -cnotmatch '^(weapons|ui|killfeed)/[a-z0-9_]+$') { throw 'Invalid icon key.' }
-    $left = [Math]::Max(0, $icon.x - .02 * $icon.sourceHeight / $icon.sourceWidth)
-    $top = [Math]::Max(0, $icon.y - .02)
-    $width = [Math]::Min(1, $icon.x + $icon.width + .02 * $icon.sourceHeight / $icon.sourceWidth) - $left
-    $height = [Math]::Min(1, $icon.y + $icon.height + .02) - $top
+    # Double bounds select the floating-point overload; integer bounds round fractional SVG padding away.
+    $left = [Math]::Max(0.0, $icon.x - .02 * $icon.sourceHeight / $icon.sourceWidth)
+    $top = [Math]::Max(0.0, $icon.y - .02)
+    $width = [Math]::Min(1.0, $icon.x + $icon.width + .02 * $icon.sourceHeight / $icon.sourceWidth) - $left
+    $height = [Math]::Min(1.0, $icon.y + $icon.height + .02) - $top
     if ($width -le 0 -or $height -le 0) { throw "Empty bounds: $($icon.key)" }
     $lines.Add(('.cs2-icon[data-icon="{0}"] {{ --icon-aspect: {1}; --icon-image-width: {2}%; --icon-image-height: {3}%; --icon-image-left: {4}%; --icon-image-top: {5}%; }}' -f $icon.key, (Number ($icon.sourceWidth * $width / ($icon.sourceHeight * $height))), (Number (100 / $width)), (Number (100 / $height)), (Number (-$left / $width * 100)), (Number (-$top / $height * 100))))
 }

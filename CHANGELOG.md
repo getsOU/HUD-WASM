@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.12
+
+- Declare the live HUD's CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) in the package's `outlineColors` palette, allowing sOU to apply matching HLAE X-Ray, utility-trail and derived smoke colors for the active CS2 desktop overlay.
+
+- Add the panel option **Nur Agenten anzeigen** (`display.agentsOnly`) to replace every player photo, including selected spotlight images, with its side/slot agent. Default photo priority and missing-image agent fallback remain unchanged; logos and sponsors are unaffected.
+
+- Remove borders from inactive roster cards; highlight only the observed player with a white outline and small drop shadow.
+- Align utility on one baseline and normalize visible grenade heights to Flashbang. Correct floating-point SVG bounds in the optical-layout generator so fractional artwork padding is actually removed.
+
 ## 0.4.11
 
 - Set the package information URL to the public HUD-WASM repository and remove the bottom-right connection/preview status overlay from every output view.

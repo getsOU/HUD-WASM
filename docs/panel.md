@@ -8,6 +8,7 @@ Open the installed HUD's **Panel** in sOU. Edit the desired fields and use **Spe
 | --- | --- |
 | `display.caption` | The only live header caption. Explicit text has priority; blank uses the current competition name, or omits the caption when none is available. Existing saved captions remain compatible. |
 | `display.scene` | Main output scene: `live`, `prematch`, `lineups`, `veto`, `break`, `postmatch`, `statistics`, `spotlight`. Blank means live; explicit subviews keep their scene. |
+| `display.agentsOnly` | **Nur Agenten anzeigen**: when checked, ignore supplied player photos and show only the local CT/T agent for the actual observer digit. Applies to rosters, observed player, lineups and spotlight, including selected reference photos. Unchecked/missing means real photos take priority and agents remain the fallback for missing/failed photos. Team logos and sponsors are unaffected. Unknown side/slot retains the existing final fallback. |
 | `display.hideRosters` | Hide both live team rosters. |
 | `display.hideObservedPlayer` | Hide the live observed-player card. |
 | `display.hideRadar` | Hide the live radar, including its unavailable indicator. |

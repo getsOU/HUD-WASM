@@ -17,7 +17,8 @@ public sealed record BroadcastContext(LiveSnapshot? Snapshot, HudPanelState? Pan
     public string Text(string section, string field) => Panel?.Text(section, field)?.Trim() ?? "";
     public string TextOr(string section, string field, string fallback) => HudView.Text(Text(section, field), fallback);
     public HudPanelReference? Reference(string field) => Panel?.References.TryGetValue("feature", out var fields) == true && fields.TryGetValue(field, out var value) ? value : null;
-    public string? ProfileImage(string? steamId) => steamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(steamId, out var player) ? ResolveMedia(player.Avatar) : null;
+    public string? ProfileImage(string? steamId, string? referenceImage = null) => !DisplayOptions.PlayerImagesVisible(Panel) ? null
+        : ResolveMedia(referenceImage) ?? (steamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(steamId, out var player) ? ResolveMedia(player.Avatar) : null);
     public string Name(PlayerState player) => player.SteamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(player.SteamId, out var profile) ? HudView.Text(profile.Name, SourceText.Name(player.Name)) : SourceText.Name(player.Name);
     public IReadOnlyList<PlayerState> TeamPlayers(ManagedTeam team)
     {

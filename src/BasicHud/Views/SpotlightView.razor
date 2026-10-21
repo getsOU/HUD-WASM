@@ -4,7 +4,7 @@
         @if (PlayerReference?.Missing == true) { <p class="empty-state">Selected player is no longer available</p> }
         else if (Player is { } player)
         {
-            <ImageTile Source="@(Context.ResolveMedia(PlayerReference?.Image) ?? Context.ProfileImage(player.SteamId))" FallbackSource="@AgentPortraits.For(player)" Label="@PlayerName(player)" Class="spotlight-portrait" />
+            <ImageTile Source="@Context.ProfileImage(player.SteamId, PlayerReference?.Image)" FallbackSource="@AgentPortraits.For(player)" Label="@PlayerName(player)" Class="spotlight-portrait" />
             <PlayerCard Player="player" Context="Context" Expanded="true" DisplayName="@PlayerName(player)" />
         }
         else { <p class="empty-state">Select a player in the panel or observe a player</p> }

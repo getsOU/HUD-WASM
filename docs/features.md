@@ -6,6 +6,8 @@ The current source replaces 81 local weapon, grenade, status and killfeed SVGs w
 
 Player portraits use the supplied local image first. Missing or failed portraits use one of twenty bundled CS2 agent images, selected by the player's actual CT/T side and observer digit 0–9. Every digit has a different agent on each side. Side/slot changes update the placeholder; newly supplied real portraits take priority. Unknown side/slot retains the previous final fallback (omission in live cards, monogram in presentation cards). These placeholders do not assert the player's equipped agent. See [agent sources and rights](../LICENSES/AGENT-PORTRAITS.md).
 
+The optional Display checkbox **Nur Agenten anzeigen** (`display.agentsOnly`) suppresses all supplied player photos, including explicit spotlight references, while preserving their names and statistics. Turn it off to restore normal photo priority. Agent fallback remains active in both modes; team logos and sponsor images are unaffected.
+
 | Feature | Actual source | Missing-data behavior |
 | --- | --- | --- |
 | Scoreboard | `Game.Ct/T`, map, round, phases, countdown; reliable `ManagedMatch.Ct/T.TeamId` | Side labels fall back to source names or CT/T. Team A is never assumed CT. |

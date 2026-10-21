@@ -53,6 +53,11 @@ static class ShowcaseTests
         check(!catalog.Matches(match with { TeamB = match.TeamB with { Id = "C" } }), "changed teams invalidate previously bound metadata even with the same match ID");
         check(MetadataCatalog.Bind(metadata, match with { TeamB = match.TeamB with { Id = "wrong" } }) == MetadataCatalog.Empty, "mismatched metadata never invents a prematch roster");
         var beforeGame = new BroadcastContext(Snapshot(game) with { Game = null }, null, catalog, now, path => path);
+        check(beforeGame.ProfileImage("1") == "/cast-media/map.png" && beforeGame.ProfileImage("1", "/cast-media/featured.png") == "/cast-media/featured.png", "normal portrait mode preserves metadata images and explicit spotlight image priority");
+        var agentsOnly = beforeGame with { Panel = State("{\"display\":{\"agentsOnly\":true}}") };
+        check(agentsOnly.ProfileImage("1") is null && agentsOnly.ProfileImage("1", "/cast-media/featured.png") is null, "agents-only suppresses both manager portraits and explicit spotlight photos");
+        check((agentsOnly with { Panel = State("{\"display\":{\"agentsOnly\":false}}") }).ProfileImage("1") == "/cast-media/map.png", "turning agents-only off restores the existing manager portrait without new metadata");
+        check(agentsOnly.ResolveMedia("/cast-media/team-logo.png") == "/cast-media/team-logo.png", "agents-only does not suppress team or sponsor images");
         check(beforeGame.TeamPlayers(match.TeamA).Count == 1 && beforeGame.TeamPlayers(match.TeamA)[0].Health is null, "verified metadata supplies a real lineup before GSI without invented statistics");
         var duplicateMetadata = new BrowserMetadata { Match = new() { Left = new() { Id = "A", SteamIds = ["1"] }, Right = new() { Id = "B", SteamIds = ["1"] } }, Players = metadata.Players };
         check(MetadataCatalog.Bind(duplicateMetadata, match).Rosters.Values.All(ids => ids.Count == 0), "ambiguous membership is omitted rather than assigned to both teams");

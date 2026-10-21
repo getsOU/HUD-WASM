@@ -1,8 +1,12 @@
 {
   "id": "sou-basic-wasm",
-  "version": "0.4.11",
+  "version": "0.4.12",
   "name": "sOU Default HUD",
   "infoUrl": "https://github.com/getsOU/HUD-WASM",
+  "outlineColors": {
+    "ct": "#B6DEF5",
+    "t": "#EEE1A0"
+  },
   "apiVersion": 2,
   "runtime": "blazor-wasm",
   "entryPoint": "index.html",
