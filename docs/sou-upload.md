@@ -24,7 +24,7 @@ the regular sOU review before distribution.
    ID variables or new GitHub permissions are required. Never put the key in
    source files, workflow inputs, command arguments or issue text.
 
-[Add repository secret](https://github.com/getsOU/sOU-HUD-WASM/settings/secrets/actions/new).
+[Add repository secret](https://github.com/getsOU/HUD-WASM/settings/secrets/actions/new).
 Expiry, revocation, account status and Publisher permissions remain enforced by
 sOU. Rotate by replacing the same GitHub secret before revoking the old key.
 

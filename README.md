@@ -7,7 +7,7 @@ existing release tags without rebuilding their immutable packages. Uploads await
 
 A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk** and **SOU.Live.Contracts** NuGet packages `0.2.0-preview.4`; no private application source is required.
 
-The equivalent [React implementation](https://github.com/getsOU/sOU-HUD-React) uses the same public contracts and panel. From version 0.4.0 the HUD is GPL-3.0-only and includes the original Boltobserv radar maps, metadata, marker shapes and utility artwork with their notices and source archive. The public sOU SDK remains MIT. Valve game artwork retains its separate copyright notices; no ownership or unrestricted artwork license is claimed.
+The equivalent [React implementation](https://github.com/getsOU/HUD-React) uses the same public contracts and panel. From version 0.4.0 the HUD is GPL-3.0-only and includes the original Boltobserv radar maps, metadata, marker shapes and utility artwork with their notices and source archive. The public sOU SDK remains MIT. Valve game artwork retains its separate copyright notices; no ownership or unrestricted artwork license is claimed.
 
 ![Packaged HUD with calibrated map radar, local icons and compact edge displays over a CS2 reference scene](docs/preview.png)
 
@@ -17,7 +17,7 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 The installed HUD is named **sOU Default HUD**; its stable package ID remains `sou-basic-wasm`.
 
-1. Download `sou-basic-wasm-0.4.10.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/sOU-HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.10.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.

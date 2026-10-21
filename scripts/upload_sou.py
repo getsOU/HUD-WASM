@@ -10,7 +10,7 @@ import sys
 import uuid
 import zipfile
 
-REPOSITORY = "getsOU/sOU-HUD-WASM"
+REPOSITORY = "getsOU/HUD-WASM"
 ORGANIZATION = "081f9efd-e2ec-4cc8-a83b-3faf56ba8fcb"
 HUD = "dbd77df2-696a-429f-ac1b-d54e98ceabca"
 PACKAGE = "sou-basic-wasm"

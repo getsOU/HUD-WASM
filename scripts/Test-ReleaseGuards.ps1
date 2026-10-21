@@ -27,7 +27,7 @@ function Reject([string]$Message) {
 }
 
 try {
-    $env:GITHUB_REPOSITORY = if ($ExpectedId -ceq 'sou-basic-react') { 'getsOU/sOU-HUD-React' } else { 'getsOU/sOU-HUD-WASM' }
+    $env:GITHUB_REPOSITORY = if ($ExpectedId -ceq 'sou-basic-react') { 'getsOU/HUD-React' } else { 'getsOU/HUD-WASM' }
     $env:GITHUB_EVENT_NAME = 'push'
     $env:GITHUB_REF = "refs/tags/v$($manifest.version)"
     Verify

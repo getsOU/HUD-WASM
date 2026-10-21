@@ -10,7 +10,7 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $repo = Split-Path $PSScriptRoot -Parent
 $manifest = Get-Content -LiteralPath (Join-Path $repo $ManifestPath) -Raw | ConvertFrom-Json
-$expectedRepository = if ($ExpectedId -ceq 'sou-basic-react') { 'getsOU/sOU-HUD-React' } else { 'getsOU/sOU-HUD-WASM' }
+$expectedRepository = if ($ExpectedId -ceq 'sou-basic-react') { 'getsOU/HUD-React' } else { 'getsOU/HUD-WASM' }
 $expectedRuntime = if ($ExpectedId -ceq 'sou-basic-react') { 'web' } else { 'blazor-wasm' }
 $version = [string]$manifest.version
 

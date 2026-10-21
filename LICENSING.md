@@ -2,7 +2,7 @@
 
 Copyright (c) 2026 sofc. The HUD project from version **0.4.0** is distributed under **GNU GPL version 3 only** (`GPL-3.0-only`); see `LICENSE`. This includes its integration of the original Boltobserv radar. The original MIT releases through 0.3.0 remain available under their original license. The MIT notice for code retained from those releases is preserved in `LICENSES/SOU-HUD-MIT-THROUGH-0.3.0.txt`.
 
-The complete HUD source, tests, locked dependency metadata and build/package scripts are published in [getsOU/sOU-HUD-WASM](https://github.com/getsOU/sOU-HUD-WASM). Each release's tag and GitHub source archives identify its corresponding source; follow `README.md` to build it. No private sOU application checkout or proprietary build service is required.
+The complete HUD source, tests, locked dependency metadata and build/package scripts are published in [getsOU/HUD-WASM](https://github.com/getsOU/HUD-WASM). Each release's tag and GitHub source archives identify its corresponding source; follow `README.md` to build it. No private sOU application checkout or proprietary build service is required.
 
 ## Boltobserv
 
