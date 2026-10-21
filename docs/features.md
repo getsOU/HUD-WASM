@@ -2,6 +2,10 @@
 
 The HUD consumes public SDK `0.2.0-preview.4` contracts. It renders supplied state; it does not calculate a second game state or collect CS2 payloads itself. Missing numeric values are `—`. Unknown enum values do not become an assumed known state.
 
+The current source replaces 81 local weapon, grenade, status and killfeed SVGs with the [OpenHud reference icons](../LICENSES/OPENHUD-ICONS.md), with measured optical sizing. Existing SVGs remain for symbols not supplied by that reference, including flash assist and hostage rescue. The radar uses its existing assets.
+
+Player portraits use the supplied local image first. Missing or failed portraits use one of twenty bundled CS2 agent images, selected by the player's actual CT/T side and observer digit 0–9. Every digit has a different agent on each side. Side/slot changes update the placeholder; newly supplied real portraits take priority. Unknown side/slot retains the previous final fallback (omission in live cards, monogram in presentation cards). These placeholders do not assert the player's equipped agent. See [agent sources and rights](../LICENSES/AGENT-PORTRAITS.md).
+
 | Feature | Actual source | Missing-data behavior |
 | --- | --- | --- |
 | Scoreboard | `Game.Ct/T`, map, round, phases, countdown; reliable `ManagedMatch.Ct/T.TeamId` | Side labels fall back to source names or CT/T. Team A is never assumed CT. |
@@ -13,7 +17,7 @@ The HUD consumes public SDK `0.2.0-preview.4` contracts. It renders supplied sta
 | Bomb / defuse | `Bomb` or available `RoundBomb`, actual `SecondsRemaining`; `Countdown` | Source seconds only, rounded upward to `m:ss`. No assumed plant/defuse duration, speculative ticking or fabricated progress. |
 | Killfeed | Actual `Game.KillFeed` HLAE events and all six supplied modifier flags | No HP-difference kills. Identity is connection + epoch + event ID. Last six events from the current timeline, visible up to eight presentation seconds without snapshot replay. |
 | Radar | Fresh matching HLAE frame (750ms), otherwise GSI positions/forward; actual observed identity, bomb carrier/flash/death, grenade effects/projectiles/flames; original Boltobserv maps and format-4 calibration | Fixed original coordinates; object-specific Nuke/Vertigo splits on composite images. Original transparent layers and source freeze/warmup buyzones. Custom calibration has priority, separate Valve overview fallback remains. Unavailable maps show a compact exceptional indicator. See [radar setup](panel.md#radar), [upstream notices/source](../LICENSES/BOLTOBSERV-NOTICE.md). |
-| Lineups / portraits | Optional local metadata, exact active-match team ID binding, real roster Steam IDs; matching live players where available | No invented five-player roster or external camera embedding. Missing/failed live portraits consume no box; presentation images retain a local monogram. |
+| Lineups / portraits | Optional local metadata, exact active-match team ID binding, real roster Steam IDs; matching live players where available | No invented five-player roster or external camera embedding. Missing/failed portraits use the side/slot agent where available, otherwise omission in live cards or a monogram in presentation cards. |
 | Competition | Managed competition name/logo, season, section path and sponsors | Missing competition remains absent. |
 | Map veto | Explicit `Vetos` sorted by `Number`, then `PlayNumber`; `TeamId` | Picks/bans with missing assignments stay unassigned. A decider legitimately has no acting team. Maps order does not imply a pick. |
 | Stored results | `Maps.Status/ScoreA/ScoreB/WinnerTeamId` | Incomplete scores stay incomplete. A series winner requires an odd supported best-of, enough explicit completed-map wins and consistent `SeriesWins`. |
@@ -27,7 +31,7 @@ The existing browser-session-protected `GET /hud-browser/options` supplements sn
 
 The poller uses the package origin, same-origin browser credentials/mode and rejects redirects. It polls every two seconds with a three-second request deadline and a 1MiB body limit. Parsing uses generated JSON metadata for trimming. Both team IDs must match the active managed match; source session/match/team changes clear old metadata and invalidate in-flight results. Optional request/JSON/size failures clear metadata without stopping live or panel subscriptions.
 
-User-provided images must be valid `/cast-media/` paths resolved by the public SDK. Bundled game artwork is loaded from the installed package's local `assets/` directory. No remote cameras, arbitrary image URLs, cloud tokens, CDN fonts, tracking or personal credentials are used. Live portraits/team logos omit failed images completely; presentation images use neutral monograms. An unavailable weapon image gets a small unknown-equipment icon.
+User-provided images must be valid `/cast-media/` paths resolved by the public SDK. Bundled game artwork is loaded from the installed package's local `assets/` directory. No remote cameras, arbitrary image URLs, cloud tokens, CDN fonts, tracking or personal credentials are used. Player portraits use the side/slot agent on failure where available. Failed live team logos are omitted; other presentation images use neutral monograms. An unavailable weapon image retains its text label.
 
 GSI/HLAE player and source side names are decoded once for entities, then rendered as ordinary escaped text. Managed library/profile and operator texts are left unchanged. The HUD never treats a source name as HTML.
 

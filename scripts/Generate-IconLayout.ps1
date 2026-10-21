@@ -6,7 +6,7 @@ $document = Get-Content -LiteralPath (Join-Path $repo 'docs/cs2-icon-geometry.js
 if ($document.schemaVersion -ne 1) { throw 'Unsupported icon geometry schema.' }
 $target = if (Test-Path -LiteralPath (Join-Path $repo 'src/BasicHud')) { 'src/BasicHud/wwwroot/icon-layout.css' } else { 'src/ui/icon-layout.css' }
 $lines = [Collections.Generic.List[string]]::new()
-$lines.Add('/* Derived from docs/cs2-icon-geometry.json; original SVG bytes are unchanged. */')
+$lines.Add('/* Derived from docs/cs2-icon-geometry.json; sizing preserves shipped SVG files. */')
 function Number([double]$Value) { $Value.ToString('0.#######', [Globalization.CultureInfo]::InvariantCulture) }
 foreach ($icon in $document.icons) {
     if ($icon.PSObject.Properties['empty'] -and $icon.empty) { continue }

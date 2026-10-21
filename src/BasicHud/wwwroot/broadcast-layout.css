@@ -17,23 +17,23 @@
 .hud.scene-live .roster-heading span:first-child, .hud.scene-live .roster-title > span { display: inline-block; max-width: 78%; padding: .12cqw .3cqw; color: #102137; background: var(--side); font-size: .7cqw; font-weight: 800; text-transform: uppercase; }
 .hud.scene-live .roster-heading span:last-child, .hud.scene-live .roster-title small { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .hud.scene-live .roster.t .roster-heading, .hud.scene-live .roster.t .roster-title { flex-direction: row-reverse; }
-.hud.scene-live .roster .live-player { isolation: isolate; position: relative; display: grid; grid-template-columns: .5cqw 4.35cqw 3.3cqw minmax(0,1fr); grid-template-areas: "slot identity portrait loadout"; gap: .12cqw; height: 4cqw; padding: 0; background: var(--card-fill); border: .06cqw solid #aab9cc77; border-inline-start: 0; overflow: hidden; }
-.hud.scene-live .roster .live-player + .live-player { margin-top: .32cqw; }
-.hud.scene-live .roster .card-slot { grid-area: slot; align-items: start; align-self: stretch; margin: 0; height: 100%; padding-top: .16cqw; font-size: .75cqw; font-weight: 800; background: var(--side); color: #17283b; }
-.hud.scene-live .roster .card-identity { grid-area: identity; display: grid; grid-template-rows: 1.25cqw 1.1cqw 1.1cqw; align-content: center; min-width: 0; }
-.hud.scene-live .roster .player-name { font-family: "Arial Narrow", "Bahnschrift Condensed", sans-serif; font-size: .9cqw; font-weight: 750; text-transform: uppercase; }
+.hud.scene-live .roster .live-player { isolation: isolate; position: relative; display: grid; grid-template-columns: .65cqw 4.35cqw 3.75cqw minmax(0,1fr); grid-template-areas: "slot identity portrait loadout"; gap: 0; height: 3.9cqw; padding: 0; background: var(--card-fill); border: .06cqw solid #aab9cc77; border-inline-start: 0; overflow: hidden; }
+.hud.scene-live .roster .live-player + .live-player { margin-top: .625cqw; }
+.hud.scene-live .roster .card-slot { grid-area: slot; align-items: start; align-self: stretch; margin: 0; height: 100%; padding-top: .2cqw; font-size: .9cqw; font-weight: 800; background: var(--side); color: #17283b; }
+.hud.scene-live .roster .card-identity { grid-area: identity; display: grid; grid-template-rows: 1.1cqw 1.1cqw 1.1cqw; align-content: center; min-width: 0; padding-inline: .35cqw 0; font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif; }
+.hud.scene-live .roster .player-name { font-family: inherit; font-size: 1cqw; font-weight: 700; text-transform: uppercase; }
 .hud.scene-live .roster .card-stats { overflow: hidden; display: flex; align-items: center; gap: .4cqw; font-size: .82cqw; color: var(--side); }
 .hud.scene-live .roster .card-stats > span { display: inline-flex; align-items: center; gap: .17cqw; }
 .hud.scene-live .roster .card-stats .status-icon { --icon-height: .78cqw; --icon-max-width: 1cqw; }
-.hud.scene-live .roster .card-money { font-size: .85cqw; color: #d4edb2; }
+.hud.scene-live .roster .card-money { font-size: .95cqw; color: #d4edb2; }
 .hud.scene-live .roster .card-portrait { grid-area: portrait; min-width: 0; height: 100%; overflow: hidden; }
-.hud.scene-live .roster .card-portrait .roster-portrait { width: 100%; height: 100%; max-height: 4cqw; object-fit: cover; object-position: center bottom; }
-.hud.scene-live .roster .card-loadout { grid-area: loadout; position: relative; isolation: isolate; margin: 0; height: 100%; padding: .16cqw .12cqw .2cqw; display: grid; grid-template-rows: 2.1cqw 1.15cqw; row-gap: .28cqw; align-content: center; background: var(--card-empty); }
+.hud.scene-live .roster .card-portrait .roster-portrait { width: 100%; height: 100%; max-height: 3.9cqw; object-fit: cover; object-position: center bottom; }
+.hud.scene-live .roster .card-loadout { grid-area: loadout; position: relative; isolation: isolate; margin: 0; height: 100%; padding: .25cqw .25cqw .3cqw .12cqw; display: grid; grid-template-rows: minmax(0,1fr) 1.15cqw; row-gap: .25cqw; align-content: stretch; background: var(--card-empty); }
 .hud.scene-live .roster .card-armament, .hud.scene-live .roster .card-equipment { position: relative; z-index: 1; }
-.hud.scene-live .roster .card-armament { display: grid; grid-template-columns: minmax(0,1fr) 2.65cqw; gap: .2cqw; align-items: center; }
+.hud.scene-live .roster .card-armament { display: grid; grid-template-columns: minmax(0,1fr) max-content; gap: .2cqw; align-items: start; }
 .hud.scene-live .roster .card-armament .weapon-cell { height: 1.6cqw; }
 .hud.scene-live .roster .card-armament .roster-weapon { --icon-height: 1.6cqw; --icon-max-width: 4.7cqw; }
-.hud.scene-live .roster .card-health { font-family: Impact,"Arial Narrow",sans-serif; font-size: 2.2cqw; font-weight: 400; color: #fff; }
+.hud.scene-live .roster .card-health { min-inline-size: 3ch; font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif; font-size: 1.9cqw; font-weight: 700; color: #fff; line-height: 1; letter-spacing: -.03em; }
 .hud.scene-live .roster .card-equipment { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: end; height: 1.15cqw; gap: .4cqw; }
 .hud.scene-live .roster .card-equipment .utility-icons { --utility-height: 1cqw; justify-self: start; }
 .hud.scene-live .roster .card-status { display: inline-flex; align-items: end; gap: .25cqw; font-size: .85cqw; justify-self: end; }
@@ -44,13 +44,14 @@
 .hud.scene-live .roster .card-conditions { position: absolute; left: 6cqw; top: .12cqw; display: flex; align-items: center; gap: .12cqw; z-index: 2; }
 .hud.scene-live .roster .card-conditions .status-icon { --icon-height: .55cqw; --icon-max-width: .7cqw; }
 .hud.scene-live .roster .live-player.is-observed { background: var(--card-fill); outline: .06cqw solid #fff; outline-offset: -.06cqw; box-shadow: 0 0 .4cqw #d3eeff99; }
-.hud.scene-live .roster .live-player.is-dead { width: 11.7cqw; grid-template-columns: .5cqw 4.35cqw 3.3cqw minmax(0,1fr); grid-template-areas: "slot identity portrait death"; background: #454545b8; filter: grayscale(1); opacity: .8; }
+.hud.scene-live .roster .live-player.is-dead { width: 11.7cqw; grid-template-columns: .65cqw 4.35cqw 3.75cqw minmax(0,1fr); grid-template-areas: "slot identity portrait death"; background: #454545b8; filter: grayscale(1); opacity: .8; }
 .hud.scene-live .roster .live-player.is-dead .card-money { color: #ddd; }
 .hud.scene-live .roster .card-death { grid-area: death; display: grid; place-items: center; min-width: 0; overflow: hidden; }
 .hud.scene-live .roster .card-death .status-icon { --icon-height: 3.8cqw; --icon-max-width: 3.3cqw; opacity: .35; }
-.hud.scene-live .roster.t .live-player { padding: 0; border-inline-start: .06cqw solid #aab9cc77; border-inline-end: 0; grid-template-columns: minmax(0,1fr) 3.3cqw 4.35cqw .5cqw; grid-template-areas: "loadout portrait identity slot"; }
-.hud.scene-live .roster.t .card-loadout { margin: 0; }
-.hud.scene-live .roster.t .card-armament { grid-template-columns: 2.65cqw minmax(0,1fr); }
+.hud.scene-live .roster.t .live-player { padding: 0; border-inline-start: .06cqw solid #aab9cc77; border-inline-end: 0; grid-template-columns: minmax(0,1fr) 3.75cqw 4.35cqw .65cqw; grid-template-areas: "loadout portrait identity slot"; }
+.hud.scene-live .roster.t .card-identity { padding-inline: 0 .35cqw; }
+.hud.scene-live .roster.t .card-loadout { margin: 0; padding-inline: .25cqw .12cqw; }
+.hud.scene-live .roster.t .card-armament { grid-template-columns: max-content minmax(0,1fr); }
 .hud.scene-live .roster.t .card-stats { justify-content: end; flex-direction: row; }
 .hud.scene-live .roster.t .card-stats > span { flex-direction: row-reverse; }
 .hud.scene-live .roster.t .card-equipment { grid-template-columns: auto minmax(0,1fr); }
@@ -58,7 +59,7 @@
 .hud.scene-live .roster.t .card-status { grid-column: 1; grid-row: 1; justify-self: start; }
 .hud.scene-live .roster.t .card-loadout > .health-track { transform: scaleX(-1); }
 .hud.scene-live .roster.t .card-conditions { left: auto; right: 6cqw; }
-.hud.scene-live .roster.t .live-player.is-dead { margin-inline-start: auto; grid-template-columns: minmax(0,1fr) 3.3cqw 4.35cqw .5cqw; grid-template-areas: "death portrait identity slot"; }
+.hud.scene-live .roster.t .live-player.is-dead { margin-inline-start: auto; grid-template-columns: minmax(0,1fr) 3.75cqw 4.35cqw .65cqw; grid-template-areas: "death portrait identity slot"; }
 .hud.scene-live .round-history { top: 7cqw; }
 .hud.scene-live .killfeed { right: .8%; top: 8cqw; }
 .hud.scene-live .sponsors, .hud.scene-live .sponsor-rail { left: auto; right: 1.2%; top: 1.25cqw; width: 20cqw; height: 2.2cqw; background: transparent; justify-content: flex-end; }

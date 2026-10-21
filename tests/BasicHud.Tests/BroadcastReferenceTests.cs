@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Xml.Linq;
 using BasicHud;
 using BasicHud.Core;
 using SOU.Live.Contracts;
@@ -13,10 +14,26 @@ static class BroadcastReferenceTests
         var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
         var webroot = Path.Combine(root, "src/BasicHud/wwwroot");
         check(File.ReadAllText(Path.Combine(root, "LICENSES/valve-assets.json")) == File.ReadAllText(Path.Combine(webroot, "assets/valve-assets.json")), "packaged license provenance matches the actual original game asset inventory");
+        check(File.ReadAllText(Path.Combine(root, "LICENSES/openhud-icons.json")) == File.ReadAllText(Path.Combine(webroot, "assets/openhud-icons.json")), "packaged OpenHud provenance matches the reviewed import inventory");
+        using var openHud = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "LICENSES/openhud-icons.json")));
+        using var valve = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "LICENSES/valve-assets.json")));
+        var imports = openHud.RootElement.GetProperty("files").EnumerateArray().ToArray();
+        var valveAssets = valve.RootElement.GetProperty("files").EnumerateArray().ToArray();
+        var shippedAssets = imports.Concat(valveAssets).ToArray();
+        check(imports.Length == 81 && openHud.RootElement.GetProperty("revision").GetString() == "b2c1cedc4f03e0a1df86c9be6f9794ce0a7f8cc0" && shippedAssets.Select(asset => asset.GetProperty("path").GetString()).Distinct(StringComparer.Ordinal).Count() == shippedAssets.Length, "OpenHud imports have a pinned source and never retain conflicting Valve extraction provenance");
+        check(shippedAssets.All(asset =>
+        {
+            var bytes = File.ReadAllBytes(Path.Combine(webroot, asset.GetProperty("path").GetString()!));
+            return bytes.LongLength == asset.GetProperty("bytes").GetInt64() && Convert.ToHexStringLower(SHA256.HashData(bytes)) == asset.GetProperty("sha256").GetString();
+        }), "all imported icons and retained Valve assets match their recorded source bytes and hashes");
+        check(imports.All(asset => XDocument.Load(Path.Combine(webroot, asset.GetProperty("path").GetString()!)).Root?.Name == XName.Get("svg", "http://www.w3.org/2000/svg")), "all imported SVGs declare their namespace for standalone browser image loading");
+        check(imports.All(asset => asset.GetProperty("path").GetString() == "assets/weapons/flashbang.svg" || asset.GetProperty("sourceSha256").GetString() == asset.GetProperty("sha256").GetString()), "only the documented Flashbang namespace repair changes upstream SVG bytes");
+        check(Cs2Icons.Status("dead") == "ui/skull" && Cs2Icons.Status("fire") == "ui/burning" && Cs2Icons.Status("hostage") == "ui/hostage_rescued" && Cs2Icons.Status("flashassist") == "weapons/flashbang_assist", "death and fire use dedicated OpenHud status art while symbols absent upstream retain their existing art");
         using var optical = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "docs/cs2-icon-geometry.json")));
         var geometry = optical.RootElement.GetProperty("icons").EnumerateArray().ToArray();
         var expectedIcons = new[] { "weapons", "ui", "killfeed" }.SelectMany(folder => Directory.GetFiles(Path.Combine(webroot, "assets", folder), "*.svg").Select(file => folder + "/" + Path.GetFileNameWithoutExtension(file))).ToHashSet(StringComparer.Ordinal);
-        check(geometry.Length == expectedIcons.Count && geometry.Select(icon => icon.GetProperty("key").GetString()!).ToHashSet(StringComparer.Ordinal).SetEquals(expectedIcons), "optical geometry covers every original game SVG without extra paths or duplicate identities");
+        check(geometry.Length == expectedIcons.Count && geometry.Select(icon => icon.GetProperty("key").GetString()!).ToHashSet(StringComparer.Ordinal).SetEquals(expectedIcons), "optical geometry covers every shipped SVG without extra paths or duplicate identities");
+        check(shippedAssets.Where(asset => asset.GetProperty("path").GetString()!.EndsWith(".svg", StringComparison.Ordinal)).Select(asset => asset.GetProperty("path").GetString()![7..^4]).ToHashSet(StringComparer.Ordinal).SetEquals(expectedIcons), "every shipped icon has exactly one source inventory entry");
         check(geometry.All(icon => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(webroot, "assets", icon.GetProperty("key").GetString()! + ".svg")))).ToLowerInvariant() == icon.GetProperty("sha256").GetString()), "optical measurements remain bound to the exact original SVG bytes");
         check(geometry.Where(icon => !icon.TryGetProperty("empty", out _)).All(icon => icon.GetProperty("x").GetDouble() >= 0 && icon.GetProperty("y").GetDouble() >= 0 && icon.GetProperty("width").GetDouble() > 0 && icon.GetProperty("height").GetDouble() > 0 && icon.GetProperty("x").GetDouble() + icon.GetProperty("width").GetDouble() <= 1.000001 && icon.GetProperty("y").GetDouble() + icon.GetProperty("height").GetDouble() <= 1.000001), "optical viewports contain the measured visible source geometry");
         var json = File.ReadAllText(Path.Combine(webroot, "assets/boltobserv/catalog.json"));

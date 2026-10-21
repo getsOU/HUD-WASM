@@ -38,6 +38,21 @@ static class RenderTests
             check(!renderer.HasElement(image, "img") && !renderer.HasElement(image, "span"), "missing compact live images have no monogram placeholder");
             await renderer.Render(image, new() { [nameof(ImageTile.Source)] = null, [nameof(ImageTile.Label)] = "Bravo", [nameof(ImageTile.OmitFallback)] = false });
             check(renderer.HasText(image, "B"), "presentation images retain neutral monograms independently of compact live omission");
+
+            await renderer.Render(image, new() { [nameof(ImageTile.Source)] = null, [nameof(ImageTile.FallbackSource)] = "assets/agents/ct-1.png", [nameof(ImageTile.Label)] = "Alpha", [nameof(ImageTile.OmitFallback)] = true });
+            check(renderer.HasAttribute(image, "src", "assets/agents/ct-1.png") && renderer.HasAttribute(image, "alt", "Alpha (placeholder)"), "missing player images use the local agent and identify it as a placeholder");
+            await renderer.Render(image, new() { [nameof(ImageTile.Source)] = "/cast-media/player.png" });
+            check(renderer.HasAttribute(image, "src", "/cast-media/player.png"), "a supplied player portrait takes priority over the agent");
+            await renderer.DispatchEventAsync(renderer.ErrorHandler(image), null, EventArgs.Empty);
+            check(renderer.HasAttribute(image, "src", "assets/agents/ct-1.png"), "a failed supplied portrait falls back to its agent");
+            await renderer.Render(image, new() { [nameof(ImageTile.Source)] = "/cast-media/player.png" });
+            check(renderer.HasAttribute(image, "src", "assets/agents/ct-1.png"), "ordinary snapshots do not retry a failed supplied portrait");
+            await renderer.DispatchEventAsync(renderer.ErrorHandler(image), null, EventArgs.Empty);
+            check(!renderer.HasElement(image, "img"), "a failed agent terminates image retries and respects the final fallback policy");
+            await renderer.Render(image, new() { [nameof(ImageTile.FallbackSource)] = "assets/agents/t-1.png" });
+            check(renderer.HasAttribute(image, "src", "assets/agents/t-1.png"), "a side change resets the agent image even when the supplied portrait is still unavailable");
+            await renderer.Render(image, new() { [nameof(ImageTile.Source)] = "/cast-media/new-player.png" });
+            check(renderer.HasAttribute(image, "src", "/cast-media/new-player.png"), "a newly supplied player image replaces the fallback immediately");
             var weapon = renderer.Attach(new EquipmentIcon());
             await renderer.Render(weapon, new() { [nameof(EquipmentIcon.Name)] = "WEAPON_KNIFE_SURVIVAL_BOWIE" });
             check(renderer.HasAttribute(weapon, "src", "assets/weapons/knife_survival_bowie.svg") && renderer.ErrorHandler(weapon) != 0, "equipment Razor uses the original local silhouette with a real error callback");
@@ -58,11 +73,19 @@ static class RenderTests
             check(!renderer.HasElement(status, "img") && !renderer.HasElement(status, "svg") && renderer.HasText(status, "Future status"), "unknown status uses its honest label without guessing artwork");
 
             var livePlayer = renderer.Attach(new LivePlayerCard());
+            var agentPlayer = new PlayerState("agent", "Agent player", TeamSide.CounterTerrorists, null, 100) { ObserverSlot = 0 };
+            await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = agentPlayer, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
+            check(renderer.HasDescendantAttribute(livePlayer, "src", "assets/agents/ct-0.png"), "actual live roster uses slot zero's CT agent when the manager supplies no portrait");
+            var agentObserved = renderer.Attach(new ObservedPlayer());
+            await renderer.Render(agentObserved, new() { [nameof(ObservedPlayer.Player)] = agentPlayer, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
+            check(renderer.HasDescendantAttribute(agentObserved, "src", "assets/agents/ct-0.png"), "the observer and roster use the same slot agent");
+            await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = agentPlayer with { Side = TeamSide.Terrorists, Health = 0 }, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
+            check(renderer.HasDescendantAttribute(livePlayer, "src", "assets/agents/t-0.png"), "a side swap updates the portrait even on a dead-player card");
             await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = new PlayerState("1", "Rogue &lt;script&gt;", TeamSide.CounterTerrorists, null, null), [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
             check(renderer.HasText(livePlayer, "Rogue <script>") && !renderer.HasMarkup(livePlayer, "Rogue"), "decoded source names remain actual Razor text, never markup");
             await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = new PlayerState("1", "Dead player", TeamSide.CounterTerrorists, null, 0), [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
             check((renderer.HasAttribute(livePlayer, "class", "card-death") || renderer.HasMarkup(livePlayer, "class=\"card-death\"")) && !renderer.HasAttribute(livePlayer, "class", "card-loadout") && !renderer.HasAttribute(livePlayer, "class", "card-health"), "dead reference card retains identity but replaces health and loadout with the death cue");
-            check(renderer.HasDescendantAttribute(livePlayer, "data-icon", "ui/crosshair_circle") && renderer.HasDescendantAttribute(livePlayer, "data-icon", "killfeed/icon_suicide"), "reference card uses original kill and death artwork for statistics");
+            check(renderer.HasDescendantAttribute(livePlayer, "data-icon", "ui/crosshair_circle") && renderer.HasDescendantAttribute(livePlayer, "data-icon", "ui/skull"), "reference card uses OpenHud kill and skull artwork for statistics");
             var spotlight = renderer.Attach(new SpotlightView());
             var profilePanel = new HudPanelState(1, new() { ["feature"] = new() { ["player"] = JsonSerializer.SerializeToElement("offline-player") } })
             { References = new() { ["feature"] = new() { ["player"] = new("offline-player", "Alice &amp; Bob", null, null, false) } } };

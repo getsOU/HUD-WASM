@@ -12,4 +12,8 @@ Original project: [boltgolt/boltobserv](https://github.com/boltgolt/boltobserv),
 
 ## Dependencies and artwork
 
+Twenty bundled CS2 agent images from CSGOSKINS.GG supply side-specific, observer-slot portrait placeholders. Their original character-art rights remain separate from the HUD source license. See `LICENSES/AGENT-PORTRAITS.md` and `LICENSES/agent-portraits.json` for source URLs, side assignments and exact hashes.
+
+The current icon set includes 81 SVGs (80 byte-identical; Flashbang adds a missing SVG namespace) from JohnTimmermann/OpenHud-React-Hud, pinned to revision `b2c1cedc4f03e0a1df86c9be6f9794ce0a7f8cc0`. The upstream MIT notice (copyright 2021 Lexogrine) is preserved in `LICENSES/OPENHUD-MIT.txt`; exact source paths and hashes are in `LICENSES/openhud-icons.json`. See `LICENSES/OPENHUD-ICONS.md` for scope and separate game-art rights. Imported SVGs are excluded from the inventory of direct local Valve exports.
+
 The public sOU SDK, NuGet packages and SDK templates **remain MIT**. This HUD's license change does not change their license or the license of independent HUDs built with that SDK. .NET and its bundled dependencies retain their notices. Original Valve weapon/UI/map artwork remains subject to the separate original rights described in `LICENSES/VALVE-ASSETS.md`; this project does not relicense it under GPL or MIT. Separately imported team, player and sponsor images retain their own rights. Preserve `THIRD-PARTY-NOTICES.md` and the files under `LICENSES/` when distributing the package.

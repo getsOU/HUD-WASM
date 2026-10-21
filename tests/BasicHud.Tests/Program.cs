@@ -98,6 +98,7 @@ await ShowcaseTests.Run(Check);
 await RenderTests.Run(Check);
 await CompactTests.Run(Check);
 await BroadcastReferenceTests.Run(Check);
+AgentPortraitTests.Run(Check);
 WeaponPresenceTests.Run(Check);
 RadarMotionAndPicksTests.Run(Check);
 Console.WriteLine($"{checks} checks passed.");

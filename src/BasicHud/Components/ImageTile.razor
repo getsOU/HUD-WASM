@@ -1,6 +1,6 @@
-@if (!failed && !string.IsNullOrWhiteSpace(Source))
+@if (CurrentSource is { } source)
 {
-    <img class="local-image @Class" src="@Source" alt="@Label" @onerror="ImageFailed" />
+    <img class="local-image @Class" src="@source" alt="@(source == FallbackSource ? $"{Label} (placeholder)" : Label)" data-image-fallback="@(source == FallbackSource ? "true" : null)" @onerror="() => ImageFailed(source)" />
 }
 else if (!OmitFallback)
 {
@@ -8,12 +8,25 @@ else if (!OmitFallback)
 }
 @code {
     [Parameter] public string? Source { get; set; }
+    [Parameter] public string? FallbackSource { get; set; }
     [Parameter] public string Label { get; set; } = "";
     [Parameter] public string Class { get; set; } = "";
     [Parameter] public bool OmitFallback { get; set; }
     private string? previous;
+    private string? previousFallback;
     private bool failed;
+    private bool fallbackFailed;
+    private string? CurrentSource => !failed && !string.IsNullOrWhiteSpace(Source) ? Source
+        : !fallbackFailed && !string.IsNullOrWhiteSpace(FallbackSource) ? FallbackSource : null;
     private string Initial => string.IsNullOrWhiteSpace(Label) || Label == "—" ? "?" : System.Globalization.StringInfo.GetNextTextElement(Label.Trim()).ToUpperInvariant();
-    protected override void OnParametersSet() { if (previous != Source) { failed = false; previous = Source; } }
-    private void ImageFailed() => failed = true;
+    protected override void OnParametersSet()
+    {
+        if (previous != Source) { failed = false; previous = Source; }
+        if (previousFallback != FallbackSource) { fallbackFailed = false; previousFallback = FallbackSource; }
+    }
+    private void ImageFailed(string source)
+    {
+        if (source == Source) failed = true;
+        if (source == FallbackSource) fallbackFailed = true;
+    }
 }

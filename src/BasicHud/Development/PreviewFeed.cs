@@ -58,11 +58,11 @@ internal sealed class PreviewFeed(string scenario) : IHudFeed
         await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
     }
 
-    public static BrowserMetadata Metadata() => new()
+    public static BrowserMetadata Metadata(bool includePortraits = true) => new()
     {
         Match = new() { Left = new() { Id = "a", SteamIds = ["p1", "p2", "p3", "p4", "p5"] }, Right = new() { Id = "b", SteamIds = ["p6", "p7", "p8", "p9", "p0"] } },
         Players = new[] { ("p1", "Aster"), ("p2", "Vale"), ("p3", "Orion"), ("p4", "Mira"), ("p5", "Nova"), ("p6", "Flint"), ("p7", "Cinder"), ("p8", "Ash"), ("p9", "Sable"), ("p0", "Rook") }
-            .ToDictionary(item => item.Item1, item => new BrowserPlayer { Name = item.Item2, Avatar = "/cast-media/preview.svg" })
+            .ToDictionary(item => item.Item1, item => new BrowserPlayer { Name = item.Item2, Avatar = includePortraits ? "/cast-media/preview.svg" : null })
     };
 
     private static LiveSnapshot Snapshot(string scenario)

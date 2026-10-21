@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.4.11
+
+- Set the package information URL to the public HUD-WASM repository and remove the bottom-right connection/preview status overlay from every output view.
+
+- Match roster-card proportions to the broadcast reference: 320 × 74.88 cards, 12-pixel row gaps, wider observer strips and portraits, inset identity text, and mirrored loadout padding. Reserve the actual Health text width so `100` stays fully inside either card edge, including fallback fonts and scaled outputs.
+
+- Add twenty local CS2 agent portrait placeholders from CSGOSKINS.GG: ten distinct CT agents and ten distinct T agents, one per observer digit 0–9 on each side. Real player portraits take priority; missing or failed portraits use the current side/slot agent in live rosters, observer cards and player presentation views.
+- Update placeholders on side/slot changes, stop retrying failed images, preserve unknown-side/slot behavior and ship exact image source/hash records.
+
+- Import 81 weapon, utility, status and killfeed SVGs from JohnTimmermann/OpenHud-React-Hud at revision `b2c1cedc4f03e0a1df86c9be6f9794ce0a7f8cc0`. Artwork is unchanged; add the missing SVG namespace to Flashbang for standalone image loading.
+- Use the dedicated skull and burning status icons, retain existing artwork where the reference has no equivalent, and recalculate optical sizing for imported SVG viewports.
+- Ship the upstream Lexogrine MIT notice and exact source/hash inventory; retain separate rights and provenance for the remaining Valve assets.
+
 ## 0.4.10
 
 - Correct the actual player-card structure: kill/death icon groups, portrait, larger weapon/HP, utility near the portrait and kit/bomb/armor at the inner edge. Keep assists accessible.

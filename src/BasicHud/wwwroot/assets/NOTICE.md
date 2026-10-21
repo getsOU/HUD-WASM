@@ -1,5 +1,7 @@
 # Counter-Strike 2 artwork
 
+This notice and `valve-assets.json` cover the remaining direct local game exports. The current source imports 81 icons from OpenHud-React-Hud, with separate provenance in `openhud-icons.json` and the packaged `LICENSES/OPENHUD-ICONS.md` and `LICENSES/OPENHUD-MIT.txt`. Imported paths are excluded from the direct-export inventory. Game-art rights remain with their respective owners.
+
 The `radar/`, `weapons/`, `killfeed/`, and `ui/` artwork was exported directly
 from the locally installed, public Counter-Strike 2 game archive on 2026-10-17.
 It is original game artwork, owned by Valve Corporation and the respective

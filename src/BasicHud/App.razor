@@ -34,7 +34,6 @@
         }
         @if (Options.ShowSponsors) { <Sponsors Context="context" /> }
         <ProductionLayer Context="context" LowerThirdVisible="@(session?.LowerThirdVisible ?? false)" />
-        <ConnectionIndicator View="View" Live="@(session?.LiveConnection ?? ConnectionState.Stopped)" Panel="@(session?.PanelConnection ?? ConnectionState.Stopped)" IsPreview="isPreview" />
     </div>
 </main>
 
@@ -53,7 +52,9 @@
     private MetadataCatalog metadata = MetadataCatalog.Empty;
     private string metadataBinding = "";
     private DateTimeOffset now = DateTimeOffset.UtcNow;
+#if DEBUG
     private bool isPreview = false;
+#endif
     private bool disposed;
     private string? openError;
     private HudView View => session?.View ?? HudView.Empty;
@@ -98,7 +99,7 @@
         session.Changed += Refresh;
         session.Start();
 #if DEBUG
-        if (isPreview) metadata = MetadataCatalog.Bind(Development.PreviewFeed.Metadata(), session.Snapshot?.ManagedMatch);
+        if (isPreview) metadata = MetadataCatalog.Bind(Development.PreviewFeed.Metadata(includePortraits: !address.Query.TrimStart('?').Split('&').Contains("portraits=missing", StringComparer.Ordinal)), session.Snapshot?.ManagedMatch);
 #endif
         if (browserFeed is not null) metadataWork = new MetadataPoller(Http, address).RunAsync(() => session?.Snapshot, UpdateMetadata, stop.Token);
         clockWork = RunClockAsync();

@@ -1,6 +1,6 @@
 <article class="player-card @PlayerPresentation.SideClass(Player.Side) @(Player.Health is <= 0 ? "is-dead" : "") @(Expanded ? "expanded" : "")">
     <div class="player-identity"><span class="observer-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span>
-        <ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Name" Class="portrait" />
+        <ImageTile Source="@Context.ProfileImage(Player.SteamId)" FallbackSource="@AgentPortraits.For(Player)" Label="@Name" Class="portrait" />
         <strong class="player-name" title="@Name">@Name</strong><span class="money">@Money</span></div>
     <div class="player-vitals"><b>@BroadcastContext.Number(Player.Health) <small>HP</small></b><span>@BroadcastContext.Number(Player.Armor) ARM</span>
         @if (Player.Helmet == true) { <span title="Helmet">HELM</span> } @if (Player.DefuseKit == true) { <span title="Defuse kit">KIT</span> }

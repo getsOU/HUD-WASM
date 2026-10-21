@@ -8,7 +8,7 @@
         </span>
         <span class="card-money">@(Player.Money is { } money ? "$" + money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—")</span>
     </div>
-    <span class="card-portrait"><ImageTile Source="@Context.ProfileImage(Player.SteamId)" Label="@Context.Name(Player)" Class="roster-portrait" OmitFallback="true" /></span>
+    <span class="card-portrait"><ImageTile Source="@Context.ProfileImage(Player.SteamId)" FallbackSource="@AgentPortraits.For(Player)" Label="@Context.Name(Player)" Class="roster-portrait" OmitFallback="true" /></span>
     @if (Dead)
     {
         <span class="card-death"><StatusIcon Name="dead" Label="Dead" /></span>
