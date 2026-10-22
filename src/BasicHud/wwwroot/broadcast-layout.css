@@ -9,9 +9,9 @@
 .hud.scene-live .live-map-series article[aria-current="step"] { background: #102d64f5; border-bottom-color: var(--side,#eee1a0); color: #fff; }
 .hud.scene-live .live-map-series strong { padding: 0; font-size: .65cqw; text-transform: uppercase; }
 .hud.scene-live .live-map-series .map-pick { display: block; width: 100%; font-size: .5cqw; line-height: 1.1; color: #d6deec; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hud.scene-live .roster { top: calc(58.333333% + 1.3cqw); width: 16.666667%; height: auto; overflow: visible; }
-.hud.scene-live .roster.ct { left: .8%; }
-.hud.scene-live .roster.t { left: 82.533333%; }
+.hud.scene-live .roster { top: auto; bottom: .8cqw; width: 16.666667%; height: auto; overflow: visible; }
+.hud.scene-live .roster.ct { left: .8cqw; }
+.hud.scene-live .roster.t { left: auto; right: .8cqw; }
 .hud.scene-live .roster-heading { position: absolute; top: -2.325cqw; left: 0; right: 0; height: 1.7cqw; padding: 0; display: flex; align-items: stretch; justify-content: flex-start; background: none; border: 0; }
 .hud.scene-live .roster-heading .roster-team-name { position: static; display: flex; align-items: center; width: auto; max-width: 100%; min-width: 0; padding: .15cqw .45cqw; color: #102137; background: var(--side); font: 700 1cqw/1.15 "Bahnschrift Condensed", "Arial Narrow", sans-serif; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hud.scene-live .roster.t .roster-heading { justify-content: flex-end; }

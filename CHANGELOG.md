@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.18
+
+- Anchor both live player rosters with equal bottom and outer-side margins of 0.8% of the HUD width.
+
 ## 0.4.17
 
 - Split the scoreboard heading like NYXIA: tournament and season on the left, white sOU wordmark in the center, section path and competition round on the right. Preserve the caption as fallback when competition data is absent.
