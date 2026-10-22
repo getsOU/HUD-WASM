@@ -149,6 +149,13 @@ static class RenderTests
             await renderer.Render(scoreboard, new() { [nameof(Scoreboard.Context)] = reference, [nameof(Scoreboard.View)] = HudView.From(reference.Snapshot), [nameof(Scoreboard.Caption)] = "Chosen caption" });
             check(renderer.HasText(scoreboard, "Chosen caption") && renderer.HasText(scoreboard, "ROUND 5") && !renderer.HasText(scoreboard, "de_dust2") && !renderer.HasAttribute(scoreboard, "class", "match-meta"), "actual header renders one caption and central round without diagnostic map/phase/series strip");
             check(renderer.HasAttribute(scoreboard, "aria-label", "Bravo: 0 maps won in best of 3") && renderer.HasAttribute(scoreboard, "aria-label", "Alpha: 1 maps won in best of 3"), "actual side-aligned series marks follow swapped team identities instead of TeamA order");
+            var competitionMatch = referenceMatch with { Competition = new("event", "ESEA League", "season", "Season 52", [new("division", "Division 3", CompetitionSectionKind.Division), new("group", "Group B", CompetitionSectionKind.Group)], "Round 4") };
+            var competitionContext = reference with { Snapshot = reference.Snapshot! with { ManagedMatch = competitionMatch } };
+            await renderer.Render(scoreboard, new() { [nameof(Scoreboard.Context)] = competitionContext });
+            check(renderer.HasText(scoreboard, "ESEA League Season 52") && renderer.HasText(scoreboard, "Division 3 | Group B | Round 4"), "scoreboard splits tournament/season from the section path and competition round");
+            check((renderer.HasAttribute(scoreboard, "src", "assets/branding/sou-wordmark.png") || renderer.HasMarkup(scoreboard, "assets/branding/sou-wordmark.png")) && (renderer.HasAttribute(scoreboard, "alt", "sOU") || renderer.HasMarkup(scoreboard, "alt=\"sOU\"")), "scoreboard includes the fixed local sOU brand between competition fields");
+            await renderer.Render(scoreboard, new() { [nameof(Scoreboard.Context)] = reference });
+            check(renderer.HasText(scoreboard, "Chosen caption") && !renderer.HasText(scoreboard, "Division 3 | Group B | Round 4"), "missing competition restores caption fallback without retaining another match's section path");
             var series = renderer.Attach(new LiveMapSeries());
             await renderer.Render(series, new() { [nameof(LiveMapSeries.Context)] = reference });
             check(renderer.HasText(series, "Inferno") && !renderer.HasAttribute(series, "aria-current", "step") && !renderer.HasText(series, "Pending"), "actual compact map series does not mark unrelated Inferno current during Dust2 or expose technical status names");

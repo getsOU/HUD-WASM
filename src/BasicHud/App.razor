@@ -14,7 +14,7 @@
             @if (Options.ShowRadar) { <Radar View="@RadarView(context)" OverviewFailed="OverviewFailed" /> }
             @if (Options.ShowSeries) { <LiveMapSeries Context="context" /> }
             @if (Options.ShowKillfeed) { <Killfeed Entries="@(killfeedProjection.Project(context.Snapshot, now))" /> }
-            @if (Options.ShowRosters) { <Roster Side="View.Ct" Context="context" ShowEconomy="Options.ShowEconomy" /><Roster Side="View.T" Context="context" ShowEconomy="Options.ShowEconomy" /> }
+            @if (Options.ShowRosters) { <Roster Side="View.Ct" Context="context" /><Roster Side="View.T" Context="context" /> }
             @if (Options.ShowObservedPlayer && context.Game?.ObservedPlayer is { } observed) { <ObservedPlayer Player="observed" Context="context" ShowSponsors="Options.ShowSponsors" /> }
             @if (LiveProjection.RoundMessage(context.Game) is { Length: > 0 } message) { <div class="round-message">@message</div> }
             @if (!View.HasGame) { <div class="waiting"><p>@(openError ?? "Waiting for game data")</p></div> }

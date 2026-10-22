@@ -6,14 +6,13 @@ Open the installed HUD's **Panel** in sOU. Edit the desired fields and use **Spe
 
 | Field | Behavior |
 | --- | --- |
-| `display.caption` | The only live header caption. Explicit text has priority; blank uses the current competition name, or omits the caption when none is available. Existing saved captions remain compatible. |
+| `display.caption` | Fallback for the left live heading when competition data is absent. Normally the left field shows tournament and season, the center shows the fixed white sOU wordmark, and the right field shows the competition section path and round. |
 | `display.scene` | Main output scene: `live`, `prematch`, `lineups`, `veto`, `break`, `postmatch`, `statistics`, `spotlight`. Blank means live; explicit subviews keep their scene. |
 | `display.agentsOnly` | **Nur Agenten anzeigen**: when checked, ignore supplied player photos and show only the local CT/T agent for the actual observer digit. Applies to rosters, observed player, lineups and spotlight, including selected reference photos. Unchecked/missing means real photos take priority and agents remain the fallback for missing/failed photos. Team logos and sponsors are unaffected. Unknown side/slot retains the existing final fallback. |
 | `display.hideRosters` | Hide both live team rosters. |
 | `display.hideObservedPlayer` | Hide the live observed-player card. |
 | `display.hideRadar` | Hide the live radar, including its unavailable indicator. |
 | `display.hideKillfeed` | Hide the live killfeed. |
-| `display.hideEconomy` | Hide the compact live economy footer beneath each roster. Full statistics remain available. |
 | `display.hideRoundHistory` | Hide recent numbered round results during freeze/pause/timeout/intermission. History is already absent during active/bomb/defuse rounds; the statistics view keeps full history. |
 | `display.hideSeries` | Hide the compact map-series cells below the radar and the team-aligned series-win marks in the header. |
 | `display.hideSponsors` | Hide sponsor images in every scene. |
@@ -40,11 +39,11 @@ The lower third is transient; a new source session clears it. It reserves space 
 
 ## Branding
 
-`branding.logo` is an optional local broadcast image in the compact live caption and presentation header. `branding.sponsors` accepts additional local images, combined with competition sponsors supplied by sOU. Only permitted local images are loaded; image failures use a neutral fallback in presentation scenes. Failed live team logos are omitted. Missing or failed player portraits use a local CS2 agent for the actual side and observer digit, when known. Sponsor rendering is limited to 24 distinct local images, clipped to the small live sponsor rail.
+`branding.logo` is an optional local broadcast image in presentation headers. The live scoreboard uses the fixed local sOU wordmark in white. `branding.sponsors` accepts additional local images, combined with competition sponsors supplied by sOU. Only permitted local images are loaded; image failures use a neutral fallback in presentation scenes. Failed live team logos are omitted. Missing or failed player portraits use a local CS2 agent for the actual side and observer digit, when known. Sponsor rendering is limited to 24 distinct local images, clipped to the small live sponsor rail.
 
 ## Radar
 
-The default is the original [Boltobserv](https://github.com/boltgolt/boltobserv) radar at revision `0320883198e438cd6ae9fd490fa310027003727e`: Ancient, Anubis, Cache, Dust II, Inferno, Mirage, Nuke, Overpass, Train and Vertigo. Original transparent terrain, logo and buyzone images are bundled without modifications. Radar maps are not fetched from the Internet. Exact source map names are used; only the documented `workshop/<numeric-id>/<exact-map-name>` form is normalized. Similar names or arbitrary paths do not select another map.
+The default is the original [Boltobserv](https://github.com/boltgolt/boltobserv) radar at revision `0320883198e438cd6ae9fd490fa310027003727e`: Ancient, Anubis, Cache, Dust II, Inferno, Mirage, Nuke, Overpass, Train and Vertigo. Original transparent terrain, logo and buyzone images are bundled without modifications. The separate Boltobserv/Simple Radar branding overlay is not displayed. Radar maps are not fetched from the Internet. Exact source map names are used; only the documented `workshop/<numeric-id>/<exact-map-name>` form is normalized. Similar names or arbitrary paths do not select another map.
 
 The original format-4 metadata uses `resolution` (world units per 1024px image pixel) and bottom-origin X/Y `offset`. SVG projection is `x=(worldX+offset.x)/resolution/1024*100`, `y=100-(worldY+offset.y)/resolution/1024*100`. Original Nuke and Vertigo images show both levels together: every object applies its own original strict Z split and X/Y percentage offset. Observing another floor never swaps the complete image. The exact metadata, original source archive and provenance hashes ship with the HUD.
 

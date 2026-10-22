@@ -4,7 +4,6 @@
     else
     {
     <svg viewBox="0 0 100 100" role="img" aria-label="@View.Label">
-        @if (View.Logos is { } logos) { <image href="@logos" width="100" height="100" preserveAspectRatio="none" @onerror="() => OverviewFailed.InvokeAsync(logos)" /> }
         @if (View.Overview is { } image) { <image href="@image" width="100" height="100" preserveAspectRatio="none" @onerror="() => OverviewFailed.InvokeAsync(image)" /> }
         @if (View.Buyzones is { } buyzones) { <image href="@buyzones" width="100" height="100" preserveAspectRatio="none" @onerror="() => OverviewFailed.InvokeAsync(buyzones)" /> }
 

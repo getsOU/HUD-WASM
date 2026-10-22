@@ -1,8 +1,9 @@
-<header class="scoreboard @(string.IsNullOrEmpty(Heading) ? "without-caption" : "")">
-    @if (!string.IsNullOrEmpty(Heading))
-    {
-        <div class="caption">@if (Context.ResolveMedia(Context.Text("branding", "logo")) is { } logo) { <ImageTile Source="@logo" Label="Broadcast logo" Class="caption-logo" OmitFallback="true" /> }@Heading</div>
-    }
+<header class="scoreboard">
+    <div class="caption competition-heading">
+        <span class="competition-heading-left" title="@Heading">@Heading</span>
+        <img class="caption-brand" src="assets/branding/sou-wordmark.png" alt="sOU" />
+        <span class="competition-heading-right" title="@Stage">@Stage</span>
+    </div>
     <div class="score-strip">
         <div class="team-heading ct"><ImageTile Source="@Context.ResolveMedia(Context.SideTeam(TeamSide.CounterTerrorists)?.Logo)" Label="@View.Ct.Name" Class="team-logo" OmitFallback="true" /><div class="team-identity"><span class="team-name" title="@View.Ct.Name">@View.Ct.Name</span>@SeriesWins(TeamSide.CounterTerrorists)</div></div>
         <div class="score ct">@View.Ct.Score</div>
@@ -16,7 +17,17 @@
     [Parameter, EditorRequired] public string Caption { get; set; } = string.Empty;
     [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
     [Parameter] public bool ShowSeries { get; set; } = true;
-    private string Heading => MatchPresentation.Caption(Context, Caption);
+    private string Heading
+    {
+        get
+        {
+            var competition = Context.Match?.Competition;
+            var text = string.Join(" ", new[] { competition?.Name, competition?.SeasonName }.Where(value => !string.IsNullOrWhiteSpace(value)).Select(value => value!.Trim()));
+            return text.Length > 0 ? text : Caption.Trim();
+        }
+    }
+    private string Stage => Context.Match?.Competition is { } competition
+        ? string.Join(" | ", competition.Sections.Select(section => section.Name).Append(competition.Round).Where(value => !string.IsNullOrWhiteSpace(value)).Select(value => value!.Trim())) : "";
     private RenderFragment SeriesWins(TeamSide side) => @<text>
         @if (ShowSeries && MatchPresentation.SeriesTarget(Context.Match) is { } target && Context.SideTeam(side) is { } team && team.SeriesWins >= 0 && team.SeriesWins <= target)
         {

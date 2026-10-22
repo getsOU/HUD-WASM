@@ -9,14 +9,12 @@
 .hud.scene-live .live-map-series article[aria-current="step"] { background: #102d64f5; border-bottom-color: var(--side,#eee1a0); color: #fff; }
 .hud.scene-live .live-map-series strong { padding: 0; font-size: .65cqw; text-transform: uppercase; }
 .hud.scene-live .live-map-series .map-pick { display: block; width: 100%; font-size: .5cqw; line-height: 1.1; color: #d6deec; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hud.scene-live .roster { top: 58.333333%; width: 16.666667%; height: 40.2%; overflow: visible; }
+.hud.scene-live .roster { top: calc(58.333333% + 1.3cqw); width: 16.666667%; height: auto; overflow: visible; }
 .hud.scene-live .roster.ct { left: .8%; }
 .hud.scene-live .roster.t { left: 82.533333%; }
-.hud.scene-live .roster-economy { position: absolute; left: 0; right: 0; top: -1.1cqw; bottom: auto; height: 1cqw; background: #091a3bbf; }
-.hud.scene-live .roster-heading, .hud.scene-live .roster-title { position: relative; inset: auto; height: 1.3cqw; padding: 0; background: transparent; border: 0; align-items: center; color: #fff; }
-.hud.scene-live .roster-heading span:first-child, .hud.scene-live .roster-title > span { display: inline-block; max-width: 78%; padding: .12cqw .3cqw; color: #102137; background: var(--side); font-size: .7cqw; font-weight: 800; text-transform: uppercase; }
-.hud.scene-live .roster-heading span:last-child, .hud.scene-live .roster-title small { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.hud.scene-live .roster.t .roster-heading, .hud.scene-live .roster.t .roster-title { flex-direction: row-reverse; }
+.hud.scene-live .roster-heading { position: absolute; top: -2.325cqw; left: 0; right: 0; height: 1.7cqw; padding: 0; display: flex; align-items: stretch; justify-content: flex-start; background: none; border: 0; }
+.hud.scene-live .roster-heading .roster-team-name { position: static; display: flex; align-items: center; width: auto; max-width: 100%; min-width: 0; padding: .15cqw .45cqw; color: #102137; background: var(--side); font: 700 1cqw/1.15 "Bahnschrift Condensed", "Arial Narrow", sans-serif; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hud.scene-live .roster.t .roster-heading { justify-content: flex-end; }
 .hud.scene-live .roster .live-player { isolation: isolate; position: relative; display: grid; grid-template-columns: .65cqw 4.35cqw 3.75cqw minmax(0,1fr); grid-template-areas: "slot identity portrait loadout"; gap: 0; height: 3.9cqw; padding: 0; background: var(--card-fill); border: 0; outline: none; box-shadow: none; overflow: hidden; }
 .hud.scene-live .roster .live-player + .live-player { margin-top: .625cqw; }
 .hud.scene-live .roster .card-slot { grid-area: slot; align-items: start; align-self: stretch; margin: 0; height: 100%; padding-top: .2cqw; font-size: .9cqw; font-weight: 800; background: var(--side); color: #17283b; }
@@ -64,6 +62,9 @@
 .hud.scene-live .signature { display: none; }
 
 .hud.scene-live .caption { height: 1.1cqw; font-size: .65cqw; line-height: 1.6; color: #fff; background: #061641; }
+.hud.scene-live .competition-heading { display: grid; grid-template-columns: minmax(0,1fr) 2.6cqw minmax(0,1fr); align-items: center; gap: .4cqw; padding: 0 .5cqw; text-transform: uppercase; font-size: .59cqw; line-height: 1.15; }
+.hud.scene-live .competition-heading > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; color: inherit; }
+.hud.scene-live .caption-brand { display: block; width: 2.6cqw; height: .75cqw; object-fit: cover; object-position: center; filter: brightness(0) invert(1); }
 .hud.scene-live .score-strip { height: 4.1cqw; grid-template-columns: minmax(0,1fr) 2.8cqw 4.4cqw 2.8cqw minmax(0,1fr); background: var(--broadcast-blue); }
 .hud.scene-live .without-caption .score-strip { height: 100%; }
 .hud.scene-live .team-heading { position: relative; display: grid; grid-template-columns: 3.2cqw .6cqw; padding: .15cqw .25cqw; gap: .2cqw; border: 0; }

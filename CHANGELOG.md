@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.17
+
+- Split the scoreboard heading like NYXIA: tournament and season on the left, white sOU wordmark in the center, section path and competition round on the right. Preserve the caption as fallback when competition data is absent.
+- Stop displaying the radar branding overlay containing the Boltobserv and Simple Radar logos. Map terrain, buyzones, player markers and effects remain unchanged; original source assets and license notices are preserved.
+- Remove the live roster economy strips and their obsolete panel toggle. Style each team name as a freestanding side-colored badge with reference-sized condensed text and a clear gap above the first player, preserving player-card placement.
+
 ## 0.4.16
 
 - Rebuild the observed-player card around a large portrait, a compact team/name/K-D/ammo/health strip and an attached sponsor footer, using the existing HUD palette and icons. Keep alpha-masked effects and side/slot agent fallback.

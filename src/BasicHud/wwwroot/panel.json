@@ -7,7 +7,6 @@
     {"type":"checkbox","name":"hideObservedPlayer","label":"Hide observed player"},
     {"type":"checkbox","name":"hideRadar","label":"Hide radar"},
     {"type":"checkbox","name":"hideKillfeed","label":"Hide killfeed"},
-    {"type":"checkbox","name":"hideEconomy","label":"Hide economy"},
     {"type":"checkbox","name":"hideRoundHistory","label":"Hide round history"},
     {"type":"checkbox","name":"hideSeries","label":"Hide map series"},
     {"type":"checkbox","name":"hideSponsors","label":"Hide sponsors"}

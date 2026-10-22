@@ -17,7 +17,6 @@ public sealed record RadarMarker(string Key, string Label, double X, double Y, d
 public sealed record RadarView(string Label, string? Overview, IReadOnlyList<RadarMarker> Markers, IReadOnlyList<RadarSite>? Sites = null)
 {
     public string? Buyzones { get; init; }
-    public string? Logos { get; init; }
     public bool IsBoltobserv { get; init; }
 }
 public sealed class RadarProjection
@@ -170,7 +169,6 @@ public sealed class RadarProjection
         return new($"{label} · {(fresh ? "HLAE" : "GSI")}", calibrated || layer is not null || bolt is not null ? overview : null, markers, layer is not null && bolt is null ? selected?.Map.Sites : null)
         {
             IsBoltobserv = bolt is not null,
-            Logos = bolt is not null ? context.ResolveAsset(bolt.Logos) : null,
             Buyzones = bolt is not null && (game?.RoundPhase == RoundPhase.FreezeTime || game?.Countdown?.Phase is CountdownPhase.FreezeTime or CountdownPhase.Warmup || game?.Phase == MatchPhase.Warmup) ? context.ResolveAsset(bolt.Buyzones) : null
         };
     }

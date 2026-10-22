@@ -8,7 +8,6 @@ public sealed record DisplayOptions(string Caption, bool ShowRosters, bool ShowO
     public string Scene { get; init; } = "live";
     public bool ShowRadar { get; init; } = true;
     public bool ShowKillfeed { get; init; } = true;
-    public bool ShowEconomy { get; init; } = true;
     public bool ShowRoundHistory { get; init; } = true;
     public bool ShowSeries { get; init; } = true;
     public bool ShowSponsors { get; init; } = true;
@@ -23,7 +22,6 @@ public sealed record DisplayOptions(string Caption, bool ShowRosters, bool ShowO
         Scene = SceneSelection.Valid(state.Text("display", "scene")),
         ShowRadar = ReadVisible(state, "hideRadar"),
         ShowKillfeed = ReadVisible(state, "hideKillfeed"),
-        ShowEconomy = ReadVisible(state, "hideEconomy"),
         ShowRoundHistory = ReadVisible(state, "hideRoundHistory"),
         ShowSeries = ReadVisible(state, "hideSeries"),
         ShowSponsors = ReadVisible(state, "hideSponsors"),
