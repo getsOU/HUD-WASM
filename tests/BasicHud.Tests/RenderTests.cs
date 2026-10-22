@@ -104,6 +104,12 @@ static class RenderTests
             var agentPanel = new HudPanelState(1, new() { ["feature"] = new() { ["player"] = JsonSerializer.SerializeToElement("agent") }, ["display"] = new() { ["agentsOnly"] = JsonSerializer.SerializeToElement(false) } })
             { References = new() { ["feature"] = new() { ["player"] = new("agent", "Agent player", "/cast-media/featured.png", null, false) } } };
             var agentContext = new BroadcastContext(new(2, Guid.NewGuid(), 1, DateTimeOffset.UtcNow, DataFreshness.Live, new GameState(null, MatchPhase.Live, 1, RoundPhase.Live, new("CT", 0), new("T", 0), agentPlayer, [agentPlayer])), agentPanel, MetadataCatalog.Empty, DateTimeOffset.UtcNow, path => path);
+            var observerPanel = new HudPanelState(1, new() { ["branding"] = new() { ["sponsors"] = JsonSerializer.SerializeToElement(new[] { "/cast-media/sponsor.png" }) } });
+            await renderer.Render(agentObserved, new() { [nameof(ObservedPlayer.Player)] = agentPlayer, [nameof(ObservedPlayer.Context)] = agentContext with { Panel = observerPanel } });
+            check(renderer.HasAttribute(agentObserved, "class", "observed-hero") && renderer.HasAttribute(agentObserved, "class", "observed-summary"), "observer reference layout separates the large portrait from its compact information strip");
+            check(renderer.HasDescendantAttribute(agentObserved, "src", "/cast-media/sponsor.png"), "observer card renders configured sponsor images in its footer");
+            await renderer.Render(agentObserved, new() { [nameof(ObservedPlayer.ShowSponsors)] = false });
+            check(!renderer.HasDescendantAttribute(agentObserved, "src", "/cast-media/sponsor.png"), "the existing sponsor visibility option also hides the observer footer");
             await renderer.Render(spotlight, new() { [nameof(SpotlightView.Context)] = agentContext });
             check(renderer.HasDescendantAttribute(spotlight, "src", "/cast-media/featured.png"), "actual spotlight displays its supplied player image in normal mode");
             agentPanel.Values["display"]["agentsOnly"] = JsonSerializer.SerializeToElement(true);

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.16
+
+- Rebuild the observed-player card around a large portrait, a compact team/name/K-D/ammo/health strip and an attached sponsor footer, using the existing HUD palette and icons. Keep alpha-masked effects and side/slot agent fallback.
+- Move live sponsors into the observer footer when the card is visible, without duplicating logos. Preserve the sponsor visibility option and the standalone sponsor placement when the observer card is absent.
+
 ## 0.4.15
 
 - Remove redundant smoke, flash and fire status badges from roster cards and the observed player's equipment; portrait animations already display these conditions.

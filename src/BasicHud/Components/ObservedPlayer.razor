@@ -1,13 +1,36 @@
 <section class="observed @PlayerPresentation.SideClass(Player.Side)" aria-label="Observed player">
-    <div class="observed-identity"><span class="observer-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span><span class="portrait-cell"><PlayerPortrait Player="Player" Context="Context" Class="portrait" OmitFallback="true" /></span><strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong><span class="observed-vitals"><span class="observed-health"><StatusIcon Name="health" Label="Health" /><span>@BroadcastContext.Number(Player.Health)</span></span><span class="observed-armor"><StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="Armor" /><span>@BroadcastContext.Number(Player.Armor)</span></span></span></div>
-    <div class="observed-loadout">
-        <span class="weapon-cell">@if (Active is { } active) { <EquipmentIcon Name="@active.Name" Class="observed-weapon" /> }</span>
-        <span class="ammo-cell">@if (EquipmentPresentation.UsesAmmo(Active)) { <strong class="ammo" aria-label="@EquipmentPresentation.Ammo(Active)"><span>@BroadcastContext.Number(Active!.AmmoClip)</span><small>/</small><span>@BroadcastContext.Number(Active.AmmoReserve)</span></strong> }@if (Active?.State == WeaponStatus.Reloading) { <span class="reload">RELOAD</span> }</span>
-        <span class="loadout-details"><UtilityIcons Player="Player" /><PlayerEquipment Player="Player" Context="Context" ShowArmor="false" /></span>
+    <div class="observed-hero">
+        <span class="portrait-cell"><PlayerPortrait Player="Player" Context="Context" Class="portrait" OmitFallback="true" /></span>
     </div>
+    <div class="observed-summary">
+        <div class="observed-health-track" aria-hidden="true"><span style="@($"width:{Math.Clamp(Player.Health ?? 0, 0, 100)}%")"></span></div>
+        <span class="observed-team">
+            @if (TeamLogo is { } logo) { <ImageTile Source="@logo" Label="@TeamName" Class="observed-team-logo" OmitFallback="true" /> }
+            else { <span class="observer-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span> }
+        </span>
+        <div class="observed-identity">
+            <strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong>
+            <span class="observed-stats" aria-label="@($"Kills / deaths / assists: {PlayerPresentation.Kda(Player)}")">
+                <span><StatusIcon Name="kills" Label="Kills" />@BroadcastContext.Number(Player.Stats?.Kills)</span>
+                <span><StatusIcon Name="dead" Label="Deaths" />@BroadcastContext.Number(Player.Stats?.Deaths)</span>
+            </span>
+        </div>
+        <div class="observed-loadout">
+            <span class="weapon-cell">@if (Active is { } active) { <EquipmentIcon Name="@active.Name" Class="observed-weapon" /> }</span>
+            <span class="ammo-cell">@if (EquipmentPresentation.UsesAmmo(Active)) { <strong class="ammo" aria-label="@EquipmentPresentation.Ammo(Active)"><span>@BroadcastContext.Number(Active!.AmmoClip)</span><small>/</small><span>@BroadcastContext.Number(Active.AmmoReserve)</span></strong> }@if (Active?.State == WeaponStatus.Reloading) { <span class="reload">RELOAD</span> }</span>
+        </div>
+        <span class="observed-vitals">
+            <span class="observed-health"><StatusIcon Name="health" Label="Health" /><span>@BroadcastContext.Number(Player.Health)</span></span>
+            <span class="observed-armor"><StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="Armor" /><span>@BroadcastContext.Number(Player.Armor)</span></span>
+        </span>
+    </div>
+    @if (ShowSponsors) { <Sponsors Context="Context" /> }
 </section>
 @code {
     [Parameter, EditorRequired] public PlayerState Player { get; set; } = null!;
     [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter] public bool ShowSponsors { get; set; } = true;
     private WeaponState? Active => EquipmentPresentation.Active(Player);
+    private string? TeamLogo => Player.Side is { } side ? Context.ResolveMedia(Context.SideTeam(side)?.Logo) : null;
+    private string TeamName => Player.Side is { } side ? Context.SideTeam(side)?.Name ?? side.ToString() : "Team";
 }

@@ -85,17 +85,34 @@
 .hud.scene-live .live-map-series .map-result { font-size: .65cqw; }
 .hud.scene-live .live-map-series .map-current-dot { width: .3cqw; height: .3cqw; margin: 0; }
 .hud.scene-live .roster .health-track span { margin-inline-start: 0; }
-.hud.scene-live .observed { left: 41.15%; top: auto; bottom: 1cqw; width: 17.7%; height: 7cqw; padding: 0; background: #091a3be8; border: .06cqw solid #b6def577; }
-.hud.scene-live .observed::before { content: ""; position: absolute; bottom: 0; width: 100%; height: 1.65cqw; background: var(--card-fill); }
-.hud.scene-live .observed-identity, .hud.scene-live .observed-loadout, .hud.scene-live .observed-vitals { display: contents; }
-.hud.scene-live .observed .portrait-cell { position: absolute; left: 0; top: 0; width: 6cqw; height: 5.3cqw; }
-.hud.scene-live .observed .portrait { width: 100%; height: 100%; --avatar-fit: cover; --avatar-position: center bottom; object-fit: cover; object-position: center bottom; }
-.hud.scene-live .observed .observer-slot { position: absolute; left: .2cqw; bottom: .2cqw; width: 1cqw; height: 1.2cqw; font-size: .7cqw; }
-.hud.scene-live .observed .player-name { position: absolute; left: 1.4cqw; bottom: .15cqw; width: 12cqw; height: 1.3cqw; font-size: 1cqw; text-transform: uppercase; }
-.hud.scene-live .observed-health { position: absolute; bottom: .15cqw; right: .5cqw; font: 1.3cqw Impact,"Arial Narrow",sans-serif; color: #fff; }
-.hud.scene-live .observed-health .status-icon { display: none; }
-.hud.scene-live .observed-armor { position: absolute; top: 4.3cqw; left: .3cqw; font-size: .6cqw; color: #fff; }
-.hud.scene-live .observed-loadout > .weapon-cell { position: absolute; right: .5cqw; top: .6cqw; width: 5cqw; height: 1.2cqw; }
-.hud.scene-live .observed-loadout > .ammo-cell { position: absolute; right: .5cqw; top: 2.3cqw; height: 1.3cqw; }
-.hud.scene-live .observed .ammo { font-size: 1.15cqw; }
-.hud.scene-live .observed .loadout-details { position: absolute; left: 6.4cqw; right: .3cqw; top: 4.2cqw; height: .9cqw; }
+/* Observer reference: large portrait, compact identity/vitals strip, sponsor footer. */
+.hud.scene-live .observed { left: 41.15%; top: auto; bottom: 1cqw; width: 17.7%; height: auto; padding: 0; border: 0; overflow: visible; background: none; }
+.hud.scene-live .observed::before { content: none; }
+.hud.scene-live .observed-hero { position: relative; height: 9.8cqw; background: #091a3b70; overflow: hidden; }
+.hud.scene-live .observed .portrait-cell { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hud.scene-live .observed .portrait { display: block; width: 100%; height: 100%; --avatar-fit: contain; --avatar-position: center bottom; object-fit: contain; object-position: center bottom; border-radius: 0; }
+.hud.scene-live .observed-summary { position: relative; display: grid; grid-template-columns: 1.65cqw minmax(0,1fr) auto 2.45cqw; align-items: center; gap: .35cqw; min-height: 2.7cqw; padding: .3cqw .35cqw .22cqw; background: #091a3bf2; }
+.hud.scene-live .observed-health-track { position: absolute; top: 0; left: 0; right: 0; height: .13cqw; background: #ffffff16; }
+.hud.scene-live .observed-health-track > span { display: block; height: 100%; background: var(--side); }
+.hud.scene-live .observed-team { display: grid; place-items: center; width: 1.65cqw; height: 1.8cqw; }
+.hud.scene-live .observed-team-logo { width: 100%; height: 100%; object-fit: contain; }
+.hud.scene-live .observed .observer-slot { position: static; width: 1.35cqw; height: 1.5cqw; margin: 0; font-size: 1cqw; color: var(--side); background: none; }
+.hud.scene-live .observed-identity { display: grid; grid-template-columns: minmax(0,1fr); grid-template-rows: auto auto; height: auto; gap: .12cqw; align-content: center; }
+.hud.scene-live .observed .player-name { position: static; width: auto; height: auto; min-width: 0; font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif; font-size: .95cqw; line-height: 1.1; text-transform: uppercase; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.hud.scene-live .observed-stats { display: flex; gap: .4cqw; align-items: center; color: var(--side); font-size: .57cqw; }
+.hud.scene-live .observed-stats > span { display: inline-flex; align-items: center; gap: .13cqw; }
+.hud.scene-live .observed-stats .status-icon { --icon-height: .53cqw; --icon-max-width: .65cqw; }
+.hud.scene-live .observed-loadout { display: grid; grid-template-columns: auto; grid-template-rows: auto auto; height: auto; gap: .12cqw; align-items: center; justify-items: end; }
+.hud.scene-live .observed-loadout > .weapon-cell { position: static; width: 2.9cqw; height: .6cqw; }
+.hud.scene-live .observed-weapon { --icon-height: .6cqw; --icon-max-width: 2.9cqw; }
+.hud.scene-live .observed-loadout > .ammo-cell { position: static; height: auto; gap: .2cqw; flex-wrap: wrap; justify-content: end; }
+.hud.scene-live .observed .ammo { font: 700 .85cqw "Bahnschrift Condensed", "Arial Narrow", sans-serif; gap: .05cqw; }
+.hud.scene-live .observed .ammo > small, .hud.scene-live .observed .ammo > span:last-child { font-size: .58cqw; color: #bac8da; }
+.hud.scene-live .observed .reload { font-size: .42cqw; }
+.hud.scene-live .observed-vitals { display: grid; grid-template-columns: auto; gap: .1cqw; justify-items: stretch; height: auto; }
+.hud.scene-live .observed-health { position: static; display: flex; align-items: center; justify-content: center; gap: .2cqw; padding: .12cqw .15cqw; background: var(--card-fill,#12336d); color: #fff; font: 700 1.05cqw "Bahnschrift Condensed", "Arial Narrow", sans-serif; line-height: 1; }
+.hud.scene-live .observed-health .status-icon { display: inline-block; --icon-height: .7cqw; --icon-max-width: .75cqw; }
+.hud.scene-live .observed-armor { position: static; display: inline-flex; justify-content: center; align-items: center; gap: .15cqw; font-size: .5cqw; color: #bac8da; }
+.hud.scene-live .observed-armor .status-icon { --icon-height: .5cqw; --icon-max-width: .65cqw; }
+.hud.scene-live .observed > .sponsors { position: static; inset: auto; display: flex; width: 100%; height: 2.45cqw; margin-top: .25cqw; padding: .35cqw .6cqw; gap: .7cqw; justify-content: center; background: #091a3bbf; }
+.hud.scene-live .observed > .sponsors .sponsor-image { flex: 0 1 auto; width: auto; max-width: 30%; max-height: 100%; object-fit: contain; }
