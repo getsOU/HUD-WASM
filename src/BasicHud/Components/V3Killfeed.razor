@@ -1,0 +1,7 @@
+<TimedContext Context="Context" Milliseconds="250"><ChildContent Context="timed">
+    <Killfeed Entries="@projection.Project(timed.Snapshot, timed.Now)" />
+</ChildContent></TimedContext>
+@code {
+    [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    private readonly KillFeedProjection projection = new();
+}

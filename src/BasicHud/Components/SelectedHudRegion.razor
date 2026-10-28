@@ -1,0 +1,51 @@
+@implements IDisposable
+@inject SOU.Hud.Sdk.HudSession<HudOptions> Session
+@{ requested = false; }
+@if (presentation is not null) { @ChildContent(presentation) }
+@code {
+    [Parameter] public HudArea Area { get; set; }
+    [Parameter] public string? PlayerKey { get; set; }
+    [Parameter] public bool LowerThirdVisible { get; set; }
+    [Parameter, EditorRequired] public BroadcastContext Resources { get; set; } = BroadcastContext.Empty;
+    [Parameter, EditorRequired] public RenderFragment<HudRegionPresentation> ChildContent { get; set; } = default!;
+    [CascadingParameter] public HudRenderClock? Clock { get; set; }
+    private IDisposable? subscription;
+    private HudRegionSelection? selection;
+    private HudRegionPresentation? presentation;
+    private BroadcastContext? previousResources;
+    private HudArea? subscribedArea;
+    private string? subscribedPlayer;
+    private bool requested = true, disposed;
+    private bool previousLowerThird;
+    private long subscriptionGeneration;
+    protected override void OnParametersSet()
+    {
+        if (subscribedArea != Area || subscribedPlayer != PlayerKey) {
+            subscription?.Dispose(); subscribedArea = Area; subscribedPlayer = PlayerKey;
+            var generation = ++subscriptionGeneration;
+            var area = Area; var key = PlayerKey;
+            subscription = Session.Observe(state => HudRegionSelection.Select(state, area, key), next => {
+                if (!disposed) _ = InvokeAsync(() => { if (!disposed && generation == subscriptionGeneration) { selection = next; Present(); } });
+            }, HudRegionSelection.Comparer);
+        }
+        var resourcesChanged = HudRegionSelection.ResourcesChanged(Area, PlayerKey, selection?.Frame.Game, previousResources, Resources);
+        previousResources = Resources;
+        if (resourcesChanged) Present();
+        if (previousLowerThird != LowerThirdVisible) { previousLowerThird = LowerThirdVisible; requested = true; }
+    }
+    private void Present()
+    {
+        if (disposed || selection is null) return;
+        var state = selection.Frame;
+        var panel = state.Panel?.ToState();
+        var options = panel is null ? DisplayOptions.Default : DisplayOptions.FromPanel(panel);
+        if (options.Caption.Length == 0) options = options with { Caption = state.Options?.Caption ?? "" };
+        presentation = new(state.Game, Resources with {
+            Snapshot = state.Ready ? state.Snapshot : null, Panel = panel,
+            Now = Clock?.IsReady == true ? Clock.Now : Resources.Now
+        }, options);
+        requested = true; StateHasChanged();
+    }
+    protected override bool ShouldRender() => requested;
+    public void Dispose() { disposed = true; ++subscriptionGeneration; subscription?.Dispose(); }
+}

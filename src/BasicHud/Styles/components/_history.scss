@@ -1,0 +1,65 @@
+.round-history {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1em;
+}
+.scene-live > .round-history {
+    position: absolute;
+    top: 9.62963%;
+    left: 37.5%;
+    width: 25%;
+    height: 3.333333%;
+    gap: 0.25em;
+    overflow: hidden;
+}
+.history-round {
+    width: 1.55em;
+    height: 1.875em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.12em;
+    padding: 0.15em;
+    background: var(--surface);
+    color: var(--side, #bdcbdc);
+    border-bottom: 0.1em solid var(--side);
+    flex-shrink: 1;
+}
+.history-round small {
+    font-size: 0.55em;
+    color: #d2dbe6;
+    line-height: 1;
+}
+.history-round .status-icon {
+    --icon-height: 0.75em;
+}
+.round-message {
+    position: absolute;
+    left: 37.5%;
+    top: 13.518519%;
+    width: 25%;
+    height: 1.1em;
+    background: var(--surface);
+    text-align: center;
+    font-size: 0.625em;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.roster {
+    position: absolute;
+    top: 62.407407%;
+    width: 16.25%;
+    height: 35.37037%;
+    overflow: hidden;
+}
+.roster.ct {
+    left: 1.25%;
+}
+.roster.t {
+    left: 82.5%;
+}

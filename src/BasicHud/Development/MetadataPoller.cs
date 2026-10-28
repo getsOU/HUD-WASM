@@ -6,6 +6,7 @@ using SOU.Live.Contracts;
 
 namespace BasicHud;
 
+// Retained for bounded v2 metadata regression checks; production v3 uses session options.
 internal sealed class MetadataPoller(HttpClient http, Uri packageAddress)
 {
     public async Task RunAsync(Func<LiveSnapshot?> current, Action<MetadataCatalog, Guid?> update, CancellationToken stop)

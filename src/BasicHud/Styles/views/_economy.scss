@@ -1,0 +1,16 @@
+.economy-strip {
+    display: flex;
+    gap: 0.5em;
+    font-size: 0.7em;
+}
+.economy-side {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em 0.8em;
+    padding: 0.7em;
+    background: #172638;
+}
+.economy-side strong {
+    color: var(--side);
+}

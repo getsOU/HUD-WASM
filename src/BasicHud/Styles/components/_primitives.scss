@@ -1,0 +1,128 @@
+.local-image {
+    object-fit: contain;
+    display: inline-block;
+}
+.monogram {
+    display: inline-grid;
+    place-items: center;
+    color: #c6d0dc;
+    background: #293342;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+.team-logo {
+    width: 1.8em;
+    height: 1.8em;
+    flex-shrink: 0;
+}
+.portrait {
+    width: 2.1em;
+    height: 2.1em;
+    object-fit: cover;
+    border-radius: 0.15em;
+}
+.cs2-icon {
+    display: inline-block;
+    position: relative;
+    width: min(
+        calc(var(--icon-height) * var(--icon-aspect, 1)),
+        var(--icon-max-width, 9999px)
+    );
+    height: auto;
+    aspect-ratio: var(--icon-aspect, 1);
+    overflow: hidden;
+    flex: 0 0 auto;
+    vertical-align: middle;
+    filter: brightness(0) invert(1);
+}
+.cs2-icon > .icon-source {
+    position: absolute;
+    display: block;
+    left: var(--icon-image-left, 0%);
+    top: var(--icon-image-top, 0%);
+    width: var(--icon-image-width, 100%);
+    height: var(--icon-image-height, 100%);
+    max-width: none;
+    border: 0;
+}
+.equipment-icon {
+    --icon-height: 1em;
+    --icon-max-width: 2.8em;
+}
+.status-icon {
+    --icon-height: 0.75em;
+}
+.icon-label {
+    display: inline-block;
+    max-width: 7em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.7em;
+    vertical-align: middle;
+}
+.observer-slot {
+    display: inline-grid;
+    place-items: center;
+    width: 1.5em;
+    height: 1.5em;
+    background: #2a394b;
+    font-weight: 700;
+    color: #e5edf6;
+    flex-shrink: 0;
+}
+.player-name {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.money {
+    color: #c7d9c2;
+    white-space: nowrap;
+}
+.kda {
+    color: #dbe4ef;
+    white-space: nowrap;
+}
+.is-dead {
+    opacity: 0.62;
+}
+.health-track {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 0.13em;
+    background: #253242;
+}
+.health-track span {
+    display: block;
+    height: 100%;
+    background: var(--side, #b6c1ce);
+}
+.player-equipment {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15em;
+    color: #d8e3ee;
+}
+.utility-icons {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 0.25em;
+    align-items: flex-end;
+    height: var(--utility-height);
+    min-width: 0;
+    line-height: 0;
+}
+.utility-item {
+    display: inline-flex;
+    align-items: flex-end;
+    height: var(--utility-height);
+    line-height: 0;
+}
+.utility-item .equipment-icon {
+    --icon-height: var(--utility-height);
+    --icon-max-width: 9999px;
+}

@@ -49,8 +49,8 @@ def package_for(directory, tag):
         raise UploadError("Cannot read package manifest or checksum.") from None
     if checksum != f"{digest}  {package.name}":
         raise UploadError("Package differs from the published SHA-256 file.")
-    if not isinstance(manifest, dict) or any(manifest.get(key) != value for key, value in {
-        "id": PACKAGE, "version": version, "apiVersion": 2,
+    if not isinstance(manifest, dict) or type(manifest.get("apiVersion")) is not int or manifest["apiVersion"] not in (2, 3) or any(manifest.get(key) != value for key, value in {
+        "id": PACKAGE, "version": version,
         "runtime": "blazor-wasm", "entryPoint": "index.html",
     }.items()):
         raise UploadError("Package identity, version or runtime does not match this HUD release.")

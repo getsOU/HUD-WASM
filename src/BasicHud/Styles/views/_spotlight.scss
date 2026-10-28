@@ -1,0 +1,62 @@
+.spotlight-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 2em;
+}
+.spotlight-player {
+    min-width: 0;
+}
+.spotlight-player h2 {
+    font-size: 1.5em;
+    margin: 0.2em 0;
+}
+.spotlight-player > p {
+    font-size: 0.85em;
+    color: #a6b8ce;
+}
+.spotlight-portrait {
+    --avatar-fit: contain;
+    display: block;
+    width: 9em;
+    height: 9em;
+    object-fit: contain;
+    margin: 1em auto;
+}
+.monogram.spotlight-portrait {
+    --avatar-fit: contain;
+    display: grid;
+    place-items: center;
+    width: 5em;
+    height: 5em;
+    font-size: 1.8em;
+}
+.spotlight-player .player-card {
+    font-size: 1em;
+}
+.feature-reference {
+    padding: 1em;
+    margin-bottom: 0.8em;
+    background: #1c2838;
+    border: 1px solid #35455c;
+}
+.feature-reference .duel-logo {
+    display: block;
+    margin: 1em auto;
+}
+.feature-reference .monogram.duel-logo {
+    display: grid;
+    place-items: center;
+}
+.feature-reference h3 {
+    overflow-wrap: anywhere;
+}
+.feature-reference p {
+    color: #9eafc4;
+    font-size: 0.7em;
+}
+.empty-state {
+    text-align: center;
+    color: #9bafc7;
+    font-size: 0.9em;
+    padding: 1.5em;
+}

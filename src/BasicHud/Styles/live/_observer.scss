@@ -1,0 +1,218 @@
+.hud.scene-live {
+    /* Observer reference: large portrait, compact identity/vitals strip, sponsor footer. */
+    .observed {
+        left: 41.15%;
+        top: auto;
+        bottom: 1cqw;
+        width: 17.7%;
+        height: auto;
+        padding: 0;
+        border: 0;
+        overflow: visible;
+        background: none;
+    }
+    .observed::before {
+        content: none;
+    }
+    .observed-hero {
+        position: relative;
+        height: 9.8cqw;
+        background: #091a3b70;
+        overflow: hidden;
+    }
+    .observed .portrait-cell {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .observed .portrait {
+        display: block;
+        width: 100%;
+        height: 100%;
+        --avatar-fit: contain;
+        --avatar-position: center bottom;
+        object-fit: contain;
+        object-position: center bottom;
+        border-radius: 0;
+    }
+    .observed-summary {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1.65cqw minmax(0, 1fr) auto 2.45cqw;
+        align-items: center;
+        gap: 0.35cqw;
+        min-height: 2.7cqw;
+        padding: 0.3cqw 0.35cqw 0.22cqw;
+        background: #091a3bf2;
+    }
+    .observed-health-track {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 0.13cqw;
+        background: #ffffff16;
+    }
+    .observed-health-track > span {
+        display: block;
+        height: 100%;
+        background: var(--side);
+    }
+    .observed-team {
+        display: grid;
+        place-items: center;
+        width: 1.65cqw;
+        height: 1.8cqw;
+    }
+    .observed-team-logo {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    .observed .observer-slot {
+        position: static;
+        width: 1.35cqw;
+        height: 1.5cqw;
+        margin: 0;
+        font-size: 1cqw;
+        color: var(--side);
+        background: none;
+    }
+    .observed-identity {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        height: auto;
+        gap: 0.12cqw;
+        align-content: center;
+    }
+    .observed .player-name {
+        position: static;
+        width: auto;
+        height: auto;
+        min-width: 0;
+        font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+        font-size: 0.95cqw;
+        line-height: 1.1;
+        text-transform: uppercase;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .observed-stats {
+        display: flex;
+        gap: 0.4cqw;
+        align-items: center;
+        color: var(--side);
+        font-size: 0.57cqw;
+    }
+    .observed-stats > span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.13cqw;
+    }
+    .observed-stats .status-icon {
+        --icon-height: 0.53cqw;
+        --icon-max-width: 0.65cqw;
+    }
+    .observed-loadout {
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto auto;
+        height: auto;
+        gap: 0.12cqw;
+        align-items: center;
+        justify-items: end;
+    }
+    .observed-loadout > .weapon-cell {
+        position: static;
+        width: 2.9cqw;
+        height: 0.6cqw;
+    }
+    .observed-weapon {
+        --icon-height: 0.6cqw;
+        --icon-max-width: 2.9cqw;
+    }
+    .observed-loadout > .ammo-cell {
+        position: static;
+        height: auto;
+        gap: 0.2cqw;
+        flex-wrap: wrap;
+        justify-content: end;
+    }
+    .observed .ammo {
+        font:
+            700 0.85cqw "Bahnschrift Condensed",
+            "Arial Narrow",
+            sans-serif;
+        gap: 0.05cqw;
+    }
+    .observed .ammo > small,
+    .observed .ammo > span:last-child {
+        font-size: 0.58cqw;
+        color: #bac8da;
+    }
+    .observed .reload {
+        font-size: 0.42cqw;
+    }
+    .observed-vitals {
+        display: grid;
+        grid-template-columns: auto;
+        gap: 0.1cqw;
+        justify-items: stretch;
+        height: auto;
+    }
+    .observed-health {
+        position: static;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2cqw;
+        padding: 0.12cqw 0.15cqw;
+        background: var(--card-fill, #12336d);
+        color: #fff;
+        font:
+            700 1.05cqw "Bahnschrift Condensed",
+            "Arial Narrow",
+            sans-serif;
+        line-height: 1;
+    }
+    .observed-health .status-icon {
+        display: inline-block;
+        --icon-height: 0.7cqw;
+        --icon-max-width: 0.75cqw;
+    }
+    .observed-armor {
+        position: static;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.15cqw;
+        font-size: 0.5cqw;
+        color: #bac8da;
+    }
+    .observed-armor .status-icon {
+        --icon-height: 0.5cqw;
+        --icon-max-width: 0.65cqw;
+    }
+    .observed > .sponsors {
+        position: static;
+        inset: auto;
+        display: flex;
+        width: 100%;
+        height: 2.45cqw;
+        margin-top: 0.25cqw;
+        padding: 0.35cqw 0.6cqw;
+        gap: 0.7cqw;
+        justify-content: center;
+        background: #091a3bbf;
+    }
+    .observed > .sponsors .sponsor-image {
+        flex: 0 1 auto;
+        width: auto;
+        max-width: 30%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+}

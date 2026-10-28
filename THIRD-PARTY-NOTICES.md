@@ -7,11 +7,14 @@ This project uses the following public packages. From 0.4.0 the HUD is GPL-3.0-o
 | Dependency | Version | License / upstream |
 | --- | --- | --- |
 | Motion | 14.5.0 | MIT, Motion B.V.; [source](https://github.com/motiondivision/motion); bundled locally, license in `LICENSES/MOTION-MIT.txt` |
-| SOU.Hud.Sdk | 0.2.0-preview.4 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Hud.Sdk/0.2.0-preview.4) |
-| SOU.Live.Contracts | 0.2.0-preview.4 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Live.Contracts/0.2.0-preview.4) |
-| SOU.Hud.Tool (build only) | 0.2.0-preview.4 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Hud.Tool/0.2.0-preview.4) |
-| ASP.NET Core, Blazor WebAssembly and SignalR | 10.0.13 | MIT, .NET Foundation and Contributors; [source](https://github.com/dotnet/aspnetcore/tree/v10.0.13) |
-| .NET WebAssembly runtime and libraries | 10.0.13 | MIT with bundled third-party components; [source](https://github.com/dotnet/runtime/tree/v10.0.13) |
+| SOU.Hud.Sdk / SOU.Hud.Sdk.Blazor | 0.3.0-preview.2 | MIT, copyright 2026 sofc; [NuGet SDK](https://www.nuget.org/packages/SOU.Hud.Sdk/0.3.0-preview.2), [Blazor adapter](https://www.nuget.org/packages/SOU.Hud.Sdk.Blazor/0.3.0-preview.2) |
+| SOU.Live.Contracts | 0.3.0-preview.2 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Live.Contracts/0.3.0-preview.2) |
+| SOU.Hud.Tool (build only) | 0.3.0-preview.2 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Hud.Tool/0.3.0-preview.2) |
+| ASP.NET Core, Blazor WebAssembly and SignalR | 10.0.14 | MIT, .NET Foundation and Contributors; [source](https://github.com/dotnet/aspnetcore/tree/v10.0.14) |
+| .NET WebAssembly runtime and libraries | 10.0.14 | MIT with bundled third-party components; [source](https://github.com/dotnet/runtime/tree/v10.0.14) |
+| Dart Sass (build only) | 1.106.1 | MIT; [source](https://github.com/sass/dart-sass) |
+| Playwright (tests only) | 1.64.1 | Apache-2.0; [source](https://github.com/microsoft/playwright) |
+| Prettier (source formatting only) | 3.9.10 | MIT; [source](https://github.com/prettier/prettier) |
 
 `LICENSES/DOTNET-LICENSE.txt` preserves the upstream .NET MIT license. `LICENSES/DOTNET-THIRD-PARTY-NOTICES.txt` preserves the upstream runtime notices verbatim; some entries apply to other runtime platforms. These files are copied into every HUD package. Resolved package identities and content hashes are in the committed `packages.lock.json` files.
 

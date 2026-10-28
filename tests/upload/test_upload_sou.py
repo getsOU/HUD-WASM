@@ -126,6 +126,19 @@ class UploadTests(unittest.TestCase):
                     uploader.upload(self.directory, "v0.4.9", FakeApi([]))
                 self.manifest[key] = original
 
+    def test_supported_protocol_versions_preserve_historical_uploads(self):
+        for version in (2, 3):
+            with self.subTest(version=version):
+                self.manifest["apiVersion"] = version
+                self.write_package()
+                self.assertEqual(uploader.package_for(self.directory, "v0.4.9")[1], "0.4.9")
+        for version in (True, 2.0, "3", 4, None):
+            with self.subTest(version=version):
+                self.manifest["apiVersion"] = version
+                self.write_package()
+                with self.assertRaises(uploader.UploadError):
+                    uploader.package_for(self.directory, "v0.4.9")
+
     def test_transport_uses_fixed_https_and_raw_octet_stream_without_redirects(self):
         with patch.object(uploader.http.client, "HTTPSConnection") as factory:
             connection = factory.return_value

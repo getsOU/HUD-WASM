@@ -1,0 +1,32 @@
+@implements IAsyncDisposable
+@inject NavigationManager Navigation
+<HudOutput Snapshot="session?.Snapshot" Panel="session?.Panel" LowerThirdVisible="@(session?.LowerThirdVisible ?? false)"
+           Media="ResolveMedia" IsPreview="true" />
+@code {
+    [Parameter, EditorRequired] public IHudFeed Feed { get; set; } = default!;
+    private HudSession? session;
+    private readonly CancellationTokenSource stop = new();
+    private Task clock = Task.CompletedTask;
+    protected override void OnInitialized()
+    {
+        session = new(Feed);
+        session.Changed += Refresh;
+        session.Start();
+        clock = RunClock();
+    }
+    private void Refresh() => _ = InvokeAsync(StateHasChanged);
+    private string? ResolveMedia(string? path) => path == "/cast-media/preview.svg" ? new Uri(new Uri(Navigation.Uri), path).AbsoluteUri : null;
+    private async Task RunClock()
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(50));
+        try { while (await timer.WaitForNextTickAsync(stop.Token)) await InvokeAsync(StateHasChanged); }
+        catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        await stop.CancelAsync();
+        if (session is not null) { session.Changed -= Refresh; await session.DisposeAsync(); }
+        await clock;
+        stop.Dispose();
+    }
+}

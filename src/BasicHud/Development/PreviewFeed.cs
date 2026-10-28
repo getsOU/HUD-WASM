@@ -114,9 +114,9 @@ internal sealed class PreviewFeed(string scenario) : IHudFeed
         {
             AvailableSections = [GsiSection.Map, GsiSection.AllPlayers, GsiSection.Player, GsiSection.Round, GsiSection.Bomb, GsiSection.Grenades, GsiSection.PhaseCountdowns],
             Countdown = new(CountdownPhase.Live, 73.4),
-            Bomb = new(scenario == "bomb" ? BombStatus.Planted : BombStatus.Carried, "p6", new(1200, 1300, 0), scenario == "bomb" ? 25.7 : null),
+            Bomb = new(scenario == "bomb" ? BombStatus.Planted : BombStatus.Carried, "p6", MiragePosition(6), scenario == "bomb" ? 25.7 : null),
             Radar = new(Guid.Parse("84bb12b2-7165-49c7-909e-1cc877d587b4"), 1, 1, 125, DateTimeOffset.UtcNow, players.Select(player => new RadarPlayer(player.SteamId!, 1, player.Position!, player.Forward!, player.Health!.Value)).ToImmutableArray()),
-            Grenades = [new("smoke1", GrenadeKind.Smoke, "p3", new(600, 1300, 0), null, null, 5)],
+            Grenades = [new("smoke1", GrenadeKind.Smoke, "p3", MiragePosition(8), null, null, 5)],
             RoundWins = Enumerable.Range(1, 18).Select(round => new RoundResult(round, round % 3 == 0 ? TeamSide.Terrorists : TeamSide.CounterTerrorists, round % 4 == 0 ? RoundWinReason.BombDefused : RoundWinReason.Elimination)).ToImmutableArray(),
             KillFeed = [new(1, Guid.Parse("84bb12b2-7165-49c7-909e-1cc877d587b4"), 1, 124, new(1, "p1", "Aster", TeamSide.CounterTerrorists), new(2, "p7", "Cinder", TeamSide.Terrorists), new(3, "p2", "Vale", TeamSide.CounterTerrorists), "m4a1", WeaponKind.Unknown, true, true, false, false, false, false)]
         };
@@ -141,11 +141,32 @@ internal sealed class PreviewFeed(string scenario) : IHudFeed
             Flashed = slot == 3 ? 45 : 0,
             Smoked = slot == 8 ? 1 : 0,
             Burning = slot == 0 ? 25 : 0,
-            Position = new(200 + slot * 180, 300 + slot % 4 * 450, 0),
+            Position = MiragePosition(slot),
             Forward = new(Math.Cos(slot), Math.Sin(slot), 0),
             Stats = new(kills, assists, deaths, slot % 3, kills * 2 + assists),
             RecordedStats = new(12, 1200 + slot * 30, kills, kills / 2, false),
             Weapons = [new("weapon_0", "weapon_" + weapon, WeaponCategory.Rifle, WeaponStatus.Active, null, hp == 0 ? 0 : 23, 30, 60),
                 new("weapon_1", "weapon_knife", WeaponCategory.Knife, WeaponStatus.Holstered, null, null, null, null), new("weapon_2", "weapon_flashbang", WeaponCategory.Grenade, WeaponStatus.Holstered, null, null, null, null)]
         };
+
+    private static Vector3State MiragePosition(int slot)
+    {
+        // Walkable points in the original Mirage overview: B, window, mid,
+        // market, CT approach, A and T approaches. All fixtures use this map.
+        var (x, y) = slot switch
+        {
+            1 => (24.0, 28.0),
+            2 => (40.5, 43.0),
+            3 => (49.0, 42.0),
+            4 => (20.0, 44.0),
+            5 => (33.0, 68.0),
+            6 => (55.0, 77.0),
+            7 => (60.0, 63.0),
+            8 => (55.0, 46.0),
+            9 => (86.0, 55.0),
+            _ => (70.0, 42.0)
+        };
+        const double worldSize = 5.02 * 1024;
+        return new(x / 100 * worldSize - 3240, (1 - y / 100) * worldSize - 3410, -120);
+    }
 }

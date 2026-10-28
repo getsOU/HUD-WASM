@@ -1,0 +1,22 @@
+.hud.scene-live {
+    .round-history {
+        top: 7cqw;
+    }
+    .killfeed {
+        right: 0.8%;
+        top: 8cqw;
+    }
+    .sponsors,
+    .sponsor-rail {
+        left: auto;
+        right: 1.2%;
+        top: 1.25cqw;
+        width: 20cqw;
+        height: 2.2cqw;
+        background: transparent;
+        justify-content: flex-end;
+    }
+    .signature {
+        display: none;
+    }
+}

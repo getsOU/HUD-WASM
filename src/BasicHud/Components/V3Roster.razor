@@ -1,0 +1,26 @@
+<SelectedHudRegion Area="@(Side == TeamSide.CounterTerrorists ? HudArea.CtRoster : HudArea.TRoster)" Resources="Resources">
+    <ChildContent Context="state">
+        @{ var view = HudView.From(state.Context.Snapshot); var team = Side == TeamSide.CounterTerrorists ? view.Ct : view.T; var keys = Keys(state.Graph); }
+        <section class="roster @PlayerPresentation.SideClass(Side)" aria-label="@($"{team.Name} roster")">
+            <div class="roster-heading"><span class="roster-team-name">@team.Name</span></div>
+            @if (keys.Length == 0) { <div class="roster-empty">Waiting for players</div> }
+            @foreach (var key in keys)
+            {
+                <SelectedHudRegion @key="key" Area="HudArea.Player" PlayerKey="@key" Resources="Resources">
+                    <ChildContent Context="player">
+                        @if (player.Player(key) is { } source)
+                        { <LivePlayerCard Player="source" Context="player.Context" /> }
+                    </ChildContent>
+                </SelectedHudRegion>
+            }
+        </section>
+    </ChildContent>
+</SelectedHudRegion>
+@code {
+    [Parameter] public TeamSide Side { get; set; }
+    [Parameter, EditorRequired] public BroadcastContext Resources { get; set; } = BroadcastContext.Empty;
+    private string[] Keys(HudV3Graph? graph) => graph?.Roster is { Players.IsDefault: false } roster
+        ? roster.Players.Where(key => graph.Player(key)?.Identity.Side == Side)
+            .OrderBy(key => graph.Player(key)?.Identity.ObserverSlot is >= 1 and <= 9 ? graph.Player(key)!.Identity.ObserverSlot : graph.Player(key)?.Identity.ObserverSlot == 0 ? 10 : int.MaxValue)
+            .ThenBy(key => key, StringComparer.Ordinal).Take(5).ToArray() : [];
+}

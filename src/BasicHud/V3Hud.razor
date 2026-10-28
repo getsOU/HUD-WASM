@@ -1,0 +1,20 @@
+@implements IDisposable
+@inject SOU.Hud.Sdk.HudSession<HudOptions> Session
+<V3Resources><ChildContent Context="resources"><V3Layout Resources="resources" LowerThirdVisible="lowerThirdVisible" /></ChildContent></V3Resources>
+@code {
+    private IDisposable? reset;
+    private bool lowerThirdVisible, disposed;
+    protected override void OnInitialized()
+    {
+        reset = Session.Observe(state => (state.Ready, state.Game?.SessionId), identity => {
+            if (!disposed) _ = InvokeAsync(() => { if (!disposed) { lowerThirdVisible = false; StateHasChanged(); } });
+        });
+        Session.PanelAction += Action;
+    }
+    private void Action(HudPanelAction action)
+    {
+        if (!disposed && action is { Section: "production", Name: "lowerThird", Value: "show" or "hide" })
+            _ = InvokeAsync(() => { if (!disposed) { lowerThirdVisible = action.Value == "show"; StateHasChanged(); } });
+    }
+    public void Dispose() { disposed = true; reset?.Dispose(); Session.PanelAction -= Action; }
+}

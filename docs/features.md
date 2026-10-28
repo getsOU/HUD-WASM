@@ -1,6 +1,6 @@
 # Feature and source matrix
 
-The HUD consumes public SDK `0.2.0-preview.4` contracts. It renders supplied state; it does not calculate a second game state or collect CS2 payloads itself. Missing numeric values are `—`. Unknown enum values do not become an assumed known state.
+The unreleased source consumes public SDK `0.3.0-preview.2` contracts over HUD API v3, with one SDK-owned session for game, panel, options and manager views. Production areas subscribe independently; player cards ignore pose updates, and only visible timed areas use the shared synchronized clock. The published 0.4.18 package remains API v2. The HUD renders supplied state; it does not calculate a second game state or collect CS2 payloads itself. Missing numeric values are `—`. Unknown enum values do not become an assumed known state.
 
 The current source replaces 81 local weapon, grenade, status and killfeed SVGs with the [OpenHud reference icons](../LICENSES/OPENHUD-ICONS.md), with measured optical sizing. Existing SVGs remain for symbols not supplied by that reference, including flash assist and hostage rescue. The radar uses its existing assets.
 
@@ -35,9 +35,9 @@ The public contracts do not provide a cause-specific nonfatal HE damage event. H
 
 ## Optional metadata and media
 
-The existing browser-session-protected `GET /hud-browser/options` supplements snapshots with a narrow own DTO: `players[steamId]` name/avatar/camera and `match.left/right` ID/name/shortName/logo/Steam IDs. Camera text is never retained or embedded. Names, team identities and scores remain governed by the current managed match and snapshot.
+The v3 session's typed options supplement game data with `players[steamId]` names/avatars and `match.left/right` IDs/Steam IDs. Immutable option records omit camera data. Names, team identities and scores remain governed by the current managed match and snapshot.
 
-The poller uses the package origin, same-origin browser credentials/mode and rejects redirects. It polls every two seconds with a three-second request deadline and a 1MiB body limit. Parsing uses generated JSON metadata for trimming. Both team IDs must match the active managed match; source session/match/team changes clear old metadata and invalidate in-flight results. Optional request/JSON/size failures clear metadata without stopping live or panel subscriptions.
+Options arrive atomically through the SDK-owned v3 session, with source-generated JSON metadata for trimming. Production does not poll `/hud-browser/options` or open a second panel stream. Both team IDs must match the active managed match; source session/match/team changes clear old metadata. A disconnect clears all SDK domains before a new complete baseline. The former bounded v2 metadata poller remains only as a legacy test fixture.
 
 User-provided images must be valid `/cast-media/` paths resolved by the public SDK. Bundled game artwork is loaded from the installed package's local `assets/` directory. No remote cameras, arbitrary image URLs, cloud tokens, CDN fonts, tracking or personal credentials are used. Player portraits use the side/slot agent on failure where available. Failed live team logos are omitted; other presentation images use neutral monograms. An unavailable weapon image retains its text label.
 
@@ -47,8 +47,8 @@ The HUD is GPL-3.0-only from 0.4.0; the public SDK remains MIT. Original Boltobs
 
 ## Lifecycle and presentation limits
 
-One SDK live subscription and one SDK panel subscription serve every scene. Equal panel revisions can refresh public references; older state revisions are ignored. A panel reconnect can restart numbering. Lower-third actions require the expected section/name/value and an unseen action ID; the recent-ID set is bounded. A new source session clears transient production and live presentation state. Radar death positions reset for a new session/map/round/freezetime/timeline; a restarted or backwards HLAE timeline cannot silently supply old movement.
+One SDK-owned v3 session serves every scene, including game state, panel, options and manager views. The SDK validates revisions and complete baselines, handles reconnects and delivers live panel actions after state commit. Lower-third actions require the expected section/name/value; a disconnect or new source session clears transient production state. Independently subscribed regions ignore unrelated dependencies. Radar death positions reset for a new session/map/round/freezetime/timeline; a restarted or backwards HLAE timeline cannot silently supply old movement.
 
-There is no public synchronized demo playback clock. The HUD therefore does not extrapolate GSI countdowns. The planned-start display uses the explicit managed start timestamp and the local UTC clock; it does not assert that the match actually started. An eight-second killfeed lifetime is a presentation duration, not a reconstructed game-time event stream.
+Visible timed regions subscribe to the official synchronized server clock. Round/bomb countdowns use the SDK helper with original source timestamps; paused/stale values remain fixed and missing anchors stay unavailable. The planned-start display uses the explicit managed start timestamp and server time; it does not assert that the match actually started. An eight-second killfeed lifetime is a presentation duration, not a reconstructed game-time event stream.
 
 Successful synthetic/browser tests remain separate from native CS2/OBS capture, long-session performance and complete real-world source coverage.

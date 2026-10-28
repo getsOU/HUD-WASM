@@ -1,0 +1,41 @@
+.loading {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+    color: #ddd;
+    background: #111925;
+    padding: 0.5em 1em;
+    font:
+        14px "Segoe UI",
+        Arial,
+        sans-serif;
+}
+#blazor-error-ui {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #6f241e;
+    color: #fff;
+    padding: 12px;
+    font:
+        14px "Segoe UI",
+        Arial,
+        sans-serif;
+}
+#blazor-error-ui button {
+    float: right;
+    background: transparent;
+    border: 0;
+    color: #fff;
+    font-size: 18px;
+}
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}

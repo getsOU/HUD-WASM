@@ -1,0 +1,18 @@
+<TimedContext Context="Context" Milliseconds="100"><ChildContent Context="timed">
+    <Radar View="@projection.Project(timed with { ResolveAsset = ResolveAsset, ResolveMedia = ResolveMedia })" OverviewFailed="Failed" />
+</ChildContent></TimedContext>
+@code {
+    [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    private readonly RadarProjection projection = new();
+    private readonly HashSet<string> failed = [];
+    private string binding = "";
+    protected override void OnParametersSet()
+    {
+        var next = $"{Context.Snapshot?.SessionId}:{Context.Game?.Map}";
+        if (binding != next) { failed.Clear(); binding = next; }
+    }
+    private string? ResolveAsset(string path) => Check(Context.ResolveAsset(path));
+    private string? ResolveMedia(string? path) => Check(Context.ResolveMedia(path));
+    private string? Check(string? path) => path is null || failed.Contains(path) ? null : path;
+    private void Failed(string image) { if (failed.Count < 16) failed.Add(image); }
+}

@@ -1,0 +1,53 @@
+:root {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #f5f5f7;
+    --utility-height: min(0.833333vw, 1.481481vh);
+    --ct: #79c7ff;
+    --t: #ffb065;
+    --surface: rgb(12 19 28 / 93%);
+    --muted: #aab8c8;
+}
+* {
+    box-sizing: border-box;
+}
+html,
+body,
+#app {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: transparent;
+}
+.viewport {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+}
+.hud {
+    position: relative;
+    width: min(100vw, 177.777778vh);
+    aspect-ratio: 16 / 9;
+    font-size: min(1vw, 1.777778vh);
+    font-variant-numeric: tabular-nums;
+}
+.ct {
+    --side: var(--ct);
+}
+.t {
+    --side: var(--t);
+}
+.neutral {
+    --side: #c9d0d9;
+}
+.muted,
+.coverage {
+    color: var(--muted);
+}
+.eyebrow {
+    font-size: 0.66em;
+    letter-spacing: 0.12em;
+    color: #b2bfce;
+    text-transform: uppercase;
+}

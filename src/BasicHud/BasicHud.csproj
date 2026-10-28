@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-  <PropertyGroup><RuntimeFrameworkVersion>10.0.13</RuntimeFrameworkVersion></PropertyGroup>
+  <PropertyGroup><RuntimeFrameworkVersion>10.0.14</RuntimeFrameworkVersion></PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.13" PrivateAssets="all" />
-    <PackageReference Include="SOU.Hud.Sdk" Version="0.2.0-preview.4" />
-    <PackageReference Include="SOU.Live.Contracts" Version="0.2.0-preview.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.14" PrivateAssets="all" />
+    <PackageReference Include="SOU.Hud.Sdk.Blazor" Version="0.3.0-preview.2" />
+    <PackageReference Include="SOU.Hud.Sdk" Version="0.3.0-preview.2" />
+    <PackageReference Include="SOU.Live.Contracts" Version="0.3.0-preview.2" />
     <ProjectReference Include="../BasicHud.Core/BasicHud.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -14,5 +15,5 @@
     <Content Include="../../LICENSING.md" Link="LICENSING.md" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../../LICENSES/*" Link="LICENSES/%(Filename)%(Extension)" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' != 'Debug'"><Compile Remove="Development/**/*.cs" /><Content Remove="wwwroot/cast-media/**" /></ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' != 'Debug'"><Compile Remove="Development/**/*.cs" /><Content Remove="wwwroot/cast-media/**;Development/**" /></ItemGroup>
 </Project>

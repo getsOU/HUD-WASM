@@ -18,11 +18,19 @@ jobs:
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           global-json-file: global.json
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: '22'
+          cache: npm
       - name: Test, build and validate HUD package
         shell: pwsh
         run: ./scripts/Build.ps1
       - name: Test Creator uploader without credentials or network access
         run: python3 -m unittest discover -s tests/upload -v
+      - name: Test selective v3 rendering in Chromium
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:browser -- artifacts/package
       - name: Verify release guards without publishing
         shell: pwsh
         run: |

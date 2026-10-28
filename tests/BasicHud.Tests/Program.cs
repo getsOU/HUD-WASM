@@ -104,6 +104,7 @@ AgentPortraitTests.Run(Check);
 PortraitEffectTests.Run(Check);
 WeaponPresenceTests.Run(Check);
 RadarMotionAndPicksTests.Run(Check);
+V3RegionTests.Run(Check);
 Console.WriteLine($"{checks} checks passed.");
 
 static async Task Until(Func<bool> ready)

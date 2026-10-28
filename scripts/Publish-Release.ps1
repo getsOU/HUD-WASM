@@ -18,7 +18,7 @@ if ($env:GITHUB_REPOSITORY -cne $expectedRepository -or $env:GITHUB_EVENT_NAME -
     $version -cnotmatch '\A[0-9]+\.[0-9]+\.[0-9]+\z' -or $env:GITHUB_REF -cne "refs/tags/v$version") {
     throw 'Publication requires this repository and an existing version tag matching hud.json.'
 }
-if ($manifest.id -cne $ExpectedId -or $manifest.runtime -cne $expectedRuntime -or $manifest.apiVersion -ne 2) {
+if ($manifest.id -cne $ExpectedId -or $manifest.runtime -cne $expectedRuntime -or $manifest.apiVersion -ne 3) {
     throw 'Unexpected HUD identity, runtime or protocol.'
 }
 
@@ -44,7 +44,7 @@ try {
     $reader = [IO.StreamReader]::new($entry[0].Open())
     try { $packaged = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
     if ($packaged.id -cne $ExpectedId -or $packaged.version -cne $version -or
-        $packaged.runtime -cne $expectedRuntime -or $packaged.apiVersion -ne 2) {
+        $packaged.runtime -cne $expectedRuntime -or $packaged.apiVersion -ne 3) {
         throw 'Packaged manifest does not match the tagged source.'
     }
 }

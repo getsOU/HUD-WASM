@@ -1,0 +1,30 @@
+/* Full presentation and statistics views retain the complete source detail. */
+.presentation {
+    position: absolute;
+    inset: 3% 4% 9%;
+    padding: 1.8em 2.3em;
+    background: rgb(13 20 30 / 96%);
+    border-top: 0.2em solid #e6a263;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #4e6179 transparent;
+}
+.scene-header {
+    margin-bottom: 1.4em;
+}
+.scene-header h1 {
+    margin: 0.35em 0 0;
+    font-size: 2.1em;
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.scene-header > p {
+    max-width: 75%;
+    color: #b4c2d3;
+    font-size: 0.8em;
+    line-height: 1.5;
+    margin: 0.6em 0;
+    overflow-wrap: anywhere;
+}

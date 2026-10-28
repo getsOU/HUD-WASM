@@ -7,7 +7,7 @@
     "ct": "#B6DEF5",
     "t": "#EEE1A0"
   },
-  "apiVersion": 2,
+  "apiVersion": 3,
   "runtime": "blazor-wasm",
   "entryPoint": "index.html",
   "subviews": [

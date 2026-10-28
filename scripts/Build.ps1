@@ -21,7 +21,11 @@ function Invoke-Dotnet([string[]]$Arguments) {
 
 Push-Location $repo
 try {
+    & npm ci --ignore-scripts --no-audit --no-fund
+    if ($LASTEXITCODE -ne 0) { throw 'Style dependency restore failed.' }
     & (Join-Path $PSScriptRoot 'Generate-IconLayout.ps1') -Check
+    & npm run styles:check
+    if ($LASTEXITCODE -ne 0) { throw 'Compiled styles do not match SCSS sources.' }
     Invoke-Dotnet @('restore', 'src/BasicHud/BasicHud.csproj', '--configfile', 'NuGet.Config', '--locked-mode')
     Invoke-Dotnet @('restore', 'tests/BasicHud.Tests/BasicHud.Tests.csproj', '--configfile', 'NuGet.Config', '--locked-mode')
     Invoke-Dotnet @('tool', 'restore', '--configfile', 'NuGet.Config')

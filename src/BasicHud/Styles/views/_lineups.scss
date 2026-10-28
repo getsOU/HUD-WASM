@@ -1,0 +1,102 @@
+.lineup-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2em;
+}
+.lineup-team h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    margin: 0 0 0.7em;
+    font-size: 1.25em;
+}
+.lineup-team .player-card {
+    font-size: 0.8em;
+}
+.lineup-team .portrait {
+    width: 2.8em;
+    height: 2.8em;
+}
+.player-card {
+    position: relative;
+    padding: 0.45em 0.65em 0.65em;
+    margin-top: 0.22em;
+    background: #182536;
+    border-left: 0.2em solid var(--side, #a5b0c0);
+}
+.player-identity,
+.player-vitals,
+.player-round,
+.advanced-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.65em;
+    min-width: 0;
+}
+.player-card .player-name {
+    font-size: 1.05em;
+}
+.player-card .observer-slot {
+    font-size: 0.75em;
+}
+.player-card .money {
+    margin-left: auto;
+    font-size: 0.84em;
+}
+.player-vitals {
+    margin-top: 0.28em;
+    font-size: 0.84em;
+    color: var(--muted);
+}
+.player-vitals b {
+    color: var(--side, #fff);
+    font-size: 1.12em;
+}
+.player-vitals small {
+    font-size: 0.9em;
+}
+.player-vitals .kda {
+    margin-left: auto;
+}
+.inventory {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3em 0.5em;
+    margin-top: 0.35em;
+    font-size: 0.8em;
+}
+.weapon-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    color: #9cabbd;
+    padding: 0.2em 0.4em;
+    background: #202f41;
+}
+.weapon-item.active {
+    color: #edf2f8;
+    background: #34475e;
+}
+.weapon-item small {
+    font-size: 0.95em;
+}
+.player-round {
+    justify-content: space-between;
+    margin-top: 0.35em;
+    font-size: 0.8em;
+    color: #a9b4c3;
+}
+.player-conditions {
+    font-size: 0.76em;
+    margin-top: 0.3em;
+    color: #f6c08d;
+}
+.advanced-stats {
+    margin-top: 0.6em;
+    font-size: 0.72em;
+    justify-content: space-between;
+}
+.coverage {
+    margin: 0.5em 0 0;
+    font-size: 0.63em;
+}

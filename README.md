@@ -5,7 +5,9 @@ Only the `SOU_CREATOR_API_KEY` repository secret is needed. Future published tag
 upload automatically; the manual **Upload release to sOU** workflow also accepts
 existing release tags without rebuilding their immutable packages. Uploads await sOU review.
 
-A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk** and **SOU.Live.Contracts** NuGet packages `0.2.0-preview.4`; no private application source is required.
+A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk**, **SOU.Hud.Sdk.Blazor** and **SOU.Live.Contracts** NuGet packages `0.3.0-preview.2`; no private application source is required.
+
+The working source now targets **HUD API v3** and requires sOU desktop **0.3.34 or newer**. This migration is unreleased; the existing 0.4.18 release remains API v2. A new manifest version is required before publishing the migrated package.
 
 The current source imports 81 weapon, grenade, status and killfeed SVGs from [JohnTimmermann/OpenHud-React-Hud](https://github.com/JohnTimmermann/OpenHud-React-Hud/tree/b2c1cedc4f03e0a1df86c9be6f9794ce0a7f8cc0). Dedicated skull and burning symbols replace the previous status art. Symbols absent from that reference retain their existing local assets; radar artwork is unchanged. Artwork remains unchanged, with newly measured optical sizing; Flashbang adds a missing SVG namespace for standalone browser loading. See [source and license details](LICENSES/OPENHUD-ICONS.md). These changes ship in 0.4.11; previous release packages remain unchanged.
 
@@ -51,13 +53,13 @@ The 1920×1080 live composition reserves the central game area (x360–1560, y16
 
 ## Build, test and package
 
-Install **.NET SDK 10.0.402** and **PowerShell 7**. The application targets .NET/ASP.NET Core **10.0.13**. `NuGet.Config` permits only nuget.org; SDK/package/tool versions and dependency hashes are committed in `global.json`, lock files and the local tool manifest. No private feed or credentials are required.
+Install **.NET SDK 10.0.403**, **Node.js 22+** and **PowerShell 7**. The application targets .NET/ASP.NET Core **10.0.14**. `NuGet.Config` permits only nuget.org; SDK/package/tool versions and dependency hashes are committed in `global.json`, NuGet lock files, `package-lock.json` and the local tool manifest. No private feed or credentials are required.
 
 ```powershell
 pwsh ./scripts/Build.ps1
 ```
 
-The script performs locked restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
+The script restores pinned Sass dependencies, checks the compiled stylesheet against its SCSS sources, performs locked NuGet restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata/region-selection tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
 artifacts/sou-basic-wasm-0.4.18.souhud
@@ -92,12 +94,47 @@ Preview activation requires **Debug compilation**, **loopback hostname** and an 
 
 ## Code structure
 
+Production uses one SDK-owned v3 session through `AddSouHud` and `SouHudHost`. `SelectedHudRegion` subscribes to explicit dependencies with the SDK's `Observe` API. Radar positions, individual player cards, the observer, score/header, round history, map series, killfeed, sponsors and production controls have separate selections. A pose update does not invalidate player cards or the scoreboard; ammunition updates affect its card and, when relevant, the observer. Roster children are keyed by the actual opaque SDK roster keys.
+
+The existing Razor components use a compatibility snapshot only after their area's selection changes. Selection comparison itself does not materialize a full snapshot. This retains the established design; it is not a claim that every component has been rewritten against raw v3 player parts. Presentation views select statistics and references while ignoring pose/provider-timestamp changes. Only visible timed areas subscribe to the SDK's shared synchronized clock; production has no global 50 ms rerender loop. The older synthetic feed/session lives only on the explicit Debug preview path.
+
+Styles are authored in `src/BasicHud/Styles/`: `base/`, `components/`, `live/`, `views/`, shared `_tokens.scss`, and generated icon geometry in `generated/`. The ordered `hud.scss` entry preserves the existing cascade and compiles into one browser stylesheet, `wwwroot/hud.css`. Do not edit that generated file directly.
+
+```powershell
+npm ci --ignore-scripts
+npm run styles:build
+npm run styles:watch
+npm run styles:format
+```
+
+After changing icon measurements, run `./scripts/Generate-IconLayout.ps1` followed by `npm run styles:build`. `npm run styles:check` is part of the normal build and CI.
+
+To exercise the production v3 runtime with synthetic data, publish first and use the official SDK host:
+
+```powershell
+dotnet publish src/BasicHud -c Release -o artifacts/v3-preview/package
+dotnet tool run sou-hud -- dev artifacts/v3-preview/package
+```
+
+The SDK preview provides panel, actions, options, declared views and reconnect controls on an isolated loopback port. It requires neither CS2 nor a running sOU instance and does not modify installed HUDs.
+
+Browser regressions use the same official simulator and controlled fixtures:
+
+```powershell
+npx playwright install chromium
+npm run test:browser -- artifacts/v3-preview/package
+```
+
+These checks cover isolated pose/ammunition/health updates, typed options, panel visibility, all declared views, actions, reconnect clearing, and a single v3 connection without options polling. CI runs them against the published Release output.
+
 ```text
 src/BasicHud.Core/        snapshot/panel presentation, scene selection, metadata binding,
                           complete totals, radar projection and event identity
 src/BasicHud/Components/  reusable scoreboard/player/inventory/radar/series/branding layers
 src/BasicHud/Views/       seven presentation scenes; main live composition is in App.razor
-src/BasicHud/MetadataPoller.cs narrow source-generated optional local metadata reader
+src/BasicHud/HudOptions.cs immutable, source-generated v3 profile/display options
+src/BasicHud/V3*.razor    production session resources and selected view composition
+src/BasicHud/Styles/      ordered SCSS modules and generated icon geometry
 src/BasicHud/RadarCatalogLoader.cs bounded generated local Bolt/Valve catalog readers
 src/BasicHud/Development/ Debug-only synthetic feeds
 src/BasicHud/wwwroot/     local CSS, installed entry point, common panel schema
@@ -177,7 +214,7 @@ The live scene follows the user-supplied broadcast reference: a narrow central b
 
 The centered observed-player card uses an optional existing portrait, active weapon, ammo and a bottom name/HP strip. No webcam, camera feed, event/club branding, video frames or portraits from the private reference are shipped. Dynamic media still comes from the workspace. Missing media keeps fixed empty areas; unknown game values remain unknown. Other presentation scenes, source selection, radar interpolation, roster weapon priority and chronological killfeed are unchanged.
 
-The layout is in broadcast-layout.css and scoped to the live scene. This layout ships in 0.4.10; existing v0.4.9 release assets are unchanged.
+The live layout is now maintained in `Styles/live/` and scoped to the live scene. The original geometry shipped in 0.4.10; existing release assets are unchanged.
 
 
 #### Player-card structure correction (0.4.10)

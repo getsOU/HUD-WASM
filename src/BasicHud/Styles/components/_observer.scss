@@ -1,0 +1,87 @@
+.observed {
+    position: absolute;
+    left: 36.458333%;
+    top: 87.962963%;
+    width: 27.083333%;
+    height: 7.592593%;
+    padding: 0.35em 0.6em;
+    background: var(--surface);
+    border-left: 0.18em solid var(--side);
+    overflow: hidden;
+}
+.observed-identity,
+.observed-loadout {
+    display: grid;
+    align-items: center;
+    min-width: 0;
+    gap: 0.2em;
+    height: 1.7em;
+}
+.observed-identity {
+    grid-template-columns: 1em 1.5em minmax(0, 1fr) 6.4em;
+}
+.observed-identity .observer-slot {
+    font-size: 0.65em;
+}
+.observed-identity .portrait {
+    width: 1.5em;
+    height: 1.5em;
+}
+.observed-identity .player-name {
+    font-size: 1em;
+}
+.observed-vitals {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8em;
+    color: var(--side);
+    font-size: 0.8em;
+}
+.observed-health,
+.observed-armor {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2em;
+}
+.observed-vitals > span > span:last-child {
+    text-align: right;
+}
+.observed-loadout {
+    grid-template-columns: 3.333333em 6em minmax(0, 1fr);
+}
+.observed-weapon {
+    --icon-height: 1em;
+    --icon-max-width: 3em;
+}
+.ammo-cell {
+    display: flex;
+    align-items: end;
+    gap: 0.4em;
+    height: 100%;
+    min-width: 0;
+}
+.ammo {
+    display: inline-flex;
+    gap: 0.18em;
+    align-items: baseline;
+    font-size: 0.9em;
+    white-space: nowrap;
+    text-align: right;
+}
+.ammo > span {
+    min-width: 0;
+    overflow: hidden;
+}
+.ammo > small {
+    text-align: center;
+    font-size: 0.7em;
+}
+.observed-loadout .utility-icons,
+.observed-loadout .player-equipment {
+    font-size: 0.75em;
+}
+.reload {
+    display: inline-block;
+    font-size: 0.55em;
+    color: #ffd5a3;
+}

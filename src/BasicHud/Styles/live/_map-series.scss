@@ -1,0 +1,42 @@
+.hud.scene-live {
+    .live-map-series {
+        left: 0.8cqw;
+        top: 1.25cqw;
+        width: 22cqw;
+        height: 1.7cqw;
+        gap: 0.08cqw;
+    }
+    .live-map-series article {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-content: center;
+        align-items: center;
+        justify-content: center;
+        gap: 0 0.25cqw;
+        padding: 0.08cqw 0.15cqw;
+        background: #071c50ed;
+        border: 0;
+        border-bottom: 0.1cqw solid transparent;
+    }
+    .live-map-series article[aria-current="step"] {
+        background: #102d64f5;
+        border-bottom-color: var(--side, #eee1a0);
+        color: #fff;
+    }
+    .live-map-series strong {
+        padding: 0;
+        font-size: 0.65cqw;
+        text-transform: uppercase;
+    }
+    .live-map-series .map-pick {
+        display: block;
+        width: 100%;
+        font-size: 0.5cqw;
+        line-height: 1.1;
+        color: #d6deec;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

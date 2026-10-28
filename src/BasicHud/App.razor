@@ -1,154 +1,33 @@
-@implements IAsyncDisposable
-@inject HttpClient Http
 @inject NavigationManager Navigation
-@{
-    var context = Context;
-    var scene = SceneSelection.Resolve(Navigation.ToBaseRelativePath(Navigation.Uri), Options.Scene);
+@if (preview is not null)
+{
+    @Preview()
 }
-<main class="viewport">
-    <div class="hud scene-@scene @(session?.LowerThirdVisible == true ? "has-lower-third" : "")" aria-label="sOU Default HUD">
-        @if (scene == "live")
-        {
-            <Scoreboard View="View" Caption="@Options.Caption" Context="context" ShowSeries="Options.ShowSeries" />
-            @if (Options.ShowRoundHistory) { <RoundHistory Context="context" /> }
-            @if (Options.ShowRadar) { <Radar View="@RadarView(context)" OverviewFailed="OverviewFailed" /> }
-            @if (Options.ShowSeries) { <LiveMapSeries Context="context" /> }
-            @if (Options.ShowKillfeed) { <Killfeed Entries="@(killfeedProjection.Project(context.Snapshot, now))" /> }
-            @if (Options.ShowRosters) { <Roster Side="View.Ct" Context="context" /><Roster Side="View.T" Context="context" /> }
-            @if (Options.ShowObservedPlayer && context.Game?.ObservedPlayer is { } observed) { <ObservedPlayer Player="observed" Context="context" ShowSponsors="Options.ShowSponsors" /> }
-            @if (LiveProjection.RoundMessage(context.Game) is { Length: > 0 } message) { <div class="round-message">@message</div> }
-            @if (!View.HasGame) { <div class="waiting"><p>@(openError ?? "Waiting for game data")</p></div> }
-        }
-        else
-        {
-            @switch (scene)
-            {
-                case "prematch": <PrematchView Context="context" /> break;
-                case "lineups": <LineupsView Context="context" /> break;
-                case "veto": <VetoView Context="context" /> break;
-                case "break": <BreakView Context="context" /> break;
-                case "postmatch": <PostmatchView Context="context" /> break;
-                case "statistics": <StatisticsView Context="context" /> break;
-                case "spotlight": <SpotlightView Context="context" /> break;
-            }
-        }
-        @if (Options.ShowSponsors && !(scene == "live" && Options.ShowObservedPlayer && context.Game?.ObservedPlayer is not null)) { <Sponsors Context="context" /> }
-        <ProductionLayer Context="context" LowerThirdVisible="@(session?.LowerThirdVisible ?? false)" />
-    </div>
-</main>
-
+else if (installed)
+{
+    <SouHudHost TOptions="HudOptions"><V3Hud /></SouHudHost>
+}
+else
+{
+    <div class="waiting" role="alert">Open this HUD from an installed sOU package or the SDK development host.</div>
+}
 @code {
-    private readonly CancellationTokenSource stop = new();
-    private readonly RadarProjection radarProjection = new();
-    private readonly KillFeedProjection killfeedProjection = new();
-    private readonly HashSet<string> failedOverviews = [];
-    private readonly Queue<string> failedOverviewOrder = [];
-    private string radarBinding = "";
-    private HudSession? session;
-    private BrowserHudFeed? browserFeed;
-    private Task metadataWork = Task.CompletedTask, clockWork = Task.CompletedTask, radarCatalogWork = Task.CompletedTask;
-    private RadarCatalog radarCatalog = RadarCatalog.Empty;
-    private BoltRadarCatalog boltRadarCatalog = BoltRadarCatalog.Empty;
-    private MetadataCatalog metadata = MetadataCatalog.Empty;
-    private string metadataBinding = "";
-    private DateTimeOffset now = DateTimeOffset.UtcNow;
-#if DEBUG
-    private bool isPreview = false;
-#endif
-    private bool disposed;
-    private string? openError;
-    private HudView View => session?.View ?? HudView.Empty;
-    private DisplayOptions Options => session?.Options ?? DisplayOptions.Default;
-    private BroadcastContext Context => new(session?.Snapshot, session?.Panel, metadata, now, ResolveMedia) { RadarCatalog = radarCatalog, BoltRadarCatalog = boltRadarCatalog, ResolveAsset = ResolveAsset };
-    private string? ResolveAsset(string path)
-    {
-        var asset = new Uri(new Uri(Navigation.BaseUri), path).AbsoluteUri;
-        return failedOverviews.Contains(asset) ? null : asset;
-    }
-    private RadarView RadarView(BroadcastContext context) => radarProjection.Project(context with { ResolveMedia = path => {
-        var image = context.ResolveMedia(path); return image is not null && failedOverviews.Contains(image) ? null : image;
-    } });
-    private void OverviewFailed(string image)
-    {
-        if (failedOverviews.Add(image)) { failedOverviewOrder.Enqueue(image); if (failedOverviewOrder.Count > 16) failedOverviews.Remove(failedOverviewOrder.Dequeue()); }
-    }
-    private string? ResolveMedia(string? path)
-    {
-        if (browserFeed is not null) return browserFeed.Media(path);
-#if DEBUG
-        if (isPreview && path == "/cast-media/preview.svg") return new Uri(new Uri(Navigation.Uri), path).AbsoluteUri;
-#endif
-        return null;
-    }
-
+    private IHudFeed? preview = null;
+    private bool installed;
     protected override void OnInitialized()
     {
         var address = new Uri(Navigation.Uri);
-        radarCatalogWork = LoadRadarCatalogAsync();
-        IHudFeed? feed = null;
 #if DEBUG
-        feed = Development.PreviewFeed.TryCreate(address);
-        isPreview = feed is not null;
+        preview = Development.PreviewFeed.TryCreate(address);
 #endif
-        if (feed is null)
-        {
-            try { browserFeed = new BrowserHudFeed(Http, address); feed = browserFeed; }
-            catch (ArgumentException) { openError = "Open this HUD from an installed sOU package."; return; }
-        }
-        session = new HudSession(feed);
-        session.Changed += Refresh;
-        session.Start();
+        try { _ = SOU.Hud.Sdk.HudIdentity.FromUri(address); installed = true; }
+        catch (ArgumentException) { installed = false; }
+    }
+    private RenderFragment Preview() => builder => {
 #if DEBUG
-        if (isPreview) metadata = MetadataCatalog.Bind(Development.PreviewFeed.Metadata(includePortraits: !address.Query.TrimStart('?').Split('&').Contains("portraits=missing", StringComparer.Ordinal)), session.Snapshot?.ManagedMatch);
+        builder.OpenComponent<Development.PreviewHud>(0);
+        builder.AddAttribute(1, "Feed", preview);
+        builder.CloseComponent();
 #endif
-        if (browserFeed is not null) metadataWork = new MetadataPoller(Http, address).RunAsync(() => session?.Snapshot, UpdateMetadata, stop.Token);
-        clockWork = RunClockAsync();
-    }
-    private async Task LoadRadarCatalogAsync()
-    {
-        var valve = RadarCatalogLoader.LoadAsync(Http, new Uri(Navigation.BaseUri), stop.Token);
-        var bolt = RadarCatalogLoader.LoadBoltAsync(Http, new Uri(Navigation.BaseUri), stop.Token);
-        await Task.WhenAll(valve, bolt);
-        var loadedValve = await valve;
-        var loadedBolt = await bolt;
-        if (!disposed) await InvokeAsync(() => { if (!disposed) { radarCatalog = loadedValve; boltRadarCatalog = loadedBolt; StateHasChanged(); } });
-    }
-
-    private void Refresh()
-    {
-        if (disposed) return;
-        var match = session?.Snapshot?.ManagedMatch ?? session?.Snapshot?.Game?.ManagedMatch;
-        var binding = $"{session?.Snapshot?.SessionId}:{match?.Id}:{match?.TeamA.Id}:{match?.TeamB.Id}";
-        if (binding != metadataBinding) { metadata = MetadataCatalog.Empty; metadataBinding = binding; }
-        var nextRadarBinding = $"{session?.Snapshot?.SessionId}:{session?.Snapshot?.Game?.Map}";
-        if (nextRadarBinding != radarBinding) { failedOverviews.Clear(); failedOverviewOrder.Clear(); radarBinding = nextRadarBinding; }
-        _ = InvokeAsync(() => { now = DateTimeOffset.UtcNow; StateHasChanged(); });
-    }
-    private void UpdateMetadata(MetadataCatalog next, Guid? expectedSession)
-    {
-        if (!disposed) _ = InvokeAsync(() => {
-            if (disposed || expectedSession != session?.Snapshot?.SessionId) return;
-            var match = session?.Snapshot?.ManagedMatch ?? session?.Snapshot?.Game?.ManagedMatch;
-            metadata = next.Matches(match) ? next : MetadataCatalog.Empty;
-            StateHasChanged();
-        });
-    }
-    private async Task RunClockAsync()
-    {
-        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(50));
-        try {
-            while (await timer.WaitForNextTickAsync(stop.Token))
-                await InvokeAsync(() => { if (!disposed) { now = DateTimeOffset.UtcNow; StateHasChanged(); } });
-        } catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
-    }
-    public async ValueTask DisposeAsync()
-    {
-        if (disposed) return;
-        disposed = true;
-        await stop.CancelAsync();
-        if (session is not null) { session.Changed -= Refresh; await session.DisposeAsync(); }
-        await Task.WhenAll(metadataWork, clockWork, radarCatalogWork);
-        browserFeed?.Dispose();
-        stop.Dispose();
-    }
+    };
 }

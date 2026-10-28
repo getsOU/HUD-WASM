@@ -1,0 +1,50 @@
+@inject NavigationManager Navigation
+<SelectedHudRegion Area="HudArea.Shell" Resources="Resources" LowerThirdVisible="LowerThirdVisible"><ChildContent Context="shell">
+    @{ var options = shell.Options; var scene = SceneSelection.Resolve(Navigation.ToBaseRelativePath(Navigation.Uri), options.Scene); }
+    <main class="viewport"><div class="hud scene-@scene @(LowerThirdVisible ? "has-lower-third" : "")" aria-label="sOU Default HUD">
+    @if (scene == "live")
+    {
+        <SelectedHudRegion Area="HudArea.Scoreboard" Resources="Resources"><ChildContent Context="state">
+            <TimedContext Context="state.Context"><ChildContent Context="timed">
+                <Scoreboard View="@HudClockPresentation.View(timed)" Caption="@state.Options.Caption" Context="timed" ShowSeries="state.Options.ShowSeries" />
+            </ChildContent></TimedContext>
+        </ChildContent></SelectedHudRegion>
+        @if (options.ShowRoundHistory) { <SelectedHudRegion Area="HudArea.History" Resources="Resources"><ChildContent Context="state"><RoundHistory Context="state.Context" /></ChildContent></SelectedHudRegion> }
+        @if (options.ShowRadar) { <SelectedHudRegion Area="HudArea.Radar" Resources="Resources"><ChildContent Context="state"><V3Radar Context="state.Context" /></ChildContent></SelectedHudRegion> }
+        @if (options.ShowSeries) { <SelectedHudRegion Area="HudArea.Series" Resources="Resources"><ChildContent Context="state"><LiveMapSeries Context="state.Context" /></ChildContent></SelectedHudRegion> }
+        @if (options.ShowKillfeed) { <SelectedHudRegion Area="HudArea.Killfeed" Resources="Resources"><ChildContent Context="state"><V3Killfeed Context="state.Context" /></ChildContent></SelectedHudRegion> }
+        @if (options.ShowRosters) { <V3Roster Side="TeamSide.CounterTerrorists" Resources="Resources" /><V3Roster Side="TeamSide.Terrorists" Resources="Resources" /> }
+        @if (options.ShowObservedPlayer) { <SelectedHudRegion Area="HudArea.Observed" Resources="Resources"><ChildContent Context="state">
+            @if (state.Context.Game?.ObservedPlayer is { } player) { <ObservedPlayer Player="player" Context="state.Context" ShowSponsors="state.Options.ShowSponsors" /> }
+        </ChildContent></SelectedHudRegion> }
+        <SelectedHudRegion Area="HudArea.Message" Resources="Resources"><ChildContent Context="state">
+            @if (LiveProjection.RoundMessage(state.Context.Game) is { Length: > 0 } message) { <div class="round-message">@message</div> }
+            @if (state.Context.Game is null) { <div class="waiting"><p>Waiting for game data</p></div> }
+        </ChildContent></SelectedHudRegion>
+    }
+    else
+    {
+        <SelectedHudRegion Area="HudArea.Presentation" Resources="Resources"><ChildContent Context="state">
+            @switch (scene)
+            {
+                case "prematch": <TimedContext Context="state.Context" Milliseconds="250"><ChildContent Context="timed"><PrematchView Context="timed" /></ChildContent></TimedContext> break;
+                case "lineups": <LineupsView Context="state.Context" /> break;
+                case "veto": <VetoView Context="state.Context" /> break;
+                case "break": <TimedContext Context="state.Context" Milliseconds="250"><ChildContent Context="timed"><BreakView Context="timed" /></ChildContent></TimedContext> break;
+                case "postmatch": <PostmatchView Context="state.Context" /> break;
+                case "statistics": <StatisticsView Context="state.Context" /> break;
+                case "spotlight": <SpotlightView Context="state.Context" /> break;
+            }
+        </ChildContent></SelectedHudRegion>
+    }
+    @if (options.ShowSponsors && !(scene == "live" && options.ShowObservedPlayer && shell.Graph?.ObservedPlayer is not null))
+    { <SelectedHudRegion Area="HudArea.Sponsors" Resources="Resources"><ChildContent Context="state"><Sponsors Context="state.Context" /></ChildContent></SelectedHudRegion> }
+    <SelectedHudRegion Area="HudArea.Production" Resources="Resources" LowerThirdVisible="LowerThirdVisible"><ChildContent Context="state">
+        <ProductionLayer Context="state.Context" LowerThirdVisible="LowerThirdVisible" />
+    </ChildContent></SelectedHudRegion>
+    </div></main>
+</ChildContent></SelectedHudRegion>
+@code {
+    [Parameter, EditorRequired] public BroadcastContext Resources { get; set; } = BroadcastContext.Empty;
+    [Parameter] public bool LowerThirdVisible { get; set; }
+}

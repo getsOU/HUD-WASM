@@ -1,0 +1,290 @@
+.hud.scene-live {
+    .roster {
+        top: auto;
+        bottom: 0.8cqw;
+        width: 16.666667%;
+        height: auto;
+        overflow: visible;
+    }
+    .roster.ct {
+        left: 0.8cqw;
+    }
+    .roster.t {
+        left: auto;
+        right: 0.8cqw;
+    }
+    .roster-heading {
+        position: absolute;
+        top: -2.325cqw;
+        left: 0;
+        right: 0;
+        height: 1.7cqw;
+        padding: 0;
+        display: flex;
+        align-items: stretch;
+        justify-content: flex-start;
+        background: none;
+        border: 0;
+    }
+    .roster-heading .roster-team-name {
+        position: static;
+        display: flex;
+        align-items: center;
+        width: auto;
+        max-width: 100%;
+        min-width: 0;
+        padding: 0.15cqw 0.45cqw;
+        color: #102137;
+        background: var(--side);
+        font:
+            700 1cqw/1.15 "Bahnschrift Condensed",
+            "Arial Narrow",
+            sans-serif;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .roster.t .roster-heading {
+        justify-content: flex-end;
+    }
+    .roster .live-player {
+        isolation: isolate;
+        position: relative;
+        display: grid;
+        grid-template-columns: 0.65cqw 4.35cqw 3.75cqw minmax(0, 1fr);
+        grid-template-areas: "slot identity portrait loadout";
+        gap: 0;
+        height: 3.9cqw;
+        padding: 0;
+        background: var(--card-fill);
+        border: 0;
+        outline: none;
+        box-shadow: none;
+        overflow: hidden;
+    }
+    .roster .live-player + .live-player {
+        margin-top: 0.625cqw;
+    }
+    .roster .card-slot {
+        grid-area: slot;
+        align-items: start;
+        align-self: stretch;
+        margin: 0;
+        height: 100%;
+        padding-top: 0.2cqw;
+        font-size: 0.9cqw;
+        font-weight: 800;
+        background: var(--side);
+        color: #17283b;
+    }
+    .roster .card-identity {
+        grid-area: identity;
+        display: grid;
+        grid-template-rows: 1.1cqw 1.1cqw 1.1cqw;
+        align-content: center;
+        min-width: 0;
+        padding-inline: 0.35cqw 0;
+        font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+    }
+    .roster .player-name {
+        font-family: inherit;
+        font-size: 1cqw;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    .roster .card-stats {
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 0.4cqw;
+        font-size: 0.82cqw;
+        color: var(--side);
+    }
+    .roster .card-stats > span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.17cqw;
+    }
+    .roster .card-stats .status-icon {
+        --icon-height: 0.78cqw;
+        --icon-max-width: 1cqw;
+    }
+    .roster .card-money {
+        font-size: 0.95cqw;
+        color: #d4edb2;
+    }
+    .roster .card-portrait {
+        grid-area: portrait;
+        min-width: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+    .roster .card-portrait .roster-portrait {
+        width: 100%;
+        height: 100%;
+        max-height: 3.9cqw;
+        --avatar-fit: cover;
+        --avatar-position: center bottom;
+        object-fit: cover;
+        object-position: center bottom;
+    }
+    .roster .card-loadout {
+        grid-area: loadout;
+        position: relative;
+        isolation: isolate;
+        margin: 0;
+        height: 100%;
+        padding: 0.25cqw 0.25cqw 0.3cqw 0.12cqw;
+        display: grid;
+        grid-template-rows: minmax(0, 1fr) 1.15cqw;
+        row-gap: 0.25cqw;
+        align-content: stretch;
+        background: var(--card-empty);
+    }
+    .roster .card-armament,
+    .roster .card-equipment {
+        position: relative;
+        z-index: 1;
+    }
+    .roster .card-armament {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) max-content;
+        gap: 0.2cqw;
+        align-items: start;
+    }
+    .roster .card-armament .weapon-cell {
+        height: 1.6cqw;
+    }
+    .roster .card-armament .roster-weapon {
+        --icon-height: 1.6cqw;
+        --icon-max-width: 4.7cqw;
+    }
+    .roster .card-health {
+        min-inline-size: 3ch;
+        font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+        font-size: 1.9cqw;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1;
+        letter-spacing: -0.03em;
+    }
+    .roster .card-equipment {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+        height: 1.15cqw;
+        gap: 0.4cqw;
+    }
+    .roster .card-equipment .utility-icons {
+        --utility-height: 1cqw;
+        justify-self: start;
+    }
+    .roster .card-status {
+        display: inline-flex;
+        align-items: end;
+        gap: 0.25cqw;
+        font-size: 0.85cqw;
+        justify-self: end;
+    }
+    .roster .card-status .status-icon {
+        --icon-height: 0.95cqw;
+        --icon-max-width: 1.45cqw;
+    }
+    .roster .card-status .equipment-badges {
+        gap: 0.25cqw;
+    }
+    .roster .card-loadout > .health-track {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        z-index: 0;
+        border: 0;
+        pointer-events: none;
+        background: var(--card-empty);
+    }
+    .roster .card-loadout > .health-track span {
+        height: 100%;
+        margin: 0;
+        background: var(--card-fill);
+    }
+    .roster .live-player.is-observed {
+        z-index: 1;
+        background: var(--card-fill);
+        outline: 0.08cqw solid #fff;
+        outline-offset: 0;
+        box-shadow:
+            0 0.12cqw 0.35cqw #0009,
+            0 0 0.18cqw #fff6;
+    }
+    .roster .live-player.is-dead {
+        width: 11.7cqw;
+        grid-template-columns: 0.65cqw 4.35cqw 3.75cqw minmax(0, 1fr);
+        grid-template-areas: "slot identity portrait death";
+        background: #454545b8;
+        filter: grayscale(1);
+        opacity: 0.8;
+    }
+    .roster .live-player.is-dead .card-money {
+        color: #ddd;
+    }
+    .roster .card-death {
+        grid-area: death;
+        display: grid;
+        place-items: center;
+        min-width: 0;
+        overflow: hidden;
+    }
+    .roster .card-death .status-icon {
+        --icon-height: 3.8cqw;
+        --icon-max-width: 3.3cqw;
+        opacity: 0.35;
+    }
+    .roster.t .live-player {
+        padding: 0;
+        border: 0;
+        grid-template-columns: minmax(0, 1fr) 3.75cqw 4.35cqw 0.65cqw;
+        grid-template-areas: "loadout portrait identity slot";
+    }
+    .roster.t .card-identity {
+        padding-inline: 0 0.35cqw;
+    }
+    .roster.t .card-loadout {
+        margin: 0;
+        padding-inline: 0.25cqw 0.12cqw;
+    }
+    .roster.t .card-armament {
+        grid-template-columns: max-content minmax(0, 1fr);
+    }
+    .roster.t .card-stats {
+        justify-content: end;
+        flex-direction: row;
+    }
+    .roster.t .card-stats > span {
+        flex-direction: row-reverse;
+    }
+    .roster.t .card-equipment {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+    .roster.t .card-equipment .utility-icons {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+    }
+    .roster.t .card-status {
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: start;
+    }
+    /* Align the T fill directly: mirroring the layer creates a dark subpixel seam. */
+    .roster.t .card-loadout > .health-track span {
+        margin-inline-start: auto;
+    }
+    .roster.t .live-player.is-dead {
+        margin-inline-start: auto;
+        grid-template-columns: minmax(0, 1fr) 3.75cqw 4.35cqw 0.65cqw;
+        grid-template-areas: "death portrait identity slot";
+    }
+}

@@ -1,0 +1,64 @@
+/* Operator-controlled production layers; only the explicit action crosses the live game area. */
+.replay-label {
+    position: absolute;
+    top: 30%;
+    left: 1.25%;
+    max-width: 15%;
+    padding: 0.4em 0.6em;
+    background: #693429;
+    font-size: 0.65em;
+    overflow-wrap: anywhere;
+}
+.replay-label small {
+    display: inline;
+    margin-right: 0.5em;
+    font-size: 0.7em;
+    color: #e5b9ac;
+}
+.ticker {
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    width: 50%;
+    height: 1.2em;
+    padding: 0.1em 1em;
+    color: #c1ccda;
+    background: #162130;
+    font-size: 0.55em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.lower-third {
+    position: absolute;
+    left: 30%;
+    bottom: 28%;
+    width: 40%;
+    padding: 1.2em 1.7em;
+    border-left: 0.25em solid #efaf70;
+    background: rgb(14 23 35 / 97%);
+}
+.lower-third strong,
+.lower-third span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.lower-third strong {
+    font-size: 1.5em;
+}
+.lower-third span {
+    margin-top: 0.5em;
+    color: #aebfd4;
+    font-size: 0.85em;
+}
+.has-lower-third:not(.scene-live) .presentation {
+    bottom: 24%;
+}
+.hud:not(.scene-live) .lower-third {
+    left: 5%;
+    bottom: 8%;
+    width: 90%;
+    font-size: 0.8em;
+}

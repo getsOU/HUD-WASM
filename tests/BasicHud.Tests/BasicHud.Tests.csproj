@@ -2,6 +2,10 @@
   <PropertyGroup><OutputType>Exe</OutputType><RootNamespace>BasicHud</RootNamespace></PropertyGroup>
   <ItemGroup><ProjectReference Include="../../src/BasicHud.Core/BasicHud.Core.csproj" /></ItemGroup>
   <ItemGroup>
+    <Compile Include="../../src/BasicHud/HudOptions.cs" Link="HudOptions.cs" />
+    <Compile Include="../../src/BasicHud/HudRegionSelection.cs" Link="HudRegionSelection.cs" />
+    <Compile Include="../../src/BasicHud/HudClockPresentation.cs" Link="HudClockPresentation.cs" />
+    <PackageReference Include="SOU.Hud.Sdk.Blazor" Version="0.3.0-preview.2" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <RazorComponent Include="../../src/BasicHud/_Imports.razor" Link="_Imports.razor" />
     <RazorComponent Include="../../src/BasicHud/Components/*.razor" Link="Components/%(Filename)%(Extension)" />
@@ -10,9 +14,9 @@
   <ItemGroup><None Include="../../src/BasicHud/wwwroot/panel.json" Link="panel.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
   <ItemGroup>
     <None Include="../../src/BasicHud/hud.json" Link="hud.json" CopyToOutputDirectory="PreserveNewest" />
-    <Compile Include="../../src/BasicHud/MetadataPoller.cs" Link="MetadataPoller.cs" />
+    <Compile Include="../../src/BasicHud/Development/MetadataPoller.cs" Link="MetadataPoller.cs" />
     <Compile Include="../../src/BasicHud/RadarCatalogLoader.cs" Link="RadarCatalogLoader.cs" />
     <None Include="../../src/BasicHud/wwwroot/assets/radar/catalog.json" Link="radar-catalog.json" CopyToOutputDirectory="PreserveNewest" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.14" />
   </ItemGroup>
 </Project>

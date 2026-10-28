@@ -1,0 +1,42 @@
+.competition-name {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    line-height: 1.35;
+    max-height: 2.7em;
+    overflow-wrap: anywhere;
+}
+.sponsors {
+    position: absolute;
+    left: 1.6%;
+    bottom: 3.3%;
+    width: 25%;
+    height: 3.4%;
+    display: flex;
+    gap: 0.6em;
+    background: rgb(14 20 29 / 82%);
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0.3em;
+}
+.sponsor-image {
+    max-width: 5em;
+    min-width: 0;
+    max-height: 100%;
+    object-fit: contain;
+    font-size: 0.6em;
+}
+.scene-live > .sponsors {
+    left: 42.5%;
+    top: 96.296296%;
+    width: 15%;
+    height: 2.222222%;
+    padding: 0.1em 0.3em;
+    gap: 0.4em;
+    background: rgb(14 20 29 / 70%);
+}
+.scene-live > .sponsors .sponsor-image {
+    max-width: 4em;
+}

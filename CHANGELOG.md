@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Migrate to public SDK 0.3.0-preview.2 and HUD API v3 with the official Blazor host, one shared session, typed options, manager views, synchronized clock and SDK-owned reconnect/disposal.
+- Subscribe independently to radar, scoreboard, each roster player, observer, history, series, killfeed, sponsors, production controls and presentation data. Ignore unrelated pose/ammunition changes and remove the global production rerender timer. Preserve the current design and explicit Debug-only synthetic preview.
+- Move hand-authored CSS into ordered SCSS modules for foundations, components, live theme and presentation views. Compile one stylesheet with pinned Dart Sass; verify generated CSS and icon geometry during builds and CI.
+- Update .NET SDK/runtime to 10.0.403/10.0.14 and support API-v3 uploads while retaining manual uploads of historical API-v2 releases.
+
 ## 0.4.18
 
 - Anchor both live player rosters with equal bottom and outer-side margins of 0.8% of the HUD width.

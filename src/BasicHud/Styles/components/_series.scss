@@ -1,0 +1,92 @@
+.without-caption .score-strip {
+    height: 100%;
+}
+.team-identity {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0.23em;
+    align-items: flex-start;
+}
+.team-heading.t .team-identity {
+    align-items: flex-end;
+}
+.series-wins {
+    display: flex;
+    gap: 0.18em;
+    height: 0.18em;
+}
+.series-wins i {
+    display: block;
+    width: 0.7em;
+    height: 0.18em;
+    background: #ffffff25;
+}
+.series-wins i.won {
+    background: var(--side);
+}
+.live-map-series {
+    position: absolute;
+    left: 1.25%;
+    top: 29.62963%;
+    width: 15%;
+    height: 5.555556%;
+    display: flex;
+    gap: 0.13em;
+}
+.live-map-series .map-pick {
+    max-width: 100%;
+    padding-inline: 0.2em;
+    font-size: 0.5em;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.live-map-series article {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgb(12 19 28 / 84%);
+    border-bottom: 0.1em solid #75839655;
+    color: #b8c4d1;
+    gap: 0.1em;
+}
+.live-map-series article.is-current {
+    border-color: #f0b775;
+    color: #fff;
+}
+.live-map-series strong {
+    display: block;
+    max-width: 100%;
+    font-size: 0.62em;
+    line-height: 1.2;
+    font-weight: 650;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-inline: 0.2em;
+}
+.map-result {
+    display: flex;
+    gap: 0.17em;
+    font-size: 0.65em;
+    color: #e2e9ef;
+    font-weight: 650;
+}
+.map-result > span {
+    color: #96a5b6;
+}
+.map-current-dot {
+    display: block;
+    width: 0.2em;
+    height: 0.2em;
+    background: #f0b775;
+    border-radius: 50%;
+}

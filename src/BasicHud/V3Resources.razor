@@ -1,0 +1,48 @@
+@implements IAsyncDisposable
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject SOU.Hud.Sdk.HudSession<HudOptions> Session
+@inject SOU.Hud.Sdk.HudClient Client
+@ChildContent(resources)
+@code {
+    [Parameter, EditorRequired] public RenderFragment<BroadcastContext> ChildContent { get; set; } = default!;
+    private readonly CancellationTokenSource stop = new();
+    private IDisposable? binding;
+    private BroadcastContext resources = BroadcastContext.Empty;
+    private Task catalogs = Task.CompletedTask;
+    private bool disposed;
+    protected override void OnInitialized()
+    {
+        resources = BroadcastContext.Empty with { ResolveMedia = ResolveMedia, ResolveAsset = Asset };
+        binding = Session.Observe(state => HudRegionSelection.Select(state, HudArea.Resources), selection => {
+            if (!disposed) _ = InvokeAsync(() => {
+                if (disposed) return;
+                var match = selection.Frame.Game?.ManagedMatch ?? selection.Frame.Game?.GameMatch;
+                resources = resources with { Metadata = MetadataCatalog.Bind(selection.Frame.Options?.Metadata(), match) };
+                StateHasChanged();
+            });
+        }, HudRegionSelection.Comparer);
+        catalogs = LoadCatalogs();
+    }
+    private string Asset(string path) => new Uri(new Uri(Navigation.BaseUri), path).AbsoluteUri;
+    private string? ResolveMedia(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return null;
+        try { return Client.Media(path).AbsoluteUri; }
+        catch (ArgumentException) { return null; }
+    }
+    private async Task LoadCatalogs()
+    {
+        var valve = RadarCatalogLoader.LoadAsync(Http, new Uri(Navigation.BaseUri), stop.Token);
+        var bolt = RadarCatalogLoader.LoadBoltAsync(Http, new Uri(Navigation.BaseUri), stop.Token);
+        await Task.WhenAll(valve, bolt);
+        if (!disposed) await InvokeAsync(() => {
+            if (!disposed) { resources = resources with { RadarCatalog = valve.Result, BoltRadarCatalog = bolt.Result }; StateHasChanged(); }
+        });
+    }
+    public async ValueTask DisposeAsync()
+    {
+        disposed = true; binding?.Dispose();
+        await stop.CancelAsync(); await catalogs; stop.Dispose();
+    }
+}

@@ -1,0 +1,43 @@
+.waiting {
+    position: absolute;
+    left: 25%;
+    top: 12%;
+    width: 50%;
+    text-align: center;
+    color: #d5dce7;
+}
+.waiting p {
+    display: inline-block;
+    padding: 0.4em 1.5em;
+    margin: 0;
+    background: var(--surface);
+    font-size: 0.7em;
+}
+.connection {
+    position: absolute;
+    right: 1.25%;
+    bottom: 0.4%;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.2em 0.5em;
+    background: rgb(10 15 22 / 75%);
+    color: #c0c9d5;
+    font-size: 0.49em;
+}
+.connection-dot {
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background: #d6a569;
+}
+.healthy {
+    opacity: 0.7;
+}
+.healthy .connection-dot {
+    background: #9bcca2;
+}
+.preview-badge {
+    color: #f2b975;
+    font-weight: 700;
+}

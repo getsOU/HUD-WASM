@@ -1,0 +1,50 @@
+.kill-attacker,
+.kill-assist {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    min-width: 0;
+    max-width: 100%;
+    color: var(--side, #e0e5ec);
+}
+.kill-name {
+    min-width: 0;
+    max-width: 100%;
+    color: var(--side, #e0e5ec);
+    font-weight: 650;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+.kill-method {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15em;
+    flex: 0 0 auto;
+}
+.kill-weapon {
+    --icon-height: 1em;
+    --icon-max-width: 4em;
+}
+.kill-modifier {
+    --icon-height: 1em;
+}
+
+.branding {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    color: #d2dce8;
+    font-size: 0.67em;
+    min-width: 0;
+    width: fit-content;
+    max-width: 100%;
+    padding: 0.5em 0.7em;
+    background: rgb(13 20 30 / 94%);
+    border: 1px solid #344357;
+}
+.broadcast-logo,
+.competition-logo {
+    width: 3em;
+    height: 3em;
+    object-fit: contain;
+}

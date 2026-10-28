@@ -1,0 +1,70 @@
+.match-duel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1fr);
+    gap: 2em;
+    align-items: center;
+    text-align: center;
+    padding: 0.9em 1em;
+    border-block: 1px solid #2e3c4e;
+}
+.duel-team {
+    min-width: 0;
+}
+.duel-team h2 {
+    margin: 0.5em 0 0.2em;
+    font-size: 1.7em;
+    overflow-wrap: anywhere;
+}
+.duel-team > span {
+    color: #8fa3ba;
+    font-size: 0.8em;
+}
+.duel-logo {
+    width: 4em;
+    height: 4em;
+}
+.duel-score {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7em;
+    min-width: 0;
+}
+.duel-score strong {
+    font-size: 3.2em;
+    letter-spacing: 0.06em;
+}
+.duel-score strong span {
+    color: #677e98;
+}
+.duel-score > span {
+    font-size: 0.66em;
+    color: #a5b7cc;
+    letter-spacing: 0.18em;
+}
+.duel-score small {
+    font-size: 0.7em;
+    color: #93a5ba;
+    overflow-wrap: anywhere;
+}
+.scheduled-start,
+.break-clock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4em;
+    margin: 1.5em 0;
+}
+.scheduled-start > span,
+.break-clock > span {
+    font-size: 0.65em;
+    color: #8fa3ba;
+    letter-spacing: 0.16em;
+}
+.scheduled-start strong,
+.break-clock strong {
+    font-size: 1.7em;
+}
+.scheduled-start small {
+    color: #8497ad;
+    font-size: 0.65em;
+}

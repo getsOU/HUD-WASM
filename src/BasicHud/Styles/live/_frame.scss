@@ -1,0 +1,21 @@
+@use "../tokens" as theme;
+.hud.scene-live {
+    /* Cast reference layout. Geometry uses a 1920 x 1080 canvas; game artwork stays original.
+     Live scene only: presentation views retain their existing layouts. */
+    & {
+        container-type: inline-size;
+        --broadcast-blue: #{theme.$broadcast-blue};
+        --ct-fill: #{theme.$ct-fill};
+        --t-fill: #{theme.$t-fill};
+    }
+    .ct {
+        --side: #{theme.$ct-accent};
+        --card-fill: var(--ct-fill);
+        --card-empty: #09152bd9;
+    }
+    .t {
+        --side: #{theme.$t-accent};
+        --card-fill: var(--t-fill);
+        --card-empty: #25241ad9;
+    }
+}

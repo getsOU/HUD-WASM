@@ -1,0 +1,51 @@
+.statistics-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+.statistics-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72em;
+    white-space: nowrap;
+}
+.statistics-table th,
+.statistics-table td {
+    padding: 0.7em 0.55em;
+    text-align: right;
+    border-bottom: 1px solid #2a3749;
+}
+.statistics-table thead th {
+    color: #8fa4be;
+    font-size: 0.85em;
+}
+.statistics-table th:first-child {
+    max-width: 12em;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--side, #dbe4f0);
+}
+.statistics-table td:last-child {
+    font-size: 0.75em;
+    color: #95a7be;
+}
+.stats-context {
+    font-size: 0.7em;
+    color: #a5b5ca;
+}
+.presentation > .round-history {
+    margin-top: 2em;
+    flex-wrap: wrap;
+}
+.series-winner {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8em;
+    color: #adc9ac;
+    font-size: 0.8em;
+}
+.series-winner strong {
+    font-size: 1.4em;
+}

@@ -1,0 +1,220 @@
+.radar-widget {
+    position: absolute;
+    left: 1.25%;
+    top: 2.222222%;
+    width: 15%;
+    height: 26.666667%;
+    container-type: size;
+}
+.radar-widget > svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+.radar-grid {
+    fill: none;
+    stroke: #a3b7cb;
+    stroke-opacity: 0.2;
+    stroke-width: 0.2;
+}
+.radar-marker.ct {
+    --radar-side: #5ab8f4;
+}
+/* NYXIA's 50 ms linear target-to-target movement; keys reset discontinuities. */
+.radar-marker.player,
+.radar-marker.grenade {
+    transition: transform 50ms linear;
+}
+.radar-marker.t {
+    --radar-side: #f0c941;
+}
+.radar-marker.neutral {
+    --radar-side: #c9d0d9;
+}
+.radar-player {
+    position: absolute;
+    width: 0;
+    height: 0;
+    z-index: 15;
+    color: #c9d0d9;
+    transition:
+        left 50ms linear,
+        top 50ms linear;
+}
+.radar-player.ct {
+    color: #5ab8f4;
+}
+.radar-player.t {
+    color: #f0c941;
+}
+.radar-player .bolt-dot,
+.bolt-digit {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 5.6cqw;
+    height: 5.6cqw;
+    transform-origin: 0% 0%;
+    border-radius: 100% 0.2cqw 100% 100%;
+}
+.radar-player .bolt-dot {
+    background: currentColor;
+    box-shadow: 0 0 1.6cqw 0.8cqw #0003;
+}
+.radar-player .bolt-dot.undirected {
+    border-radius: 100%;
+}
+.radar-player.carrier {
+    color: #ff8200;
+}
+.radar-player.carrier .bolt-dot {
+    border-radius: 2cqw 0.4cqw 2cqw 2.4cqw;
+}
+.radar-player.active {
+    z-index: 7000;
+}
+.radar-player.active .bolt-dot {
+    box-shadow:
+        0 0 0 0.2cqw #000e,
+        0 0 0 1cqw #fffffff0,
+        0 0 2.4cqw 1.2cqw #fff3;
+}
+.radar-player.flashed .bolt-dot {
+    box-shadow:
+        0 0 1.6cqw 0.8cqw #0003,
+        inset 0 0 2cqw 1cqw #fffc;
+}
+.radar-player.flashed.active .bolt-dot {
+    box-shadow:
+        0 0 0 0.2cqw #000e,
+        0 0 0 1cqw #fffffff0,
+        0 0 2.4cqw 1.2cqw #fff3,
+        inset 0 0 2cqw 1cqw #fffc;
+}
+.radar-player.dead {
+    z-index: 13;
+    opacity: 0.4;
+}
+.radar-player.dead .bolt-dot {
+    border-radius: 0;
+    clip-path: polygon(
+        20% 0%,
+        0% 20%,
+        30% 50%,
+        0% 80%,
+        20% 100%,
+        50% 70%,
+        80% 100%,
+        100% 80%,
+        70% 50%,
+        100% 20%,
+        80% 0%,
+        50% 30%
+    );
+    box-shadow: none;
+}
+.bolt-digit {
+    display: flex;
+    justify-content: center;
+    background: none;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 4.8cqw;
+    font-weight: 700;
+    font-synthesis: weight;
+    font-variant-numeric: normal;
+    line-height: 5.6cqw;
+    text-shadow: 0 0 1.2cqw #fff3;
+    transform: scale(var(--marker-scale)) translate(-50%, -50%);
+}
+.radar-player.active .bolt-digit {
+    font-size: 5cqw;
+}
+.radar-site {
+    font:
+        800 5px/6px Arial,
+        sans-serif;
+    color: #ffe1a2;
+    text-shadow: 0 0 1px #101820;
+    text-align: center;
+}
+.radar-marker .radar-effect {
+    stroke-width: 0.2;
+}
+.radar-marker.smoke .radar-effect {
+    fill: #9f9d9dcc;
+    stroke: #d7d7d7;
+}
+.radar-marker.smoke.ct .radar-effect {
+    fill: #678faacc;
+    stroke: #77c5f6;
+}
+.radar-marker.smoke.t .radar-effect {
+    fill: #ccba7dcc;
+    stroke: #f1d369;
+}
+.radar-marker.flame .radar-effect {
+    fill: #ff4848bf;
+    stroke: #ce3f00;
+}
+.radar-marker.flash .radar-effect {
+    fill: #fff9;
+    stroke: #fc9f2d;
+}
+.radar-marker .unknown-projectile {
+    fill: var(--radar-side, #ddd);
+    stroke: #101821;
+    stroke-width: 0.25;
+}
+.radar-bomb {
+    width: 100%;
+    height: 100%;
+    color: #ff8200;
+    filter: drop-shadow(0 0 0.3px #000);
+}
+.radar-bomb .status-icon {
+    --icon-height: 4px;
+    --icon-max-width: 4px;
+}
+.radar-bomb.defused {
+    color: #5ab8f4;
+    opacity: 0.65;
+}
+.radar-unavailable {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.3em;
+    background: rgb(12 19 28 / 85%);
+    color: #d0dae6;
+    font-size: 0.53em;
+    text-align: center;
+}
+.killfeed {
+    position: absolute;
+    right: 1.25%;
+    top: 2.962963%;
+    width: max-content;
+    max-width: 97.5%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.12em;
+}
+.kill-event {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    width: max-content;
+    max-width: 100%;
+    min-height: 2.23em;
+    padding: 0.3em 0.6em;
+    gap: 0.3em;
+    background: var(--surface);
+    border-right: 0.18em solid #b6c6d9;
+    font-size: 0.65em;
+    line-height: 1.3;
+}

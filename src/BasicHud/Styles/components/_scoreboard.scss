@@ -1,0 +1,93 @@
+/* Fixed 1920 x 1080 live composition. All measurements scale with the canvas. */
+.scoreboard {
+    position: absolute;
+    left: 25%;
+    top: 2.222222%;
+    width: 50%;
+    height: 6.666667%;
+    text-align: center;
+}
+.caption {
+    height: 22.222222%;
+    padding: 0 0.6em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: var(--surface);
+    font-size: 0.625em;
+    line-height: 1.333333;
+    color: #bdcbdc;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+.caption span {
+    color: #a1b2c6;
+}
+.caption-logo {
+    width: 1.8em;
+    height: 1.1em;
+    margin-right: 0.5em;
+    vertical-align: middle;
+}
+.score-strip {
+    height: 77.777778%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 3.2em 5.6em 3.2em minmax(0, 1fr);
+    background: var(--surface);
+}
+.team-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    min-width: 0;
+    padding: 0.2em 0.8em;
+    border-top: 0.1em solid var(--side);
+}
+.team-heading.t {
+    justify-content: flex-end;
+}
+.team-heading .team-name {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1.02em;
+    font-weight: 700;
+}
+.team-heading .team-logo {
+    width: 1.5em;
+    height: 1.5em;
+}
+.score {
+    display: grid;
+    place-items: center;
+    color: var(--side);
+    font-size: 1.9em;
+    font-weight: 800;
+    line-height: 1;
+    background: color-mix(in srgb, var(--side) 9%, transparent);
+    border-top: 0.055em solid var(--side);
+}
+.clock {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #111e2c;
+}
+.clock-label {
+    font-size: 0.52em;
+    line-height: 1.2;
+    color: #b8c6d7;
+}
+.clock strong {
+    font-size: 1.4em;
+    line-height: 1.2;
+    font-weight: 600;
+}
+.bomb-clock {
+    background: #793026;
+}
+.bomb-clock .clock-label {
+    color: #ffe0ca;
+}
