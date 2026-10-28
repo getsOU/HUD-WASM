@@ -3622,3 +3622,163 @@ body,
 .player-equipment:empty {
   display: none;
 }
+
+.hud.scene-live.rosters-horizontal .roster {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
+  gap: 0.4cqw;
+  width: 38.4cqw;
+  height: 7.5cqw;
+}
+.hud.scene-live.rosters-horizontal .roster .live-player {
+  width: auto;
+  height: 7.5cqw;
+  margin: 0;
+  grid-template-columns: 0.65cqw minmax(0, 1fr);
+  grid-template-rows: 3.5cqw 1.8cqw 2.2cqw;
+  grid-template-areas: "slot portrait" "slot identity" "slot loadout";
+}
+.hud.scene-live.rosters-horizontal .roster .live-player + .live-player {
+  margin-top: 0;
+}
+.hud.scene-live.rosters-horizontal .roster .live-player:not(.is-dead) {
+  background: var(--card-empty);
+}
+.hud.scene-live.rosters-horizontal .roster .live-player:not(.is-dead)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--player-health, 0%);
+  background: var(--card-fill);
+  z-index: -1;
+  pointer-events: none;
+}
+.hud.scene-live.rosters-horizontal .roster .card-portrait .roster-portrait {
+  --avatar-fit: contain;
+  --avatar-position: center bottom;
+  max-height: none;
+  object-fit: contain;
+  object-position: center bottom;
+}
+.hud.scene-live.rosters-horizontal .roster .card-identity {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: 0.9cqw 0.9cqw;
+  column-gap: 0.15cqw;
+  padding: 0 0.2cqw;
+  align-content: center;
+  text-align: left;
+}
+.hud.scene-live.rosters-horizontal .roster .player-name {
+  grid-column: 1/-1;
+  font-size: 0.8cqw;
+  line-height: 1.1;
+}
+.hud.scene-live.rosters-horizontal .roster .card-stats {
+  gap: 0.25cqw;
+  font-size: 0.62cqw;
+  line-height: 1;
+  justify-content: flex-start;
+}
+.hud.scene-live.rosters-horizontal .roster .card-stats > span {
+  gap: 0.1cqw;
+  flex-direction: row;
+}
+.hud.scene-live.rosters-horizontal .roster .card-stats .status-icon {
+  --icon-height: 0.55cqw;
+  --icon-max-width: 0.65cqw;
+}
+.hud.scene-live.rosters-horizontal .roster .card-money {
+  font-size: 0.65cqw;
+  line-height: 1;
+  text-align: right;
+}
+.hud.scene-live.rosters-horizontal .roster .card-loadout {
+  height: 100%;
+  background: transparent;
+  padding: 0.15cqw 0.2cqw;
+  grid-template-rows: 1.1cqw 0.7cqw;
+  row-gap: 0.1cqw;
+}
+.hud.scene-live.rosters-horizontal .roster .card-loadout > .health-track {
+  display: none;
+}
+.hud.scene-live.rosters-horizontal .roster .card-armament {
+  gap: 0.1cqw;
+  grid-template-columns: minmax(0, 1fr) max-content;
+}
+.hud.scene-live.rosters-horizontal .roster .card-armament .weapon-cell {
+  height: 0.95cqw;
+  grid-column: 1;
+  grid-row: 1;
+  justify-items: start;
+}
+.hud.scene-live.rosters-horizontal .roster .card-armament .roster-weapon {
+  --icon-height: 0.9cqw;
+  --icon-max-width: 3.8cqw;
+}
+.hud.scene-live.rosters-horizontal .roster .card-health {
+  font-size: 1.15cqw;
+  grid-column: 2;
+  grid-row: 1;
+  text-align: right;
+}
+.hud.scene-live.rosters-horizontal .roster .card-equipment {
+  height: 0.7cqw;
+  gap: 0.15cqw;
+  grid-template-columns: minmax(0, 1fr) auto;
+  flex-direction: row;
+}
+.hud.scene-live.rosters-horizontal .roster .card-equipment .utility-icons {
+  --utility-height: 0.65cqw;
+  gap: 0.1cqw;
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  flex-direction: row;
+}
+.hud.scene-live.rosters-horizontal .roster .card-status {
+  gap: 0.1cqw;
+  font-size: 0.6cqw;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  flex-direction: row;
+}
+.hud.scene-live.rosters-horizontal .roster .card-status .player-equipment {
+  flex-direction: row;
+}
+.hud.scene-live.rosters-horizontal .roster .card-status .status-icon {
+  --icon-height: 0.65cqw;
+  --icon-max-width: 0.8cqw;
+}
+.hud.scene-live.rosters-horizontal .roster .live-player.is-dead {
+  width: auto;
+  height: 5.3cqw;
+  margin: 0;
+  grid-template-columns: 0.65cqw minmax(0, 1fr);
+  grid-template-rows: 3.5cqw 1.8cqw;
+  grid-template-areas: "slot portrait" "slot identity";
+}
+.hud.scene-live.rosters-horizontal .roster .card-death {
+  display: none;
+}
+.hud.scene-live.rosters-horizontal .roster.t .live-player {
+  grid-template-columns: 0.65cqw minmax(0, 1fr);
+  grid-template-areas: "slot portrait" "slot identity" "slot loadout";
+}
+.hud.scene-live.rosters-horizontal .roster.t .card-identity {
+  padding: 0 0.2cqw;
+}
+.hud.scene-live.rosters-horizontal .roster.t .card-money {
+  text-align: right;
+}
+.hud.scene-live.rosters-horizontal .roster.t .live-player.is-dead {
+  grid-template-columns: 0.65cqw minmax(0, 1fr);
+  grid-template-areas: "slot portrait" "slot identity";
+}
+.hud.scene-live.rosters-horizontal .roster-empty {
+  grid-column: 1/-1;
+}

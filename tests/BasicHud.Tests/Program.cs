@@ -44,12 +44,16 @@ var stats = reloading with { Stats = new(17, 3, 8, null, null) };
 Check(HudView.From(Snapshot(Game([stats]))).Ct.Players[0].Kda == "17 / 8 / 3", "statistics display kills / deaths / assists consistently");
 HudPanelState Panel(string json) => new(1, JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, JsonElement>>>(json)!);
 Check(DisplayOptions.FromPanel(Panel("{}")) == DisplayOptions.Default, "missing panel values retain visible defaults");
+Check(DisplayOptions.FromPanel(Panel("{\"display\":{\"horizontalPlayercards\":true}}")) == DisplayOptions.Default with { HorizontalPlayercards = true },
+    "horizontal playercards are an explicit opt-in and preserve all visibility defaults");
+Check(new[] { "false", "null", "\"true\"", "1" }.All(value => DisplayOptions.FromPanel(Panel("{\"display\":{\"horizontalPlayercards\":" + value + "}}")) == DisplayOptions.Default),
+    "missing, disabled or malformed horizontal settings retain the vertical layout");
 Check(DisplayOptions.FromPanel(Panel("{\"display\":{\"agentsOnly\":true}}")) == DisplayOptions.Default with { ShowPlayerImages = false }, "agents-only hides player images without disabling any HUD component");
 Check(new[] { "false", "null", "\"true\"", "1" }.All(value => DisplayOptions.FromPanel(Panel("{\"display\":{\"agentsOnly\":" + value + "}}")) == DisplayOptions.Default), "false or malformed agents-only settings retain player portraits and their normal fallback");
 Check(DisplayOptions.FromPanel(Panel("{\"display\":{\"hideRosters\":\"true\",\"caption\":\"  \"}}")) == DisplayOptions.Default, "malformed checkbox and blank caption use safe defaults");
 var schema = JsonSerializer.Deserialize<HudPanelSection[]>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "panel.json")), new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
 var fields = schema.Single(section => section.Name == "display").Inputs;
-Check(fields.Where(field => field.Type == HudPanelFieldType.Checkbox).Select(field => field.Name).Order().SequenceEqual(new[] { "agentsOnly", "hideKillfeed", "hideObservedPlayer", "hideRadar", "hideRosters", "hideRoundHistory", "hideSeries", "hideSponsors" }), "shipped schema uses opt-out visibility fields for all components");
+Check(fields.Where(field => field.Type == HudPanelFieldType.Checkbox).Select(field => field.Name).Order().SequenceEqual(new[] { "agentsOnly", "hideKillfeed", "hideObservedPlayer", "hideRadar", "hideRosters", "hideRoundHistory", "hideSeries", "hideSponsors", "horizontalPlayercards" }), "shipped schema includes visibility, portrait and horizontal-layout checkboxes");
 // Model the documented host baseline from the actual shipped schema, rather than an empty
 // client-only state: the host sends false for every unset checkbox, including revision zero.
 HudPanelState HostDefault(long revision) => new(revision, schema.ToDictionary(section => section.Name,

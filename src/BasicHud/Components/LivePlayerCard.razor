@@ -1,4 +1,4 @@
-<article class="live-player @PlayerPresentation.SideClass(Player.Side) @(Dead ? "is-dead" : "") @(Observed ? "is-observed" : "")">
+<article class="live-player @PlayerPresentation.SideClass(Player.Side) @(Dead ? "is-dead" : "") @(Observed ? "is-observed" : "")" style="@($"--player-health:{Math.Clamp(Player.Health ?? 0, 0, 100).ToString(System.Globalization.CultureInfo.InvariantCulture)}%")">
     <span class="observer-slot card-slot" aria-label="@($"Observer slot {Player.ObserverSlot}")">@if (!Dead) { @(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—") }</span>
     <div class="card-identity">
         <strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong>

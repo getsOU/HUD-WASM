@@ -1,7 +1,7 @@
 @inject NavigationManager Navigation
 <SelectedHudRegion Area="HudArea.Shell" Resources="Resources" LowerThirdVisible="LowerThirdVisible"><ChildContent Context="shell">
     @{ var options = shell.Options; var scene = SceneSelection.Resolve(Navigation.ToBaseRelativePath(Navigation.Uri), options.Scene); }
-    <main class="viewport"><div class="hud scene-@scene @(LowerThirdVisible ? "has-lower-third" : "")" aria-label="sOU Default HUD">
+    <main class="viewport"><div class="hud scene-@scene @(options.HorizontalPlayercards ? "rosters-horizontal" : "") @(LowerThirdVisible ? "has-lower-third" : "")" aria-label="sOU Default HUD">
     @if (scene == "live")
     {
         <SelectedHudRegion Area="HudArea.Scoreboard" Resources="Resources"><ChildContent Context="state">

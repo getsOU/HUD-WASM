@@ -12,6 +12,7 @@ public sealed record DisplayOptions(string Caption, bool ShowRosters, bool ShowO
     public bool ShowSeries { get; init; } = true;
     public bool ShowSponsors { get; init; } = true;
     public bool ShowPlayerImages { get; init; } = true;
+    public bool HorizontalPlayercards { get; init; }
     public static DisplayOptions Default { get; } = new("", true, true);
 
     public static DisplayOptions FromPanel(HudPanelState state) => new(
@@ -25,7 +26,8 @@ public sealed record DisplayOptions(string Caption, bool ShowRosters, bool ShowO
         ShowRoundHistory = ReadVisible(state, "hideRoundHistory"),
         ShowSeries = ReadVisible(state, "hideSeries"),
         ShowSponsors = ReadVisible(state, "hideSponsors"),
-        ShowPlayerImages = PlayerImagesVisible(state)
+        ShowPlayerImages = PlayerImagesVisible(state),
+        HorizontalPlayercards = !ReadVisible(state, "horizontalPlayercards")
     };
 
     public static bool PlayerImagesVisible(HudPanelState? state) => state is null || ReadVisible(state, "agentsOnly");

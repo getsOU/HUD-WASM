@@ -3,6 +3,7 @@
     {"type":"text","name":"caption","label":"Scoreboard caption"},
     {"type":"select","name":"scene","label":"Main output scene","values":[{"name":"live","label":"Live"},{"name":"prematch","label":"Prematch"},{"name":"lineups","label":"Lineups"},{"name":"veto","label":"Map veto"},{"name":"break","label":"Break"},{"name":"postmatch","label":"Results"},{"name":"statistics","label":"Statistics"},{"name":"spotlight","label":"Spotlight"}]},
     {"type":"checkbox","name":"agentsOnly","label":"Nur Agenten anzeigen"},
+    {"type":"checkbox","name":"horizontalPlayercards","label":"Playercards horizontal"},
     {"type":"checkbox","name":"hideRosters","label":"Hide team rosters"},
     {"type":"checkbox","name":"hideObservedPlayer","label":"Hide observed player"},
     {"type":"checkbox","name":"hideRadar","label":"Hide radar"},

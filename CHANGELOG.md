@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add the opt-in **Playercards horizontal** panel setting: two rows of five compact cards at the bottom, with the observer between them. Both teams share the same content order, with observer digits and strips on the left. Health fills the complete card background and recedes from top to bottom as damage is taken. Dead cards omit the large skull and lower equipment row, retaining a shorter portrait/identity card aligned to the same bottom edge. Preserve the vertical default, side colors, agent/profile portraits, condition effects and observed-player outline.
+
 - Consolidate presentation logic, region selectors and clock display in the main project's `Presentation/` folder and namespace. Remove the separate Core project, references and lock file; tests link the production sources directly.
 - Keep the synthetic session, feed interface and connection states in Debug-only `Development/PreviewSession.cs`. Exclude them and the unused legacy connection indicator from Release compilation; production sessions are owned entirely by the SDK.
 

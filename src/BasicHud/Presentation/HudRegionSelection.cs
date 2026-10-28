@@ -69,7 +69,7 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
                     foreach (var profile in profiles.OrderBy(profile => profile.Key, StringComparer.Ordinal)) { values.Add(profile.Key); values.Add(profile.Value); }
                 break;
             case HudArea.Shell:
-                foreach (var name in new[] { "scene", "hideRosters", "hideObservedPlayer", "hideRadar", "hideKillfeed", "hideRoundHistory", "hideSeries", "hideSponsors" }) Field("display", name);
+                foreach (var name in new[] { "scene", "horizontalPlayercards", "hideRosters", "hideObservedPlayer", "hideRadar", "hideKillfeed", "hideRoundHistory", "hideSeries", "hideSponsors" }) Field("display", name);
                 values.Add(graph?.ObservedPlayer is not null); break;
             case HudArea.Scoreboard:
                 values.Add(graph?.Freshness);

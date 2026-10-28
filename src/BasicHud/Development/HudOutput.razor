@@ -7,7 +7,7 @@
     var scene = SceneSelection.Resolve(Navigation.ToBaseRelativePath(Navigation.Uri), Options.Scene);
 }
 <main class="viewport">
-    <div class="hud scene-@scene @(LowerThirdVisible ? "has-lower-third" : "")" aria-label="sOU Default HUD">
+    <div class="hud scene-@scene @(Options.HorizontalPlayercards ? "rosters-horizontal" : "") @(LowerThirdVisible ? "has-lower-third" : "")" aria-label="sOU Default HUD">
         @if (scene == "live")
         {
             <TimedContext Context="context"><ChildContent Context="timed">
