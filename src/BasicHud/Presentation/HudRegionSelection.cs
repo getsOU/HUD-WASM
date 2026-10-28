@@ -1,8 +1,7 @@
-using BasicHud.Core;
 using SOU.Hud.Sdk;
 using SOU.Live.Contracts;
 
-namespace BasicHud;
+namespace BasicHud.Presentation;
 
 public enum HudArea { Resources, Shell, Scoreboard, History, Radar, Series, Killfeed, CtRoster, TRoster, Player, Observed, Message, Sponsors, Production, Presentation }
 

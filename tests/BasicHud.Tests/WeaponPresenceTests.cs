@@ -1,4 +1,4 @@
-using BasicHud.Core;
+using BasicHud.Presentation;
 using SOU.Live.Contracts;
 
 static class WeaponPresenceTests

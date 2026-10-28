@@ -1,6 +1,6 @@
 using SOU.Live.Contracts;
 
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 // Narrow local public metadata shapes. Camera is read as text only and is never embedded.
 public sealed class BrowserMetadata

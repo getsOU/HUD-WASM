@@ -1,5 +1,5 @@
 @inject NavigationManager Navigation
-@if (preview is not null)
+@if (isPreview)
 {
     @Preview()
 }
@@ -12,13 +12,17 @@ else
     <div class="waiting" role="alert">Open this HUD from an installed sOU package or the SDK development host.</div>
 }
 @code {
-    private IHudFeed? preview = null;
+    private bool isPreview = false;
+#if DEBUG
+    private Development.IPreviewFeed? preview;
+#endif
     private bool installed;
     protected override void OnInitialized()
     {
         var address = new Uri(Navigation.Uri);
 #if DEBUG
         preview = Development.PreviewFeed.TryCreate(address);
+        isPreview = preview is not null;
 #endif
         try { _ = SOU.Hud.Sdk.HudIdentity.FromUri(address); installed = true; }
         catch (ArgumentException) { installed = false; }

@@ -1,6 +1,6 @@
 using SOU.Live.Contracts;
 
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 public sealed record UtilityItem(string Name, string Label, int? Count);
 public static class EquipmentPresentation

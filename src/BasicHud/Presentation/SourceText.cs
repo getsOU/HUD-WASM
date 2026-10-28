@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 public static class SourceText
 {

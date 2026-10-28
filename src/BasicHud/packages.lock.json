@@ -353,12 +353,6 @@
         "dependencies": {
           "Microsoft.JSInterop": "10.0.14"
         }
-      },
-      "basichud.core": {
-        "type": "Project",
-        "dependencies": {
-          "SOU.Live.Contracts": "[0.3.0-preview.2, )"
-        }
       }
     },
     "net10.0/browser-wasm": {}

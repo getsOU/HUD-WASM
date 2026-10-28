@@ -1,7 +1,7 @@
 using System.Globalization;
 using SOU.Live.Contracts;
 
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 public sealed record SideView(TeamSide Side, string Name, string Score, IReadOnlyList<PlayerView> Players);
 public sealed record PlayerView(string Key, string Name, TeamSide? Side, string Slot, string Health,

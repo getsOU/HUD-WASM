@@ -1,5 +1,5 @@
 using BasicHud.Components;
-using BasicHud.Core;
+using BasicHud.Presentation;
 using BasicHud.Views;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;

@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Text.Json;
 using SOU.Live.Contracts;
 
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 public sealed record BroadcastContext(LiveSnapshot? Snapshot, HudPanelState? Panel, MetadataCatalog Metadata,
     DateTimeOffset Now, Func<string?, string?> ResolveMedia)

@@ -1,6 +1,6 @@
 using SOU.Live.Contracts;
 
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 public sealed record PortraitEffects(bool Smoke, bool Flash, bool Fire)
 {

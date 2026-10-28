@@ -1,4 +1,4 @@
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 /// <summary>Local HUD icons; source notices and hashes ship in assets/openhud-icons.json and assets/valve-assets.json.</summary>
 public static class Cs2Icons

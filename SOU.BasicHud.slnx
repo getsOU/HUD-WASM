@@ -1,6 +1,5 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/BasicHud.Core/BasicHud.Core.csproj" />
     <Project Path="src/BasicHud/BasicHud.csproj" />
   </Folder>
   <Folder Name="/tests/">

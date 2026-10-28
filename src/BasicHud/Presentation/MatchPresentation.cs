@@ -1,6 +1,6 @@
 using SOU.Live.Contracts;
 
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 public static class MatchPresentation
 {

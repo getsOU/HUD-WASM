@@ -1,18 +1,19 @@
+using BasicHud.Presentation;
 using SOU.Live.Contracts;
 
-namespace BasicHud.Core;
+namespace BasicHud.Development;
 
-public enum ConnectionState { Connecting, Connected, Reconnecting, Stopped, Failed }
+public enum PreviewConnectionState { Connecting, Connected, Reconnecting, Stopped, Failed }
 
-public interface IHudFeed
+public interface IPreviewFeed
 {
-    event Action<string, ConnectionState>? ConnectionChanged;
+    event Action<string, PreviewConnectionState>? ConnectionChanged;
     IAsyncEnumerable<LiveSnapshot> WatchLiveAsync(CancellationToken cancellationToken);
     IAsyncEnumerable<HudPanelMessage> WatchPanelAsync(CancellationToken cancellationToken);
 }
 
-/// <summary>Owns both subscriptions and ignores stale revisions within a session.</summary>
-public sealed class HudSession(IHudFeed feed) : IAsyncDisposable
+/// <summary>Debug-only synthetic feed lifecycle. Production sessions are owned by the sOU SDK.</summary>
+internal sealed class PreviewSession(IPreviewFeed feed) : IAsyncDisposable
 {
     private readonly CancellationTokenSource stop = new();
     private Task work = Task.CompletedTask;
@@ -29,8 +30,8 @@ public sealed class HudSession(IHudFeed feed) : IAsyncDisposable
     public LiveSnapshot? Snapshot { get; private set; }
     public HudPanelState? Panel { get; private set; }
     public bool LowerThirdVisible { get; private set; }
-    public ConnectionState LiveConnection { get; private set; } = ConnectionState.Connecting;
-    public ConnectionState PanelConnection { get; private set; } = ConnectionState.Connecting;
+    public PreviewConnectionState LiveConnection { get; private set; } = PreviewConnectionState.Connecting;
+    public PreviewConnectionState PanelConnection { get; private set; } = PreviewConnectionState.Connecting;
 
     public void Start()
     {
@@ -58,7 +59,7 @@ public sealed class HudSession(IHudFeed feed) : IAsyncDisposable
             }
         }
         catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
-        catch (Exception) { LiveConnection = ConnectionState.Failed; Notify(); }
+        catch (Exception) { LiveConnection = PreviewConnectionState.Failed; Notify(); }
     }
 
     private async Task ReadPanelAsync()
@@ -83,10 +84,10 @@ public sealed class HudSession(IHudFeed feed) : IAsyncDisposable
             }
         }
         catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
-        catch (Exception) { PanelConnection = ConnectionState.Failed; Notify(); }
+        catch (Exception) { PanelConnection = PreviewConnectionState.Failed; Notify(); }
     }
 
-    private void ConnectionChanged(string channel, ConnectionState state)
+    private void ConnectionChanged(string channel, PreviewConnectionState state)
     {
         if (stop.IsCancellationRequested) return;
         if (channel == "live") LiveConnection = state;
@@ -94,7 +95,7 @@ public sealed class HudSession(IHudFeed feed) : IAsyncDisposable
         {
             PanelConnection = state;
             // A restarted host may restart panel revision numbering.
-            if (state is ConnectionState.Connecting or ConnectionState.Reconnecting) panelRevision = long.MinValue;
+            if (state is PreviewConnectionState.Connecting or PreviewConnectionState.Reconnecting) panelRevision = long.MinValue;
         }
         Notify();
     }

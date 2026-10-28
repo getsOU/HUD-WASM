@@ -2,7 +2,8 @@ using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Channels;
-using BasicHud.Core;
+using BasicHud.Presentation;
+using BasicHud.Development;
 using SOU.Live.Contracts;
 
 var checks = 0;
@@ -69,8 +70,13 @@ observedHidden.Values["display"]["hideObservedPlayer"] = JsonSerializer.Serializ
 Check(DisplayOptions.FromPanel(rosterHidden) == DisplayOptions.Default && DisplayOptions.FromPanel(observedHidden) == DisplayOptions.Default,
     "clearing each Hide checkbox shows its section again without revision special cases");
 
+Check(typeof(HudView).Assembly.GetTypes().Where(type => type.Namespace == "BasicHud.Presentation")
+    .All(type => type.Name is not ("HudSession" or "IHudFeed" or "ConnectionState" or "PreviewSession" or "IPreviewFeed" or "PreviewConnectionState")),
+    "Presentation contains no production or preview session infrastructure");
+Check(typeof(HudView).Assembly.GetReferencedAssemblies().All(reference => reference.Name != "BasicHud.Core"),
+    "presentation tests run without the former Core assembly");
 var feed = new TestFeed();
-var hud = new HudSession(feed);
+var hud = new PreviewSession(feed);
 hud.Start();
 await feed.Live.Writer.WriteAsync(mapped with { Revision = 20 });
 await Until(() => hud.View.Ct.Name == "Bravo");
@@ -81,7 +87,7 @@ Check(hud.View.Ct.Name == "Bravo", "out-of-order snapshots within a session are 
 await feed.Live.Writer.WriteAsync(Snapshot(null, 1, Guid.NewGuid()));
 await Until(() => !hud.View.HasGame);
 Check(hud.View.Ct.Players.Count == 0 && hud.View.Observed is null && hud.View.Ct.Score == "—", "a new session clears old players, scores and observed player");
-feed.Emit("panel", ConnectionState.Reconnecting);
+feed.Emit("panel", PreviewConnectionState.Reconnecting);
 await feed.Panel.Writer.WriteAsync(new("sou-basic-wasm", "0.1.0", Panel("{\"display\":{\"caption\":\"Restarted\"}}") with { Revision = 1 }));
 await Until(() => hud.Options.Caption == "Restarted");
 Check(hud.Options.Caption == "Restarted", "panel numbering can restart after host reconnect");
@@ -89,12 +95,12 @@ await hud.DisposeAsync();
 await hud.DisposeAsync();
 Check(feed.ActiveReaders == 0 && feed.SubscriberCount == 0, "disposal cancels and awaits both streams and unsubscribes events idempotently");
 var broken = new TestFeed();
-await using (var brokenHud = new HudSession(broken))
+await using (var brokenHud = new PreviewSession(broken))
 {
     brokenHud.Start();
     broken.Live.Writer.Complete(new InvalidDataException("synthetic failure"));
-    await Until(() => brokenHud.LiveConnection == ConnectionState.Failed);
-    Check(brokenHud.LiveConnection == ConnectionState.Failed, "unexpected feed failures become a visible connection failure");
+    await Until(() => brokenHud.LiveConnection == PreviewConnectionState.Failed);
+    Check(brokenHud.LiveConnection == PreviewConnectionState.Failed, "unexpected feed failures become a visible connection failure");
 }
 await ShowcaseTests.Run(Check);
 await RenderTests.Run(Check);
@@ -113,15 +119,15 @@ static async Task Until(Func<bool> ready)
     while (!ready()) await Task.Delay(10, timeout.Token);
 }
 
-sealed class TestFeed : IHudFeed
+sealed class TestFeed : IPreviewFeed
 {
-    private Action<string, ConnectionState>? changed;
-    public event Action<string, ConnectionState>? ConnectionChanged { add => changed += value; remove => changed -= value; }
+    private Action<string, PreviewConnectionState>? changed;
+    public event Action<string, PreviewConnectionState>? ConnectionChanged { add => changed += value; remove => changed -= value; }
     public int SubscriberCount => changed?.GetInvocationList().Length ?? 0;
     public int ActiveReaders;
     public Channel<LiveSnapshot> Live { get; } = Channel.CreateUnbounded<LiveSnapshot>();
     public Channel<HudPanelMessage> Panel { get; } = Channel.CreateUnbounded<HudPanelMessage>();
-    public void Emit(string channel, ConnectionState state) => changed?.Invoke(channel, state);
+    public void Emit(string channel, PreviewConnectionState state) => changed?.Invoke(channel, state);
     public IAsyncEnumerable<LiveSnapshot> WatchLiveAsync(CancellationToken token) => Read(Live, token);
     public IAsyncEnumerable<HudPanelMessage> WatchPanelAsync(CancellationToken token) => Read(Panel, token);
     private async IAsyncEnumerable<T> Read<T>(Channel<T> channel, [EnumeratorCancellation] CancellationToken token)

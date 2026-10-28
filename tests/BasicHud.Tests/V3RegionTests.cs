@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using System.Text.Json;
 using BasicHud;
-using BasicHud.Core;
+using BasicHud.Presentation;
 using SOU.Hud.Sdk;
 using SOU.Live.Contracts;
 

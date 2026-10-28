@@ -2,7 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using BasicHud;
-using BasicHud.Core;
+using BasicHud.Presentation;
 using SOU.Live.Contracts;
 
 static class CompactTests

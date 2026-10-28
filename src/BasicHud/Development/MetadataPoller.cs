@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
-using BasicHud.Core;
+using BasicHud.Presentation;
 using SOU.Live.Contracts;
 
 namespace BasicHud;

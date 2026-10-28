@@ -1,8 +1,7 @@
-using BasicHud.Core;
 using SOU.Hud.Sdk;
 using SOU.Live.Contracts;
 
-namespace BasicHud;
+namespace BasicHud.Presentation;
 
 public static class HudClockPresentation
 {

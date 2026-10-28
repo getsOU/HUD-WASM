@@ -1,4 +1,4 @@
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 public sealed class RadarCatalogDocument
 {

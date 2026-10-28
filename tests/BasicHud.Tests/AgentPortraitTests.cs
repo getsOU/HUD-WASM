@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.Json;
-using BasicHud.Core;
+using BasicHud.Presentation;
 using SOU.Live.Contracts;
 
 static class AgentPortraitTests

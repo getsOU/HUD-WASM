@@ -96,7 +96,9 @@ Preview activation requires **Debug compilation**, **loopback hostname** and an 
 
 Production uses one SDK-owned v3 session through `AddSouHud` and `SouHudHost`. `SelectedHudRegion` subscribes to explicit dependencies with the SDK's `Observe` API. Radar positions, individual player cards, the observer, score/header, round history, map series, killfeed, sponsors and production controls have separate selections. A pose update does not invalidate player cards or the scoreboard; ammunition updates affect its card and, when relevant, the observer. Roster children are keyed by the actual opaque SDK roster keys.
 
-The existing Razor components use a compatibility snapshot only after their area's selection changes. Selection comparison itself does not materialize a full snapshot. This retains the established design; it is not a claim that every component has been rewritten against raw v3 player parts. Presentation views select statistics and references while ignoring pose/provider-timestamp changes. Only visible timed areas subscribe to the SDK's shared synchronized clock; production has no global 50 ms rerender loop. The older synthetic feed/session lives only on the explicit Debug preview path.
+The existing Razor components use a compatibility snapshot only after their area's selection changes. Selection comparison itself does not materialize a full snapshot. This retains the established design; it is not a claim that every component has been rewritten against raw v3 player parts. Presentation views select statistics and references while ignoring pose/provider-timestamp changes. Only visible timed areas subscribe to the SDK's shared synchronized clock; production has no global 50 ms rerender loop. The synthetic `PreviewSession`, `IPreviewFeed` and preview connection states live in `BasicHud/Development` and are excluded from Release compilation. Production session ownership remains entirely with the SDK.
+
+Presentation logic now lives in the main project under `Presentation/`, in the `BasicHud.Presentation` namespace. There is no separate Core project or assembly. The native test runner links these same production source files and Razor components directly, so it can exercise the implementation without running the browser/WASM application. Preview lifecycle tests explicitly link their Debug-only implementation separately.
 
 Styles are authored in `src/BasicHud/Styles/`: `base/`, `components/`, `live/`, `views/`, shared `_tokens.scss`, and generated icon geometry in `generated/`. The ordered `hud.scss` entry preserves the existing cascade and compiles into one browser stylesheet, `wwwroot/hud.css`. Do not edit that generated file directly.
 
@@ -128,15 +130,15 @@ npm run test:browser -- artifacts/v3-preview/package
 These checks cover isolated pose/ammunition/health updates, typed options, panel visibility, all declared views, actions, reconnect clearing, and a single v3 connection without options polling. CI runs them against the published Release output.
 
 ```text
-src/BasicHud.Core/        snapshot/panel presentation, scene selection, metadata binding,
-                          complete totals, radar projection and event identity
+src/BasicHud/Presentation/ snapshot/panel presentation, scene selection, metadata binding,
+                          totals, radar projection, event identity, region selectors and clock display
 src/BasicHud/Components/  reusable scoreboard/player/inventory/radar/series/branding layers
 src/BasicHud/Views/       seven presentation scenes; main live composition is in App.razor
 src/BasicHud/HudOptions.cs immutable, source-generated v3 profile/display options
 src/BasicHud/V3*.razor    production session resources and selected view composition
 src/BasicHud/Styles/      ordered SCSS modules and generated icon geometry
 src/BasicHud/RadarCatalogLoader.cs bounded generated local Bolt/Valve catalog readers
-src/BasicHud/Development/ Debug-only synthetic feeds
+src/BasicHud/Development/ Debug-only synthetic feeds and PreviewSession; excluded from Release
 src/BasicHud/wwwroot/     local CSS, installed entry point, common panel schema
                           assets/boltobserv contains original upstream radar content;
                           assets/radar and assets/weapons retain Valve fallback artwork
@@ -145,11 +147,11 @@ tests/BasicHud.Tests/     model/lifecycle/metadata checks and actual Razor event
 scripts/Build.ps1         locked restore → format → test → publish → pack → validate → hash
 ```
 
-One public SDK live stream and one panel stream serve the chosen scene. Both are canceled/awaited on disposal, as are the bounded metadata poller, one-shot catalog loader and UI clock. The clock refreshes presentation freshness/planned start, not speculative GSI countdowns. A long-lived injected `HttpClient` supports browser sessions. Cast media resolve through the SDK's local path guard; bundled artwork stays within the installed package. No private application types or external UI runtime is required. The GPL Boltobserv radar port preserves source attribution and original upstream files in LICENSES/.
+One SDK-owned v3 session supplies game, panel, typed options and manager views for the chosen scene. The SDK handles connection lifetime, reconnect and disposal; individual regions dispose their own selectors and clock subscriptions. Profile metadata arrives through typed session options, and the one-shot catalog loader is canceled/awaited separately. A long-lived injected `HttpClient` supports browser sessions. Cast media resolve through the SDK's local path guard; bundled artwork stays within the installed package. No private application types or external UI runtime is required. The GPL Boltobserv radar port preserves source attribution and original upstream files in LICENSES/.
 
 ## Compatibility and security
 
-HUD code executes in the trusted local sOU browser origin; package validation is not runtime isolation. Install packages only from authors you trust. This HUD embeds no cloud/diagnostic token, API key, external camera URL, tracker or account credentials. Optional metadata polls only the local session-protected options endpoint, with bounded size/time and source-context matching; failure gracefully removes optional metadata.
+HUD code executes in the trusted local sOU browser origin; package validation is not runtime isolation. Install packages only from authors you trust. This HUD embeds no cloud/diagnostic token, API key, external camera URL, tracker or account credentials. Optional profile metadata uses the SDK session and requires matching team identities; no separate options polling is started.
 
 All page backgrounds stay transparent. Earlier transparency, initial visibility and image-error fixes remain included. [Panel documentation](docs/panel.md) explains automatic radar maps and custom geometry, manual production controls, reference limits and the host's false checkbox defaults.
 

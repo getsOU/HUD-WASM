@@ -21,6 +21,12 @@
           "SOU.Hud.Sdk": "0.3.0-preview.2"
         }
       },
+      "SOU.Live.Contracts": {
+        "type": "Direct",
+        "requested": "[0.3.0-preview.2, )",
+        "resolved": "0.3.0-preview.2",
+        "contentHash": "3/jTS+R5FKTuVa7Rv/FMhngJFaZAXYJeTI32LGXZh3K5p+x8/zlwsFt3sKvG4yX3LAbvedl/FJabzvpEgBxjbw=="
+      },
       "Microsoft.AspNetCore.Http.Connections.Client": {
         "type": "Transitive",
         "resolved": "10.0.14",
@@ -52,17 +58,6 @@
         "dependencies": {
           "Microsoft.AspNetCore.SignalR.Client": "10.0.14",
           "SOU.Live.Contracts": "0.3.0-preview.2"
-        }
-      },
-      "SOU.Live.Contracts": {
-        "type": "Transitive",
-        "resolved": "0.3.0-preview.2",
-        "contentHash": "3/jTS+R5FKTuVa7Rv/FMhngJFaZAXYJeTI32LGXZh3K5p+x8/zlwsFt3sKvG4yX3LAbvedl/FJabzvpEgBxjbw=="
-      },
-      "basichud.core": {
-        "type": "Project",
-        "dependencies": {
-          "SOU.Live.Contracts": "[0.3.0-preview.2, )"
         }
       }
     }

@@ -1,6 +1,6 @@
 using SOU.Live.Contracts;
 
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 /// <summary>Local decorative placeholders, selected by actual side and observer digit.</summary>
 public static class AgentPortraits

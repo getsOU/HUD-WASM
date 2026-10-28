@@ -1,16 +1,17 @@
+@* Retained only for development; the HUD does not render a connection indicator. *@
 <div class="connection @(IsHealthy ? "healthy" : "attention")" role="status">
     <span class="connection-dot" aria-hidden="true"></span>
     @if (IsPreview) { <span class="preview-badge">LOCAL PREVIEW</span> }
     <span>@LiveText · @FreshnessText</span>
-    @if (Panel != ConnectionState.Connected) { <span>· Panel @Panel.ToString().ToLowerInvariant()</span> }
+    @if (Panel != PreviewConnectionState.Connected) { <span>· Panel @Panel.ToString().ToLowerInvariant()</span> }
 </div>
 @code {
     [Parameter, EditorRequired] public HudView View { get; set; } = HudView.Empty;
-    [Parameter] public ConnectionState Live { get; set; }
-    [Parameter] public ConnectionState Panel { get; set; }
+    [Parameter] public PreviewConnectionState Live { get; set; }
+    [Parameter] public PreviewConnectionState Panel { get; set; }
     [Parameter] public bool IsPreview { get; set; }
-    private bool IsHealthy => Live == ConnectionState.Connected && View.Freshness == DataFreshness.Live;
-    private string LiveText => Live == ConnectionState.Connected ? "Connected" : Live.ToString();
+    private bool IsHealthy => Live == PreviewConnectionState.Connected && View.Freshness == DataFreshness.Live;
+    private string LiveText => Live == PreviewConnectionState.Connected ? "Connected" : Live.ToString();
     private string FreshnessText => View.Freshness switch
     {
         DataFreshness.Live => "Live data", DataFreshness.Stale => "Stale data", DataFreshness.Disconnected => "Data disconnected",

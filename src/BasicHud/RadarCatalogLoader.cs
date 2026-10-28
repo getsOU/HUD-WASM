@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using BasicHud.Core;
+using BasicHud.Presentation;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
 namespace BasicHud;

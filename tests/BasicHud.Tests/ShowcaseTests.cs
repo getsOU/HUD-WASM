@@ -3,7 +3,8 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using BasicHud;
-using BasicHud.Core;
+using BasicHud.Presentation;
+using BasicHud.Development;
 using SOU.Live.Contracts;
 
 static class ShowcaseTests
@@ -111,7 +112,7 @@ static class ShowcaseTests
         check(orderedKills.Project(Snapshot(game with { KillFeed = [kill with { Epoch = 2 }] }), now.AddSeconds(10)).Single().Event.Id == 1, "new epoch permits a restarted event ID without retaining old kills");
 
         var feed = new TestFeed();
-        await using (var hud = new HudSession(feed))
+        await using (var hud = new PreviewSession(feed))
         {
             hud.Start();
             await feed.Live.Writer.WriteAsync(Snapshot(game));

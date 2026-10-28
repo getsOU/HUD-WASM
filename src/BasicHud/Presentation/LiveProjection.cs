@@ -1,6 +1,6 @@
 using SOU.Live.Contracts;
 
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 public sealed record EconomyView(string Alive, string Money, string Equipment, string Kits, string Utility);
 public static class LiveProjection

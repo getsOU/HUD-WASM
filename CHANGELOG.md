@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Consolidate presentation logic, region selectors and clock display in the main project's `Presentation/` folder and namespace. Remove the separate Core project, references and lock file; tests link the production sources directly.
+- Keep the synthetic session, feed interface and connection states in Debug-only `Development/PreviewSession.cs`. Exclude them and the unused legacy connection indicator from Release compilation; production sessions are owned entirely by the SDK.
+
 - Migrate to public SDK 0.3.0-preview.2 and HUD API v3 with the official Blazor host, one shared session, typed options, manager views, synchronized clock and SDK-owned reconnect/disposal.
 - Subscribe independently to radar, scoreboard, each roster player, observer, history, series, killfeed, sponsors, production controls and presentation data. Ignore unrelated pose/ammunition changes and remove the global production rerender timer. Preserve the current design and explicit Debug-only synthetic preview.
 - Move hand-authored CSS into ordered SCSS modules for foundations, components, live theme and presentation views. Compile one stylesheet with pinned Dart Sass; verify generated CSS and icon geometry during builds and CI.

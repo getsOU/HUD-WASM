@@ -3,8 +3,8 @@
 <HudOutput Snapshot="session?.Snapshot" Panel="session?.Panel" LowerThirdVisible="@(session?.LowerThirdVisible ?? false)"
            Media="ResolveMedia" IsPreview="true" />
 @code {
-    [Parameter, EditorRequired] public IHudFeed Feed { get; set; } = default!;
-    private HudSession? session;
+    [Parameter, EditorRequired] public IPreviewFeed Feed { get; set; } = default!;
+    private PreviewSession? session;
     private readonly CancellationTokenSource stop = new();
     private Task clock = Task.CompletedTask;
     protected override void OnInitialized()

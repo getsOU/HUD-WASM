@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Xml.Linq;
 using BasicHud;
-using BasicHud.Core;
+using BasicHud.Presentation;
 using SOU.Live.Contracts;
 
 static class BroadcastReferenceTests

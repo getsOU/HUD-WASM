@@ -1,16 +1,16 @@
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using BasicHud.Core;
+using BasicHud.Presentation;
 using SOU.Live.Contracts;
 
 namespace BasicHud.Development;
 
 /// <summary>Local, read-only design fixtures. This file is excluded from Release compilation.</summary>
-internal sealed class PreviewFeed(string scenario) : IHudFeed
+internal sealed class PreviewFeed(string scenario) : IPreviewFeed
 {
     private static readonly DateTimeOffset PlannedStart = DateTimeOffset.UtcNow.AddMinutes(5);
-    public event Action<string, ConnectionState>? ConnectionChanged;
+    public event Action<string, PreviewConnectionState>? ConnectionChanged;
 
     public static PreviewFeed? TryCreate(Uri address)
     {
@@ -21,7 +21,7 @@ internal sealed class PreviewFeed(string scenario) : IHudFeed
 
     public async IAsyncEnumerable<LiveSnapshot> WatchLiveAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        ConnectionChanged?.Invoke("live", ConnectionState.Connected);
+        ConnectionChanged?.Invoke("live", PreviewConnectionState.Connected);
         var revision = 0L;
         var previewClock = System.Diagnostics.Stopwatch.StartNew();
         while (!cancellationToken.IsCancellationRequested)
@@ -47,7 +47,7 @@ internal sealed class PreviewFeed(string scenario) : IHudFeed
 
     public async IAsyncEnumerable<HudPanelMessage> WatchPanelAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        ConnectionChanged?.Invoke("panel", ConnectionState.Connected);
+        ConnectionChanged?.Invoke("panel", PreviewConnectionState.Connected);
         JsonElement Text(string value) => JsonSerializer.SerializeToElement(value);
         var values = new Dictionary<string, Dictionary<string, JsonElement>>
         {

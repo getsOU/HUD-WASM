@@ -1,7 +1,7 @@
 using System.Text.Json;
 using SOU.Live.Contracts;
 
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 public sealed record DisplayOptions(string Caption, bool ShowRosters, bool ShowObservedPlayer)
 {

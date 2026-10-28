@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
-using BasicHud.Core;
+using BasicHud.Presentation;
 
 namespace BasicHud;
 

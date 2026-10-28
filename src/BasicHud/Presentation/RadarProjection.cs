@@ -1,7 +1,7 @@
 using System.Globalization;
 using SOU.Live.Contracts;
 
-namespace BasicHud.Core;
+namespace BasicHud.Presentation;
 
 public sealed record RadarMarker(string Key, string Label, double X, double Y, double? Angle, TeamSide? Side, bool Dead, string Kind, string? Elevation = null)
 {
