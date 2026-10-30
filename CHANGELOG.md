@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.4.19
+
+- Keep explicitly cleared panel captions empty; use the options caption only when the panel value is absent.
 
 - Add the opt-in **Playercards horizontal** panel setting: two rows of five compact cards at the bottom, with the observer between them. Both teams share the same content order, with observer digits and strips on the left. Health fills the complete card background and recedes from top to bottom as damage is taken. Dead cards omit the large skull and lower equipment row, retaining a shorter portrait/identity card aligned to the same bottom edge. Preserve the vertical default, side colors, agent/profile portraits, condition effects and observed-player outline.
 

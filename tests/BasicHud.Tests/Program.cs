@@ -44,6 +44,12 @@ var stats = reloading with { Stats = new(17, 3, 8, null, null) };
 Check(HudView.From(Snapshot(Game([stats]))).Ct.Players[0].Kda == "17 / 8 / 3", "statistics display kills / deaths / assists consistently");
 HudPanelState Panel(string json) => new(1, JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, JsonElement>>>(json)!);
 Check(DisplayOptions.FromPanel(Panel("{}")) == DisplayOptions.Default, "missing panel values retain visible defaults");
+Check(DisplayOptions.FromPanel(Panel("{}"), "Options caption").Caption == "Options caption",
+    "missing panel caption uses the options caption");
+Check(new[] { "", "  " }.All(value => DisplayOptions.FromPanel(Panel(JsonSerializer.Serialize(new { display = new { caption = value } })), "Options caption").Caption == ""),
+    "explicitly cleared or whitespace-only panel captions stay empty instead of restoring the options caption");
+Check(DisplayOptions.FromPanel(Panel("{\"display\":{\"caption\":\"Panel caption\"}}"), "Options caption").Caption == "Panel caption",
+    "nonempty panel captions override the options caption");
 Check(DisplayOptions.FromPanel(Panel("{\"display\":{\"horizontalPlayercards\":true}}")) == DisplayOptions.Default with { HorizontalPlayercards = true },
     "horizontal playercards are an explicit opt-in and preserve all visibility defaults");
 Check(new[] { "false", "null", "\"true\"", "1" }.All(value => DisplayOptions.FromPanel(Panel("{\"display\":{\"horizontalPlayercards\":" + value + "}}")) == DisplayOptions.Default),

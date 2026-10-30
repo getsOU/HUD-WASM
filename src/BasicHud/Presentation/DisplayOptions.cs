@@ -15,8 +15,8 @@ public sealed record DisplayOptions(string Caption, bool ShowRosters, bool ShowO
     public bool HorizontalPlayercards { get; init; }
     public static DisplayOptions Default { get; } = new("", true, true);
 
-    public static DisplayOptions FromPanel(HudPanelState state) => new(
-        state.Text("display", "caption")?.Trim() is { Length: > 0 } caption ? caption : Default.Caption,
+    public static DisplayOptions FromPanel(HudPanelState state, string? defaultCaption = null) => new(
+        state.Text("display", "caption")?.Trim() ?? defaultCaption ?? Default.Caption,
         ReadVisible(state, "hideRosters"),
         ReadVisible(state, "hideObservedPlayer"))
     {

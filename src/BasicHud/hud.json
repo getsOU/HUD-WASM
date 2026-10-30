@@ -1,6 +1,6 @@
 {
   "id": "sou-basic-wasm",
-  "version": "0.4.18",
+  "version": "0.4.19",
   "name": "sOU Default HUD",
   "infoUrl": "https://github.com/getsOU/HUD-WASM",
   "outlineColors": {
@@ -39,5 +39,6 @@
       "name": "Spotlight",
       "route": "views/spotlight"
     }
-  ]
+  ],
+  "releaseNotes": "HUD API v3 migration with SDK-owned sessions and selective rendering. Requires sOU 0.3.34 or newer.\nOptional horizontal playercards with full-card health backgrounds, left observer slots and bottom-aligned compact dead cards.\nModular SCSS and consolidated presentation logic; legacy preview sessions are Debug-only.\nFix: explicitly cleared panel captions remain empty."
 }

@@ -90,9 +90,14 @@ try {
   await command({ kind: 'panel', values: { display: { caption: 'Panel caption', hideRosters: true } } });
   await hud.waitForFunction(() => document.querySelectorAll('.roster').length === 0);
   await hud.locator('.caption').filter({ hasText: 'Panel caption' }).waitFor();
+  await command({ kind: 'panel', values: { display: { caption: '', hideRosters: true } } });
+  await hud.waitForFunction(() => !document.querySelector('.caption')?.textContent.trim());
+  await command({ kind: 'options', options: { caption: 'Changed options caption' } });
+  await page.waitForTimeout(150);
+  assert.equal((await hud.locator('.caption').textContent()).trim(), '', 'cleared panel caption must stay empty after options change');
   await command({ kind: 'panel', values: { display: { hideRosters: false } } });
   await hud.waitForFunction(() => document.querySelectorAll('.roster').length === 2);
-  console.log('PASS typed options, panel caption precedence and hide/show defaults');
+  console.log('PASS typed options, panel caption precedence, explicitly cleared captions and hide/show defaults');
   const beforeHorizontal = await hud.locator('.live-player').elementHandles();
   const beforeCanvases = await hud.locator('.live-player canvas').elementHandles();
   await command({ kind: 'panel', values: { display: { horizontalPlayercards: true } } });

@@ -7,7 +7,7 @@ existing release tags without rebuilding their immutable packages. Uploads await
 
 A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk**, **SOU.Hud.Sdk.Blazor** and **SOU.Live.Contracts** NuGet packages `0.3.0-preview.2`; no private application source is required.
 
-The working source now targets **HUD API v3** and requires sOU desktop **0.3.34 or newer**. This migration is unreleased; the existing 0.4.18 release remains API v2. A new manifest version is required before publishing the migrated package.
+The working source now targets **HUD API v3** and requires sOU desktop **0.3.34 or newer**. Version 0.4.19 introduces this migration; historical releases through 0.4.18 remain API v2.
 
 The current source imports 81 weapon, grenade, status and killfeed SVGs from [JohnTimmermann/OpenHud-React-Hud](https://github.com/JohnTimmermann/OpenHud-React-Hud/tree/b2c1cedc4f03e0a1df86c9be6f9794ce0a7f8cc0). Dedicated skull and burning symbols replace the previous status art. Symbols absent from that reference retain their existing local assets; radar artwork is unchanged. Artwork remains unchanged, with newly measured optical sizing; Flashbang adds a missing SVG namespace for standalone browser loading. See [source and license details](LICENSES/OPENHUD-ICONS.md). These changes ship in 0.4.11; previous release packages remain unchanged.
 
@@ -23,13 +23,13 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 The installed HUD is named **sOU Default HUD**; its stable package ID remains `sou-basic-wasm`.
 
-1. Download `sou-basic-wasm-0.4.18.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.19.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
 5. Supply CS2/HLAE data through sOU's normal setup. Optional data can remain absent; the HUD does not create missing players, game events or statistics.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.18**, protocol v2. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.19**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
 
 The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) in `hud.json` under `outlineColors`. With a supporting sOU/HLAE host, opening the HUD through **Über CS2 anzeigen** selects these colors for X-Ray/outlines, utility trails and derived smoke coloring. Browser/OBS output alone does not select the in-game palette. Trails and smoke created after the palette is applied use the colors; existing effects may retain their previous appearance. See the [sOU HLAE color documentation](https://www.getsou.app/docs/cs2-hlae#hud-farben).
 
@@ -62,8 +62,8 @@ pwsh ./scripts/Build.ps1
 The script restores pinned Sass dependencies, checks the compiled stylesheet against its SCSS sources, performs locked NuGet restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata/region-selection tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.18.souhud
-artifacts/sou-basic-wasm-0.4.18.souhud.sha256
+artifacts/sou-basic-wasm-0.4.19.souhud
+artifacts/sou-basic-wasm-0.4.19.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:

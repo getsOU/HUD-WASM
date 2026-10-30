@@ -38,8 +38,9 @@
         if (disposed || selection is null) return;
         var state = selection.Frame;
         var panel = state.Panel?.ToState();
-        var options = panel is null ? DisplayOptions.Default : DisplayOptions.FromPanel(panel);
-        if (options.Caption.Length == 0) options = options with { Caption = state.Options?.Caption ?? "" };
+        var options = panel is null
+            ? DisplayOptions.Default with { Caption = state.Options?.Caption ?? "" }
+            : DisplayOptions.FromPanel(panel, state.Options?.Caption);
         presentation = new(state.Game, Resources with {
             Snapshot = state.Ready ? state.Snapshot : null, Panel = panel,
             Now = Clock?.IsReady == true ? Clock.Now : Resources.Now
