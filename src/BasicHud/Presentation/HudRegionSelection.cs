@@ -3,7 +3,7 @@ using SOU.Live.Contracts;
 
 namespace BasicHud.Presentation;
 
-public enum HudArea { Resources, Shell, Scoreboard, History, Radar, Series, Killfeed, CtRoster, TRoster, Player, Observed, Message, Sponsors, Production, Presentation }
+public enum HudArea { Resources, Shell, Scoreboard, Mvp, History, Radar, Series, Killfeed, CtRoster, TRoster, Player, Observed, Waiting, Sponsors, Production, Presentation }
 
 /// <summary>Presentation dependencies only; the frame is read after a selection changes.</summary>
 public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, object?[] dependencies)
@@ -19,7 +19,7 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
         if (area is HudArea.Shell or HudArea.CtRoster or HudArea.TRoster) return !ReferenceEquals(previous, current);
         if (area == HudArea.Radar) return !ReferenceEquals(previous.RadarCatalog, current.RadarCatalog)
             || !ReferenceEquals(previous.BoltRadarCatalog, current.BoltRadarCatalog) || !Equals(previous.ResolveAsset, current.ResolveAsset);
-        if (area == HudArea.Presentation) return !ReferenceEquals(previous.Metadata, current.Metadata);
+        if (area is HudArea.Presentation or HudArea.Mvp) return !ReferenceEquals(previous.Metadata, current.Metadata);
         if (area is not (HudArea.Player or HudArea.Observed)) return false;
         var steamId = (area == HudArea.Observed ? graph?.ObservedPlayer : playerKey is null ? null : graph?.Player(playerKey))?.Identity.SteamId;
         var match = graph?.ManagedMatch ?? graph?.GameMatch;
@@ -75,10 +75,18 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
                 values.Add(graph?.Freshness);
                 values.Add(info?.Map); values.Add(info?.Phase); values.Add(info?.RoundNumber); values.Add(info?.RoundPhase);
                 values.Add(info?.Ct); values.Add(info?.T); values.Add(info?.RoundBomb); values.Add(graph?.Clock);
-                values.Add(state.Options?.Caption); Match(); Field("display", "caption"); Field("display", "hideSeries"); break;
+                values.Add(state.Options?.Caption); Match(); Field("display", "caption"); Field("display", "hideSeries"); Field("branding", "logo"); break;
             case HudArea.History:
                 values.Add(info?.RoundWins); values.Add(info?.RoundNumber); values.Add(info?.RoundPhase); values.Add(info?.Phase);
                 values.Add(info?.RoundBomb); values.Add(graph?.Clock?.Countdown?.Phase); values.Add(graph?.Clock?.Bomb?.State); Match(); break;
+            case HudArea.Mvp:
+                values.Add(graph?.Freshness); values.Add(info?.Map); values.Add(info?.Phase); values.Add(info?.RoundNumber);
+                values.Add(info?.RoundPhase); values.Add(info?.RoundWinner); Match(); Field("display", "agentsOnly");
+                values.Add(graph?.Roster);
+                if (graph is not null)
+                    foreach (var player in graph.Players.OrderBy(player => player.Key, StringComparer.Ordinal))
+                    { values.Add(player.Key); values.Add(player.Value.Identity); values.Add(player.Value.Statistics); }
+                break;
             case HudArea.Series: values.Add(info?.Map); Match(); break;
             case HudArea.CtRoster:
             case HudArea.TRoster:
@@ -98,7 +106,6 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
                     : graph?.Player(playerKey ?? "")?.Identity.SteamId is { Length: > 0 } steamId && graph.ObservedPlayer?.Identity.SteamId == steamId);
                 Match(); Field("display", "agentsOnly");
                 Player(area == HudArea.Observed ? graph?.ObservedPlayer : playerKey is null ? null : graph?.Player(playerKey));
-                if (area == HudArea.Observed) { Section("branding"); Field("display", "hideSponsors"); }
                 break;
             case HudArea.Radar:
                 values.Add(info?.Map); values.Add(info?.RoundNumber); values.Add(info?.RoundPhase); values.Add(info?.Phase);
@@ -116,9 +123,9 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
                 OrderedObjects(HudObjectKindV3.Grenade, graph?.GrenadeOrder); Section("radar"); break;
             case HudArea.Killfeed:
                 values.Add(info?.Map); OrderedObjects(HudObjectKindV3.Kill, graph?.KillOrder); break;
-            case HudArea.Message:
-                values.Add(info?.RoundPhase); values.Add(info?.RoundWinner); values.Add(info?.RoundWinReason); break;
-            case HudArea.Sponsors: Match(); Section("branding"); break;
+            case HudArea.Waiting:
+                values.Add(graph is not null); break;
+            case HudArea.Sponsors: Match(); Section("branding"); Field("display", "hideSponsors"); break;
             case HudArea.Production: Section("production"); break;
             case HudArea.Presentation:
                 // Presentation views consume broad statistics, but not motion or provider timestamps.

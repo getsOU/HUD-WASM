@@ -17,19 +17,17 @@
         </div>
         <div class="observed-loadout">
             <span class="weapon-cell">@if (Active is { } active) { <EquipmentIcon Name="@active.Name" Class="observed-weapon" /> }</span>
-            <span class="ammo-cell">@if (EquipmentPresentation.UsesAmmo(Active)) { <strong class="ammo" aria-label="@EquipmentPresentation.Ammo(Active)"><span>@BroadcastContext.Number(Active!.AmmoClip)</span><small>/</small><span>@BroadcastContext.Number(Active.AmmoReserve)</span></strong> }@if (Active?.State == WeaponStatus.Reloading) { <span class="reload">RELOAD</span> }</span>
+            <span class="ammo-cell">@if (EquipmentPresentation.UsesAmmo(Active)) { <strong class="ammo" aria-label="@EquipmentPresentation.Ammo(Active)"><span>@BroadcastContext.Number(Active!.AmmoClip)</span><small>/</small><span>@BroadcastContext.Number(Active.AmmoReserve)</span></strong> }</span>
         </div>
         <span class="observed-vitals">
             <span class="observed-health"><StatusIcon Name="health" Label="Health" /><span>@BroadcastContext.Number(Player.Health)</span></span>
             <span class="observed-armor"><StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="Armor" /><span>@BroadcastContext.Number(Player.Armor)</span></span>
         </span>
     </div>
-    @if (ShowSponsors) { <Sponsors Context="Context" /> }
 </section>
 @code {
     [Parameter, EditorRequired] public PlayerState Player { get; set; } = null!;
     [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
-    [Parameter] public bool ShowSponsors { get; set; } = true;
     private WeaponState? Active => EquipmentPresentation.Active(Player);
     private string? TeamLogo => Player.Side is { } side ? Context.ResolveMedia(Context.SideTeam(side)?.Logo) : null;
     private string TeamName => Player.Side is { } side ? Context.SideTeam(side)?.Name ?? side.ToString() : "Team";

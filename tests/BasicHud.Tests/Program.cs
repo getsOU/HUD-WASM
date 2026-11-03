@@ -44,6 +44,30 @@ var stats = reloading with { Stats = new(17, 3, 8, null, null) };
 Check(HudView.From(Snapshot(Game([stats]))).Ct.Players[0].Kda == "17 / 8 / 3", "statistics display kills / deaths / assists consistently");
 HudPanelState Panel(string json) => new(1, JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, JsonElement>>>(json)!);
 Check(DisplayOptions.FromPanel(Panel("{}")) == DisplayOptions.Default, "missing panel values retain visible defaults");
+Check(BroadcastContext.Empty.SponsorIntervalSeconds == 10
+    && (BroadcastContext.Empty with { Panel = Panel("{\"branding\":{\"sponsorIntervalSeconds\":\"\"}}") }).SponsorIntervalSeconds == 10,
+    "missing or blank sponsor rotation settings default to ten seconds");
+Check((BroadcastContext.Empty with { Panel = Panel("{\"branding\":{\"sponsorIntervalSeconds\":\" 15 \"}}") }).SponsorIntervalSeconds == 15,
+    "the branding panel accepts a custom sponsor display duration in seconds");
+Check(new[] { "0", "-1", "86401", "1.5", "NaN", "999999999999999999999" }.All(value =>
+    (BroadcastContext.Empty with { Panel = Panel(JsonSerializer.Serialize(new { branding = new { sponsorIntervalSeconds = value } })) }).SponsorIntervalSeconds == 10),
+    "invalid sponsor durations safely retain the ten-second default");
+Check(new[] { "null", "true", "15" }.All(value =>
+    (BroadcastContext.Empty with { Panel = Panel("{\"branding\":{\"sponsorIntervalSeconds\":" + value + "}}") }).SponsorIntervalSeconds == 10),
+    "malformed non-text rotation values retain the default without creating an invalid timer");
+Check(BroadcastContext.Empty.CompetitionLogoHeightPercent == 100 && BroadcastContext.Empty.SponsorHeightPercent == 100,
+    "logo heights default to the full available branding height");
+var sizedBranding = BroadcastContext.Empty with { Panel = Panel("{\"branding\":{\"competitionLogoHeightPercent\":\"75%\",\"sponsorHeightPercent\":\"50,5\"}}") };
+Check(sizedBranding.CompetitionLogoHeightPercent == 75 && sizedBranding.SponsorHeightPercent == 50.5,
+    "competition and sponsor height percentages are independent and accept percent signs and decimal commas");
+Check(new[] { "", "-1", "101", "NaN", "Infinity", "bad" }.All(value =>
+{
+    var context = BroadcastContext.Empty with { Panel = Panel(JsonSerializer.Serialize(new { branding = new { competitionLogoHeightPercent = value, sponsorHeightPercent = value } })) };
+    return context.CompetitionLogoHeightPercent == 100 && context.SponsorHeightPercent == 100;
+}), "invalid logo height percentages retain the full-height default without unsafe CSS values");
+var zeroBranding = BroadcastContext.Empty with { Panel = Panel("{\"branding\":{\"competitionLogoHeightPercent\":\"0\",\"sponsorHeightPercent\":\"100\"}}") };
+Check(zeroBranding.CompetitionLogoHeightPercent == 0 && zeroBranding.SponsorHeightPercent == 100,
+    "logo height controls include both zero and full height");
 Check(DisplayOptions.FromPanel(Panel("{}"), "Options caption").Caption == "Options caption",
     "missing panel caption uses the options caption");
 Check(new[] { "", "  " }.All(value => DisplayOptions.FromPanel(Panel(JsonSerializer.Serialize(new { display = new { caption = value } })), "Options caption").Caption == ""),
@@ -121,6 +145,7 @@ PortraitEffectTests.Run(Check);
 WeaponPresenceTests.Run(Check);
 RadarMotionAndPicksTests.Run(Check);
 V3RegionTests.Run(Check);
+RoundMvpTests.Run(Check);
 Console.WriteLine($"{checks} checks passed.");
 
 static async Task Until(Func<bool> ready)

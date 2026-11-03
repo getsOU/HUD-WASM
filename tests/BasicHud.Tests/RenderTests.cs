@@ -107,9 +107,7 @@ static class RenderTests
             var observerPanel = new HudPanelState(1, new() { ["branding"] = new() { ["sponsors"] = JsonSerializer.SerializeToElement(new[] { "/cast-media/sponsor.png" }) } });
             await renderer.Render(agentObserved, new() { [nameof(ObservedPlayer.Player)] = agentPlayer, [nameof(ObservedPlayer.Context)] = agentContext with { Panel = observerPanel } });
             check(renderer.HasAttribute(agentObserved, "class", "observed-hero") && renderer.HasAttribute(agentObserved, "class", "observed-summary"), "observer reference layout separates the large portrait from its compact information strip");
-            check(renderer.HasDescendantAttribute(agentObserved, "src", "/cast-media/sponsor.png"), "observer card renders configured sponsor images in its footer");
-            await renderer.Render(agentObserved, new() { [nameof(ObservedPlayer.ShowSponsors)] = false });
-            check(!renderer.HasDescendantAttribute(agentObserved, "src", "/cast-media/sponsor.png"), "the existing sponsor visibility option also hides the observer footer");
+            check(!renderer.HasDescendantAttribute(agentObserved, "src", "/cast-media/sponsor.png"), "observer card does not duplicate sponsors placed above the killfeed");
             await renderer.Render(spotlight, new() { [nameof(SpotlightView.Context)] = agentContext });
             check(renderer.HasDescendantAttribute(spotlight, "src", "/cast-media/featured.png"), "actual spotlight displays its supplied player image in normal mode");
             agentPanel.Values["display"]["agentsOnly"] = JsonSerializer.SerializeToElement(true);
@@ -153,9 +151,47 @@ static class RenderTests
             var competitionContext = reference with { Snapshot = reference.Snapshot! with { ManagedMatch = competitionMatch } };
             await renderer.Render(scoreboard, new() { [nameof(Scoreboard.Context)] = competitionContext });
             check(renderer.HasText(scoreboard, "ESEA League Season 52") && renderer.HasText(scoreboard, "Division 3 | Group B | Round 4"), "scoreboard splits tournament/season from the section path and competition round");
-            check((renderer.HasAttribute(scoreboard, "src", "assets/branding/sou-wordmark.png") || renderer.HasMarkup(scoreboard, "assets/branding/sou-wordmark.png")) && (renderer.HasAttribute(scoreboard, "alt", "sOU") || renderer.HasMarkup(scoreboard, "alt=\"sOU\"")), "scoreboard includes the fixed local sOU brand between competition fields");
+            check(renderer.HasDescendantAttribute(scoreboard, "src", "assets/branding/sou-wordmark.png") && renderer.HasDescendantAttribute(scoreboard, "data-image-fallback", "true"), "scoreboard defaults to the local sOU wordmark between competition fields");
+            var logoPanel = new HudPanelState(1, new() { ["branding"] = new() { ["logo"] = JsonSerializer.SerializeToElement("/cast-media/broadcast.png") } });
+            await renderer.Render(scoreboard, new() { [nameof(Scoreboard.Context)] = competitionContext with { Panel = logoPanel, ResolveMedia = path => path == "/cast-media/broadcast.png" ? path : null } });
+            check(renderer.HasDescendantAttribute(scoreboard, "src", "/cast-media/broadcast.png") && !renderer.HasDescendantAttribute(scoreboard, "src", "assets/branding/sou-wordmark.png"), "scoreboard replaces its center wordmark with the resolved panel broadcast logo");
+            await renderer.Render(scoreboard, new() { [nameof(Scoreboard.Context)] = competitionContext with { Panel = logoPanel } });
+            check(renderer.HasDescendantAttribute(scoreboard, "src", "assets/branding/sou-wordmark.png"), "unresolvable panel logos restore the packaged wordmark instead of using an unsafe media path");
             await renderer.Render(scoreboard, new() { [nameof(Scoreboard.Context)] = reference });
             check(renderer.HasText(scoreboard, "Chosen caption") && !renderer.HasText(scoreboard, "Division 3 | Group B | Round 4"), "missing competition restores caption fallback without retaining another match's section path");
+            var liveBranding = renderer.Attach(new LiveBranding());
+            var brandingMatch = competitionMatch with
+            {
+                Competition = competitionMatch.Competition! with
+                {
+                    Logo = "/cast-media/competition.png",
+                    Sponsors = [new("sponsor", "Sponsor", "/cast-media/sponsor.png")]
+                }
+            };
+            var brandingContext = reference with { Snapshot = reference.Snapshot! with { ManagedMatch = brandingMatch }, Panel = observerPanel, ResolveMedia = path => path?.StartsWith("/cast-media/", StringComparison.Ordinal) == true ? path : null };
+            await renderer.Render(liveBranding, new() { [nameof(LiveBranding.Context)] = brandingContext });
+            check(renderer.HasDescendantAttribute(liveBranding, "src", "/cast-media/competition.png") && renderer.HasDescendantAttribute(liveBranding, "src", "/cast-media/sponsor.png"),
+                "live branding renders the actual competition logo and combined competition/panel sponsors");
+            check(brandingContext.SponsorImages().Count == 1, "competition and panel sponsor references are deduplicated");
+            await renderer.Render(liveBranding, new() { [nameof(LiveBranding.ShowSponsors)] = false });
+            check(renderer.HasDescendantAttribute(liveBranding, "src", "/cast-media/competition.png") && !renderer.HasDescendantAttribute(liveBranding, "src", "/cast-media/sponsor.png"),
+                "hiding sponsors preserves the competition logo");
+            await renderer.Render(liveBranding, new() { [nameof(LiveBranding.Context)] = BroadcastContext.Empty, [nameof(LiveBranding.ShowSponsors)] = true });
+            check(!renderer.HasElement(liveBranding, "aside"), "missing competition and sponsor images do not create a branding placeholder");
+            var mvpCard = renderer.Attach(new RoundMvp());
+            var mvpPlayer = new PlayerState("round-mvp", "Round winner", TeamSide.CounterTerrorists, PlayerActivity.Playing, 100)
+            { ObserverSlot = 1, Stats = new(12, 0, 3, 2, 0), RoundKills = 2, RoundDamage = 200 };
+            var mvpContext = reference with { Snapshot = reference.Snapshot! with { Game = referenceGame with { Players = [mvpPlayer] } } };
+            await renderer.Render(mvpCard, new() { [nameof(RoundMvp.Context)] = mvpContext });
+            check(!renderer.HasElement(mvpCard, "section"), "the round MVP component stays absent before an observed award");
+            var mvpSnapshot = mvpContext.Snapshot! with { Revision = 2, Game = referenceGame with { RoundPhase = RoundPhase.Over, Players = [mvpPlayer with { Stats = mvpPlayer.Stats with { Mvps = 3 } }] } };
+            await renderer.Render(mvpCard, new() { [nameof(RoundMvp.Context)] = mvpContext with { Snapshot = mvpSnapshot } });
+            check(renderer.HasAttribute(mvpCard, "aria-label", "Round MVP") && renderer.HasText(mvpCard, "Round winner")
+                && renderer.HasText(mvpCard, "2") && renderer.HasText(mvpCard, "200")
+                && renderer.HasDescendantAttribute(mvpCard, "src", "assets/agents/ct-1.png"),
+                "the actual MVP card renders player identity, completed-round kills/damage and the side/slot portrait fallback");
+            await renderer.Render(mvpCard, new() { [nameof(RoundMvp.Context)] = mvpContext with { Snapshot = null } });
+            check(!renderer.HasElement(mvpCard, "section"), "the actual MVP component removes its DOM when the session loses its baseline");
             var series = renderer.Attach(new LiveMapSeries());
             await renderer.Render(series, new() { [nameof(LiveMapSeries.Context)] = reference });
             check(renderer.HasText(series, "Inferno") && !renderer.HasAttribute(series, "aria-current", "step") && !renderer.HasText(series, "Pending"), "actual compact map series does not mark unrelated Inferno current during Dust2 or expose technical status names");
@@ -197,7 +233,7 @@ static class RenderTests
             await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = weaponPlayer with { Weapons = [held with { Name = "weapon_future_rifle" }] }, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
             check(renderer.HasComponent(livePlayer, typeof(EquipmentIcon)), "a classified roster rifle with unknown artwork retains its honest fallback");
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Weapons = [held with { State = WeaponStatus.Reloading }] }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
-            check(renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && renderer.HasAttribute(observedPlayer, "aria-label", "7 / 61") && (renderer.HasAttribute(observedPlayer, "class", "reload") || renderer.HasMarkup(observedPlayer, "class=\"reload\"")), "actual observed reload keeps grouped source ammunition and a reload cue");
+            check(renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && renderer.HasAttribute(observedPlayer, "aria-label", "7 / 61") && !renderer.HasText(observedPlayer, "RELOAD") && !renderer.HasMarkup(observedPlayer, "RELOAD") && !renderer.HasAttribute(observedPlayer, "class", "reload"), "reloading preserves the observer weapon and ammunition without an additional reload label");
             check(!renderer.HasAttribute(observedPlayer, "class", "observed-weapon-name") && !renderer.HasDescendantText(observedPlayer, "AK-47"), "observer has no duplicate weapon label beside its accessible original icon");
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Health = 0 }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
             check(!renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "transition from armed/reloading to dead clears the rendered current weapon and ammunition immediately");

@@ -1,5 +1,5 @@
 .hud.scene-live {
-    /* Observer reference: large portrait, compact identity/vitals strip, sponsor footer. */
+    /* Observer reference: large portrait and compact identity/vitals strip. */
     .observed {
         left: 41.15%;
         top: auto;
@@ -153,9 +153,6 @@
         font-size: 0.58cqw;
         color: #bac8da;
     }
-    .observed .reload {
-        font-size: 0.42cqw;
-    }
     .observed-vitals {
         display: grid;
         grid-template-columns: auto;
@@ -195,24 +192,5 @@
     .observed-armor .status-icon {
         --icon-height: 0.5cqw;
         --icon-max-width: 0.65cqw;
-    }
-    .observed > .sponsors {
-        position: static;
-        inset: auto;
-        display: flex;
-        width: 100%;
-        height: 2.45cqw;
-        margin-top: 0.25cqw;
-        padding: 0.35cqw 0.6cqw;
-        gap: 0.7cqw;
-        justify-content: center;
-        background: #091a3bbf;
-    }
-    .observed > .sponsors .sponsor-image {
-        flex: 0 1 auto;
-        width: auto;
-        max-width: 30%;
-        max-height: 100%;
-        object-fit: contain;
     }
 }

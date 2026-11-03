@@ -33,6 +33,7 @@ internal static class V3RegionTests
         check(!Same(first, pose, HudArea.Radar) && Same(first, pose, HudArea.Scoreboard) && Same(first, pose, HudArea.Player, keys[0])
             && Same(first, pose, HudArea.Player, keys[1]) && Same(first, pose, HudArea.Observed), "v3 pose updates select radar alone, leaving scoreboard, observer and both cards unchanged");
         check(!pose.Game!.IsCompatibilitySnapshotCreated, "v3 selectors do not materialize the compatibility snapshot while comparing dependencies");
+        check(Same(first, pose, HudArea.Mvp), "MVP selection ignores pose-only updates");
 
         var shot = moved with { Weapons = [moved.Weapons!.Value[0] with { AmmoClip = 29 }] };
         var ammo = Frame(source with { Revision = 3, Game = source.Game with { Players = [shot, p2], ObservedPlayer = shot } });
@@ -83,5 +84,9 @@ internal static class V3RegionTests
         check(!Same(profileFrame, stale, HudArea.Scoreboard), "freshness transitions invalidate the score clock so stale countdowns stop advancing");
         var bomb = Frame(source with { Revision = 8, ManagedMatch = match, Freshness = DataFreshness.Stale, Game = source.Game with { Bomb = new(BombStatus.Planted, null, null, 30) } });
         check(!Same(stale, bomb, HudArea.History), "bomb state changes invalidate round-history visibility independently of countdown phase");
+        var mvpPlayer = shot with { Stats = new(2, 0, 0, 1, 0), RoundKills = 2, RoundDamage = 200 };
+        var mvpFrame = Frame(source with { Revision = 9, Game = source.Game with { Players = [mvpPlayer, p2] } });
+        check(!Same(ammo, mvpFrame, HudArea.Mvp) && Same(ammo, pose, HudArea.Mvp),
+            "MVP selection reacts to statistics while ignoring ammunition updates");
     }
 }

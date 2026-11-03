@@ -1,0 +1,58 @@
+@implements IDisposable
+@if (mvp is { } award)
+{
+    <section class="round-mvp @PlayerPresentation.SideClass(award.Player.Side)" aria-label="Round MVP">
+        <PlayerPortrait Player="award.Player" Context="Context" Class="mvp-portrait" OmitFallback="true" />
+        <div class="mvp-details">
+            <span class="mvp-round">ROUND @award.RoundNumber MVP</span>
+            <strong class="mvp-name" title="@Context.Name(award.Player)">@Context.Name(award.Player)</strong>
+            <div class="mvp-stats">
+                <span>KILLS <b>@BroadcastContext.Number(award.Player.RoundKills)</b></span>
+                <span>DAMAGE <b>@BroadcastContext.Number(award.Player.RoundDamage)</b></span>
+            </div>
+        </div>
+    </section>
+}
+@code {
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    private readonly RoundMvpProjection projection = new();
+    private RoundMvpView? mvp;
+    private (Guid Session, string? Map, string? Match, int Round, string? Player)? awardKey;
+    private CancellationTokenSource? expiry;
+    private bool expired, disposed;
+    protected override void OnParametersSet()
+    {
+        var next = projection.Update(Context.Snapshot);
+        var key = next is null ? ((Guid, string?, string?, int, string?)?)null
+            : (Context.Snapshot!.SessionId, Context.Game?.Map, Context.Match?.Id, next.RoundNumber, next.Player.SteamId);
+        if (key != awardKey)
+        {
+            CancelExpiry(); awardKey = key; expired = false;
+            if (next is not null)
+            {
+                expiry = new();
+                _ = HideAfterDelay(expiry, expiry.Token);
+            }
+        }
+        mvp = expired ? null : next;
+    }
+    private async Task HideAfterDelay(CancellationTokenSource owner, CancellationToken token)
+    {
+        try
+        {
+            // One local presentation deadline, independent of game time and feed updates.
+            await Task.Delay(TimeSpan.FromSeconds(5), token);
+            if (disposed || token.IsCancellationRequested) return;
+            await InvokeAsync(() => {
+                if (disposed || token.IsCancellationRequested || !ReferenceEquals(expiry, owner)) return;
+                expired = true; mvp = null; StateHasChanged();
+            });
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
+    }
+    private void CancelExpiry()
+    {
+        expiry?.Cancel(); expiry?.Dispose(); expiry = null;
+    }
+    public void Dispose() { disposed = true; CancelExpiry(); }
+}

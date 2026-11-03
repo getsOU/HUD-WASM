@@ -36,8 +36,6 @@ static class ShowcaseTests
         check(LiveProjection.ForSide(knownRoster, TeamSide.CounterTerrorists).Money == "$1,000" && LiveProjection.ForSide(game, TeamSide.CounterTerrorists).Money == "—", "side totals require an explicitly available allplayers section");
         var unknownSide = knownRoster with { Players = [player, player with { SteamId = "2", Side = TeamSide.Unknown }] };
         check(LiveProjection.ForSide(unknownSide, TeamSide.CounterTerrorists).Money == "—" && LiveProjection.ForSide(unknownSide, TeamSide.CounterTerrorists).Alive.Contains("unknown", StringComparison.Ordinal), "globally unassigned players prevent apparently complete CT or T totals");
-        check(LiveProjection.RoundMessage(game with { RoundPhase = RoundPhase.Over, RoundWinner = TeamSide.CounterTerrorists }).StartsWith("CT WIN", StringComparison.Ordinal), "round winner banners require explicit round winner and ended phase");
-        check(LiveProjection.RoundMessage(game with { RoundWinner = TeamSide.CounterTerrorists }) == "", "a winner field does not trigger a banner during a live round");
         var bombPhaseOnly = game with { Bomb = null, RoundBomb = BombStatus.Planted, Countdown = new(CountdownPhase.Bomb, 32.2) };
         check(HudView.From(Snapshot(bombPhaseOnly)).Timer.Value == "0:33", "explicit planted state can use actual matching bomb-phase seconds without a bomb block");
         check(HudView.From(Snapshot(bombPhaseOnly with { Countdown = new(CountdownPhase.Live, 91) })).Timer.Value == "—", "planted state never borrows unrelated round countdown seconds");

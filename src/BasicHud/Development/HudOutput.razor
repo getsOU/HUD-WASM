@@ -13,13 +13,14 @@
             <TimedContext Context="context"><ChildContent Context="timed">
                 <Scoreboard View="@HudView.From(timed.Snapshot)" Caption="@Options.Caption" Context="timed" ShowSeries="Options.ShowSeries" />
             </ChildContent></TimedContext>
+            <RoundMvp Context="context" />
+            <LiveBranding Context="context" ShowSponsors="Options.ShowSponsors" />
             @if (Options.ShowRoundHistory) { <RoundHistory Context="context" /> }
             @if (Options.ShowRadar) { <TimedContext Context="context" Milliseconds="100"><ChildContent Context="timed"><Radar View="@RadarView(timed)" OverviewFailed="OverviewFailed" /></ChildContent></TimedContext> }
             @if (Options.ShowSeries) { <LiveMapSeries Context="context" /> }
             @if (Options.ShowKillfeed) { <TimedContext Context="context" Milliseconds="250"><ChildContent Context="timed"><Killfeed Entries="@(killfeedProjection.Project(timed.Snapshot, timed.Now))" /></ChildContent></TimedContext> }
             @if (Options.ShowRosters) { <Roster Side="View.Ct" Context="context" /><Roster Side="View.T" Context="context" /> }
-            @if (Options.ShowObservedPlayer && context.Game?.ObservedPlayer is { } observed) { <ObservedPlayer Player="observed" Context="context" ShowSponsors="Options.ShowSponsors" /> }
-            @if (LiveProjection.RoundMessage(context.Game) is { Length: > 0 } message) { <div class="round-message">@message</div> }
+            @if (Options.ShowObservedPlayer && context.Game?.ObservedPlayer is { } observed) { <ObservedPlayer Player="observed" Context="context" /> }
             @if (!View.HasGame) { <div class="waiting"><p>Waiting for game data</p></div> }
         }
         else
@@ -35,7 +36,7 @@
                 case "spotlight": <SpotlightView Context="context" /> break;
             }
         }
-        @if (Options.ShowSponsors && !(scene == "live" && Options.ShowObservedPlayer && context.Game?.ObservedPlayer is not null)) { <Sponsors Context="context" /> }
+        @if (scene != "live" && Options.ShowSponsors) { <Sponsors Context="context" /> }
         <ProductionLayer Context="context" LowerThirdVisible="@(LowerThirdVisible)" />
     </div>
 </main>

@@ -1,12 +1,13 @@
-# 0.4.19
+# 0.4.20
 
-Migrate to HUD API v3 and add an optional horizontal playercard layout.
+Add round MVP presentation and configurable live branding above the killfeed.
 
-- Use SDK 0.3.0-preview.2 for one shared production session, typed options, manager views, synchronized time and reconnection. Update only the HUD regions affected by changed data.
-- Add **Playercards horizontal** in the panel. Both teams use the same content order and left observer slots. Health fills the entire background; compact dead cards omit the large skull and align to the bottom.
-- Consolidate presentation logic in the main project and keep legacy preview sessions Debug-only. Split styles into SCSS modules.
-- Keep explicitly cleared panel captions empty instead of restoring the options caption.
+- Attach the MVP card directly below the matchbar at the same width, using the player's side color, portrait and completed-round kills/damage. Detect observed MVP-counter increases across round-end timing differences. Hide each award after five seconds, including during pauses and after match end; repeated data cannot extend or revive it. Fix clipped player names.
+- Replace the center scoreboard wordmark through **Branding → Broadcast logo**, with the white sOU wordmark as fallback. Remove the outside matchbar/MVP borders and the separate CT/T win banner.
+- Move the competition logo and combined competition/panel sponsors above the killfeed. Keep the competition logo fixed and rotate sponsors individually, with a ten-second default and panel-configurable duration. The sponsor toggle preserves the competition logo.
+- Add independent 0–100% logo size controls. Height and width scale together, preserving image proportions and placement; both use the same full-size width.
+- Remove the observer sponsor footer and **RELOAD** label. Retain the actual weapon and ammunition during reloading.
 
-Requires **sOU desktop 0.3.34 or newer**. Import **0.4.19**, select the new version and reopen outputs. The package ID remains `sou-basic-wasm`; existing release packages remain unchanged.
+Requires **sOU desktop 0.3.34 or newer**. Import **0.4.20**, select the new version and reopen outputs. The package ID remains `sou-basic-wasm`.
 
-Validation: locked restore, formatting, 291 model/component/asset checks, Release publish, SDK package validation, Chromium v3 rendering checks, uploader tests and release guards. Synthetic preview checks do not replace testing OBS/native output with real game data.
+Validation: locked restore, formatting, 325 model/component/asset checks, Release publish, SDK package validation, Chromium rendering/rotation/timeout/size checks, 14 uploader tests and release guards. Browser tests use synthetic data; they do not claim native CS2/OBS coverage.

@@ -30,7 +30,10 @@
   ]},
   {"name":"branding","label":"Branding","inputs":[
     {"type":"image","name":"logo","label":"Broadcast logo"},
-    {"type":"images","name":"sponsors","label":"Additional sponsors"}
+    {"type":"images","name":"sponsors","label":"Additional sponsors"},
+    {"type":"text","name":"sponsorIntervalSeconds","label":"Sponsorenrotation (Sekunden pro Logo, Standard: 10)"},
+    {"type":"text","name":"competitionLogoHeightPercent","label":"Höhe Wettbewerbslogo (0–100 %, Standard: 100)"},
+    {"type":"text","name":"sponsorHeightPercent","label":"Höhe Sponsoren (0–100 %, Standard: 100)"}
   ]},
   {"name":"radar","label":"Radar overview (optional)","inputs":[
     {"type":"image","name":"overview","label":"Local overview image"},

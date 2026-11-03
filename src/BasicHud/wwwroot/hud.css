@@ -20,14 +20,20 @@
   --card-empty: #25241ad9;
 }
 
+.hud.scene-live {
+  --matchbar-left: 39.25%;
+  --matchbar-top: 1.25cqw;
+  --matchbar-width: 21.5%;
+  --matchbar-height: 5.3cqw;
+}
 .hud.scene-live .scoreboard {
-  left: 39.25%;
-  top: 1.25cqw;
-  width: 21.5%;
-  height: 5.3cqw;
+  left: var(--matchbar-left);
+  top: var(--matchbar-top);
+  width: var(--matchbar-width);
+  height: var(--matchbar-height);
   overflow: hidden;
   background: var(--broadcast-blue);
-  border: 0.08cqw solid #b6def5;
+  border: 0;
 }
 
 .hud.scene-live .live-map-series {
@@ -364,16 +370,6 @@
   right: 0.8%;
   top: 8cqw;
 }
-.hud.scene-live .sponsors,
-.hud.scene-live .sponsor-rail {
-  left: auto;
-  right: 1.2%;
-  top: 1.25cqw;
-  width: 20cqw;
-  height: 2.2cqw;
-  background: transparent;
-  justify-content: flex-end;
-}
 .hud.scene-live .signature {
   display: none;
 }
@@ -407,8 +403,11 @@
   display: block;
   width: 2.6cqw;
   height: 0.75cqw;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
+}
+.hud.scene-live .caption-brand[data-image-fallback=true] {
+  object-fit: cover;
   filter: brightness(0) invert(1);
 }
 .hud.scene-live .score-strip {
@@ -511,7 +510,7 @@
 }
 
 .hud.scene-live {
-  /* Observer reference: large portrait, compact identity/vitals strip, sponsor footer. */
+  /* Observer reference: large portrait and compact identity/vitals strip. */
 }
 .hud.scene-live .observed {
   left: 41.15%;
@@ -663,9 +662,6 @@
   font-size: 0.58cqw;
   color: #bac8da;
 }
-.hud.scene-live .observed .reload {
-  font-size: 0.42cqw;
-}
 .hud.scene-live .observed-vitals {
   display: grid;
   grid-template-columns: auto;
@@ -702,25 +698,6 @@
 .hud.scene-live .observed-armor .status-icon {
   --icon-height: 0.5cqw;
   --icon-max-width: 0.65cqw;
-}
-.hud.scene-live .observed > .sponsors {
-  position: static;
-  inset: auto;
-  display: flex;
-  width: 100%;
-  height: 2.45cqw;
-  margin-top: 0.25cqw;
-  padding: 0.35cqw 0.6cqw;
-  gap: 0.7cqw;
-  justify-content: center;
-  background: rgba(9, 26, 59, 0.7490196078);
-}
-.hud.scene-live .observed > .sponsors .sponsor-image {
-  flex: 0 1 auto;
-  width: auto;
-  max-width: 30%;
-  max-height: 100%;
-  object-fit: contain;
 }
 
 /* Derived from docs/cs2-icon-geometry.json; sizing preserves shipped SVG files. */
@@ -2069,21 +2046,6 @@ body,
   --icon-height: 0.75em;
 }
 
-.round-message {
-  position: absolute;
-  left: 37.5%;
-  top: 13.518519%;
-  width: 25%;
-  height: 1.1em;
-  background: var(--surface);
-  text-align: center;
-  font-size: 0.625em;
-  line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .roster {
   position: absolute;
   top: 62.407407%;
@@ -2469,12 +2431,6 @@ body,
   font-size: 0.75em;
 }
 
-.reload {
-  display: inline-block;
-  font-size: 0.55em;
-  color: #ffd5a3;
-}
-
 .radar-widget {
   position: absolute;
   left: 1.25%;
@@ -2793,20 +2749,6 @@ body,
   max-height: 100%;
   object-fit: contain;
   font-size: 0.6em;
-}
-
-.scene-live > .sponsors {
-  left: 42.5%;
-  top: 96.296296%;
-  width: 15%;
-  height: 2.222222%;
-  padding: 0.1em 0.3em;
-  gap: 0.4em;
-  background: rgba(14, 20, 29, 0.7);
-}
-
-.scene-live > .sponsors .sponsor-image {
-  max-width: 4em;
 }
 
 .waiting {
@@ -3781,4 +3723,124 @@ body,
 }
 .hud.scene-live.rosters-horizontal .roster-empty {
   grid-column: 1/-1;
+}
+
+.hud.scene-live {
+  --mvp-height: 6cqw;
+}
+.hud.scene-live .round-mvp {
+  position: absolute;
+  left: var(--matchbar-left);
+  top: calc(var(--matchbar-top) + var(--matchbar-height));
+  width: var(--matchbar-width);
+  height: var(--mvp-height);
+  display: grid;
+  grid-template-columns: 6.4cqw minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0.6cqw;
+  padding: 0 0.65cqw 0 0.2cqw;
+  background: var(--card-fill, var(--broadcast-blue));
+  border: 0;
+  overflow: hidden;
+}
+.hud.scene-live .mvp-portrait {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  object-position: center bottom;
+  --avatar-fit: contain;
+  --avatar-position: center bottom;
+}
+.hud.scene-live .mvp-details {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.3cqw;
+  text-align: left;
+}
+.hud.scene-live .mvp-round {
+  color: var(--side);
+  font-size: 0.75cqw;
+  font-weight: 700;
+}
+.hud.scene-live .mvp-name {
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1.35cqw;
+  line-height: 1.3;
+  padding-block: 0.04em 0.12em;
+}
+.hud.scene-live .mvp-stats {
+  display: flex;
+  gap: 0.85cqw;
+  font-size: 0.7cqw;
+  white-space: nowrap;
+}
+.hud.scene-live .mvp-stats b {
+  margin-left: 0.2cqw;
+  color: var(--side);
+  font-size: 0.85cqw;
+}
+.hud.scene-live:has(> .round-mvp) > .round-history {
+  top: calc(var(--matchbar-top) + var(--matchbar-height) + var(--mvp-height) + 0.4cqw);
+}
+
+.hud.scene-live .live-branding {
+  --branding-logo-width: 15.4cqw;
+  position: absolute;
+  top: 1.25cqw;
+  right: 0.8%;
+  width: calc(var(--branding-logo-width) * 2 + 0.8cqw);
+  height: 5.7cqw;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.8cqw;
+}
+.hud.scene-live .live-competition-logo {
+  flex: 0 0 var(--branding-logo-width);
+  width: var(--branding-logo-width);
+  min-width: 0;
+  height: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transform: scale(var(--competition-logo-scale, 1));
+  transform-origin: center;
+}
+.hud.scene-live .live-branding .sponsors {
+  position: static;
+  inset: auto;
+  flex: 0 0 var(--branding-logo-width);
+  min-width: 0;
+  width: var(--branding-logo-width);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+}
+.hud.scene-live .live-branding .sponsor-image {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  transform: scale(var(--sponsor-logo-scale, 1));
+  transform-origin: center;
+  animation: sponsor-rotation-in 350ms ease-out;
+}
+
+@keyframes sponsor-rotation-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

@@ -23,13 +23,21 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 The installed HUD is named **sOU Default HUD**; its stable package ID remains `sou-basic-wasm`.
 
-1. Download `sou-basic-wasm-0.4.19.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.20.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
 5. Supply CS2/HLAE data through sOU's normal setup. Optional data can remain absent; the HUD does not create missing players, game events or statistics.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.19**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+Under **Branding → Broadcast logo**, select an image to replace the sOU wordmark at the top center of the scoreboard and set the broadcast logo in presentation views. Custom logos keep their original colors and fit inside the existing heading. Clear the image to restore the white sOU wordmark; failed images also fall back to it.
+
+In the live HUD, the active competition's logo and sponsors appear above the killfeed on the right. The competition logo stays fixed; sponsor logos rotate individually every ten seconds by default with a short fade-in. Set **Branding → Sponsorenrotation** to the desired whole seconds per logo; blank or invalid values use ten seconds. Duration changes apply immediately and keep the current logo. **Branding → Additional sponsors** adds images to the same rotation; duplicate image references appear once. **Hide sponsors** hides only the sponsors, retaining the competition logo. This area stays available when the observer card is hidden, and images are no longer repeated below the observer card.
+
+Competition and sponsor logos have equal-width slots at full size. **Branding → Höhe Wettbewerbslogo** and **Höhe Sponsoren** independently set each image's height to 0–100% of the available branding height; width scales by the same factor. For example, 50% halves both dimensions. The default is 100%; decimal points/commas and a percent suffix are accepted. Image proportions and placement stay intact; 0% hides that image without moving the other logo.
+
+The round MVP card attaches directly below the matchbar at the same width. Both areas have no outside border; the MVP uses the player's CT/T card background. There is no separate round-winner banner. The card appears only after an unambiguous MVP-counter increase has been observed and retains the completed round's kills and damage through the following freeze. It hides automatically after five seconds, including during pauses and after match end; repeated updates do not extend the display. Live play or lost data continuity can clear it earlier. Initial/stale/disconnected data and ambiguous counter jumps do not create an award; unavailable round statistics remain `—`.
+
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.20**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
 
 The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) in `hud.json` under `outlineColors`. With a supporting sOU/HLAE host, opening the HUD through **Über CS2 anzeigen** selects these colors for X-Ray/outlines, utility trails and derived smoke coloring. Browser/OBS output alone does not select the in-game palette. Trails and smoke created after the palette is applied use the colors; existing effects may retain their previous appearance. See the [sOU HLAE color documentation](https://www.getsou.app/docs/cs2-hlae#hud-farben).
 
@@ -37,10 +45,12 @@ The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) 
 
 ## What's implemented
 
-- A single clear match header: real current-side team names/logos, large round scores, actual source timer and central round/state label. NYXIA-style heading with tournament/season on the left, a white sOU wordmark in the center and the competition section path/round on the right; saved caption text remains the fallback without competition data. Series-win marks stay attached to their actual teams.
+- A single clear match header: real current-side team names/logos, large round scores, actual source timer and central round/state label. NYXIA-style heading with tournament/season on the left, the panel-selected broadcast logo (white sOU fallback) in the center and the competition section path/round on the right; saved caption text remains the fallback without competition data. Series-win marks stay attached to their actual teams.
 - Compact mirrored live roster cards with observer digits, central optional portraits, HP/armor, real weapon silhouettes, utility/equipment/status icons, money and K/D/A. The complete inventory, round damage/kills and recorded metrics remain in presentation/statistics views.
 - Actual observed player with active/reloading weapon, firearm ammunition and utility icons. Dead players show no stale current weapons or inventory; an alive player without an active weapon has an empty weapon area. In the observer, holstered equipment is never substituted for an active weapon. Roster rows instead show carried primary firearm, otherwise pistol, otherwise knife, independently of held state. A genuinely supplied unknown active weapon keeps its own fallback. No grenade ammo fractions are invented.
-- Per-side complete-or-unknown economy in the roster footer, with full alive/kit/utility/timeouts/loss-streak detail in statistics; numbered recent round results appear only during freeze, pause, timeout or intermission; active rounds including bomb/defuse remain clear. The statistics view retains the complete supplied history.
+- Complete-or-unknown per-side economy, alive/kit/utility/timeouts/loss-streak detail in statistics; numbered recent round results appear only during freeze, pause, timeout or intermission. The statistics view retains the complete supplied history.
+- A side-colored round MVP card attached to the matchbar, driven by observed MVP-counter increases and source round statistics. Each award expires after five seconds, including during pauses and after match end.
+- Competition branding and rotating sponsor images above the killfeed, with panel controls for rotation duration and independent proportional logo sizes.
 - Real HLAE killfeed, keyed by connection/epoch/event ID, with all supplied modifier flags; no kills inferred from health changes.
 - Original Boltobserv radar with the original transparent maps, coordinate metadata and object-specific Nuke/Vertigo split projection. Original-style direction drops, observer digits, observed ring, bomb carrier, flashed/dead markers and utility connect to actual public data. Buyzones appear only during source freeze/warmup. Fresh HLAE supplies the whole player frame; absent/expired HLAE falls back to GSI; optional custom calibration and separately attributed Valve overview fallbacks remain available. No permanent technical radar caption or empty replacement grid.
 - Ordered compact map-series cells below the radar, explicit stored results, exact current-map highlighting and side-aligned series wins. Full maps/veto/results and competition details remain in their presentation views. An unrelated source map never claims a configured current series slot.
@@ -49,7 +59,7 @@ The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) 
 
 Missing values remain `—`. Team A is never assumed CT. Unknown health is not treated as death. The observed card never substitutes the local/menu player. No invented MVP, clutch, overtime, score, map geometry, player photo, win probability or source event is supplied. The [matrix](docs/features.md) identifies each real source and limitation.
 
-The 1920×1080 live composition reserves the central game area (x360–1560, y160–930). The score header is 960×72; the radar is 288×288; each bottom-corner roster is at most 312×382 including five 64px rows and its economy footer; the observer card is 520×82. The whole composition scales proportionally in smaller or wider windows. Missing live logos are omitted. Missing player portraits use a side/slot agent when those values are known; other presentation images retain their neutral fallbacks. Only an explicit lower-third production action crosses the reserved game area.
+The live composition targets a 1920×1080 canvas and scales proportionally in smaller or wider windows. The matchbar and MVP occupy the upper center, radar the upper left, and competition/sponsor branding the space above the killfeed on the right. Rosters use the default side layout or the panel's horizontal layout; the observer remains centered at the bottom. Missing live logos are omitted, and missing player portraits use a side/slot agent when those values are known.
 
 ## Build, test and package
 
@@ -62,8 +72,8 @@ pwsh ./scripts/Build.ps1
 The script restores pinned Sass dependencies, checks the compiled stylesheet against its SCSS sources, performs locked NuGet restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata/region-selection tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.19.souhud
-artifacts/sou-basic-wasm-0.4.19.souhud.sha256
+artifacts/sou-basic-wasm-0.4.20.souhud
+artifacts/sou-basic-wasm-0.4.20.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:

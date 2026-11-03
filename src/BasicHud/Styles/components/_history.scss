@@ -35,21 +35,6 @@
 .history-round .status-icon {
     --icon-height: 0.75em;
 }
-.round-message {
-    position: absolute;
-    left: 37.5%;
-    top: 13.518519%;
-    width: 25%;
-    height: 1.1em;
-    background: var(--surface);
-    text-align: center;
-    font-size: 0.625em;
-    line-height: 1.1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .roster {
     position: absolute;
     top: 62.407407%;

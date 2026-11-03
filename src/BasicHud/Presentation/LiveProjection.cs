@@ -26,8 +26,6 @@ public static class LiveProjection
             players.Length == 0 || players.Any(player => player.DefuseKit is null) ? "—" : players.Count(player => player.DefuseKit == true).ToString(),
             players.Length == 0 || players.Any(player => player.Weapons is null || player.Weapons.Value.IsDefault) ? "—" : players.Sum(player => player.Weapons!.Value.Count(weapon => weapon.Type == WeaponCategory.Grenade)).ToString());
     }
-    public static string RoundMessage(GameState? game) => game?.RoundPhase == RoundPhase.Over && game.RoundWinner is TeamSide.CounterTerrorists or TeamSide.Terrorists
-        ? $"{(game.RoundWinner == TeamSide.CounterTerrorists ? "CT" : "T")} WIN · {game.RoundWinReason?.ToString() ?? "—"}" : "";
 }
 
 public sealed record KillView(string Key, KillFeedEntry Event);

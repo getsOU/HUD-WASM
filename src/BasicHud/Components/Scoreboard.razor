@@ -1,7 +1,7 @@
 <header class="scoreboard">
     <div class="caption competition-heading">
         <span class="competition-heading-left" title="@Heading">@Heading</span>
-        <img class="caption-brand" src="assets/branding/sou-wordmark.png" alt="sOU" />
+        <ImageTile Source="@Context.ResolveMedia(Context.Text("branding", "logo"))" FallbackSource="assets/branding/sou-wordmark.png" Label="Broadcast logo" Class="caption-brand" OmitFallback="true" />
         <span class="competition-heading-right" title="@Stage">@Stage</span>
     </div>
     <div class="score-strip">

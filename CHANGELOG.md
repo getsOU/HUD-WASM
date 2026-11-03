@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.20
+
+- Remove the reload label from the observer card while retaining the held weapon and source ammunition during reloading.
+
+- Give competition and rotating sponsor logos the same 15.4% HUD-width slot at full size. Add independent panel height controls from 0–100% of the available branding height (default 100%); scale width by the same factor, preserving image proportions and stable placement.
+
+- Rotate the live sponsors individually every ten seconds by default with a short fade-in, while keeping the competition logo fixed. Set a custom duration in the branding panel; apply changes immediately while retaining the current logo. Retain rotation progress across unchanged source updates; stop timers for single/empty lists, hidden sponsors and removed components.
+
+- Show the competition logo and combined competition/panel sponsors in a transparent area above the live killfeed, aligned to its right edge. Remove the observer sponsor footer and keep branding independent of observer visibility; the sponsor toggle preserves the competition logo.
+
+- Hide each MVP card automatically five seconds after it first appears, independent of pauses, match end or new source updates. Updating the same award does not restart the timeout or revive an expired card; cancel the local deadline when the award changes or the component is removed.
+
+- Give MVP names enough line height and vertical padding to preserve descenders such as `g`, without flex shrinking the text box.
+
+- Retain MVP-counter increments that arrive before the round-over phase and handle source round numbers advancing at round end. Show a late award in freeze even if the over snapshot was missed, leaving unconfirmed completed-round statistics unknown.
+
+- Attach a round MVP card directly below the matchbar with the exact same width, player portrait, name and source round kills/damage. Display only unambiguous observed MVP-counter increments, retain completed stats through the following freeze and clear at live play or loss of data continuity. Move round history below the card while visible. Remove the matchbar/MVP outlines and the separate CT/T win banner; use the MVP player's CT/T card background to separate the two areas.
+
+- Use the panel's **Branding → Broadcast logo** image in the center of the scoreboard heading. Preserve custom image colors and aspect ratio, update it immediately when changed, and restore the white sOU wordmark when cleared or unavailable.
+
 ## 0.4.19
 
 - Keep explicitly cleared panel captions empty; use the options caption only when the panel value is absent.

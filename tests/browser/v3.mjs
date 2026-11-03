@@ -13,6 +13,8 @@ const example = JSON.parse(await readFile(original, 'utf8'));
 const baseline = structuredClone(example.snapshots[0]);
 baseline.game.roundPhase = 'live';
 baseline.game.countdown = { phase: 'paused', secondsRemaining: 90 };
+baseline.game.roundNumber = 10;
+baseline.game.players[0].stats.mvps = 0;
 const moved = structuredClone(baseline);
 moved.game.players[0].position.x += 200;
 moved.game.observedPlayer = structuredClone(moved.game.players[0]);
@@ -23,9 +25,64 @@ const hurt = structuredClone(shot);
 hurt.game.players[1].health = 72;
 const dead = structuredClone(hurt);
 dead.game.players[6].health = 0;
+const earlyAward = structuredClone(dead);
+earlyAward.game.players[0].name = 'catgirl sofc';
+earlyAward.game.players[0].stats.mvps = 1;
+earlyAward.game.players[0].stats.kills += 1;
+earlyAward.game.players[0].roundKills = 2;
+earlyAward.game.players[0].roundDamage = 200;
+const roundOver = structuredClone(earlyAward);
+roundOver.game.roundPhase = 'over';
+roundOver.game.roundNumber = 11;
+roundOver.game.countdown = { phase: 'over', secondsRemaining: 17 };
+roundOver.game.roundWinner = 'counterTerrorists';
+roundOver.game.players[0].roundKills = 2;
+roundOver.game.players[0].roundDamage = 200;
+const nextFreeze = structuredClone(roundOver);
+nextFreeze.game.roundNumber = 11;
+nextFreeze.game.roundPhase = 'freezeTime';
+nextFreeze.game.countdown = { phase: 'freezeTime', secondsRemaining: 17 };
+nextFreeze.game.players[0].roundKills = 0;
+nextFreeze.game.players[0].roundDamage = 0;
+const pausedFreeze = structuredClone(nextFreeze);
+pausedFreeze.game.countdown = { phase: 'paused', secondsRemaining: 17 };
+pausedFreeze.game.players[0].stats.score = (pausedFreeze.game.players[0].stats.score ?? 0) + 1;
+const nextLive = structuredClone(nextFreeze);
+nextLive.game.roundPhase = 'live';
+nextLive.game.countdown = { phase: 'live', secondsRemaining: 90 };
+const finalAward = structuredClone(nextLive);
+finalAward.game.phase = 'gameOver';
+finalAward.game.roundPhase = 'over';
+finalAward.game.roundNumber = 12;
+finalAward.game.countdown = { phase: 'gameOver', secondsRemaining: 0 };
+finalAward.game.players[0].stats.mvps = 2;
+finalAward.game.players[0].roundKills = 1;
+finalAward.game.players[0].roundDamage = 111;
+const finalUpdate = structuredClone(finalAward);
+finalUpdate.game.players[0].stats.score = (finalUpdate.game.players[0].stats.score ?? 0) + 1;
+const competitionBranding = structuredClone(finalUpdate);
+competitionBranding.managedMatch = {
+  id: 'preview-match', name: 'Preview match', bestOf: 1,
+  teamA: { id: 'ct-team', name: 'Preview CT', shortName: 'CT', logo: null, seriesWins: 0 },
+  teamB: { id: 't-team', name: 'Preview T', shortName: 'T', logo: null, seriesWins: 0 },
+  ct: { side: 'counterTerrorists', status: 'manual', teamId: 'ct-team', teamAScore: 0, teamBScore: 0 },
+  t: { side: 'terrorists', status: 'manual', teamId: 't-team', teamAScore: 0, teamBScore: 0 },
+  competition: { id: 'preview-league', name: 'Demo League', seasonId: null, seasonName: null, sections: [], round: null,
+    logo: '/cast-media/league.png', sponsors: [
+      { id: 'a', name: 'Demo A', image: '/cast-media/sponsor-a.png' },
+      { id: 'b', name: 'Demo B', image: '/cast-media/sponsor-b.png' },
+      { id: 'c', name: 'Demo C', image: '/cast-media/sponsor-c.png' },
+      { id: 'a-repeat', name: 'Demo A again', image: '/cast-media/sponsor-a.png' }
+    ] }
+};
+competitionBranding.game.killFeed = [{ id: 1, connectionId: '00000000-0000-0000-0000-000000000001', epoch: 1, gameTimeSeconds: 120,
+  killer: { entityIndex: 1, steamId: baseline.game.players[0].steamId, name: 'Preview CT 1', side: 'counterTerrorists' },
+  victim: { entityIndex: 6, steamId: baseline.game.players[5].steamId, name: 'Preview T 1', side: 'terrorists' },
+  assister: null, weapon: 'weapon_ak47', weaponKind: 'ak47', flashAssist: false, headshot: false, wallbang: false,
+  attackerBlind: false, throughSmoke: false, noScope: false }];
 const fixture = path.join(scratch, 'selective.json');
 await writeFile(fixture, JSON.stringify({ schemaVersion: 1, intervalMilliseconds: 5000, loop: false,
-  snapshots: [...Array(100).fill(baseline), moved, shot, hurt, dead] }));
+  snapshots: [...Array(100).fill(baseline), moved, shot, hurt, dead, earlyAward, roundOver, nextFreeze, pausedFreeze, nextLive, finalAward, finalUpdate, competitionBranding] }));
 
 const host = spawn('dotnet', ['tool', 'run', 'sou-hud', '--', 'dev', packagePath, '--port', '0', '--fixture', fixture], { stdio: ['ignore', 'pipe', 'pipe'] });
 let browser;
@@ -98,6 +155,41 @@ try {
   await command({ kind: 'panel', values: { display: { hideRosters: false } } });
   await hud.waitForFunction(() => document.querySelectorAll('.roster').length === 2);
   console.log('PASS typed options, panel caption precedence, explicitly cleared captions and hide/show defaults');
+  const defaultLogo = 'assets/branding/sou-wordmark.png';
+  const logo = hud.locator('.caption-brand');
+  await until(async () => await logo.getAttribute('src') === defaultLogo);
+  const logoBox = await logo.boundingBox();
+  const brandingCards = await cards();
+  const brandingRadar = await radar();
+  const logoBytes = await readFile(path.join(packagePath, 'wwwroot', defaultLogo));
+  await page.route('**/cast-media/scoreboard-logo.png', route => route.fulfill({
+    contentType: 'image/png', body: logoBytes
+  }));
+  await command({ kind: 'panel', values: { branding: { logo: '/cast-media/scoreboard-logo.png' } } });
+  await hud.waitForFunction(() => {
+    const image = document.querySelector('.caption-brand');
+    return image.src.endsWith('/cast-media/scoreboard-logo.png') && image.complete && image.naturalWidth > 0;
+  });
+  assert.deepEqual(await cards(), brandingCards, 'branding changes must leave player card content unchanged');
+  assert.equal(await radar(), brandingRadar, 'branding changes must leave radar markers unchanged');
+  assert.deepEqual(await logo.evaluate(image => {
+    const style = getComputedStyle(image); return { fit: style.objectFit, filter: style.filter };
+  }), { fit: 'contain', filter: 'none' }, 'custom logos must fit completely and retain their colors');
+  assert.deepEqual(await logo.boundingBox(), logoBox, 'custom logos must preserve scoreboard geometry');
+  await page.screenshot({ path: path.join(scratch, 'scoreboard-custom-logo-1920x1080.png') });
+  await command({ kind: 'panel', values: { branding: { logo: '' } } });
+  await until(async () => await logo.getAttribute('src') === defaultLogo);
+  assert.equal(await logo.getAttribute('data-image-fallback'), 'true');
+  await page.route('**/cast-media/scoreboard-missing.png', route => route.fulfill({ status: 404, body: '' }));
+  const missingLogoResponse = page.waitForResponse(response => response.url().endsWith('/cast-media/scoreboard-missing.png'));
+  await command({ kind: 'panel', values: { branding: { logo: '/cast-media/scoreboard-missing.png' } } });
+  await missingLogoResponse;
+  await until(async () => await logo.getAttribute('src') === defaultLogo);
+  await command({ kind: 'panel', values: { branding: { logo: '/cast-media/scoreboard-logo.png' } } });
+  await until(async () => (await logo.getAttribute('src')).endsWith('/cast-media/scoreboard-logo.png'));
+  await command({ kind: 'panel', values: { branding: { logo: '' } } });
+  await until(async () => await logo.getAttribute('src') === defaultLogo);
+  console.log('PASS panel scoreboard logo replacement, layout/color preservation, clearing, load-error fallback and recovery');
   const beforeHorizontal = await hud.locator('.live-player').elementHandles();
   const beforeCanvases = await hud.locator('.live-player canvas').elementHandles();
   await command({ kind: 'panel', values: { display: { horizontalPlayercards: true } } });
@@ -191,6 +283,172 @@ try {
   assert.notEqual(await hud.locator('.roster.t .live-player.is-dead .card-death').evaluate(element => getComputedStyle(element).display), 'none',
     'vertical dead cards retain their original death marker');
   console.log('PASS horizontal playercards, dead-card spacing, unclipped health, observer clearance, proportional scaling and vertical restoration');
+  assert.equal(await hud.locator('.round-mvp').count(), 0);
+  const beforeEarlyAward = await cards();
+  await command({ kind: 'step' });
+  await until(async () => JSON.stringify(await cards()) !== JSON.stringify(beforeEarlyAward));
+  assert.equal(await hud.locator('.round-mvp').count(), 0, 'an early MVP increment remains pending while the phase is still live');
+  await command({ kind: 'step' });
+  await hud.locator('.round-mvp').waitFor();
+  const mvpShownAt = Date.now();
+  const checkMvpAttachment = async () => {
+    const boxes = await hud.evaluate(() => {
+      const rect = selector => { const box = document.querySelector(selector)?.getBoundingClientRect();
+        return box ? { left: box.left, right: box.right, top: box.top, bottom: box.bottom, width: box.width } : null; };
+      const borderless = selector => ['Top', 'Right', 'Bottom', 'Left'].every(side =>
+        getComputedStyle(document.querySelector(selector))[`border${side}Width`] === '0px');
+      const name = document.querySelector('.mvp-name');
+      const nameBox = name.getBoundingClientRect();
+      const text = document.createRange(); text.selectNodeContents(name);
+      const textBox = text.getBoundingClientRect();
+      return { bar: rect('.scoreboard'), mvp: rect('.round-mvp'), history: rect('.round-history'),
+        nameFitsVertically: textBox.top >= nameBox.top && textBox.bottom <= nameBox.bottom,
+        borderless: borderless('.scoreboard') && borderless('.round-mvp'),
+        backgroundsDiffer: getComputedStyle(document.querySelector('.scoreboard')).backgroundColor !== getComputedStyle(document.querySelector('.round-mvp')).backgroundColor };
+    });
+    assert.equal(boxes.mvp.left, boxes.bar.left, 'MVP left edge must equal the matchbar');
+    assert.equal(boxes.mvp.width, boxes.bar.width, 'MVP width must exactly equal the matchbar');
+    assert.equal(boxes.mvp.top, boxes.bar.bottom, 'MVP must attach without any gap');
+    assert(boxes.borderless, 'matchbar and MVP must have no outside borders');
+    assert(boxes.backgroundsDiffer, 'the MVP side background must separate it from the matchbar');
+    assert(boxes.nameFitsVertically, 'MVP names must retain their full height, including descenders such as g');
+    assert.equal(await hud.locator('.round-message').count(), 0, 'the separate CT/T winner banner has been removed');
+    for (const overlay of [boxes.history].filter(Boolean))
+      assert(overlay.top >= boxes.mvp.bottom, 'round overlays must not overlap the MVP card');
+  };
+  await checkMvpAttachment();
+  assert.match(await hud.locator('.mvp-round').textContent(), /ROUND 10 MVP/);
+  assert.equal(await hud.locator('.mvp-stats b').nth(0).textContent(), '2');
+  assert.equal(await hud.locator('.mvp-stats b').nth(1).textContent(), '200');
+  await page.screenshot({ path: path.join(scratch, 'mvp-1920x1080.png') });
+  const barCrop = await hud.locator('.scoreboard').boundingBox();
+  const mvpCrop = await hud.locator('.round-mvp').boundingBox();
+  await page.screenshot({ path: path.join(scratch, 'matchbar-mvp.png'),
+    clip: { x: barCrop.x, y: barCrop.y, width: barCrop.width, height: mvpCrop.y + mvpCrop.height - barCrop.y } });
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await checkMvpAttachment();
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await command({ kind: 'step' });
+  await hud.locator('.clock-label').filter({ hasText: 'ROUND 11' }).waitFor();
+  await checkMvpAttachment();
+  assert.equal(await hud.locator('.mvp-stats b').nth(1).textContent(), '200', 'freeze must retain completed-round damage');
+  await page.waitForTimeout(Math.max(0, 2500 - (Date.now() - mvpShownAt)));
+  await command({ kind: 'step' });
+  await hud.locator('.clock-label').filter({ hasText: 'PAUSED' }).waitFor();
+  await page.waitForTimeout(Math.max(0, 4300 - (Date.now() - mvpShownAt)));
+  assert.equal(await hud.locator('.round-mvp').count(), 1, 'MVP must remain visible before its five-second deadline');
+  await until(async () => await hud.locator('.round-mvp').count() === 0, 2000);
+  assert(Date.now() - mvpShownAt >= 4800 && Date.now() - mvpShownAt < 6400,
+    'paused MVP must expire five seconds after first display, not five seconds after its last source update');
+  await command({ kind: 'step' });
+  await hud.waitForFunction(() => !document.querySelector('.round-mvp'));
+  await command({ kind: 'step' });
+  await hud.locator('.round-mvp').waitFor();
+  const finalMvpShownAt = Date.now();
+  assert.match(await hud.locator('.mvp-round').textContent(), /ROUND 11 MVP/);
+  await page.waitForTimeout(4300);
+  assert.equal(await hud.locator('.round-mvp').count(), 1, 'a different round MVP gets its own five-second display');
+  await until(async () => await hud.locator('.round-mvp').count() === 0, 2000);
+  assert(Date.now() - finalMvpShownAt >= 4800 && Date.now() - finalMvpShownAt < 6400,
+    'match-end MVP must expire without receiving another snapshot');
+  await command({ kind: 'step' });
+  await page.waitForTimeout(150);
+  assert.equal(await hud.locator('.round-mvp').count(), 0, 'an update of an expired award must not revive it');
+  console.log('PASS MVP timing and geometry, five-second expiry during pause and after match end, independent deadlines and no revival');
+  for (const [file, label, color] of [ ['league', 'DEMO LEAGUE', '#b6def5'], ['sponsor-a', 'DEMO A', '#ffffff'],
+    ['sponsor-b', 'DEMO B', '#eee1a0'], ['sponsor-c', 'DEMO C', '#ffffff'] ]) {
+    const data = await page.evaluate(({ label, color }) => {
+      const canvas = document.createElement('canvas'); canvas.width = 300; canvas.height = 120;
+      const context = canvas.getContext('2d'); context.fillStyle = color; context.font = 'bold 38px Arial';
+      context.textAlign = 'center'; context.textBaseline = 'middle'; context.fillText(label, 150, 60);
+      return canvas.toDataURL('image/png').split(',')[1];
+    }, { label, color });
+    await page.route(`**/cast-media/${file}.png`, route => route.fulfill({ contentType: 'image/png', body: Buffer.from(data, 'base64') }));
+  }
+  await command({ kind: 'step' });
+  await hud.locator('.live-competition-logo').waitFor();
+  // SDK preview.2's command endpoint rejects Images arrays. The actual panel-array
+  // combination is covered by Razor tests; use managed sponsors here for browser geometry.
+  await until(async () => await hud.locator('.live-branding .sponsor-image').count() === 1);
+  const activeSponsor = () => hud.locator('.live-branding .sponsor-image').getAttribute('src');
+  await until(async () => (await activeSponsor()).endsWith('/cast-media/sponsor-a.png'));
+  const rotationStartedAt = Date.now();
+  const competitionLogo = await hud.locator('.live-competition-logo').getAttribute('src');
+  await hud.waitForFunction(() => [...document.querySelectorAll('.live-branding img')].every(image => image.complete && image.naturalWidth > 0));
+  assert.equal(await hud.locator('.observed .sponsors').count(), 0, 'observer must not duplicate sponsors');
+  const checkBranding = async () => {
+    const geometry = await hud.evaluate(() => {
+      const brand = document.querySelector('.live-branding').getBoundingClientRect();
+      const feed = document.querySelector('.killfeed').getBoundingClientRect();
+      const header = document.querySelector('.scoreboard').getBoundingClientRect();
+      return { above: brand.bottom <= feed.top, aligned: brand.right === feed.right, clearsHeader: brand.left >= header.right,
+        fits: [...document.querySelectorAll('.live-branding img')].every(image => {
+          const rect = image.getBoundingClientRect(); return rect.left >= brand.left && rect.right <= brand.right && rect.top >= brand.top && rect.bottom <= brand.bottom;
+        }) };
+    });
+    assert(geometry.above && geometry.aligned && geometry.fits && geometry.clearsHeader, 'competition and sponsors must fit above the killfeed, share its right edge and clear the matchbar');
+  };
+  const checkLogoSizes = async (competitionPercent, sponsorPercent) => {
+    const size = await hud.evaluate(() => {
+      const rect = selector => { const box = document.querySelector(selector).getBoundingClientRect(); return { width: box.width, height: box.height }; };
+      return { area: rect('.live-branding'), hud: rect('.hud'), competition: rect('.live-competition-logo'), sponsor: rect('.live-branding .sponsor-image') };
+    });
+    const fullWidth = size.hud.width * 0.154;
+    assert(Math.abs(size.competition.width - fullWidth * competitionPercent / 100) < 0.1, 'competition width must scale with its height percentage');
+    assert(Math.abs(size.sponsor.width - fullWidth * sponsorPercent / 100) < 0.1, 'sponsor width must scale with its height percentage from the existing full width');
+    assert(Math.abs(size.competition.height - size.area.height * competitionPercent / 100) < 0.1, 'competition height must use the available branding height');
+    assert(Math.abs(size.sponsor.height - size.area.height * sponsorPercent / 100) < 0.1, 'sponsor height must use the same available branding height');
+    for (const [image, percent] of [[size.competition, competitionPercent], [size.sponsor, sponsorPercent]])
+      if (percent > 0) assert(Math.abs(image.width / image.height - fullWidth / size.area.height) < 0.01,
+        'scaling must retain the original image-frame aspect ratio');
+    await checkBranding();
+  };
+  await checkBranding();
+  await checkLogoSizes(100, 100);
+  await page.screenshot({ path: path.join(scratch, 'live-branding-1920x1080.png') });
+  await page.setViewportSize({ width: 1600, height: 900 }); await checkBranding();
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.waitForTimeout(Math.max(0, 2500 - (Date.now() - rotationStartedAt)));
+  await command({ kind: 'panel', values: { display: { hideSponsors: false } } });
+  await page.waitForTimeout(Math.max(0, 5300 - (Date.now() - rotationStartedAt)));
+  assert((await activeSponsor()).endsWith('/cast-media/sponsor-a.png'), 'default sponsor duration must exceed the old five seconds');
+  await until(async () => (await activeSponsor()).endsWith('/cast-media/sponsor-b.png'), 6000);
+  assert(Date.now() - rotationStartedAt >= 9500 && Date.now() - rotationStartedAt < 11500,
+    'the default rotation is ten seconds and unchanged source updates must not restart it');
+  const customIntervalAt = Date.now();
+  await command({ kind: 'panel', values: { branding: { sponsorIntervalSeconds: '1' } } });
+  assert((await activeSponsor()).endsWith('/cast-media/sponsor-b.png'), 'changing duration must retain the current sponsor');
+  for (const file of ['sponsor-c', 'sponsor-a']) {
+    await until(async () => (await activeSponsor()).endsWith(`/cast-media/${file}.png`), 2500);
+    assert.equal(await hud.locator('.live-branding .sponsor-image').count(), 1, 'only one sponsor may be visible');
+    assert.equal(await hud.locator('.live-competition-logo').getAttribute('src'), competitionLogo, 'competition logo must stay fixed');
+    await checkBranding();
+  }
+  assert(Date.now() - customIntervalAt < 4000, 'a new panel duration must take effect immediately');
+  const sizeLogos = async (competition, sponsor) => {
+    await command({ kind: 'panel', values: { branding: { sponsorIntervalSeconds: '30', competitionLogoHeightPercent: competition, sponsorHeightPercent: sponsor } } });
+    const expectedCompetition = competition === '' ? '1' : String(Number(competition.replace(',', '.').replace('%', '')) / 100);
+    await until(async () => await hud.locator('.live-branding').evaluate((element, expected) =>
+      element.style.getPropertyValue('--competition-logo-scale') === expected, expectedCompetition));
+  };
+  await sizeLogos('50%', '75');
+  await checkLogoSizes(50, 75);
+  await page.screenshot({ path: path.join(scratch, 'branding-sized-1920x1080.png') });
+  await sizeLogos('80', '25,5');
+  await checkLogoSizes(80, 25.5);
+  await page.setViewportSize({ width: 1600, height: 900 }); await checkLogoSizes(80, 25.5);
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await sizeLogos('0', '100'); await checkLogoSizes(0, 100);
+  await sizeLogos('', ''); await checkLogoSizes(100, 100);
+  await command({ kind: 'panel', values: { display: { hideSponsors: true } } });
+  await hud.waitForFunction(() => !document.querySelector('.live-branding .sponsors'));
+  assert.equal(await hud.locator('.live-competition-logo').count(), 1, 'Hide sponsors must retain the competition logo');
+  await command({ kind: 'panel', values: { display: { hideSponsors: false, hideObservedPlayer: true } } });
+  await hud.waitForFunction(() => !document.querySelector('.observed') && document.querySelectorAll('.live-branding .sponsor-image').length > 0);
+  await checkBranding();
+  await command({ kind: 'panel', values: { display: { hideObservedPlayer: false } } });
+  await hud.locator('.observed').waitFor();
+  console.log('PASS sponsor rotation, live duration and proportional logo scaling, preserved full-size width and visibility');
   for (const view of manifest.subviews) {
     await command({ kind: 'view', route: view.route });
     await hud.waitForURL(new URL(view.route, output).href);

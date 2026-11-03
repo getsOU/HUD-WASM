@@ -1,5 +1,64 @@
-@if (Context.SponsorImages() is { Count: > 0 } images)
+@implements IDisposable
+@if (images.Length > 0)
 {
-    <section class="sponsors" aria-label="Sponsors">@foreach (var image in images) { <ImageTile Source="@image" Label="Sponsor" Class="sponsor-image" /> }</section>
+    <section class="sponsors @(Rotate ? "sponsor-rotation" : "")" aria-label="Sponsors">
+        @if (Rotate)
+        {
+            <ImageTile @key="images[index]" Source="@images[index]" Label="Sponsor" Class="sponsor-image" OmitFallback="true" />
+        }
+        else
+        {
+            @foreach (var image in images) { <ImageTile Source="@image" Label="Sponsor" Class="sponsor-image" OmitFallback="true" /> }
+        }
+    </section>
 }
-@code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }
+@code {
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter] public bool Rotate { get; set; }
+    private string[] images = [];
+    private int index;
+    private int previousIntervalSeconds;
+    private (Guid? Session, string? Match, string? Competition)? scope;
+    private bool previousRotate, disposed;
+    private CancellationTokenSource? rotation;
+    protected override void OnParametersSet()
+    {
+        var next = Context.SponsorImages().ToArray();
+        var nextScope = (Context.Snapshot?.SessionId, Context.Match?.Id, Context.Match?.Competition?.Id);
+        var intervalSeconds = Context.SponsorIntervalSeconds;
+        if (scope == nextScope && previousRotate == Rotate && previousIntervalSeconds == intervalSeconds
+            && images.SequenceEqual(next, StringComparer.Ordinal)) return;
+        var current = images.ElementAtOrDefault(index);
+        StopRotation();
+        index = scope == nextScope && current is not null ? Math.Max(0, Array.IndexOf(next, current)) : 0;
+        images = next; scope = nextScope; previousRotate = Rotate;
+        previousIntervalSeconds = intervalSeconds;
+        if (Rotate && images.Length > 1)
+        {
+            rotation = new();
+            _ = RotateImages(rotation, rotation.Token, TimeSpan.FromSeconds(intervalSeconds));
+        }
+    }
+    private async Task RotateImages(CancellationTokenSource owner, CancellationToken token, TimeSpan interval)
+    {
+        try
+        {
+            using var timer = new PeriodicTimer(interval);
+            while (await timer.WaitForNextTickAsync(token))
+            {
+                if (disposed || token.IsCancellationRequested) return;
+                await InvokeAsync(() => {
+                    if (disposed || token.IsCancellationRequested || !ReferenceEquals(rotation, owner)) return;
+                    index = (index + 1) % images.Length;
+                    StateHasChanged();
+                });
+            }
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
+    }
+    private void StopRotation()
+    {
+        rotation?.Cancel(); rotation?.Dispose(); rotation = null;
+    }
+    public void Dispose() { disposed = true; StopRotation(); }
+}

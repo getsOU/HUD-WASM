@@ -43,6 +43,16 @@ public sealed record BroadcastContext(LiveSnapshot? Snapshot, HudPanelState? Pan
             images = images.Concat(value.EnumerateArray().Where(item => item.ValueKind == JsonValueKind.String).Select(item => item.GetString()!));
         return images.Select(ResolveMedia).Where(image => image is not null).Cast<string>().Distinct(StringComparer.Ordinal).Take(24).ToArray();
     }
+    public int SponsorIntervalSeconds => int.TryParse(Text("branding", "sponsorIntervalSeconds"), NumberStyles.Integer,
+        CultureInfo.InvariantCulture, out var seconds) && seconds is >= 1 and <= 86400 ? seconds : 10;
+    public double CompetitionLogoHeightPercent => BrandingHeightPercent("competitionLogoHeightPercent");
+    public double SponsorHeightPercent => BrandingHeightPercent("sponsorHeightPercent");
+    private double BrandingHeightPercent(string field)
+    {
+        var text = Text("branding", field).TrimEnd('%').Trim().Replace(',', '.');
+        return double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var percent)
+            && double.IsFinite(percent) && percent is >= 0 and <= 100 ? percent : 100;
+    }
     public string StartCountdown => Match?.StartsAt is { } start ? Now < start ? HudView.Time((start - Now).TotalSeconds) : "Scheduled time reached" : "Start time not set";
     public string Competition => Match?.Competition is { } competition ? string.Join(" · ", new[] { competition.Name, competition.SeasonName }.Concat(competition.Sections.Select(section => section.Name)).Where(value => !string.IsNullOrWhiteSpace(value))) : "";
     public string? SeriesWinner
