@@ -19,7 +19,10 @@ public sealed record BroadcastContext(LiveSnapshot? Snapshot, HudPanelState? Pan
     public HudPanelReference? Reference(string field) => Panel?.References.TryGetValue("feature", out var fields) == true && fields.TryGetValue(field, out var value) ? value : null;
     public string? ProfileImage(string? steamId, string? referenceImage = null) => !DisplayOptions.PlayerImagesVisible(Panel) ? null
         : ResolveMedia(referenceImage) ?? (steamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(steamId, out var player) ? ResolveMedia(player.Avatar) : null);
-    public string Name(PlayerState player) => player.SteamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(player.SteamId, out var profile) ? HudView.Text(profile.Name, SourceText.Name(player.Name)) : SourceText.Name(player.Name);
+    public string Name(PlayerState player) => PlayerName(player.SteamId, player.Name);
+    public string Name(KillParticipant participant) => PlayerName(participant.SteamId, participant.Name, HudView.Text(participant.SteamId));
+    private string PlayerName(string? steamId, string? sourceName, string fallback = "—") => steamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(steamId, out var profile)
+        ? HudView.Text(profile.Name, SourceText.Name(sourceName, fallback)) : SourceText.Name(sourceName, fallback);
     public IReadOnlyList<PlayerState> TeamPlayers(ManagedTeam team)
     {
         if (Metadata.Matches(Match) && Metadata.Rosters.TryGetValue(team.Id, out var ids) && ids.Count > 0)

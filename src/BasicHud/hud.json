@@ -1,6 +1,6 @@
 {
   "id": "sou-basic-wasm",
-  "version": "0.4.20",
+  "version": "0.4.21",
   "name": "sOU Default HUD",
   "infoUrl": "https://github.com/getsOU/HUD-WASM",
   "outlineColors": {
@@ -40,5 +40,5 @@
       "route": "views/spotlight"
     }
   ],
-  "releaseNotes": "Round MVP card attached to the matchbar, with source kills/damage and a fixed five-second display, including during pauses and after match end.\nReplace the center scoreboard logo via the panel. Matchbar and MVP outside borders and the separate round-win banner are removed.\nCompetition logo and rotating sponsors now appear above the killfeed. Rotation defaults to ten seconds and is configurable in the Branding panel.\nIndependent 0-100 percent logo size controls scale width and height together. Remove the observer sponsor footer and RELOAD label; preserve weapon and ammunition during reloading.\nRequires sOU desktop 0.3.34 or newer."
+  "releaseNotes": "Fix killfeed player names: killer, victim and assists now use the same sOU-provided profile names as the player cards, matched by Steam ID.\nApply profile-name changes to existing killfeed entries. Keep the event name when no matching profile is available, and reject profiles from unrelated match teams.\nRequires sOU desktop 0.3.34 or newer."
 }

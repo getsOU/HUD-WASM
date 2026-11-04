@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.21
+
+- Resolve killer, victim and assist names from the same match-bound sOU player profiles as the player cards, using the participant's Steam ID. Refresh existing entries after profile-name changes and retain event names when no matching profile is available.
+
 ## 0.4.20
 
 - Remove the reload label from the observer card while retaining the held weapon and source ammunition during reloading.

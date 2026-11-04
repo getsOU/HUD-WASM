@@ -78,7 +78,8 @@ competitionBranding.managedMatch = {
 competitionBranding.game.killFeed = [{ id: 1, connectionId: '00000000-0000-0000-0000-000000000001', epoch: 1, gameTimeSeconds: 120,
   killer: { entityIndex: 1, steamId: baseline.game.players[0].steamId, name: 'Preview CT 1', side: 'counterTerrorists' },
   victim: { entityIndex: 6, steamId: baseline.game.players[5].steamId, name: 'Preview T 1', side: 'terrorists' },
-  assister: null, weapon: 'weapon_ak47', weaponKind: 'ak47', flashAssist: false, headshot: false, wallbang: false,
+  assister: { entityIndex: 2, steamId: baseline.game.players[1].steamId, name: 'Preview CT 2', side: 'counterTerrorists' },
+  weapon: 'weapon_ak47', weaponKind: 'ak47', flashAssist: false, headshot: false, wallbang: false,
   attackerBlind: false, throughSmoke: false, noScope: false }];
 const fixture = path.join(scratch, 'selective.json');
 await writeFile(fixture, JSON.stringify({ schemaVersion: 1, intervalMilliseconds: 5000, loop: false,
@@ -374,6 +375,24 @@ try {
   await until(async () => (await activeSponsor()).endsWith('/cast-media/sponsor-a.png'));
   const rotationStartedAt = Date.now();
   const competitionLogo = await hud.locator('.live-competition-logo').getAttribute('src');
+  const killNames = async () => Promise.all(['killer', 'assister', 'victim'].map(role => hud.locator(`[data-kill-role="${role}"]`).textContent()));
+  assert.deepEqual(await killNames(), ['Preview CT 1', 'Preview CT 2', 'Preview T 1']);
+  const killerId = baseline.game.players[0].steamId;
+  const assistId = baseline.game.players[1].steamId;
+  const victimId = baseline.game.players[5].steamId;
+  const profileOptions = {
+    players: { [killerId]: { name: 'Managed killer &amp;' }, [assistId]: { name: 'Managed assist' }, [victimId]: { name: 'Managed victim' } },
+    match: { left: { id: 'ct-team', steamIds: [killerId, assistId] }, right: { id: 't-team', steamIds: [victimId] } }
+  };
+  await command({ kind: 'options', options: profileOptions });
+  await until(async () => JSON.stringify(await killNames()) === JSON.stringify(['Managed killer &amp;', 'Managed assist', 'Managed victim']));
+  assert.equal(await hud.locator('[data-kill-role="killer"]').getAttribute('title'), 'Managed killer &amp;');
+  assert.equal(await hud.locator('.live-player .player-name').first().textContent(), 'Managed killer &amp;', 'killfeed and player cards must use the same profile name');
+  await command({ kind: 'options', options: { ...profileOptions, players: { ...profileOptions.players, [killerId]: { name: 'Renamed killer' } } } });
+  await until(async () => (await killNames())[0] === 'Renamed killer');
+  await command({ kind: 'options', options: { ...profileOptions, match: { ...profileOptions.match, right: { id: 'unrelated-team', steamIds: [victimId] } } } });
+  await until(async () => JSON.stringify(await killNames()) === JSON.stringify(['Preview CT 1', 'Preview CT 2', 'Preview T 1']));
+  console.log('PASS killfeed uses managed names for killer, assist and victim, updates existing entries and rejects mismatched profile teams');
   await hud.waitForFunction(() => [...document.querySelectorAll('.live-branding img')].every(image => image.complete && image.naturalWidth > 0));
   assert.equal(await hud.locator('.observed .sponsors').count(), 0, 'observer must not duplicate sponsors');
   const checkBranding = async () => {

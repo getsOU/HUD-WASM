@@ -18,7 +18,7 @@
             @if (Options.ShowRoundHistory) { <RoundHistory Context="context" /> }
             @if (Options.ShowRadar) { <TimedContext Context="context" Milliseconds="100"><ChildContent Context="timed"><Radar View="@RadarView(timed)" OverviewFailed="OverviewFailed" /></ChildContent></TimedContext> }
             @if (Options.ShowSeries) { <LiveMapSeries Context="context" /> }
-            @if (Options.ShowKillfeed) { <TimedContext Context="context" Milliseconds="250"><ChildContent Context="timed"><Killfeed Entries="@(killfeedProjection.Project(timed.Snapshot, timed.Now))" /></ChildContent></TimedContext> }
+            @if (Options.ShowKillfeed) { <TimedContext Context="context" Milliseconds="250"><ChildContent Context="timed"><Killfeed Entries="@(killfeedProjection.Project(timed.Snapshot, timed.Now))" Context="timed" /></ChildContent></TimedContext> }
             @if (Options.ShowRosters) { <Roster Side="View.Ct" Context="context" /><Roster Side="View.T" Context="context" /> }
             @if (Options.ShowObservedPlayer && context.Game?.ObservedPlayer is { } observed) { <ObservedPlayer Player="observed" Context="context" /> }
             @if (!View.HasGame) { <div class="waiting"><p>Waiting for game data</p></div> }

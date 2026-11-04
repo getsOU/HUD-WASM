@@ -23,7 +23,7 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 The installed HUD is named **sOU Default HUD**; its stable package ID remains `sou-basic-wasm`.
 
-1. Download `sou-basic-wasm-0.4.20.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.21.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
@@ -37,7 +37,7 @@ Competition and sponsor logos have equal-width slots at full size. **Branding �
 
 The round MVP card attaches directly below the matchbar at the same width. Both areas have no outside border; the MVP uses the player's CT/T card background. There is no separate round-winner banner. The card appears only after an unambiguous MVP-counter increase has been observed and retains the completed round's kills and damage through the following freeze. It hides automatically after five seconds, including during pauses and after match end; repeated updates do not extend the display. Live play or lost data continuity can clear it earlier. Initial/stale/disconnected data and ambiguous counter jumps do not create an award; unavailable round statistics remain `—`.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.20**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.21**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
 
 The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) in `hud.json` under `outlineColors`. With a supporting sOU/HLAE host, opening the HUD through **Über CS2 anzeigen** selects these colors for X-Ray/outlines, utility trails and derived smoke coloring. Browser/OBS output alone does not select the in-game palette. Trails and smoke created after the palette is applied use the colors; existing effects may retain their previous appearance. See the [sOU HLAE color documentation](https://www.getsou.app/docs/cs2-hlae#hud-farben).
 
@@ -51,7 +51,7 @@ The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) 
 - Complete-or-unknown per-side economy, alive/kit/utility/timeouts/loss-streak detail in statistics; numbered recent round results appear only during freeze, pause, timeout or intermission. The statistics view retains the complete supplied history.
 - A side-colored round MVP card attached to the matchbar, driven by observed MVP-counter increases and source round statistics. Each award expires after five seconds, including during pauses and after match end.
 - Competition branding and rotating sponsor images above the killfeed, with panel controls for rotation duration and independent proportional logo sizes.
-- Real HLAE killfeed, keyed by connection/epoch/event ID, with all supplied modifier flags; no kills inferred from health changes.
+- Real HLAE killfeed, keyed by connection/epoch/event ID, with all supplied modifier flags and the same sOU-provided profile names as the player cards. Existing entries update after profile-name changes; unmatched participants retain event names. No kills inferred from health changes.
 - Original Boltobserv radar with the original transparent maps, coordinate metadata and object-specific Nuke/Vertigo split projection. Original-style direction drops, observer digits, observed ring, bomb carrier, flashed/dead markers and utility connect to actual public data. Buyzones appear only during source freeze/warmup. Fresh HLAE supplies the whole player frame; absent/expired HLAE falls back to GSI; optional custom calibration and separately attributed Valve overview fallbacks remain available. No permanent technical radar caption or empty replacement grid.
 - Ordered compact map-series cells below the radar, explicit stored results, exact current-map highlighting and side-aligned series wins. Full maps/veto/results and competition details remain in their presentation views. An unrelated source map never claims a configured current series slot.
 - Real prematch rosters and local profile pictures from optional, strictly match-bound local browser metadata; absent metadata does not break live output.
@@ -72,8 +72,8 @@ pwsh ./scripts/Build.ps1
 The script restores pinned Sass dependencies, checks the compiled stylesheet against its SCSS sources, performs locked NuGet restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata/region-selection tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.20.souhud
-artifacts/sou-basic-wasm-0.4.20.souhud.sha256
+artifacts/sou-basic-wasm-0.4.21.souhud
+artifacts/sou-basic-wasm-0.4.21.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:

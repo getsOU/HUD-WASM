@@ -88,5 +88,20 @@ internal static class V3RegionTests
         var mvpFrame = Frame(source with { Revision = 9, Game = source.Game with { Players = [mvpPlayer, p2] } });
         check(!Same(ammo, mvpFrame, HudArea.Mvp) && Same(ammo, pose, HudArea.Mvp),
             "MVP selection reacts to statistics while ignoring ammunition updates");
+        var kill = new KillFeedEntry(1, Guid.NewGuid(), 1, 90, new(1, "same", "Event first", TeamSide.CounterTerrorists),
+            new(2, "other", "Event second", TeamSide.CounterTerrorists), null, "weapon_ak47", WeaponKind.Ak47, false, false, false, false, false, false);
+        var killFrame = Frame(source with { Revision = 10, ManagedMatch = match, Game = source.Game with { KillFeed = [kill] } });
+        check(HudRegionSelection.ResourcesChanged(HudArea.Killfeed, null, killFrame.Game, resources, nextResources),
+            "a participant profile-name change refreshes an existing killfeed event");
+        var portraitOnly = profiles with { Players = profiles.Players!.SetItem("same", new("Profile name", "/cast-media/new-portrait.png")) };
+        var portraitResources = resources with { Metadata = MetadataCatalog.Bind(portraitOnly.Metadata(), match) };
+        check(!HudRegionSelection.ResourcesChanged(HudArea.Killfeed, null, killFrame.Game, resources, portraitResources)
+            && !HudRegionSelection.ResourcesChanged(HudArea.Killfeed, null, profileFrame.Game, resources, nextResources),
+            "portrait-only profile changes and profiles without kill participants do not refresh the killfeed");
+        var killMoved = Frame(source with { Revision = 11, ManagedMatch = match, Game = source.Game with { KillFeed = [kill], Players = [moved, p2] } });
+        var killRebound = Frame(source with { Revision = 12, ManagedMatch = match with { Id = "new-match" }, Game = source.Game with { KillFeed = [kill], Players = [moved, p2] } });
+        check(Same(killFrame, killMoved, HudArea.Killfeed) && !Same(killMoved, killRebound, HudArea.Killfeed)
+            && !killRebound.Game!.IsCompatibilitySnapshotCreated,
+            "killfeed selects match binding changes while ignoring movement and avoiding compatibility snapshot materialization");
     }
 }

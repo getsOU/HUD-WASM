@@ -248,6 +248,16 @@ static class RenderTests
             check(renderer.AltTexts(feed).SequenceEqual(new[] { "Attacker blind", "Flash assist", "AK-47", "Through smoke", "No scope", "Wallbang", "Headshot" }), "actual killfeed attaches blind and flash icons to participants and shot modifiers before the victim");
             await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("key", entry with { Assister = null }) } });
             check(!renderer.AltTexts(feed).Contains("Flash assist"), "a missing assister does not leave an unattached flash-assist icon");
+            var killMetadata = MetadataCatalog.Bind(new BrowserMetadata
+            {
+                Match = new() { Left = new() { Id = "a", SteamIds = ["killer"] }, Right = new() { Id = "b", SteamIds = ["victim", "assist"] } },
+                Players = new() { ["killer"] = new() { Name = "Profile killer &amp;" }, ["victim"] = new() { Name = "Profile victim" }, ["assist"] = new() { Name = "Profile assist" } }
+            }, referenceMatch);
+            await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("key", entry) }, [nameof(Killfeed.Context)] = reference with { Metadata = killMetadata } });
+            check(new[] { "Profile killer &amp;", "Profile victim", "Profile assist" }.All(name => renderer.HasText(feed, name) && renderer.HasAttribute(feed, "title", name))
+                && !renderer.HasText(feed, longName), "actual killfeed applies managed names to killer, victim and assist text and tooltips without decoding profile text");
+            await renderer.Render(feed, new() { [nameof(Killfeed.Context)] = BroadcastContext.Empty, [nameof(Killfeed.Entries)] = new[] { new KillView("key", entry with { Killer = null, Assister = null }) } });
+            check(renderer.HasText(feed, "WORLD") && renderer.HasText(feed, longName + " victim"), "world kills and unavailable profile data retain the event-name fallback");
         });
         if (renderer.Exception is { } exception) throw new InvalidOperationException("Actual component render or event failed.", exception);
     }

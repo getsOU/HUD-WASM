@@ -18,5 +18,6 @@
 </section>
 @code {
     [Parameter] public IReadOnlyList<KillView> Entries { get; set; } = [];
-    private static string Participant(KillParticipant? participant) => participant is null ? "WORLD" : SourceText.Name(participant.Name, HudView.Text(participant.SteamId));
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    private string Participant(KillParticipant? participant) => participant is null ? "WORLD" : Context.Name(participant);
 }

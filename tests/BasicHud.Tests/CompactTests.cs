@@ -51,6 +51,16 @@ static class CompactTests
         var metadata = MetadataCatalog.Bind(new BrowserMetadata { Match = new() { Left = new() { Id = "a", SteamIds = ["1"] }, Right = new() { Id = "b", SteamIds = ["2"] } }, Players = new() { ["1"] = new() { Name = "Profile &amp;" } } }, match);
         var profileContext = Context(game) with { Snapshot = Context(game).Snapshot! with { ManagedMatch = match }, Metadata = metadata };
         check(profileContext.Name(player) == "Profile &amp;", "library profile names remain unchanged rather than receiving game-source entity decoding");
+        var participant = new KillParticipant(9, "1", "Event &amp; name", TeamSide.CounterTerrorists);
+        check(profileContext.Name(participant) == profileContext.Name(player), "kill participants and player cards resolve the same match-bound profile by Steam ID");
+        check(profileContext.Name(participant with { EntityIndex = 1, SteamId = null }) == "Event & name"
+            && profileContext.Name(participant with { SteamId = "2", Name = null }) == "2"
+            && profileContext.Name(participant with { SteamId = null, Name = null }) == "—",
+            "kill name fallbacks decode the event once and never identify a player from an entity index");
+        var blankProfile = MetadataCatalog.Bind(new BrowserMetadata { Match = new() { Left = new() { Id = "a", SteamIds = ["1"] }, Right = new() { Id = "b", SteamIds = ["2"] } }, Players = new() { ["1"] = new() { Name = " " } } }, match);
+        check((profileContext with { Metadata = blankProfile }).Name(participant) == "Event & name"
+            && (profileContext with { Snapshot = profileContext.Snapshot! with { ManagedMatch = match with { Id = "other-match" } } }).Name(participant) == "Event & name",
+            "blank profiles and profiles for another match fall back to the original event name");
         var rifle = new WeaponState("0", "weapon_ak47", WeaponCategory.Rifle, WeaponStatus.Active, null, 20, 30, 80);
         var grenade = new WeaponState("1", "weapon_flashbang", WeaponCategory.Grenade, WeaponStatus.Holstered, null, null, null, 2);
         check(EquipmentPresentation.Key("WEAPON_KNIFE_SURVIVAL_BOWIE") == "knife_survival_bowie" && EquipmentPresentation.Key("../secret") is null && EquipmentPresentation.Label("knife_survival_bowie") == "Knife", "equipment paths accept original safe names while knives keep a short display label");

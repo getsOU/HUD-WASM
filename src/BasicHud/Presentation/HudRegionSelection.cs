@@ -20,6 +20,18 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
         if (area == HudArea.Radar) return !ReferenceEquals(previous.RadarCatalog, current.RadarCatalog)
             || !ReferenceEquals(previous.BoltRadarCatalog, current.BoltRadarCatalog) || !Equals(previous.ResolveAsset, current.ResolveAsset);
         if (area is HudArea.Presentation or HudArea.Mvp) return !ReferenceEquals(previous.Metadata, current.Metadata);
+        if (area == HudArea.Killfeed)
+        {
+            var killMatch = graph?.ManagedMatch ?? graph?.GameMatch;
+            string? Name(MetadataCatalog metadata, string? id) => id is not null && metadata.Matches(killMatch) && metadata.Players.TryGetValue(id, out var profile)
+                ? HudView.Text(profile.Name, "") : null;
+            if (graph?.KillOrder is { Keys.IsDefault: false } order)
+                foreach (var key in order.Keys)
+                    if (graph.GetKill(key) is { } kill)
+                        foreach (var participant in new[] { kill.Killer, kill.Assister, kill.Victim })
+                            if (Name(previous.Metadata, participant?.SteamId) != Name(current.Metadata, participant?.SteamId)) return true;
+            return false;
+        }
         if (area is not (HudArea.Player or HudArea.Observed)) return false;
         var steamId = (area == HudArea.Observed ? graph?.ObservedPlayer : playerKey is null ? null : graph?.Player(playerKey))?.Identity.SteamId;
         var match = graph?.ManagedMatch ?? graph?.GameMatch;
@@ -122,7 +134,7 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
                 }
                 OrderedObjects(HudObjectKindV3.Grenade, graph?.GrenadeOrder); Section("radar"); break;
             case HudArea.Killfeed:
-                values.Add(info?.Map); OrderedObjects(HudObjectKindV3.Kill, graph?.KillOrder); break;
+                values.Add(info?.Map); Match(); OrderedObjects(HudObjectKindV3.Kill, graph?.KillOrder); break;
             case HudArea.Waiting:
                 values.Add(graph is not null); break;
             case HudArea.Sponsors: Match(); Section("branding"); Field("display", "hideSponsors"); break;
