@@ -3,9 +3,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.14" PrivateAssets="all" />
-    <PackageReference Include="SOU.Hud.Sdk.Blazor" Version="0.3.0-preview.2" />
-    <PackageReference Include="SOU.Hud.Sdk" Version="0.3.0-preview.2" />
-    <PackageReference Include="SOU.Live.Contracts" Version="0.3.0-preview.2" />
+    <PackageReference Include="SOU.Hud.Sdk.Blazor" Version="0.3.0-preview.3" />
+    <PackageReference Include="SOU.Hud.Sdk" Version="0.3.0-preview.3" />
+    <PackageReference Include="SOU.Live.Contracts" Version="0.3.0-preview.3" />
   </ItemGroup>
   <ItemGroup>
     <None Update="hud.json" CopyToPublishDirectory="PreserveNewest" />

@@ -11,7 +11,7 @@ Only the `SOU_CREATOR_API_KEY` repository secret is needed. Future published tag
 upload automatically; the manual **Upload release to sOU** workflow also accepts
 existing release tags without rebuilding their immutable packages. Uploads await sOU review.
 
-A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk**, **SOU.Hud.Sdk.Blazor** and **SOU.Live.Contracts** NuGet packages `0.3.0-preview.2`; no private application source is required.
+A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk**, **SOU.Hud.Sdk.Blazor** and **SOU.Live.Contracts** NuGet packages `0.3.0-preview.3`; no private application source is required.
 
 The working source now targets **HUD API v3** and requires sOU desktop **0.3.34 or newer**. Version 0.4.19 introduces this migration; historical releases through 0.4.18 remain API v2.
 
@@ -29,7 +29,7 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 The installed HUD is named **sOU Default HUD**; its stable package ID remains `sou-basic-wasm`.
 
-1. Download `sou-basic-wasm-0.4.22.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.23.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
@@ -39,11 +39,15 @@ Under **Branding → Broadcast logo**, select an image to replace the sOU wordma
 
 In the live HUD, the active competition's logo and sponsors appear above the killfeed on the right. The competition logo stays fixed; sponsor logos rotate individually every ten seconds by default with a short fade-in. Set **Branding → Sponsorenrotation** to the desired whole seconds per logo; blank or invalid values use ten seconds. Duration changes apply immediately and keep the current logo. **Branding → Additional sponsors** adds images to the same rotation; duplicate image references appear once. **Hide sponsors** hides only the sponsors, retaining the competition logo. This area stays available when the observer card is hidden, and images are no longer repeated below the observer card.
 
-Competition and sponsor logos have equal-width slots at full size. **Branding → Höhe Wettbewerbslogo** and **Höhe Sponsoren** independently set each image's height to 0–100% of the available branding height; width scales by the same factor. For example, 50% halves both dimensions. The default is 100%; decimal points/commas and a percent suffix are accepted. Image proportions and placement stay intact; 0% hides that image without moving the other logo.
+The competition logo anchors the right edge, with the rotating sponsor directly to its left. **Branding → Höhe Wettbewerbslogo** and **Höhe Sponsoren** independently set each image's height to 0–100% of the available branding height; its width follows the actual image aspect ratio, without a fixed-width slot. Sponsor changes resize the row while the competition logo stays right-aligned. The default is 100%; decimal points/commas and a percent suffix are accepted. A value of 0% reduces that image to zero size.
+
+Prematch and break countdowns use the explicitly delayed match start when supplied, otherwise the regular planned start. A delayed schedule is labeled **DELAYED START**, shows the effective time and retains the original time when known. Clearing the delay restores the regular schedule. Both missing times remain unknown; the entire start block disappears when its effective time is reached and returns if a new future start is supplied. All dates use the browser/OBS local timezone, including daylight saving time, without a visible timezone suffix. Countdowns use the SDK synchronized clock. Delayed-start data requires sOU Desktop 0.3.38 or newer; older senders retain the regular-start fallback. Debug examples: `?preview=prematch&delayed=1` and `?preview=break&delayed=1`.
+
+Live playercards show positive SDK-provided round kills as a vertical icon stack outside the card: toward the HUD center in the side layout and above each card in the horizontal layout. Counts remain after death and disappear during freeze/warmup or when the source resets. Confirmed increases briefly pop in, respecting reduced motion; initial/unknown counts do not invent a kill animation. The observer card stays unchanged.
 
 The round MVP card sits below the matchbar at the same width, with the same proportional gap as the vertical player cards (12 px at 1920 px HUD width). Both areas have no outside border and use the same neutral HUD-blue background. There is no separate round-winner banner. The card appears only after an unambiguous MVP-counter increase has been observed and displays the completed round's kills and damage. Bundled Motion reveals it over 420 ms, with slightly staggered portrait/text movement and matching round-history motion. After eight seconds, including during pauses and after match end, it starts a 260 ms exit; the next freeze triggers that exit earlier. Repeated updates do not extend the display or reopen it during freeze. Reduced-motion preferences skip the movement. Live play, lost data continuity or changed session/map/match clear it immediately. Initial/stale/disconnected data and ambiguous counter jumps do not create an award; unavailable round statistics remain `—`.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.22**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.23**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
 
 The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) in `hud.json` under `outlineColors`. With a supporting sOU/HLAE host, opening the HUD through **Über CS2 anzeigen** selects these colors for X-Ray/outlines, utility trails and derived smoke coloring. Browser/OBS output alone does not select the in-game palette. Trails and smoke created after the palette is applied use the colors; existing effects may retain their previous appearance. See the [sOU HLAE color documentation](https://www.getsou.app/docs/cs2-hlae#hud-farben).
 
@@ -78,8 +82,8 @@ pwsh ./scripts/Build.ps1
 The script restores pinned Sass dependencies, checks the compiled stylesheet against its SCSS sources, performs locked NuGet restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata/region-selection tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.22.souhud
-artifacts/sou-basic-wasm-0.4.22.souhud.sha256
+artifacts/sou-basic-wasm-0.4.23.souhud
+artifacts/sou-basic-wasm-0.4.23.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:

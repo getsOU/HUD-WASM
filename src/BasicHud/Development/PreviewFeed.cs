@@ -7,7 +7,7 @@ using SOU.Live.Contracts;
 namespace BasicHud.Development;
 
 /// <summary>Local, read-only design fixtures. This file is excluded from Release compilation.</summary>
-internal sealed class PreviewFeed(string scenario) : IPreviewFeed
+internal sealed class PreviewFeed(string scenario, bool delayedStart = false) : IPreviewFeed
 {
     private static readonly DateTimeOffset PlannedStart = DateTimeOffset.UtcNow.AddMinutes(5);
     public event Action<string, PreviewConnectionState>? ConnectionChanged;
@@ -16,7 +16,7 @@ internal sealed class PreviewFeed(string scenario) : IPreviewFeed
     {
         if (!address.IsLoopback) return null;
         var mode = address.Query.TrimStart('?').Split('&').FirstOrDefault(value => value.StartsWith("preview=", StringComparison.Ordinal))?[8..];
-        return mode is "live" or "prematch" or "lineups" or "veto" or "break" or "postmatch" or "statistics" or "spotlight" or "waiting" or "stale" or "swapped" or "missing" or "bomb" or "overview" or "production" or "avatar-effects" or "mvp" or "icons" ? new PreviewFeed(mode) : null;
+        return mode is "live" or "prematch" or "lineups" or "veto" or "break" or "postmatch" or "statistics" or "spotlight" or "waiting" or "stale" or "swapped" or "missing" or "bomb" or "overview" or "production" or "avatar-effects" or "mvp" or "icons" ? new PreviewFeed(mode, address.Query.TrimStart('?').Split('&').Contains("delayed=1", StringComparer.Ordinal)) : null;
     }
 
     public async IAsyncEnumerable<LiveSnapshot> WatchLiveAsync([EnumeratorCancellation] CancellationToken cancellationToken)
@@ -26,7 +26,7 @@ internal sealed class PreviewFeed(string scenario) : IPreviewFeed
         var previewClock = System.Diagnostics.Stopwatch.StartNew();
         while (!cancellationToken.IsCancellationRequested)
         {
-            var snapshot = Snapshot(scenario);
+            var snapshot = Snapshot(scenario, delayedStart);
             if (snapshot.Game is { } previewGame && !previewGame.KillFeed.IsDefaultOrEmpty)
             {
                 // Refresh only synthetic event IDs before the normal eight-second retention expires.
@@ -138,7 +138,7 @@ internal sealed class PreviewFeed(string scenario) : IPreviewFeed
             .ToDictionary(item => item.Item1, item => new BrowserPlayer { Name = item.Item2, Avatar = includePortraits ? "/cast-media/preview.svg" : null })
     };
 
-    private static LiveSnapshot Snapshot(string scenario)
+    private static LiveSnapshot Snapshot(string scenario, bool delayedStart)
     {
         var ct = scenario == "swapped" ? "b" : "a";
         var t = scenario == "swapped" ? "a" : "b";
@@ -148,6 +148,7 @@ internal sealed class PreviewFeed(string scenario) : IPreviewFeed
             new(TeamSide.Terrorists, TeamRecognitionStatus.Manual, t, 0, 0))
         {
             StartsAt = PlannedStart,
+            DelayedStartsAt = delayedStart ? PlannedStart.AddMinutes(10) : null,
             Maps = [new("m1", "Mirage", "de_mirage", 1) { Status = MapResultStatus.Completed, ScoreA = 13, ScoreB = 8, WinnerTeamId = "a" },
                 new("m2", "Nuke", "de_nuke", 2) { Status = scenario == "postmatch" ? MapResultStatus.Completed : MapResultStatus.Live, ScoreA = scenario == "postmatch" ? 13 : 11, ScoreB = 7, WinnerTeamId = scenario == "postmatch" ? "a" : null },
                 new("m3", "Dust II", "de_dust2", 3) { Status = MapResultStatus.Pending }],

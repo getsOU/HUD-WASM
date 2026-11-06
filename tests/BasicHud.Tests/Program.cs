@@ -146,6 +146,7 @@ WeaponPresenceTests.Run(Check);
 RadarMotionAndPicksTests.Run(Check);
 V3RegionTests.Run(Check);
 RoundMvpTests.Run(Check);
+MatchStartTests.Run(Check);
 Console.WriteLine($"{checks} checks passed.");
 
 static async Task Until(Func<bool> ready)

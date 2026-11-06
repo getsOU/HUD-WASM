@@ -114,6 +114,7 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
             case HudArea.Player:
             case HudArea.Observed:
                 values.Add(graph?.Freshness); values.Add(info?.Map); values.Add(info?.RoundNumber);
+                if (area == HudArea.Player) { values.Add(info?.RoundPhase); values.Add(info?.Phase); }
                 values.Add(area == HudArea.Observed ? (object?)graph?.Roster?.Observed
                     : graph?.Player(playerKey ?? "")?.Identity.SteamId is { Length: > 0 } steamId && graph.ObservedPlayer?.Identity.SteamId == steamId);
                 Match(); Field("display", "agentsOnly");

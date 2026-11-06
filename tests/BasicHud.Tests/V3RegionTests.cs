@@ -103,5 +103,19 @@ internal static class V3RegionTests
         check(Same(killFrame, killMoved, HudArea.Killfeed) && !Same(killMoved, killRebound, HudArea.Killfeed)
             && !killRebound.Game!.IsCompatibilitySnapshotCreated,
             "killfeed selects match binding changes while ignoring movement and avoiding compatibility snapshot materialization");
+        var roundPlayer = p1 with { RoundKills = 2 };
+        var roundGame = source.Game with { Players = [roundPlayer, p2], ObservedPlayer = roundPlayer };
+        var roundLive = Frame(source with { Revision = 13, Game = roundGame });
+        var roundFreeze = Frame(source with { Revision = 14, Game = roundGame with { RoundPhase = RoundPhase.FreezeTime } });
+        check(!Same(roundLive, roundFreeze, HudArea.Player, keys[0]) && Same(roundLive, roundFreeze, HudArea.Observed),
+            "freeze refreshes playercard round-kill visibility without adding an observer dependency");
+        var waitingSource = source with { Revision = 15, Game = null, Freshness = DataFreshness.Waiting, ManagedMatch = match with { StartsAt = now.AddMinutes(5) } };
+        var waitingStart = Frame(waitingSource);
+        var waitingDelay = Frame(waitingSource with { Revision = 16, ManagedMatch = waitingSource.ManagedMatch! with { DelayedStartsAt = now.AddMinutes(15) } });
+        check(waitingDelay.Game!.ManagedMatch?.DelayedStartsAt == now.AddMinutes(15) && !Same(waitingStart, waitingDelay, HudArea.Presentation),
+            "v3 SDK carries a delayed start before GSI and updates the presentation region when only that field changes");
+        var removedDelay = Frame(waitingSource with { Revision = 17 });
+        check(removedDelay.Game!.ManagedMatch?.DelayedStartsAt is null && !Same(waitingDelay, removedDelay, HudArea.Presentation),
+            "removing a delayed start propagates through the v3 graph and invalidates the start display");
     }
 }

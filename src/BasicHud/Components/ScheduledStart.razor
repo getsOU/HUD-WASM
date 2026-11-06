@@ -1,0 +1,20 @@
+@if (!Schedule.HasElapsed(Now))
+{
+    <div class="@Class @(Schedule.IsDelayed ? "is-delayed" : "")" aria-label="Scheduled match start">
+        <span>@(Schedule.IsDelayed ? "DELAYED START" : "PLANNED START")</span>
+        <strong>@Schedule.Countdown(Now)</strong>
+        @if (Schedule.Effective is { } effective)
+        {
+            <small><time datetime="@effective.ToString("O", System.Globalization.CultureInfo.InvariantCulture)">@MatchStartView.Timestamp(effective)</time></small>
+        }
+        @if (Schedule.IsDelayed && Schedule.Planned is { } planned)
+        {
+            <small class="original-start">Originally <time datetime="@planned.ToString("O", System.Globalization.CultureInfo.InvariantCulture)">@MatchStartView.Timestamp(planned)</time></small>
+        }
+    </div>
+}
+@code {
+    [Parameter, EditorRequired] public MatchStartView Schedule { get; set; } = new(null, null);
+    [Parameter] public DateTimeOffset Now { get; set; }
+    [Parameter] public string Class { get; set; } = "scheduled-start";
+}

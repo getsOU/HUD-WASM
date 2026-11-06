@@ -8,9 +8,9 @@ This project uses the following public packages. From 0.4.0 the HUD is GPL-3.0-o
 | --- | --- | --- |
 | Lucide SVG subset | `1a49fd88d85202bad69f39462241b309a484bba0` | ISC, with Feather MIT notice; ten local SVG geometries, no runtime; [source](https://github.com/lucide-icons/lucide/tree/1a49fd88d85202bad69f39462241b309a484bba0), full notices in `LICENSES/LUCIDE-LICENSE.txt` and inventory in `LICENSES/hud-ui-icons.json` |
 | Motion | 14.5.0 | MIT, Motion B.V.; [source](https://github.com/motiondivision/motion); bundled locally, license in `LICENSES/MOTION-MIT.txt` |
-| SOU.Hud.Sdk / SOU.Hud.Sdk.Blazor | 0.3.0-preview.2 | MIT, copyright 2026 sofc; [NuGet SDK](https://www.nuget.org/packages/SOU.Hud.Sdk/0.3.0-preview.2), [Blazor adapter](https://www.nuget.org/packages/SOU.Hud.Sdk.Blazor/0.3.0-preview.2) |
-| SOU.Live.Contracts | 0.3.0-preview.2 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Live.Contracts/0.3.0-preview.2) |
-| SOU.Hud.Tool (build only) | 0.3.0-preview.2 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Hud.Tool/0.3.0-preview.2) |
+| SOU.Hud.Sdk / SOU.Hud.Sdk.Blazor | 0.3.0-preview.3 | MIT, copyright 2026 sofc; [NuGet SDK](https://www.nuget.org/packages/SOU.Hud.Sdk/0.3.0-preview.3), [Blazor adapter](https://www.nuget.org/packages/SOU.Hud.Sdk.Blazor/0.3.0-preview.3) |
+| SOU.Live.Contracts | 0.3.0-preview.3 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Live.Contracts/0.3.0-preview.3) |
+| SOU.Hud.Tool (build only) | 0.3.0-preview.3 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Hud.Tool/0.3.0-preview.3) |
 | ASP.NET Core, Blazor WebAssembly and SignalR | 10.0.14 | MIT, .NET Foundation and Contributors; [source](https://github.com/dotnet/aspnetcore/tree/v10.0.14) |
 | .NET WebAssembly runtime and libraries | 10.0.14 | MIT with bundled third-party components; [source](https://github.com/dotnet/runtime/tree/v10.0.14) |
 | Dart Sass (build only) | 1.106.1 | MIT; [source](https://github.com/sass/dart-sass) |

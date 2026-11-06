@@ -40,7 +40,7 @@ The lower third is transient; a new source session clears it. It reserves space 
 
 ## Branding
 
-`branding.logo` is an optional local broadcast image in presentation headers. The live scoreboard uses the fixed local sOU wordmark in white. `branding.sponsors` accepts additional local images, combined with competition sponsors supplied by sOU. Only permitted local images are loaded; image failures use a neutral fallback in presentation scenes. Failed live team logos are omitted. Missing or failed player portraits use a local CS2 agent for the actual side and observer digit, when known. Sponsor rendering is limited to 24 distinct local images, clipped to the small live sponsor rail.
+`branding.logo` is an optional local broadcast image in presentation headers. The live scoreboard uses the fixed local sOU wordmark in white. `branding.sponsors` accepts additional local images, combined with competition sponsors supplied by sOU. Only permitted local images are loaded; image failures use a neutral fallback in presentation scenes. Failed live team logos are omitted. Missing or failed player portraits use a local CS2 agent for the actual side and observer digit, when known. Sponsor rendering is limited to 24 distinct local images. In the live HUD, one sponsor rotates directly left of the right-aligned competition logo. Their independent height controls preserve each image aspect ratio; widths follow the content without fixed slots.
 
 ## Radar
 

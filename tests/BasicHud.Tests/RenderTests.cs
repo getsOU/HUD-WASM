@@ -20,7 +20,41 @@ static class RenderTests
         await using var renderer = new TestRenderer(services, services.GetRequiredService<ILoggerFactory>());
         await renderer.Dispatcher.InvokeAsync(async () =>
         {
+            var startDisplay = renderer.Attach(new ScheduledStart());
+            var plannedStart = DateTimeOffset.Parse("2026-11-06T19:00:00+01:00", System.Globalization.CultureInfo.InvariantCulture);
+            var delayedStart = new MatchStartView(plannedStart, plannedStart.AddMinutes(45));
+            await renderer.Render(startDisplay, new() { [nameof(ScheduledStart.Schedule)] = delayedStart, [nameof(ScheduledStart.Now)] = plannedStart.AddMinutes(10) });
+            var localPlanned = TimeZoneInfo.ConvertTime(plannedStart, TimeZoneInfo.Local).ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+            var localDelayed = TimeZoneInfo.ConvertTime(delayedStart.Delayed!.Value, TimeZoneInfo.Local).ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+            check(renderer.HasText(startDisplay, "DELAYED START") && renderer.HasText(startDisplay, "35:00") && renderer.HasText(startDisplay, localDelayed) && renderer.HasText(startDisplay, localPlanned) && renderer.HasElement(startDisplay, "time"), "delayed start display shows the effective countdown with both dates in local time and no timezone suffix");
+            await renderer.Render(startDisplay, new() { [nameof(ScheduledStart.Schedule)] = delayedStart with { Planned = null }, [nameof(ScheduledStart.Class)] = "break-clock" });
+            check(renderer.HasText(startDisplay, "DELAYED START") && !renderer.HasText(startDisplay, "Originally ") && renderer.HasAttribute(startDisplay, "class", "break-clock is-delayed"), "break-style delayed start works without inventing an original planned time");
+            await renderer.Render(startDisplay, new() { [nameof(ScheduledStart.Now)] = delayedStart.Effective!.Value });
+            check(!renderer.HasElement(startDisplay, "div") && !renderer.HasElement(startDisplay, "time"), "the entire delayed-start block disappears exactly when the running countdown reaches its target");
+            await renderer.Render(startDisplay, new() { [nameof(ScheduledStart.Schedule)] = delayedStart with { Delayed = delayedStart.Delayed!.Value.AddMinutes(10) } });
+            check(renderer.HasText(startDisplay, "DELAYED START") && renderer.HasText(startDisplay, "10:00"), "a newly postponed future start reappears after an earlier target elapsed");
+            await renderer.Render(startDisplay, new() { [nameof(ScheduledStart.Schedule)] = delayedStart with { Delayed = null } });
+            check(!renderer.HasElement(startDisplay, "div") && !renderer.HasElement(startDisplay, "time"), "clearing a delay hides the complete block when the regular start has already elapsed");
+            await renderer.Render(startDisplay, new() { [nameof(ScheduledStart.Schedule)] = new MatchStartView(null, null) });
+            check(renderer.HasText(startDisplay, "Start time not set") && !renderer.HasElement(startDisplay, "time"), "missing start times omit timestamps rather than displaying a default date");
             var image = renderer.Attach(new ImageTile());
+            var roundKills = renderer.Attach(new RoundKillIndicator());
+            var roundPlayer = new PlayerState("round-player", "Round player", TeamSide.CounterTerrorists, PlayerActivity.Playing, 100) { RoundKills = 2 };
+            await renderer.Render(roundKills, new() { [nameof(RoundKillIndicator.Player)] = roundPlayer, [nameof(RoundKillIndicator.Context)] = BroadcastContext.Empty });
+            check(renderer.HasAttribute(roundKills, "aria-label", "Kills this round: 2") && renderer.AttributeValues(roundKills, "data-ui-icon").Count(icon => icon == "kills") == 2 && !renderer.HasText(roundKills, "2") && !renderer.HasDescendantAttribute(roundKills, "class", "round-kill-item new-round-kill"), "initial round kills show one icon per kill with no visible number or invented animation");
+            await renderer.Render(roundKills, new() { [nameof(RoundKillIndicator.Player)] = roundPlayer with { RoundKills = 3, Health = 0 } });
+            check(renderer.HasAttribute(roundKills, "aria-label", "Kills this round: 3") && renderer.AttributeValues(roundKills, "data-ui-icon").Count(icon => icon == "kills") == 3 && renderer.AttributeValues(roundKills, "class").Count(value => value == "round-kill-item new-round-kill") == 1, "a confirmed increase adds and animates only the new kill icon, retaining earlier kills after death");
+            var freezeContext = BroadcastContext.Empty with { Snapshot = new(2, Guid.NewGuid(), 1, DateTimeOffset.UtcNow, DataFreshness.Live, new GameState("de_mirage", MatchPhase.Live, 2, RoundPhase.FreezeTime, new(null, 0), new(null, 0), null, [])) };
+            await renderer.Render(roundKills, new() { [nameof(RoundKillIndicator.Context)] = freezeContext });
+            check(!renderer.HasElement(roundKills, "span"), "freeze hides round kills even when the source counter has not yet reset");
+            foreach (var count in new int?[] { 0, null, -1 })
+            {
+                await renderer.Render(roundKills, new() { [nameof(RoundKillIndicator.Player)] = roundPlayer with { RoundKills = count }, [nameof(RoundKillIndicator.Context)] = BroadcastContext.Empty });
+                check(!renderer.HasElement(roundKills, "span"), $"zero, unknown and invalid round kills have no empty indicator ({count})");
+            }
+            var observedRoundKills = renderer.Attach(new ObservedPlayer());
+            await renderer.Render(observedRoundKills, new() { [nameof(ObservedPlayer.Player)] = roundPlayer, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
+            check(!renderer.HasComponent(observedRoundKills, typeof(RoundKillIndicator)), "observer remains free of the playercard round-kill indicator");
             await renderer.Render(image, new() { [nameof(ImageTile.Source)] = "/cast-media/first.png", [nameof(ImageTile.Label)] = "Alpha" });
             check(renderer.HasElement(image, "img"), "actual ImageTile Razor renders its supplied image");
             var imageHandler = renderer.ErrorHandler(image);

@@ -2941,9 +2941,15 @@ body,
   font-size: 1.7em;
 }
 
-.scheduled-start small {
+.scheduled-start small,
+.break-clock small {
   color: #8497ad;
   font-size: 0.65em;
+}
+
+.scheduled-start.is-delayed > span,
+.break-clock.is-delayed > span {
+  color: #e6a263;
 }
 
 .lineup-columns {
@@ -3839,11 +3845,10 @@ body,
 }
 
 .hud.scene-live .live-branding {
-  --branding-logo-width: 15.4cqw;
   position: absolute;
   top: 1.25cqw;
   right: 0.8%;
-  width: calc(var(--branding-logo-width) * 2 + 0.8cqw);
+  width: max-content;
   height: 5.7cqw;
   display: flex;
   align-items: center;
@@ -3851,21 +3856,20 @@ body,
   gap: 0.8cqw;
 }
 .hud.scene-live .live-competition-logo {
-  flex: 0 0 var(--branding-logo-width);
-  width: var(--branding-logo-width);
+  flex: 0 0 auto;
+  width: auto;
   min-width: 0;
-  height: 100%;
+  max-width: none;
+  height: calc(100% * var(--competition-logo-scale, 1));
   max-height: 100%;
   object-fit: contain;
-  transform: scale(var(--competition-logo-scale, 1));
-  transform-origin: center;
 }
 .hud.scene-live .live-branding .sponsors {
   position: static;
   inset: auto;
-  flex: 0 0 var(--branding-logo-width);
+  flex: 0 0 auto;
   min-width: 0;
-  width: var(--branding-logo-width);
+  width: auto;
   height: 100%;
   display: flex;
   align-items: center;
@@ -3874,14 +3878,13 @@ body,
   background: transparent;
 }
 .hud.scene-live .live-branding .sponsor-image {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
+  flex: 0 0 auto;
+  width: auto;
+  height: calc(100% * var(--sponsor-logo-scale, 1));
+  max-width: none;
   max-height: 100%;
   min-height: 0;
   object-fit: contain;
-  transform: scale(var(--sponsor-logo-scale, 1));
-  transform-origin: center;
   animation: sponsor-rotation-in 350ms ease-out;
 }
 
@@ -4052,4 +4055,71 @@ body,
 }
 .hud.scene-live .roster .live-player.is-dead .card-slot {
   background: #a7afb8;
+}
+
+.hud.scene-live .roster .live-player {
+  overflow: visible;
+}
+.hud.scene-live .roster .live-player > :not(.round-kill-indicator) {
+  overflow: hidden;
+}
+.hud.scene-live .round-kill-indicator {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 0.35cqw);
+  z-index: 2;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2px, 0.15cqw, 3px);
+  width: max-content;
+  pointer-events: none;
+}
+.hud.scene-live .round-kill-item {
+  display: flex;
+  line-height: 0;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7333333333));
+}
+.hud.scene-live .round-kill-indicator .hud-ui-icon {
+  --icon-height: clamp(12px, 0.7cqw, 14px);
+  color: var(--side, #fff);
+}
+.hud.scene-live .roster.t .round-kill-indicator {
+  left: auto;
+  right: calc(100% + 0.35cqw);
+}
+.hud.scene-live .new-round-kill {
+  animation: round-kill-pop 260ms ease-out;
+}
+
+.hud.scene-live.rosters-horizontal .roster-heading {
+  top: -6.8cqw;
+}
+.hud.scene-live.rosters-horizontal .roster .round-kill-indicator {
+  top: auto;
+  bottom: calc(100% + 0.35cqw);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+
+@keyframes round-kill-pop {
+  from {
+    opacity: 0;
+    scale: 0.8;
+  }
+  65% {
+    opacity: 1;
+    scale: 1.12;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hud.scene-live .new-round-kill {
+    animation: none;
+  }
 }

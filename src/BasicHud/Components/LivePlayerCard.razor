@@ -9,6 +9,7 @@
         <span class="card-money">@if (Player.Money is { } money) { <span class="card-currency">$</span>@(" ")<span class="card-money-value">@money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)</span> } else { <text>—</text> }</span>
     </div>
     <span class="card-portrait"><PlayerPortrait Player="Player" Context="Context" Class="roster-portrait" OmitFallback="true" /></span>
+    <RoundKillIndicator Player="Player" Context="Context" />
     @if (Dead)
     {
         <span class="card-death"><HudUiIcon Name="dead" Label="Dead" /></span>

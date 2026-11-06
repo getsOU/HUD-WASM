@@ -56,7 +56,8 @@ public sealed record BroadcastContext(LiveSnapshot? Snapshot, HudPanelState? Pan
         return double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var percent)
             && double.IsFinite(percent) && percent is >= 0 and <= 100 ? percent : 100;
     }
-    public string StartCountdown => Match?.StartsAt is { } start ? Now < start ? HudView.Time((start - Now).TotalSeconds) : "Scheduled time reached" : "Start time not set";
+    public MatchStartView MatchStart => new(Match?.StartsAt, Match?.DelayedStartsAt);
+    public string StartCountdown => MatchStart.Countdown(Now);
     public string Competition => Match?.Competition is { } competition ? string.Join(" · ", new[] { competition.Name, competition.SeasonName }.Concat(competition.Sections.Select(section => section.Name)).Where(value => !string.IsNullOrWhiteSpace(value))) : "";
     public string? SeriesWinner
     {

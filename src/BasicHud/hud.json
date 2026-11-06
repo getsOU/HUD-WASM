@@ -1,6 +1,6 @@
 {
   "id": "sou-basic-wasm",
-  "version": "0.4.22",
+  "version": "0.4.23",
   "name": "sOU Default HUD",
   "infoUrl": "https://github.com/getsOU/HUD-WASM",
   "outlineColors": {
@@ -40,5 +40,5 @@
       "route": "views/spotlight"
     }
   ],
-  "releaseNotes": "- Unify HUD status, killfeed, round-history, utility and ammunition icons with a local Lucide/custom outline system. Keep original weapon, knife and C4 silhouettes.\n- Apply consistent team-colored card icons, white text and equipment exceptions, and green money amounts with a team-colored dollar sign. Color all round-result icons by the winning side, including C4 and defuse kits.\n- Improve the observer strip with a larger white weapon and separate loaded-rounds/reserve icons on the existing lower row. Omit unavailable ammunition and show armor directly left of health.\n- Fix Bahnschrift Condensed selection in Firefox and Chromium, health-fill proportions outside the observer-slot strip, slot/name alignment, and mirrored skull cropping on dead cards.\n- Animate the neutral-blue MVP card with a proportional gap below the matchbar. Keep it visible for up to eight seconds, ending early at the next freeze, including during pauses and after match end.\n- Expand the Debug preview with all supported killfeed icons, winner-colored round results, varied utility and armor examples. Preserve production SDK subscriptions and dynamic radar drawing.\n- Requires sOU desktop 0.3.34 or newer. Select version 0.4.22 and reopen outputs after importing."
+  "releaseNotes": "- Add spaced, team-colored kill symbols for the current round outside playercards, without numbers, backgrounds or frames. Align side-layout indicators with the card's top edge and place horizontal-layout indicators above the card. Retain kills after death, hide them during freeze/warmup, and animate newly added symbols with reduced-motion support.\n- Position the competition logo at the right edge with rotating sponsors directly to its left. Size both by their panel-controlled height and original aspect ratio, without fixed-width slots.\n- Respect configured delayed match starts in prematch and break countdowns, label the delay and show the original schedule when known. Restore the regular schedule when a delay is cleared and support delayed-only or unknown start times.\n- Hide the complete start display when its effective target is reached; show it again when a new future start is supplied.\n- Display all planned and delayed start dates in the browser/OBS local timezone, including daylight saving time, without visible timezone suffixes. Keep countdowns on the SDK synchronized clock.\n- Update the public SDK, Blazor adapter, contracts and HUD tool to 0.3.0-preview.3. Delayed-start data requires sOU Desktop 0.3.38 or newer; older senders retain the regular-start fallback. Select version 0.4.23 and reopen outputs after importing."
 }

@@ -64,7 +64,12 @@
 .break-clock strong {
     font-size: 1.7em;
 }
-.scheduled-start small {
+.scheduled-start small,
+.break-clock small {
     color: #8497ad;
     font-size: 0.65em;
+}
+.scheduled-start.is-delayed > span,
+.break-clock.is-delayed > span {
+    color: #e6a263;
 }

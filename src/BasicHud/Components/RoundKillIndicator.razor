@@ -1,0 +1,24 @@
+@if (Count is > 0)
+{
+    <span class="round-kill-indicator" role="img" aria-label="@Label" title="@Label">
+        @for (var index = 0; index < Count; index++)
+        {
+            <span @key="index" class="round-kill-item @(animateFrom is { } first && index >= first ? "new-round-kill" : "")"><HudUiIcon Name="kills" Label="Kill this round" /></span>
+        }
+    </span>
+}
+@code {
+    [Parameter, EditorRequired] public PlayerState Player { get; set; } = null!;
+    [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    private int? Count => Context.Game is { RoundPhase: RoundPhase.FreezeTime } or { Phase: MatchPhase.Warmup } ? null : Player.RoundKills;
+    private string Label => $"Kills this round: {Count}";
+    private (Guid? Session, string? Map, string? Match, int? Round, string? Player)? binding;
+    private int? previousCount, animateFrom;
+    protected override void OnParametersSet()
+    {
+        var nextBinding = (Context.Snapshot?.SessionId, Context.Game?.Map, Context.Match?.Id, Context.Game?.RoundNumber, Player.SteamId);
+        if (binding != nextBinding) { binding = nextBinding; animateFrom = null; }
+        else if (Count != previousCount) { animateFrom = previousCount is >= 0 && Count > previousCount ? previousCount : null; }
+        previousCount = Count;
+    }
+}

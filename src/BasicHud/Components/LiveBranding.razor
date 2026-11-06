@@ -5,8 +5,8 @@
 @if (logo is not null || ShowSponsors && Context.SponsorImages().Count > 0)
 {
     <aside class="live-branding" style="@FormattableString.Invariant($"--competition-logo-scale:{Context.CompetitionLogoHeightPercent / 100};--sponsor-logo-scale:{Context.SponsorHeightPercent / 100}")" aria-label="Competition and sponsors">
-        @if (logo is not null) { <ImageTile Source="@logo" Label="@(competition?.Name ?? "Competition")" Class="live-competition-logo" OmitFallback="true" /> }
         @if (ShowSponsors) { <Sponsors Context="Context" Rotate="true" /> }
+        @if (logo is not null) { <ImageTile Source="@logo" Label="@(competition?.Name ?? "Competition")" Class="live-competition-logo" OmitFallback="true" /> }
     </aside>
 }
 @code {

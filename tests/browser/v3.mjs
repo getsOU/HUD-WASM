@@ -15,6 +15,7 @@ baseline.game.roundPhase = 'live';
 baseline.game.countdown = { phase: 'paused', secondsRemaining: 90 };
 baseline.game.roundNumber = 10;
 baseline.game.players[0].stats.mvps = 0;
+baseline.game.players[0].roundKills = 5;
 baseline.game.players[5].health = 5;
 const moved = structuredClone(baseline);
 moved.game.players[0].position.x += 200;
@@ -88,8 +89,27 @@ competitionBranding.game.killFeed = [{ id: 1, connectionId: '00000000-0000-0000-
   weapon: 'weapon_ak47', weaponKind: 'ak47', flashAssist: false, headshot: false, wallbang: false,
   attackerBlind: false, throughSmoke: false, noScope: false }];
 const fixture = path.join(scratch, 'selective.json');
+const scheduledStart = structuredClone(competitionBranding);
+scheduledStart.game = null;
+scheduledStart.freshness = 'waiting';
+scheduledStart.receivedAt = null;
+const plannedStartTime = new Date(Date.now() - 5 * 60000).toISOString();
+const delayedStartTime = new Date(Date.now() + 10 * 60000).toISOString();
+const laterStartTime = new Date(Date.now() + 20 * 60000).toISOString();
+scheduledStart.managedMatch.startsAt = plannedStartTime;
+scheduledStart.managedMatch.delayedStartsAt = null;
+const delayedStart = structuredClone(scheduledStart);
+delayedStart.managedMatch.delayedStartsAt = delayedStartTime;
+const laterStart = structuredClone(delayedStart);
+laterStart.managedMatch.delayedStartsAt = laterStartTime;
+const clearedStart = structuredClone(scheduledStart);
+const delayedOnlyStart = structuredClone(laterStart);
+delayedOnlyStart.managedMatch.startsAt = null;
+const unknownStart = structuredClone(scheduledStart);
+unknownStart.managedMatch.startsAt = null;
 await writeFile(fixture, JSON.stringify({ schemaVersion: 1, intervalMilliseconds: 5000, loop: false,
-  snapshots: [...Array(100).fill(baseline), moved, shot, hurt, dead, earlyAward, roundOver, pausedOver, nextFreeze, pausedFreeze, nextLive, finalAward, finalHeartbeat, finalUpdate, competitionBranding] }));
+  snapshots: [...Array(100).fill(baseline), moved, shot, hurt, dead, earlyAward, roundOver, pausedOver, nextFreeze, pausedFreeze, nextLive, finalAward, finalHeartbeat, finalUpdate, competitionBranding,
+    scheduledStart, delayedStart, laterStart, clearedStart, delayedOnlyStart, unknownStart, competitionBranding] }));
 
 const host = spawn('dotnet', ['tool', 'run', 'sou-hud', '--', 'dev', packagePath, '--port', '0', '--fixture', fixture], { stdio: ['ignore', 'pipe', 'pipe'] });
 let browser;
@@ -105,7 +125,7 @@ try {
   await until(() => /Development preview: (http:\/\/127\.0\.0\.1:\d+\/)/.test(hostOutput));
   origin = hostOutput.match(/Development preview: (http:\/\/127\.0\.0\.1:\d+\/)/)[1];
   browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE } : {}) });
-  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, timezoneId: 'Europe/Berlin' });
   controlPage = page;
   const errors = [], sockets = new Set(), socketUrls = [], optionsRequests = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -171,6 +191,10 @@ try {
   assert.equal(await hud.locator('.radar-widget .hud-ui-icon').count(), 0);
   assert.equal(await hud.locator('.killfeed [data-cs2-icon]').count(), 0);
   console.log('PASS shared local outline symbols have readable sizes and CSS color; radar stays unchanged');
+  const roundKills = hud.locator('.roster.ct .live-player').first().locator('.round-kill-indicator');
+  assert.equal(await roundKills.locator('[data-ui-icon="kills"]').count(), 5, 'each source round kill has its own symbol');
+  assert.equal(await roundKills.locator('strong').count(), 0, 'round kills have no visible number');
+  assert.equal(await roundKills.evaluate(element => getComputedStyle(element).backgroundColor), 'rgba(0, 0, 0, 0)', 'round-kill stack has no background');
   const beforeCards = await cards(), beforeRadar = await radar();
   for (let step = 0; step < 105 && await radar() === beforeRadar; step++) {
     await command({ kind: 'step' }); await page.waitForTimeout(40);
@@ -411,6 +435,7 @@ try {
   await command({ kind: 'step' });
   await hud.locator('.clock-label').filter({ hasText: 'ROUND 11' }).waitFor();
   await hud.waitForFunction(() => !document.querySelector('.round-mvp'));
+  assert.equal(await hud.locator('.round-kill-indicator').count(), 0, 'next freeze clears all playercard kill stacks even before source counters reset');
   assert(Date.now() - mvpShownAt < 7800, 'freeze must end the MVP display before the eight-second deadline');
   assert(await hud.evaluate(() => window.mvpMotionSamples.some(sample => sample.visible === 'false' && sample.progress > 0 && sample.progress < 1)),
     'freeze must animate the MVP exit before removing its element');
@@ -442,14 +467,14 @@ try {
   await hud.evaluate(() => { window.mvpMotionObserver.disconnect(); delete window.mvpMotionObserver; delete window.mvpMotionSamples; });
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   console.log('PASS MVP Motion reveal/exit, reduced motion, timing and geometry, eight-second expiry, early freeze dismissal and no revival');
-  for (const [file, label, color] of [ ['league', 'DEMO LEAGUE', '#b6def5'], ['sponsor-a', 'DEMO A', '#ffffff'],
-    ['sponsor-b', 'DEMO B', '#eee1a0'], ['sponsor-c', 'DEMO C', '#ffffff'] ]) {
-    const data = await page.evaluate(({ label, color }) => {
-      const canvas = document.createElement('canvas'); canvas.width = 300; canvas.height = 120;
-      const context = canvas.getContext('2d'); context.fillStyle = color; context.font = 'bold 38px Arial';
-      context.textAlign = 'center'; context.textBaseline = 'middle'; context.fillText(label, 150, 60);
+  for (const [file, label, color, width, height] of [ ['league', 'LEAGUE', '#b6def5', 120, 120], ['sponsor-a', 'DEMO A', '#ffffff', 300, 120],
+    ['sponsor-b', 'DEMO B', '#eee1a0', 240, 120], ['sponsor-c', 'DEMO C', '#ffffff', 180, 120] ]) {
+    const data = await page.evaluate(({ label, color, width, height }) => {
+      const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+      const context = canvas.getContext('2d'); context.fillStyle = color; context.font = `bold ${Math.min(38, Math.floor(width / (label.length * .7)))}px Arial`;
+      context.textAlign = 'center'; context.textBaseline = 'middle'; context.fillText(label, width / 2, height / 2);
       return canvas.toDataURL('image/png').split(',')[1];
-    }, { label, color });
+    }, { label, color, width, height });
     await page.route(`**/cast-media/${file}.png`, route => route.fulfill({ contentType: 'image/png', body: Buffer.from(data, 'base64') }));
   }
   await command({ kind: 'step' });
@@ -482,30 +507,34 @@ try {
   await hud.waitForFunction(() => [...document.querySelectorAll('.live-branding img')].every(image => image.complete && image.naturalWidth > 0));
   assert.equal(await hud.locator('.observed .sponsors').count(), 0, 'observer must not duplicate sponsors');
   const checkBranding = async () => {
+    await hud.waitForFunction(() => [...document.querySelectorAll('.live-branding img')].every(image => image.complete && image.naturalWidth > 0));
     const geometry = await hud.evaluate(() => {
       const brand = document.querySelector('.live-branding').getBoundingClientRect();
       const feed = document.querySelector('.killfeed').getBoundingClientRect();
       const header = document.querySelector('.scoreboard').getBoundingClientRect();
-      return { above: brand.bottom <= feed.top, aligned: brand.right === feed.right, clearsHeader: brand.left >= header.right,
+      const logo = document.querySelector('.live-competition-logo').getBoundingClientRect();
+      const sponsor = document.querySelector('.live-branding .sponsor-image').getBoundingClientRect();
+      return { above: brand.bottom <= feed.top, aligned: Math.abs(brand.right - feed.right) < .1, clearsHeader: brand.left >= header.right,
+        order: sponsor.right < logo.left && Math.abs(logo.right - brand.right) < .1,
         fits: [...document.querySelectorAll('.live-branding img')].every(image => {
           const rect = image.getBoundingClientRect(); return rect.left >= brand.left && rect.right <= brand.right && rect.top >= brand.top && rect.bottom <= brand.bottom;
         }) };
     });
-    assert(geometry.above && geometry.aligned && geometry.fits && geometry.clearsHeader, 'competition and sponsors must fit above the killfeed, share its right edge and clear the matchbar');
+    assert(geometry.above && geometry.aligned && geometry.fits && geometry.clearsHeader && geometry.order, 'competition anchors the right edge above the killfeed, with sponsors directly to its left');
   };
   const checkLogoSizes = async (competitionPercent, sponsorPercent) => {
+    await checkBranding();
     const size = await hud.evaluate(() => {
       const rect = selector => { const box = document.querySelector(selector).getBoundingClientRect(); return { width: box.width, height: box.height }; };
-      return { area: rect('.live-branding'), hud: rect('.hud'), competition: rect('.live-competition-logo'), sponsor: rect('.live-branding .sponsor-image') };
+      const ratio = selector => { const image = document.querySelector(selector); return image.naturalWidth / image.naturalHeight; };
+      return { area: rect('.live-branding'), hud: rect('.hud'), competition: rect('.live-competition-logo'), sponsor: rect('.live-branding .sponsor-image'), competitionRatio: ratio('.live-competition-logo'), sponsorRatio: ratio('.live-branding .sponsor-image') };
     });
-    const fullWidth = size.hud.width * 0.154;
-    assert(Math.abs(size.competition.width - fullWidth * competitionPercent / 100) < 0.1, 'competition width must scale with its height percentage');
-    assert(Math.abs(size.sponsor.width - fullWidth * sponsorPercent / 100) < 0.1, 'sponsor width must scale with its height percentage from the existing full width');
+    assert(Math.abs(size.competition.width - size.competition.height * size.competitionRatio) < 0.1, 'competition width must follow the actual image aspect ratio');
+    assert(Math.abs(size.sponsor.width - size.sponsor.height * size.sponsorRatio) < 0.1, 'sponsor width must follow the currently rotated image aspect ratio');
     assert(Math.abs(size.competition.height - size.area.height * competitionPercent / 100) < 0.1, 'competition height must use the available branding height');
     assert(Math.abs(size.sponsor.height - size.area.height * sponsorPercent / 100) < 0.1, 'sponsor height must use the same available branding height');
-    for (const [image, percent] of [[size.competition, competitionPercent], [size.sponsor, sponsorPercent]])
-      if (percent > 0) assert(Math.abs(image.width / image.height - fullWidth / size.area.height) < 0.01,
-        'scaling must retain the original image-frame aspect ratio');
+    assert(Math.abs(size.area.width - size.competition.width - size.sponsor.width - size.hud.width * .008) < .2,
+      'branding width must contain only the image widths and their gap, without reserved logo slots');
     await checkBranding();
   };
   await checkBranding();
@@ -553,7 +582,7 @@ try {
   await checkBranding();
   await command({ kind: 'panel', values: { display: { hideObservedPlayer: false } } });
   await hud.locator('.observed').waitFor();
-  console.log('PASS sponsor rotation, live duration and proportional logo scaling, preserved full-size width and visibility');
+  console.log('PASS sponsor rotation, live duration, intrinsic logo widths, right-side competition placement and visibility');
   for (const view of manifest.subviews) {
     await command({ kind: 'view', route: view.route });
     await hud.waitForURL(new URL(view.route, output).href);
@@ -563,6 +592,49 @@ try {
   await hud.waitForURL(output);
   await hud.locator('.roster .live-player').first().waitFor();
   console.log('PASS all declared manager views and return to live');
+  const schedule = () => hud.locator('.scheduled-start, .break-clock');
+  const scheduleTimes = () => schedule().locator('time').evaluateAll(times => times.map(time => Date.parse(time.dateTime)));
+  const checkSchedule = async (delayed, times, message) => {
+    await until(async () => JSON.stringify(await scheduleTimes()) === JSON.stringify(times.map(time => Date.parse(time))));
+    assert.equal(await schedule().locator(':scope > span').textContent(), delayed ? 'DELAYED START' : 'PLANNED START');
+    assert.equal(await schedule().locator('.original-start').count(), delayed && times.length === 2 ? 1 : 0);
+    const dates = await schedule().locator('time').evaluateAll(nodes => nodes.map(node => {
+      const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
+        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+      }).formatToParts(new Date(node.dateTime)).map(part => [part.type, part.value]));
+      return { actual: node.textContent, expected: `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}` };
+    }));
+    assert(dates.every(date => date.actual === date.expected), `start dates must use browser-local time without a timezone suffix: ${JSON.stringify(dates)}`);
+    const countdown = await schedule().locator('strong').textContent();
+    if (message) assert.equal(countdown, message);
+    else assert(/^\d+:\d{2}$/.test(countdown), 'effective future start has a countdown');
+    return countdown;
+  };
+  await command({ kind: 'view', route: 'views/prematch' });
+  await hud.waitForURL(new URL('views/prematch', output).href);
+  await command({ kind: 'step' });
+  await hud.waitForFunction(() => !document.querySelector('.scheduled-start, .break-clock'));
+  await command({ kind: 'step' });
+  const firstStartCountdown = await checkSchedule(true, [delayedStartTime, plannedStartTime]);
+  await until(async () => await schedule().locator('strong').textContent() !== firstStartCountdown, 3000);
+  await page.screenshot({ path: path.join(scratch, 'delayed-start-prematch-1920x1080.png') });
+  await command({ kind: 'view', route: 'views/break' });
+  await hud.waitForURL(new URL('views/break', output).href);
+  await checkSchedule(true, [delayedStartTime, plannedStartTime]);
+  await command({ kind: 'step' });
+  await checkSchedule(true, [laterStartTime, plannedStartTime]);
+  await page.screenshot({ path: path.join(scratch, 'delayed-start-break-1920x1080.png') });
+  await command({ kind: 'step' });
+  await hud.waitForFunction(() => !document.querySelector('.scheduled-start, .break-clock'));
+  await command({ kind: 'step' });
+  await checkSchedule(true, [laterStartTime]);
+  await command({ kind: 'step' });
+  await checkSchedule(false, [], 'Start time not set');
+  await command({ kind: 'step' });
+  await command({ kind: 'view', route: '' });
+  await hud.waitForURL(output);
+  await hud.locator('.roster .live-player').first().waitFor();
+  console.log('PASS prematch/break use and label delayed starts before GSI, tick on SDK time, and handle changes, removal and unknown dates');
   await command({ kind: 'action', section: 'production', name: 'lowerThird', value: 'show' });
   await hud.locator('.has-lower-third').waitFor();
   await command({ kind: 'reconnect' });
