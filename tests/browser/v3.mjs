@@ -15,6 +15,7 @@ baseline.game.roundPhase = 'live';
 baseline.game.countdown = { phase: 'paused', secondsRemaining: 90 };
 baseline.game.roundNumber = 10;
 baseline.game.players[0].stats.mvps = 0;
+baseline.game.players[5].health = 5;
 const moved = structuredClone(baseline);
 moved.game.players[0].position.x += 200;
 moved.game.observedPlayer = structuredClone(moved.game.players[0]);
@@ -22,7 +23,7 @@ const shot = structuredClone(moved);
 shot.game.players[0].weapons[0].ammoClip = 17;
 shot.game.observedPlayer = structuredClone(shot.game.players[0]);
 const hurt = structuredClone(shot);
-hurt.game.players[1].health = 72;
+hurt.game.players[1].health = 5;
 const dead = structuredClone(hurt);
 dead.game.players[6].health = 0;
 const earlyAward = structuredClone(dead);
@@ -38,6 +39,9 @@ roundOver.game.countdown = { phase: 'over', secondsRemaining: 17 };
 roundOver.game.roundWinner = 'counterTerrorists';
 roundOver.game.players[0].roundKills = 2;
 roundOver.game.players[0].roundDamage = 200;
+const pausedOver = structuredClone(roundOver);
+pausedOver.game.countdown = { phase: 'paused', secondsRemaining: 17 };
+pausedOver.game.players[0].stats.score = (pausedOver.game.players[0].stats.score ?? 0) + 1;
 const nextFreeze = structuredClone(roundOver);
 nextFreeze.game.roundNumber = 11;
 nextFreeze.game.roundPhase = 'freezeTime';
@@ -58,7 +62,9 @@ finalAward.game.countdown = { phase: 'gameOver', secondsRemaining: 0 };
 finalAward.game.players[0].stats.mvps = 2;
 finalAward.game.players[0].roundKills = 1;
 finalAward.game.players[0].roundDamage = 111;
-const finalUpdate = structuredClone(finalAward);
+const finalHeartbeat = structuredClone(finalAward);
+finalHeartbeat.game.players[0].roundDamage = 112;
+const finalUpdate = structuredClone(finalHeartbeat);
 finalUpdate.game.players[0].stats.score = (finalUpdate.game.players[0].stats.score ?? 0) + 1;
 const competitionBranding = structuredClone(finalUpdate);
 competitionBranding.managedMatch = {
@@ -83,7 +89,7 @@ competitionBranding.game.killFeed = [{ id: 1, connectionId: '00000000-0000-0000-
   attackerBlind: false, throughSmoke: false, noScope: false }];
 const fixture = path.join(scratch, 'selective.json');
 await writeFile(fixture, JSON.stringify({ schemaVersion: 1, intervalMilliseconds: 5000, loop: false,
-  snapshots: [...Array(100).fill(baseline), moved, shot, hurt, dead, earlyAward, roundOver, nextFreeze, pausedFreeze, nextLive, finalAward, finalUpdate, competitionBranding] }));
+  snapshots: [...Array(100).fill(baseline), moved, shot, hurt, dead, earlyAward, roundOver, pausedOver, nextFreeze, pausedFreeze, nextLive, finalAward, finalHeartbeat, finalUpdate, competitionBranding] }));
 
 const host = spawn('dotnet', ['tool', 'run', 'sou-hud', '--', 'dev', packagePath, '--port', '0', '--fixture', fixture], { stdio: ['ignore', 'pipe', 'pipe'] });
 let browser;
@@ -126,6 +132,45 @@ try {
     return copy.outerHTML;
   }));
   const radar = () => hud.locator('.radar-player').evaluateAll(elements => JSON.stringify(elements.map(el => el.getAttribute('style'))));
+  const checkVerticalHealth = async () => {
+    const fills = await hud.locator('.roster .live-player:not(.is-dead)').evaluateAll(elements => elements.map(card => {
+      const fill = getComputedStyle(card, '::before');
+      const box = card.getBoundingClientRect();
+      const textBottom = selector => { const range = document.createRange(); range.selectNodeContents(card.querySelector(selector)); return range.getBoundingClientRect().bottom; };
+      return { health: Number(card.querySelector('.card-health').textContent), width: box.width, height: box.height,
+        slotBaseline: textBottom('.card-slot'), nameBaseline: textBottom('.player-name'),
+        slotWidth: card.querySelector('.card-slot').getBoundingClientRect().width, column: fill.gridColumnStart, columnEnd: fill.gridColumnEnd,
+        fillWidth: parseFloat(fill.width), fillHeight: parseFloat(fill.height), left: fill.left, right: fill.right,
+        t: card.classList.contains('t'), background: getComputedStyle(card).backgroundColor, fillColor: fill.backgroundColor,
+        loadoutBackground: getComputedStyle(card.querySelector('.card-loadout')).backgroundColor,
+        legacyTrack: Boolean(card.querySelector('.health-track')) };
+    }));
+    for (const fill of fills) {
+      assert(Math.abs(fill.slotBaseline - fill.nameBaseline) < .25, 'vertical observer digits must align with player names');
+      assert(Math.abs(fill.fillWidth - (fill.width - fill.slotWidth) * fill.health / 100) < .2,
+        'vertical HP percentages must exclude the observer strip, so five HP stays fully visible beside it');
+      assert.equal(fill.column, fill.t ? '1' : '2');
+      assert.equal(fill.columnEnd, fill.t ? '-2' : '-1', 'the observer grid column must be outside the HP fill area');
+      assert(Math.abs(fill.fillHeight - fill.height) < .2, 'vertical HP fill must span the full card height');
+      assert.equal(fill.t ? fill.right : fill.left, '0px', 'CT/T fill starts at its outside edge');
+      assert.notEqual(fill.background, fill.fillColor, 'the unfilled card must not retain its team-colored background');
+      assert.equal(fill.loadoutBackground, 'rgba(0, 0, 0, 0)');
+      assert(!fill.legacyTrack, 'there must not be an additional loadout-only health layer');
+    }
+    assert.equal(fills.filter(fill => fill.health === 5).length, 2, 'five HP is exercised on both sides');
+  };
+  await hud.waitForFunction(() => [...document.querySelectorAll('.hud-ui-icon use')].length > 0
+    && [...document.querySelectorAll('.hud-ui-icon use')].every(use => use.getBBox().width > 0));
+  const outlineIcons = await hud.locator('.hud-ui-icon').evaluateAll(icons => icons.map(icon => {
+    const box = icon.getBoundingClientRect(), style = getComputedStyle(icon);
+    return { width: box.width, height: box.height, stroke: style.stroke, color: style.color, filter: style.filter,
+      label: icon.getAttribute('aria-label') };
+  }));
+  assert(outlineIcons.every(icon => icon.label && icon.stroke === icon.color && icon.filter === 'none'
+    && icon.width >= 12 && Math.abs(icon.width - icon.height) < .1));
+  assert.equal(await hud.locator('.radar-widget .hud-ui-icon').count(), 0);
+  assert.equal(await hud.locator('.killfeed [data-cs2-icon]').count(), 0);
+  console.log('PASS shared local outline symbols have readable sizes and CSS color; radar stays unchanged');
   const beforeCards = await cards(), beforeRadar = await radar();
   for (let step = 0; step < 105 && await radar() === beforeRadar; step++) {
     await command({ kind: 'step' }); await page.waitForTimeout(40);
@@ -141,7 +186,8 @@ try {
   await until(async () => (await cards()).some((html, index) => html !== beforeCards[index]));
   const afterCards = await cards();
   assert.equal(afterCards.filter((html, index) => html !== beforeCards[index]).length, 1);
-  assert.match(afterCards[1], /72/);
+  assert.equal(await hud.locator('.roster.ct .card-health').nth(1).textContent(), '5');
+  await checkVerticalHealth();
   console.log('PASS health changes update exactly one player card');
   await command({ kind: 'options', options: { caption: 'Typed v3 caption' } });
   await hud.locator('.caption').filter({ hasText: 'Typed v3 caption' }).waitFor();
@@ -223,7 +269,9 @@ try {
   checkHorizontal(await horizontalGeometry());
   const cardContent = await hud.locator('.live-player').evaluateAll(cards => cards.map(card => {
     const bounds = selector => card.querySelector(selector).getBoundingClientRect();
+    const textBottom = selector => { const range = document.createRange(); range.selectNodeContents(card.querySelector(selector)); return range.getBoundingClientRect().bottom; };
     return { side: card.classList.contains('t') ? 't' : 'ct', card: { left: card.getBoundingClientRect().left, right: card.getBoundingClientRect().right },
+      slotBaseline: textBottom('.card-slot'), nameBaseline: textBottom('.player-name'),
       slot: { left: bounds('.card-slot').left, right: bounds('.card-slot').right },
       weaponLeft: bounds('.weapon-cell').left, healthLeft: bounds('.card-health').left,
       nameAlignment: getComputedStyle(card.querySelector('.card-identity')).textAlign,
@@ -233,6 +281,7 @@ try {
       equipmentColumn: getComputedStyle(card.querySelector('.card-status')).gridColumnStart };
   }));
   for (const card of cardContent) {
+    assert(Math.abs(card.slotBaseline - card.nameBaseline) < .25, 'horizontal observer digits must align with player names');
     assert(card.weaponLeft < card.healthLeft, 'both teams show weapon left and health right');
     assert.equal(card.nameAlignment, 'left');
     assert.equal(card.statOrder, 'row');
@@ -242,20 +291,24 @@ try {
     assert(Math.abs(card.slot.left - card.card.left) < 1,
       'observer slot and side strip stay on the left for both teams');
   }
-  const healthBackgrounds = await hud.locator('.roster.ct .live-player').evaluateAll(cards => cards.map(card => {
+  const healthBackgrounds = await hud.locator('.roster .live-player').evaluateAll(cards => cards.map(card => {
     const fill = getComputedStyle(card, '::before');
     return { health: Number(card.style.getPropertyValue('--player-health').replace('%', '')), height: card.getBoundingClientRect().height,
+      slotWidth: card.querySelector('.card-slot').getBoundingClientRect().width, column: fill.gridColumnStart, columnEnd: fill.gridColumnEnd,
       width: card.getBoundingClientRect().width, fillHeight: parseFloat(fill.height), fillWidth: parseFloat(fill.width), bottom: fill.bottom,
       loadoutBackground: getComputedStyle(card.querySelector('.card-loadout')).backgroundColor,
-      oldTrack: getComputedStyle(card.querySelector('.health-track')).display };
+      legacyTrack: Boolean(card.querySelector('.health-track')) };
   }));
   for (const card of healthBackgrounds) {
     assert(Math.abs(card.fillHeight - card.height * card.health / 100) < 1, 'health controls the full-card background height');
-    assert(Math.abs(card.fillWidth - card.width) < 1 && card.bottom === '0px', 'health spans the card width and recedes from the top');
+    assert(Math.abs(card.fillWidth - (card.width - card.slotWidth)) < 1 && card.bottom === '0px',
+      'horizontal health spans the content width beside the observer strip and recedes from the top');
+    assert.equal(card.column, '2');
+    assert.equal(card.columnEnd, '-1');
     assert.equal(card.loadoutBackground, 'rgba(0, 0, 0, 0)');
-    assert.equal(card.oldTrack, 'none');
+    assert(!card.legacyTrack);
   }
-  assert.equal(healthBackgrounds[1].health, 72);
+  assert.equal(healthBackgrounds[1].health, 5);
   await command({ kind: 'step' });
   await hud.locator('.roster.t .live-player.is-dead').waitFor();
   const deadCard = await hud.locator('.roster.t .live-player.is-dead').evaluate(card => ({
@@ -280,11 +333,26 @@ try {
   await hud.waitForFunction(() => !document.querySelector('.rosters-horizontal'));
   const vertical = await hud.locator('.roster.ct .live-player').evaluateAll(elements => elements.map(element => ({ x: element.getBoundingClientRect().x, y: element.getBoundingClientRect().y })));
   assert(vertical.every(card => Math.abs(card.x - vertical[0].x) < 1) && vertical[1].y > vertical[0].y);
-  assert.equal(await hud.locator('.roster.ct .health-track').first().evaluate(element => getComputedStyle(element).display), 'block');
+  await checkVerticalHealth();
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await checkVerticalHealth();
+  await page.setViewportSize({ width: 1920, height: 1080 });
   assert.notEqual(await hud.locator('.roster.t .live-player.is-dead .card-death').evaluate(element => getComputedStyle(element).display), 'none',
     'vertical dead cards retain their original death marker');
   console.log('PASS horizontal playercards, dead-card spacing, unclipped health, observer clearance, proportional scaling and vertical restoration');
   assert.equal(await hud.locator('.round-mvp').count(), 0);
+  await hud.evaluate(() => {
+    window.mvpMotionSamples = [];
+    window.mvpMotionObserver = new MutationObserver(records => {
+      for (const record of records) {
+        const element = record.target;
+        if (record.type === 'attributes' && element.matches('.round-mvp'))
+          window.mvpMotionSamples.push({ key: element.dataset.mvpKey, visible: element.dataset.mvpVisible,
+            progress: Number(element.style.getPropertyValue('--mvp-progress')) });
+      }
+    });
+    window.mvpMotionObserver.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['style', 'data-mvp-visible'] });
+  });
   const beforeEarlyAward = await cards();
   await command({ kind: 'step' });
   await until(async () => JSON.stringify(await cards()) !== JSON.stringify(beforeEarlyAward));
@@ -292,7 +360,10 @@ try {
   await command({ kind: 'step' });
   await hud.locator('.round-mvp').waitFor();
   const mvpShownAt = Date.now();
-  const checkMvpAttachment = async () => {
+  await hud.waitForFunction(() => Number(document.querySelector('.round-mvp')?.style.getPropertyValue('--mvp-progress')) >= .999);
+  assert(await hud.evaluate(() => window.mvpMotionSamples.some(sample => sample.visible === 'true' && sample.progress > 0 && sample.progress < 1)),
+    'MVP must animate through intermediate reveal states with bundled Motion');
+  const checkMvpLayout = async () => {
     const boxes = await hud.evaluate(() => {
       const rect = selector => { const box = document.querySelector(selector)?.getBoundingClientRect();
         return box ? { left: box.left, right: box.right, top: box.top, bottom: box.bottom, width: box.width } : null; };
@@ -302,22 +373,23 @@ try {
       const nameBox = name.getBoundingClientRect();
       const text = document.createRange(); text.selectNodeContents(name);
       const textBox = text.getBoundingClientRect();
-      return { bar: rect('.scoreboard'), mvp: rect('.round-mvp'), history: rect('.round-history'),
+      return { bar: rect('.scoreboard'), mvp: rect('.round-mvp'), history: rect('.round-history'), hud: rect('.hud'),
         nameFitsVertically: textBox.top >= nameBox.top && textBox.bottom <= nameBox.bottom,
         borderless: borderless('.scoreboard') && borderless('.round-mvp'),
-        backgroundsDiffer: getComputedStyle(document.querySelector('.scoreboard')).backgroundColor !== getComputedStyle(document.querySelector('.round-mvp')).backgroundColor };
+        backgroundsMatch: getComputedStyle(document.querySelector('.scoreboard')).backgroundColor === getComputedStyle(document.querySelector('.round-mvp')).backgroundColor };
     });
     assert.equal(boxes.mvp.left, boxes.bar.left, 'MVP left edge must equal the matchbar');
     assert.equal(boxes.mvp.width, boxes.bar.width, 'MVP width must exactly equal the matchbar');
-    assert.equal(boxes.mvp.top, boxes.bar.bottom, 'MVP must attach without any gap');
+    assert(Math.abs(boxes.mvp.top - boxes.bar.bottom - boxes.hud.width * .00625) < .1,
+      'MVP must use the same proportional gap as the vertical player cards: 12 px at 1920');
     assert(boxes.borderless, 'matchbar and MVP must have no outside borders');
-    assert(boxes.backgroundsDiffer, 'the MVP side background must separate it from the matchbar');
+    assert(boxes.backgroundsMatch, 'MVP and matchbar must use the same neutral HUD-blue background');
     assert(boxes.nameFitsVertically, 'MVP names must retain their full height, including descenders such as g');
     assert.equal(await hud.locator('.round-message').count(), 0, 'the separate CT/T winner banner has been removed');
     for (const overlay of [boxes.history].filter(Boolean))
       assert(overlay.top >= boxes.mvp.bottom, 'round overlays must not overlap the MVP card');
   };
-  await checkMvpAttachment();
+  await checkMvpLayout();
   assert.match(await hud.locator('.mvp-round').textContent(), /ROUND 10 MVP/);
   assert.equal(await hud.locator('.mvp-stats b').nth(0).textContent(), '2');
   assert.equal(await hud.locator('.mvp-stats b').nth(1).textContent(), '200');
@@ -327,35 +399,49 @@ try {
   await page.screenshot({ path: path.join(scratch, 'matchbar-mvp.png'),
     clip: { x: barCrop.x, y: barCrop.y, width: barCrop.width, height: mvpCrop.y + mvpCrop.height - barCrop.y } });
   await page.setViewportSize({ width: 1600, height: 900 });
-  await checkMvpAttachment();
+  await checkMvpLayout();
   await page.setViewportSize({ width: 1920, height: 1080 });
-  await command({ kind: 'step' });
-  await hud.locator('.clock-label').filter({ hasText: 'ROUND 11' }).waitFor();
-  await checkMvpAttachment();
-  assert.equal(await hud.locator('.mvp-stats b').nth(1).textContent(), '200', 'freeze must retain completed-round damage');
   await page.waitForTimeout(Math.max(0, 2500 - (Date.now() - mvpShownAt)));
   await command({ kind: 'step' });
   await hud.locator('.clock-label').filter({ hasText: 'PAUSED' }).waitFor();
-  await page.waitForTimeout(Math.max(0, 4300 - (Date.now() - mvpShownAt)));
-  assert.equal(await hud.locator('.round-mvp').count(), 1, 'MVP must remain visible before its five-second deadline');
-  await until(async () => await hud.locator('.round-mvp').count() === 0, 2000);
-  assert(Date.now() - mvpShownAt >= 4800 && Date.now() - mvpShownAt < 6400,
-    'paused MVP must expire five seconds after first display, not five seconds after its last source update');
+  await page.waitForTimeout(Math.max(0, 6000 - (Date.now() - mvpShownAt)));
+  await checkMvpLayout();
+  assert.equal(await hud.locator('.round-mvp').count(), 1, 'MVP must remain visible beyond five seconds before its eight-second deadline');
+  assert.equal(await hud.locator('.mvp-stats b').nth(1).textContent(), '200', 'paused round-over must retain completed-round damage');
   await command({ kind: 'step' });
+  await hud.locator('.clock-label').filter({ hasText: 'ROUND 11' }).waitFor();
   await hud.waitForFunction(() => !document.querySelector('.round-mvp'));
+  assert(Date.now() - mvpShownAt < 7800, 'freeze must end the MVP display before the eight-second deadline');
+  assert(await hud.evaluate(() => window.mvpMotionSamples.some(sample => sample.visible === 'false' && sample.progress > 0 && sample.progress < 1)),
+    'freeze must animate the MVP exit before removing its element');
+  await command({ kind: 'step' });
+  await hud.locator('.clock-label').filter({ hasText: 'PAUSED' }).waitFor();
+  assert.equal(await hud.locator('.round-mvp').count(), 0, 'paused freeze updates must not revive the MVP');
+  await command({ kind: 'step' });
+  await hud.locator('.clock-label').filter({ hasText: 'ROUND 11' }).waitFor();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await hud.evaluate(() => { window.mvpMotionSamples = []; });
   await command({ kind: 'step' });
   await hud.locator('.round-mvp').waitFor();
   const finalMvpShownAt = Date.now();
+  await hud.waitForFunction(() => document.querySelector('.round-mvp')?.style.getPropertyValue('--mvp-progress') === '1.00000');
+  assert(!(await hud.evaluate(() => window.mvpMotionSamples.some(sample => sample.progress > 0 && sample.progress < 1))),
+    'reduced motion must reveal the MVP immediately without intermediate movement');
   assert.match(await hud.locator('.mvp-round').textContent(), /ROUND 11 MVP/);
-  await page.waitForTimeout(4300);
-  assert.equal(await hud.locator('.round-mvp').count(), 1, 'a different round MVP gets its own five-second display');
+  await page.waitForTimeout(2500);
+  await command({ kind: 'step' });
+  await until(async () => await hud.locator('.mvp-stats b').nth(1).textContent() === '112');
+  await page.waitForTimeout(Math.max(0, 7300 - (Date.now() - finalMvpShownAt)));
+  assert.equal(await hud.locator('.round-mvp').count(), 1, 'a different round MVP gets its own eight-second display');
   await until(async () => await hud.locator('.round-mvp').count() === 0, 2000);
-  assert(Date.now() - finalMvpShownAt >= 4800 && Date.now() - finalMvpShownAt < 6400,
-    'match-end MVP must expire without receiving another snapshot');
+  assert(Date.now() - finalMvpShownAt >= 7800 && Date.now() - finalMvpShownAt < 9400,
+    'match-end MVP must expire eight seconds after first display without extending its deadline on source updates');
   await command({ kind: 'step' });
   await page.waitForTimeout(150);
   assert.equal(await hud.locator('.round-mvp').count(), 0, 'an update of an expired award must not revive it');
-  console.log('PASS MVP timing and geometry, five-second expiry during pause and after match end, independent deadlines and no revival');
+  await hud.evaluate(() => { window.mvpMotionObserver.disconnect(); delete window.mvpMotionObserver; delete window.mvpMotionSamples; });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  console.log('PASS MVP Motion reveal/exit, reduced motion, timing and geometry, eight-second expiry, early freeze dismissal and no revival');
   for (const [file, label, color] of [ ['league', 'DEMO LEAGUE', '#b6def5'], ['sponsor-a', 'DEMO A', '#ffffff'],
     ['sponsor-b', 'DEMO B', '#eee1a0'], ['sponsor-c', 'DEMO C', '#ffffff'] ]) {
     const data = await page.evaluate(({ label, color }) => {

@@ -16,7 +16,7 @@ internal sealed class PreviewFeed(string scenario) : IPreviewFeed
     {
         if (!address.IsLoopback) return null;
         var mode = address.Query.TrimStart('?').Split('&').FirstOrDefault(value => value.StartsWith("preview=", StringComparison.Ordinal))?[8..];
-        return mode is "live" or "prematch" or "lineups" or "veto" or "break" or "postmatch" or "statistics" or "spotlight" or "waiting" or "stale" or "swapped" or "missing" or "bomb" or "overview" or "production" or "avatar-effects" ? new PreviewFeed(mode) : null;
+        return mode is "live" or "prematch" or "lineups" or "veto" or "break" or "postmatch" or "statistics" or "spotlight" or "waiting" or "stale" or "swapped" or "missing" or "bomb" or "overview" or "production" or "avatar-effects" or "mvp" or "icons" ? new PreviewFeed(mode) : null;
     }
 
     public async IAsyncEnumerable<LiveSnapshot> WatchLiveAsync([EnumeratorCancellation] CancellationToken cancellationToken)
@@ -27,6 +27,37 @@ internal sealed class PreviewFeed(string scenario) : IPreviewFeed
         while (!cancellationToken.IsCancellationRequested)
         {
             var snapshot = Snapshot(scenario);
+            if (snapshot.Game is { } previewGame && !previewGame.KillFeed.IsDefaultOrEmpty)
+            {
+                // Refresh only synthetic event IDs before the normal eight-second retention expires.
+                snapshot = snapshot with { Game = previewGame with { KillFeed = PreviewKills((long)(previewClock.Elapsed.TotalSeconds / 6)) } };
+            }
+            if (scenario == "icons" && snapshot.Game is { } iconGame)
+            {
+                snapshot = snapshot with
+                {
+                    Game = iconGame with
+                    {
+                        RoundPhase = RoundPhase.FreezeTime,
+                        Countdown = new(CountdownPhase.FreezeTime, 15),
+                        Bomb = null,
+                        RoundBomb = null,
+                        RoundWins = [
+                            new(7, TeamSide.CounterTerrorists, RoundWinReason.Elimination),
+                            new(8, TeamSide.Terrorists, RoundWinReason.Elimination),
+                            new(9, TeamSide.Terrorists, RoundWinReason.BombExploded),
+                            new(10, TeamSide.CounterTerrorists, RoundWinReason.BombDefused),
+                            new(11, TeamSide.CounterTerrorists, RoundWinReason.TimeExpired),
+                            new(12, TeamSide.CounterTerrorists, RoundWinReason.HostageRescued),
+                            new(13, TeamSide.CounterTerrorists, RoundWinReason.Elimination),
+                            new(14, TeamSide.Terrorists, RoundWinReason.Elimination),
+                            new(15, TeamSide.Terrorists, RoundWinReason.BombExploded),
+                            new(16, TeamSide.CounterTerrorists, RoundWinReason.BombDefused),
+                            new(17, TeamSide.CounterTerrorists, RoundWinReason.TimeExpired),
+                            new(18, TeamSide.CounterTerrorists, RoundWinReason.HostageRescued)]
+                    }
+                };
+            }
             if (scenario == "avatar-effects" && snapshot.Game is { } game)
             {
                 // Debug-only source pulses exercise full cycles and reversals halfway through exit.
@@ -39,6 +70,33 @@ internal sealed class PreviewFeed(string scenario) : IPreviewFeed
                     Burning = active && player.ObserverSlot == 0 ? 25 : 0
                 }).ToImmutableArray();
                 snapshot = snapshot with { Game = game with { Players = players } };
+            }
+            if (scenario == "mvp" && snapshot.Game is { } mvpGame)
+            {
+                // Replay both dismissal paths, with real counter increments and a live baseline.
+                var elapsed = previewClock.Elapsed.TotalSeconds % 23;
+                var first = elapsed < 9;
+                var over = elapsed is >= 2 and < 7 or >= 11 and < 21;
+                var freeze = elapsed is >= 7 and < 9 or >= 21;
+                var players = mvpGame.Players.Select((player, index) => player with
+                {
+                    Health = index is 1 or 8 ? 5 : player.Health,
+                    Stats = player.Stats! with { Mvps = index == 0 ? elapsed >= 2 ? 1 : 0 : index == 5 ? elapsed >= 11 ? 1 : 0 : player.Stats.Mvps },
+                    RoundKills = over ? index == (first ? 0 : 5) ? first ? 2 : 3 : player.RoundKills : 0,
+                    RoundDamage = over ? index == (first ? 0 : 5) ? first ? 200 : 271 : player.RoundDamage : 0
+                }).ToImmutableArray();
+                snapshot = snapshot with
+                {
+                    Game = mvpGame with
+                    {
+                        Players = players,
+                        ObservedPlayer = players[first ? 0 : 5],
+                        RoundNumber = first ? elapsed < 7 ? 19 : 20 : elapsed < 21 ? 20 : 21,
+                        RoundPhase = over ? RoundPhase.Over : freeze ? RoundPhase.FreezeTime : RoundPhase.Live,
+                        RoundWinner = over ? first ? TeamSide.CounterTerrorists : TeamSide.Terrorists : null,
+                        Countdown = new(freeze ? CountdownPhase.FreezeTime : over ? CountdownPhase.Over : CountdownPhase.Live, freeze ? 15 : over ? Math.Ceiling((first ? 7 : 21) - elapsed) : 90)
+                    }
+                };
             }
             yield return snapshot with { Revision = ++revision };
             await Task.Delay(TimeSpan.FromMilliseconds(250), cancellationToken);
@@ -118,7 +176,7 @@ internal sealed class PreviewFeed(string scenario) : IPreviewFeed
             Radar = new(Guid.Parse("84bb12b2-7165-49c7-909e-1cc877d587b4"), 1, 1, 125, DateTimeOffset.UtcNow, players.Select(player => new RadarPlayer(player.SteamId!, 1, player.Position!, player.Forward!, player.Health!.Value)).ToImmutableArray()),
             Grenades = [new("smoke1", GrenadeKind.Smoke, "p3", MiragePosition(8), null, null, 5)],
             RoundWins = Enumerable.Range(1, 18).Select(round => new RoundResult(round, round % 3 == 0 ? TeamSide.Terrorists : TeamSide.CounterTerrorists, round % 4 == 0 ? RoundWinReason.BombDefused : RoundWinReason.Elimination)).ToImmutableArray(),
-            KillFeed = [new(1, Guid.Parse("84bb12b2-7165-49c7-909e-1cc877d587b4"), 1, 124, new(1, "p1", "Aster", TeamSide.CounterTerrorists), new(2, "p7", "Cinder", TeamSide.Terrorists), new(3, "p2", "Vale", TeamSide.CounterTerrorists), "m4a1", WeaponKind.Unknown, true, true, false, false, false, false)]
+            KillFeed = PreviewKills(0)
         };
         if (scenario == "postmatch") game = game with { Phase = MatchPhase.GameOver, RoundPhase = RoundPhase.Over, RoundWinner = TeamSide.CounterTerrorists, RoundWinReason = RoundWinReason.Elimination };
         if (scenario == "missing") game = new(null, MatchPhase.Unknown, null, RoundPhase.Unknown, new(null, null), new(null, null), new(null, null, null, null, null), [new(null, null, TeamSide.CounterTerrorists, null, null)]);
@@ -127,14 +185,36 @@ internal sealed class PreviewFeed(string scenario) : IPreviewFeed
         { ManagedMatch = match };
     }
 
+    private static ImmutableArray<KillFeedEntry> PreviewKills(long cycle)
+    {
+        var connection = Guid.Parse("84bb12b2-7165-49c7-909e-1cc877d587b4");
+        var firstId = cycle * 10 + 1;
+        var aster = new KillParticipant(1, "p1", "Aster", TeamSide.CounterTerrorists);
+        var vale = new KillParticipant(2, "p2", "Vale", TeamSide.CounterTerrorists);
+        var flint = new KillParticipant(6, "p6", "Flint", TeamSide.Terrorists);
+        var cinder = new KillParticipant(7, "p7", "Cinder", TeamSide.Terrorists);
+        // One combined shot covers all supported modifiers; subsequent rows show every utility outline and original item family.
+        return [
+            new(firstId, connection, 1, 124, aster, cinder, vale, "awp", WeaponKind.Unknown, true, true, true, true, true, true),
+            new(firstId + 1, connection, 1, 124, flint, vale, null, "ak47", WeaponKind.Unknown, false, false, false, false, false, false),
+            new(firstId + 2, connection, 1, 124, aster, cinder, null, "knife", WeaponKind.Unknown, false, false, false, false, false, false),
+            new(firstId + 3, connection, 1, 124, aster, cinder, null, "hegrenade", WeaponKind.Unknown, false, false, false, false, false, false),
+            new(firstId + 4, connection, 1, 124, flint, vale, null, "flashbang", WeaponKind.Unknown, false, false, false, false, false, false),
+            new(firstId + 5, connection, 1, 124, aster, cinder, null, "smokegrenade", WeaponKind.Unknown, false, false, false, false, false, false),
+            new(firstId + 6, connection, 1, 124, flint, vale, null, "decoy", WeaponKind.Unknown, false, false, false, false, false, false),
+            new(firstId + 7, connection, 1, 124, flint, vale, null, "molotov", WeaponKind.Unknown, false, false, false, false, false, false),
+            new(firstId + 8, connection, 1, 124, aster, cinder, null, "incgrenade", WeaponKind.Unknown, false, false, false, false, false, false),
+            new(firstId + 9, connection, 1, 124, null, vale, null, "c4", WeaponKind.Unknown, false, false, false, false, false, false)];
+    }
+
     private static PlayerState Player(string id, string name, TeamSide side, int slot, int hp, string weapon, int kills, int assists, int deaths) =>
         new(id, name, side, PlayerActivity.Playing, hp)
         {
             ObserverSlot = slot,
-            Armor = hp == 0 ? 0 : 100,
+            Armor = hp == 0 || slot is 3 or 6 ? 0 : 100,
             Money = 3200 + slot * 100,
             EquipmentValue = 4100,
-            Helmet = true,
+            Helmet = hp > 0 && slot is not (1 or 3 or 6 or 9),
             DefuseKit = side == TeamSide.CounterTerrorists,
             RoundKills = slot % 3,
             RoundDamage = slot * 27,
@@ -146,8 +226,23 @@ internal sealed class PreviewFeed(string scenario) : IPreviewFeed
             Stats = new(kills, assists, deaths, slot % 3, kills * 2 + assists),
             RecordedStats = new(12, 1200 + slot * 30, kills, kills / 2, false),
             Weapons = [new("weapon_0", "weapon_" + weapon, WeaponCategory.Rifle, WeaponStatus.Active, null, hp == 0 ? 0 : 23, 30, 60),
-                new("weapon_1", "weapon_knife", WeaponCategory.Knife, WeaponStatus.Holstered, null, null, null, null), new("weapon_2", "weapon_flashbang", WeaponCategory.Grenade, WeaponStatus.Holstered, null, null, null, null)]
+                new("weapon_1", "weapon_knife", WeaponCategory.Knife, WeaponStatus.Holstered, null, null, null, null), .. PreviewUtility(side, slot)]
         };
+
+    private static IEnumerable<WeaponState> PreviewUtility(TeamSide side, int slot)
+    {
+        var fire = side == TeamSide.CounterTerrorists ? "incgrenade" : "molotov";
+        (string Name, int Count)[] loadout = (slot % 5) switch
+        {
+            1 => [("hegrenade", 1), ("flashbang", 1), ("smokegrenade", 1), (fire, 1)],
+            2 => [("flashbang", 2), ("smokegrenade", 1), (fire, 1)],
+            3 => [("hegrenade", 1), ("flashbang", 1), ("smokegrenade", 1)],
+            4 => [("flashbang", 1), (fire, 1)],
+            _ => [("hegrenade", 1), ("smokegrenade", 1), ("decoy", 1), (fire, 1)]
+        };
+        return loadout.Select((item, index) => new WeaponState($"weapon_{index + 2}", "weapon_" + item.Name,
+            WeaponCategory.Grenade, WeaponStatus.Holstered, null, null, null, item.Count));
+    }
 
     private static Vector3State MiragePosition(int slot)
     {

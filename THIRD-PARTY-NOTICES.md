@@ -6,6 +6,7 @@ This project uses the following public packages. From 0.4.0 the HUD is GPL-3.0-o
 
 | Dependency | Version | License / upstream |
 | --- | --- | --- |
+| Lucide SVG subset | `1a49fd88d85202bad69f39462241b309a484bba0` | ISC, with Feather MIT notice; ten local SVG geometries, no runtime; [source](https://github.com/lucide-icons/lucide/tree/1a49fd88d85202bad69f39462241b309a484bba0), full notices in `LICENSES/LUCIDE-LICENSE.txt` and inventory in `LICENSES/hud-ui-icons.json` |
 | Motion | 14.5.0 | MIT, Motion B.V.; [source](https://github.com/motiondivision/motion); bundled locally, license in `LICENSES/MOTION-MIT.txt` |
 | SOU.Hud.Sdk / SOU.Hud.Sdk.Blazor | 0.3.0-preview.2 | MIT, copyright 2026 sofc; [NuGet SDK](https://www.nuget.org/packages/SOU.Hud.Sdk/0.3.0-preview.2), [Blazor adapter](https://www.nuget.org/packages/SOU.Hud.Sdk.Blazor/0.3.0-preview.2) |
 | SOU.Live.Contracts | 0.3.0-preview.2 | MIT, copyright 2026 sofc; [NuGet](https://www.nuget.org/packages/SOU.Live.Contracts/0.3.0-preview.2) |

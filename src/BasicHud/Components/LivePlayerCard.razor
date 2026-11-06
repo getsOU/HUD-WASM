@@ -3,20 +3,19 @@
     <div class="card-identity">
         <strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong>
         <span class="card-stats" aria-label="@($"Kills / deaths / assists: {PlayerPresentation.Kda(Player)}")" title="@($"Kills / deaths / assists: {PlayerPresentation.Kda(Player)}")">
-            <span><StatusIcon Name="kills" Label="Kills" />@BroadcastContext.Number(Player.Stats?.Kills)</span>
-            <span><StatusIcon Name="dead" Label="Deaths" />@BroadcastContext.Number(Player.Stats?.Deaths)</span>
+            <span><HudUiIcon Name="kills" Label="Kills" />@BroadcastContext.Number(Player.Stats?.Kills)</span>
+            <span><HudUiIcon Name="dead" Label="Deaths" />@BroadcastContext.Number(Player.Stats?.Deaths)</span>
         </span>
-        <span class="card-money">@(Player.Money is { } money ? "$" + money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—")</span>
+        <span class="card-money">@if (Player.Money is { } money) { <span class="card-currency">$</span>@(" ")<span class="card-money-value">@money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)</span> } else { <text>—</text> }</span>
     </div>
     <span class="card-portrait"><PlayerPortrait Player="Player" Context="Context" Class="roster-portrait" OmitFallback="true" /></span>
     @if (Dead)
     {
-        <span class="card-death"><StatusIcon Name="dead" Label="Dead" /></span>
+        <span class="card-death"><HudUiIcon Name="dead" Label="Dead" /></span>
     }
     else
     {
         <div class="card-loadout">
-            <div class="health-track" aria-hidden="true"><span style="@($"width:{Math.Clamp(Player.Health ?? 0, 0, 100).ToString(System.Globalization.CultureInfo.InvariantCulture)}%")"></span></div>
             <div class="card-armament">
                 <span class="weapon-cell">@if (EquipmentPresentation.RosterWeapon(Player) is { } weapon) { <EquipmentIcon Name="@weapon.Name" Class="roster-weapon" /> }</span>
                 <strong class="card-health" aria-label="Health" title="Health">@BroadcastContext.Number(Player.Health)</strong>
@@ -24,9 +23,9 @@
             <div class="card-equipment">
                 <UtilityIcons Player="Player" />
                 <span class="card-status">
-                    @if (Player.DefuseKit == true) { <StatusIcon Name="kit" Label="Defuse kit" /> }
+                    @if (Player.DefuseKit == true) { <HudUiIcon Name="kit" Label="Defuse kit" /> }
                     @if (EquipmentPresentation.HasBomb(Player, Context.Game)) { <StatusIcon Name="bomb" Label="Bomb carrier" /> }
-                    @if (Player.Armor is > 0) { <span class="card-armor" aria-label="@($"Armor: {Player.Armor}")" title="@($"Armor: {Player.Armor}")"><StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="@(Player.Helmet == true ? "Armor and helmet" : "Armor")" /></span> }
+                    @if (Player.Armor is > 0) { <span class="card-armor" aria-label="@($"Armor: {Player.Armor}")" title="@($"Armor: {Player.Armor}")"><HudUiIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="@(Player.Helmet == true ? "Armor and helmet" : "Armor")" /></span> }
                 </span>
             </div>
         </div>

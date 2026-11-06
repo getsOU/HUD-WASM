@@ -1,0 +1,16 @@
+@if (HudUiIcons.Symbol(Name) is { } symbol)
+{
+    <svg class="hud-ui-icon status-icon @Class" data-ui-icon="@symbol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="@Label">
+        <title>@Label</title>
+        <use href="@($"assets/icons/hud-ui.svg#{symbol}")" />
+    </svg>
+}
+else
+{
+    <StatusIcon Name="@Name" Label="@Label" Class="@Class" />
+}
+@code {
+    [Parameter] public string Name { get; set; } = "unknown";
+    [Parameter] public string Label { get; set; } = "Unknown";
+    [Parameter] public string Class { get; set; } = "";
+}

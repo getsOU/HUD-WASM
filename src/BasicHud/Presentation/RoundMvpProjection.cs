@@ -13,7 +13,6 @@ public sealed class RoundMvpProjection
     private int round;
     private RoundPhase? phase;
     private Dictionary<string, PlayerState> players = [];
-    private Dictionary<string, PlayerState>? completedPlayers;
     private int? completedRound;
     private RoundMvpView? pending;
     private bool ambiguous;
@@ -46,7 +45,7 @@ public sealed class RoundMvpProjection
                 // The counter and round phase can arrive in separate updates. Keep an
                 // early increment pending, but never display an MVP over active play.
                 if (nextRound != round || phase != RoundPhase.Live) ClearAward();
-                View = null; completedPlayers = null;
+                View = null;
                 completedRound = null;
             }
             else if (game.RoundPhase == RoundPhase.Over)
@@ -55,18 +54,6 @@ public sealed class RoundMvpProjection
                 // The completed round is the one observed in live/freeze, not +1.
                 if (phase != RoundPhase.Over)
                     completedRound = phase is RoundPhase.Live or RoundPhase.FreezeTime ? round : null;
-                completedPlayers = nextPlayers;
-            }
-            else if (game.RoundPhase == RoundPhase.FreezeTime)
-            {
-                if (phase == RoundPhase.Live && nextRound == round + 1)
-                {
-                    completedRound = round;
-                    // No end-of-round snapshot: do not present partial live stats
-                    // or reset freeze counters as the completed round's totals.
-                    completedPlayers = null;
-                }
-                else if (phase == RoundPhase.FreezeTime && nextRound != round) ClearAward();
             }
             else ClearAward();
 
@@ -78,7 +65,7 @@ public sealed class RoundMvpProjection
             if (increases.Length > 0)
             {
                 var awardRound = game.RoundPhase == RoundPhase.Live && nextRound == round && phase == RoundPhase.Live
-                    ? nextRound : game.RoundPhase is RoundPhase.Over or RoundPhase.FreezeTime ? completedRound : null;
+                    ? nextRound : game.RoundPhase == RoundPhase.Over ? completedRound : null;
                 if (increases.Length != 1 || increases[0].Value.Stats!.Mvps != players[increases[0].Key].Stats!.Mvps + 1
                     || pending is { } candidate && candidate.RoundNumber == awardRound && candidate.Player.SteamId != increases[0].Key)
                 {
@@ -87,12 +74,11 @@ public sealed class RoundMvpProjection
                 else if (!ambiguous && awardRound is { } number)
                     pending = new(number, increases[0].Value);
             }
-            if (!ambiguous && game.RoundPhase is RoundPhase.Over or RoundPhase.FreezeTime && pending is { } award
+            if (!ambiguous && game.RoundPhase == RoundPhase.Over && pending is { } award
                 && award.RoundNumber == completedRound && nextPlayers.ContainsKey(award.Player.SteamId!))
             {
-                var awarded = completedPlayers?.GetValueOrDefault(award.Player.SteamId!)
-                    ?? award.Player with { RoundKills = null, RoundDamage = null };
-                View = game.RoundPhase != RoundPhase.Over || game.RoundWinner is null || game.RoundWinner == awarded.Side
+                var awarded = nextPlayers[award.Player.SteamId!];
+                View = game.RoundWinner is null || game.RoundWinner == awarded.Side
                     ? award with { Player = awarded } : null;
             }
             if (View is { } visible && !nextPlayers.ContainsKey(visible.Player.SteamId!)) { pending = null; View = null; }
@@ -108,6 +94,6 @@ public sealed class RoundMvpProjection
 
     private void ClearAward()
     {
-        completedPlayers = null; completedRound = null; pending = null; ambiguous = false; View = null;
+        completedRound = null; pending = null; ambiguous = false; View = null;
     }
 }

@@ -20,13 +20,13 @@ internal static class RoundMvpTests
         projection = new();
         check(projection.Update(before) is null && projection.Update(over) is { RoundNumber: 10, Player.RoundKills: 2, Player.RoundDamage: 200 },
             "an observed single MVP increment displays the awarded player and the completed round's source statistics");
-        check(projection.Update(over) == projection.View && projection.Update(freeze) is { RoundNumber: 10, Player.RoundDamage: 200 },
-            "repeat renders and next-round freeze retain the award without replacing completed statistics with reset zeros");
+        check(projection.Update(over) is { RoundNumber: 10, Player.RoundDamage: 200 } && projection.Update(freeze) is null,
+            "repeat renders retain completed statistics and the next freeze immediately clears the MVP");
         check(projection.Update(Frame(4, RoundPhase.Live, freeze.Game!.Players[0], 11)) is null, "the MVP card clears when the next live round begins");
         projection = new(); projection.Update(before);
         projection.Update(Frame(2, RoundPhase.Over, player));
-        check(projection.Update(freeze) is { RoundNumber: 10, Player.RoundKills: 2, Player.RoundDamage: 200 },
-            "an award delivered during next-round freeze uses the cached completed round, not new-round counters");
+        check(projection.Update(freeze) is null && projection.Update(freeze with { Revision = 4 }) is null,
+            "an award delivered during next-round freeze stays hidden across repeated updates");
         projection.Update(null);
         check(projection.Update(over) is null, "disconnect clears both MVP display and its counter baseline");
         projection = new(); projection.Update(before); projection.Update(over);
@@ -57,16 +57,21 @@ internal static class RoundMvpTests
             "an MVP counter arriving before the round-over phase is retained pending and displayed when the round ends");
         projection = new(); projection.Update(before);
         check(projection.Update(Frame(2, RoundPhase.Over, awarded, 11)) is { RoundNumber: 10, Player.RoundDamage: 200 }
-            && projection.Update(freeze) is { RoundNumber: 10, Player.RoundDamage: 200 },
-            "a round counter advancing at round end does not erase the MVP and freeze keeps the completed round label");
+            && projection.Update(freeze) is null,
+            "a round counter advancing at round end preserves the MVP until the next freeze begins");
         check(projection.Update(Frame(4, RoundPhase.Live, awarded, 11)) is null,
             "live play clears an award even when the source round number already advanced during round-over");
         projection = new(); projection.Update(before); projection.Update(over);
         check(projection.Update(Frame(3, RoundPhase.Over, awarded, 11)) is { RoundNumber: 10 }
-            && projection.Update(freeze with { Revision = 4 }) is { RoundNumber: 10 },
-            "a later round-number update during the over phase preserves the original award identity");
+            && projection.Update(freeze with { Revision = 4 }) is null,
+            "a later round-number update during the over phase preserves the award identity until freeze");
         projection = new(); projection.Update(before);
-        check(projection.Update(freeze) is { RoundNumber: 10, Player.RoundKills: null, Player.RoundDamage: null },
-            "a direct live-to-freeze transition can display the observed award without claiming partial or reset round totals");
+        check(projection.Update(freeze) is null,
+            "a direct live-to-freeze transition does not display an award after the freeze has begun");
+        projection = new(); projection.Update(before); projection.Update(over);
+        check(projection.Update(Frame(3, RoundPhase.FreezeTime, awarded)) is null,
+            "freeze clears the MVP even when the round counter has not advanced yet");
+        check(projection.Update(Frame(4, RoundPhase.FreezeTime, awarded with { Stats = awarded.Stats! with { Mvps = 4 } })) is null,
+            "a later MVP-counter increment during the same freeze does not reopen the banner");
     }
 }

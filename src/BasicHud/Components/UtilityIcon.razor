@@ -1,0 +1,12 @@
+@if (HudUiIcons.Utility(Name) is { } symbol)
+{
+    <HudUiIcon Name="@symbol" Label="@EquipmentPresentation.Label(Name)" Class="@($"hud-utility-icon {Class}")" />
+}
+else
+{
+    <EquipmentIcon Name="@Name" Class="@Class" />
+}
+@code {
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string Class { get; set; } = "";
+}

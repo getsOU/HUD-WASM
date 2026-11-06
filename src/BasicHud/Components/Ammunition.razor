@@ -1,0 +1,20 @@
+@if (EquipmentPresentation.UsesAmmo(Weapon) && (Weapon.AmmoClip is >= 0 || Weapon.AmmoReserve is >= 0))
+{
+    <span class="ammo" role="group" aria-label="@Label">
+        @if (Weapon.AmmoClip is >= 0)
+        {
+            <span class="ammo-part ammo-clip"><span class="ammo-number">@Weapon.AmmoClip</span><HudUiIcon Name="rounds" Label="Rounds" Class="ammo-symbol" /></span>
+        }
+        @if (Weapon.AmmoReserve is >= 0)
+        {
+            <span class="ammo-part ammo-reserve"><span class="ammo-number">@Weapon.AmmoReserve</span><HudUiIcon Name="magazine" Label="Magazine" Class="ammo-symbol" /></span>
+        }
+    </span>
+}
+@code {
+    [Parameter, EditorRequired] public WeaponState Weapon { get; set; } = null!;
+    private string Label => string.Join(", ", new[] {
+        Weapon.AmmoClip is >= 0 ? $"Loaded rounds: {Weapon.AmmoClip}" : null,
+        Weapon.AmmoReserve is >= 0 ? $"Reserve: {Weapon.AmmoReserve}" : null
+    }.Where(value => value is not null));
+}

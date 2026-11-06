@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.22
+
+- Unify status, utility, ammunition, killfeed and round-result icons throughout the HUD with 23 local Lucide/custom outline symbols, retaining original weapon/knife/C4 silhouettes and unchanged dynamic radar drawing. Document mappings, source hashes and licenses without adding runtime dependencies.
+- Use team-colored card icons, white text and equipment exceptions, and green money amounts with a team-colored dollar sign. Color every round-result icon by its winning side, including defuse kits and C4.
+- Rework the observer strip with name and armor/HP above, then K/D, a larger bounded white weapon and loaded-rounds/reserve icons on the existing lower row. Keep weapon and ammo close together, omit unknown/negative ammo fields individually, retain real zeros, and show known armor left of health without a health icon or armor amount.
+- Fix the selected Bahnschrift Condensed font in Firefox and Chromium through an explicit local variable-font face, preserving the chosen typography without bundling or downloading fonts.
+- Correct vertical health-fill proportions outside the observer-slot strip, align slot digits with player names, and mirror the large skull crop on right-side dead cards. Preserve compact, bottom-aligned horizontal dead cards without a large skull.
+- Animate the MVP card in and out with bundled Motion, a neutral-blue background and proportional spacing below the matchbar. Preserve reduced-motion support and context resets; expire after eight seconds or at the next freeze, including pauses and match end, without extending the deadline on updates.
+- Expand Debug previews with a persistent full icon-example killfeed, a Freeze-Time view of all supported round-result icons, varied utility, and Kevlar-only/unarmored player examples. Keep synthetic fixtures excluded from Release builds and preserve selective SDK updates.
+
 ## 0.4.21
 
 - Resolve killer, victim and assist names from the same match-bound sOU player profiles as the player cards, using the participant's Steam ID. Refresh existing entries after profile-name changes and retain event names when no matching profile is available.

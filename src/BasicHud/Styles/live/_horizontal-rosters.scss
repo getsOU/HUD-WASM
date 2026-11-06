@@ -10,16 +10,25 @@
     }
 
     .roster .live-player {
+        --card-name-size: 0.8cqw;
+        --card-identity-row: 0.9cqw;
+        --card-portrait-height: 3.5cqw;
         width: auto;
         height: 7.5cqw;
         margin: 0;
         grid-template-columns: 0.65cqw minmax(0, 1fr);
-        grid-template-rows: 3.5cqw 1.8cqw 2.2cqw;
+        grid-template-rows: var(--card-portrait-height) 1.8cqw 2.2cqw;
         grid-template-areas: "slot portrait" "slot identity" "slot loadout";
     }
 
     .roster .live-player + .live-player {
         margin-top: 0;
+    }
+
+    .roster .card-slot {
+        grid-template-rows: repeat(2, var(--card-identity-row));
+        align-content: start;
+        padding-top: var(--card-portrait-height);
     }
 
     .roster .live-player:not(.is-dead) {
@@ -29,9 +38,13 @@
         &::before {
             content: "";
             position: absolute;
+            grid-column: 2 / -1;
+            grid-row: 1 / -1;
             left: 0;
             right: 0;
             bottom: 0;
+            top: auto;
+            width: 100%;
             height: var(--player-health, 0%);
             background: var(--card-fill);
             z-index: -1;
@@ -49,7 +62,7 @@
 
     .roster .card-identity {
         grid-template-columns: minmax(0, 1fr) auto;
-        grid-template-rows: 0.9cqw 0.9cqw;
+        grid-template-rows: repeat(2, var(--card-identity-row));
         column-gap: 0.15cqw;
         padding: 0 0.2cqw;
         align-content: center;
@@ -58,7 +71,7 @@
 
     .roster .player-name {
         grid-column: 1 / -1;
-        font-size: 0.8cqw;
+        font-size: var(--card-name-size);
         line-height: 1.1;
     }
 
@@ -91,10 +104,6 @@
         padding: 0.15cqw 0.2cqw;
         grid-template-rows: 1.1cqw 0.7cqw;
         row-gap: 0.1cqw;
-    }
-
-    .roster .card-loadout > .health-track {
-        display: none;
     }
 
     .roster .card-armament {

@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <!-- Lucide paths pinned to 1a49fd88d85202bad69f39462241b309a484bba0; see LICENSES/LUCIDE-LICENSE.txt. -->
+  <symbol id="health" viewBox="0 0 24 24">
+    <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+  </symbol>
+  <symbol id="kills" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="22" x2="18" y1="12" y2="12" />
+    <line x1="6" x2="2" y1="12" y2="12" />
+    <line x1="12" x2="12" y1="6" y2="2" />
+    <line x1="12" x2="12" y1="22" y2="18" />
+  </symbol>
+  <symbol id="dead" viewBox="0 0 24 24">
+    <path d="m12.5 17-.5-1-.5 1h1z" />
+    <path d="M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z" />
+    <circle cx="15" cy="12" r="1" />
+    <circle cx="9" cy="12" r="1" />
+  </symbol>
+  <symbol id="armor" viewBox="0 0 24 24">
+    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+  </symbol>
+  <!-- Additional unchanged Lucide geometry for shared status and round-result icons. -->
+  <symbol id="time" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 6v6l4 2" />
+  </symbol>
+  <symbol id="blind" viewBox="0 0 24 24">
+    <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
+    <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+    <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
+    <path d="m2 2 20 20" />
+  </symbol>
+  <symbol id="smoke" viewBox="0 0 24 24">
+    <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+    <path d="M16 17H7" />
+    <path d="M17 21H9" />
+  </symbol>
+  <symbol id="flashassist" viewBox="0 0 24 24">
+    <path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z" />
+  </symbol>
+  <symbol id="fire" viewBox="0 0 24 24">
+    <path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" />
+  </symbol>
+  <symbol id="hostage" viewBox="0 0 24 24">
+    <circle cx="12" cy="5" r="1" />
+    <path d="m9 20 3-6 3 6" />
+    <path d="m6 8 6 2 6-2" />
+    <path d="M12 10v4" />
+  </symbol>
+  <!-- HUD-authored CS2 symbols in the same 24 px / 2 px outline system. -->
+  <symbol id="helmet" viewBox="0 0 24 24">
+    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+    <path d="M8 12v-1a4 4 0 0 1 8 0v1h-4v4h3M8 12h4" />
+  </symbol>
+  <symbol id="kit" viewBox="0 0 24 24">
+    <path d="m9 3-2 6 3 3M15 3l2 6-3 3M10 12c-3 2-4 5-4 9M14 12c3 2 4 5 4 9" />
+    <circle cx="12" cy="11" r="2" />
+  </symbol>
+  <symbol id="headshot" viewBox="0 0 24 24">
+    <path d="M11 3a8 8 0 0 0-6 13.3V19h3v3h7v-3h3v-2.7a8 8 0 0 0 2-5.3" />
+    <circle cx="8" cy="12" r="1" />
+    <circle cx="14" cy="12" r="1" />
+    <path d="m10 17 1-2 1 2M16 2l1 3 4 1-4 1-1 3-1-3-3-1 3-1Z" />
+  </symbol>
+  <symbol id="wallbang" viewBox="0 0 24 24">
+    <path d="M9 3v5M9 16v5M15 3v5M15 16v5M2 12h20M18 8l4 4-4 4" />
+  </symbol>
+  <symbol id="noscope" viewBox="0 0 24 24">
+    <path d="M9 2.5A10 10 0 0 1 21.5 15M15 21.5A10 10 0 0 1 2.5 9M12 2v4M12 18v4M2 12h4M18 12h4M3 3l18 18" />
+  </symbol>
+  <!-- Utility: equal 24 px frames, common top/bottom bounds and 2 px outlines. -->
+  <symbol id="utility-hegrenade" viewBox="0 0 24 24">
+    <path d="M9 7V3h5l5 5M9 7h6a3 3 0 0 1 3 3v5a6 6 0 0 1-12 0v-5a3 3 0 0 1 3-3Z" />
+    <path d="M6 12h12M7 17h10M12 7v14" />
+  </symbol>
+  <symbol id="utility-flashbang" viewBox="0 0 24 24">
+    <path d="M9 7V3h6l4 5M9 7h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z" />
+    <path d="m13 10-3 4h4l-3 4" />
+  </symbol>
+  <symbol id="utility-smokegrenade" viewBox="0 0 24 24">
+    <path d="M7 9V7a3 3 0 0 1 3-3Q12.5 2 15 4a3 3 0 0 1 3 3v2M8 9h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z" />
+    <path d="M9 13h6M9 17h6" />
+  </symbol>
+  <symbol id="utility-decoy" viewBox="0 0 24 24">
+    <path d="M10 7V3h4v4M9 7h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z" />
+    <path d="M3 10a10 10 0 0 0 0 8M21 10a10 10 0 0 1 0 8M11 11h2v6h-2z" />
+  </symbol>
+  <symbol id="utility-molotov" viewBox="0 0 24 24">
+    <path d="M10 3h4v5l3 4v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-7l3-4V3ZM14 5h4l2 3M7 15h10" />
+  </symbol>
+  <symbol id="utility-incgrenade" viewBox="0 0 24 24">
+    <path d="M9 7V3h6l4 5M8 7h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z" />
+    <path d="M12 10c0 3-3 3-3 5a3 3 0 0 0 6 0c0-2-1-3-3-5Z" />
+  </symbol>
+  <symbol id="rounds" viewBox="0 0 24 24">
+    <path d="M4 8V7l3-4 3 4v14H4V8ZM14 8V7l3-4 3 4v14h-6V8ZM4 16h6M14 16h6" />
+  </symbol>
+  <symbol id="magazine" viewBox="0 0 24 24">
+    <path d="M7 3h10l-1 7c-.5 4-2 8-5 11l-7-4c2-3 3-6 3-10V3ZM7 7l9 1M7 13l7 3" />
+  </symbol>
+</svg>
+

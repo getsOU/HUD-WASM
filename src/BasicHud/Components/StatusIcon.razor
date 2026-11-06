@@ -1,4 +1,8 @@
-@if (Cs2Icons.Status(Name) is { } source && failed != source)
+@if (HudUiIcons.Symbol(Name) is not null)
+{
+    <HudUiIcon Name="@Name" Label="@Label" Class="@Class" />
+}
+else if (Cs2Icons.Status(Name) is { } source && failed != source)
 {
     <span class="cs2-icon status-icon @Class" data-icon="@source" title="@Label"><img class="icon-source" src="@($"assets/{source}.svg")" alt="@Label" aria-label="@Label" data-cs2-icon="@source" @onerror="() => failed = source" /></span>
 }

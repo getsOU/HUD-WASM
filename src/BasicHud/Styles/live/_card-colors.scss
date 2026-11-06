@@ -1,0 +1,57 @@
+// Card colors are independent from killfeed, history, radar and presentation views.
+.hud.scene-live {
+    .roster .live-player,
+    .roster .player-name,
+    .roster .card-slot,
+    .roster .card-stats,
+    .roster .card-money,
+    .observed,
+    .observed .player-name,
+    .observed .observer-slot,
+    .observed-stats,
+    .observed-vitals,
+    .observed-health,
+    .observed-armor,
+    .observed .ammo,
+    .observed .ammo > small,
+    .observed .ammo > span,
+    .observed .ammo > span:last-child {
+        color: #fff;
+    }
+
+    .roster .hud-ui-icon,
+    .observed .hud-ui-icon,
+    .roster .card-currency {
+        color: var(--side, #fff);
+    }
+
+    .roster .card-status .status-icon,
+    .roster .cs2-icon,
+    .observed .cs2-icon,
+    .observed-armor .status-icon,
+    .observed [data-icon="weapons/c4"],
+    .observed [data-icon="weapons/planted_c4"] {
+        color: #fff;
+    }
+
+    .roster .card-money-value {
+        color: #d4edb2;
+    }
+
+    .roster .card-slot {
+        text-shadow: 0 1px 1px #071c5099;
+    }
+
+    // Keep dead portraits neutral without removing the requested icon/money colors.
+    .roster .live-player.is-dead {
+        filter: none;
+    }
+
+    .roster .live-player.is-dead .card-portrait {
+        filter: grayscale(1);
+    }
+
+    .roster .live-player.is-dead .card-slot {
+        background: #a7afb8;
+    }
+}

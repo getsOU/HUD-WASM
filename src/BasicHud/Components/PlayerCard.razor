@@ -1,11 +1,9 @@
 <article class="player-card @PlayerPresentation.SideClass(Player.Side) @(Player.Health is <= 0 ? "is-dead" : "") @(Expanded ? "expanded" : "")">
     <div class="player-identity"><span class="observer-slot">@(Player.ObserverSlot is >= 0 and <= 9 ? Player.ObserverSlot.ToString() : "—")</span>
         <PlayerPortrait Player="Player" Context="Context" DisplayName="@Name" Class="portrait" />
-        <strong class="player-name" title="@Name">@Name</strong><span class="money">@Money</span></div>
-    <div class="player-vitals"><b>@BroadcastContext.Number(Player.Health) <small>HP</small></b><span>@BroadcastContext.Number(Player.Armor) ARM</span>
-        @if (Player.Helmet == true) { <span title="Helmet">HELM</span> } @if (Player.DefuseKit == true) { <span title="Defuse kit">KIT</span> }
-        @if (HasBomb) { <span title="Bomb carrier">BOMB</span> }
-        <span class="kda">@PlayerPresentation.Kda(Player)</span></div>
+        <strong class="player-name" title="@Name">@Name</strong><span class="money">@if (Player.Money is { } money) { <span class="card-currency">$</span>@(" ")<span class="card-money-value">@money.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)</span> } else { <text>—</text> }</span></div>
+    <div class="player-vitals"><PlayerEquipment Player="Player" Context="Context" /><b aria-label="Health">@BroadcastContext.Number(Player.Health)</b>
+        <span class="kda" aria-label="@($"Kills / deaths / assists: {PlayerPresentation.Kda(Player)}")"><span><StatusIcon Name="kills" Label="Kills" /> @BroadcastContext.Number(Player.Stats?.Kills)</span><span><StatusIcon Name="dead" Label="Deaths" /> @BroadcastContext.Number(Player.Stats?.Deaths)</span><span title="Assists">A @BroadcastContext.Number(Player.Stats?.Assists)</span></span></div>
     <Inventory Player="Player" />
     <div class="player-round"><span>EQ @Equipment</span><span>RK @BroadcastContext.Number(Player.RoundKills)</span><span>DMG @BroadcastContext.Number(Player.RoundDamage)</span></div>
     @if (PlayerPresentation.Conditions(Player) is { Length: > 0 } conditions) { <div class="player-conditions">@conditions</div> }
@@ -22,8 +20,6 @@
     [Parameter] public bool Expanded { get; set; }
     [Parameter] public string? DisplayName { get; set; }
     private string Name => DisplayName ?? Context.Name(Player);
-    private bool HasBomb => EquipmentPresentation.HasBomb(Player, Context.Game);
-    private string Money => Player.Money is { } value ? "$" + value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—";
     private string Equipment => Player.EquipmentValue is { } value ? "$" + value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "—";
     private string HealthWidth => "width:" + (Player.Health is { } value ? Math.Clamp(value, 0, 100) : 0).ToString(System.Globalization.CultureInfo.InvariantCulture) + "%";
 }

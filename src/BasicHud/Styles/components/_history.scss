@@ -32,8 +32,28 @@
     color: #d2dbe6;
     line-height: 1;
 }
-.history-round .status-icon {
+.round-history .history-round .status-icon {
     --icon-height: 0.75em;
+    color: var(--side, #bdcbdc);
+}
+// Tint only the round-result C4; the original silhouette and its image-error fallback stay intact.
+.round-history .cs2-icon[data-icon="weapons/c4"] {
+    filter: none;
+
+    > .icon-source {
+        opacity: 0;
+    }
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: var(--icon-image-left, 0%);
+        top: var(--icon-image-top, 0%);
+        width: var(--icon-image-width, 100%);
+        height: var(--icon-image-height, 100%);
+        background: currentColor;
+        mask: url("assets/weapons/c4.svg") center / 100% 100% no-repeat;
+    }
 }
 .roster {
     position: absolute;

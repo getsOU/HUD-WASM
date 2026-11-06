@@ -13,6 +13,17 @@ static class BroadcastReferenceTests
     {
         var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
         var webroot = Path.Combine(root, "src/BasicHud/wwwroot");
+        using var uiInventory = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "LICENSES/hud-ui-icons.json")));
+        var uiSpritePath = Path.Combine(webroot, uiInventory.RootElement.GetProperty("path").GetString()!);
+        check(Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(uiSpritePath))) == uiInventory.RootElement.GetProperty("sha256").GetString(), "local outline sprite matches the reviewed Lucide/custom provenance inventory");
+        var uiSymbols = XDocument.Load(uiSpritePath).Root!.Elements().ToArray();
+        XNamespace svgNamespace = "http://www.w3.org/2000/svg";
+        var declaredSymbols = uiInventory.RootElement.GetProperty("imports").EnumerateArray().Select(icon => icon.GetProperty("symbol").GetString())
+            .Concat(uiInventory.RootElement.GetProperty("customSymbols").EnumerateArray().Select(icon => icon.GetString())).ToArray();
+        check(uiSymbols.Length == 23 && declaredSymbols.Length == 23 && uiSymbols.Select(symbol => (string?)symbol.Attribute("id")).Order().SequenceEqual(declaredSymbols.Order()) && declaredSymbols.Distinct().Count() == 23
+            && uiSymbols.All(symbol => symbol.Name == svgNamespace + "symbol" && (string?)symbol.Attribute("viewBox") == "0 0 24 24"
+                && symbol.Elements().All(shape => shape.Name == svgNamespace + "path" || shape.Name == svgNamespace + "circle" || shape.Name == svgNamespace + "line")),
+            "shared symbols match the provenance manifest, have unique IDs, uniform viewBoxes and static SVG geometry");
         check(File.ReadAllText(Path.Combine(root, "LICENSES/valve-assets.json")) == File.ReadAllText(Path.Combine(webroot, "assets/valve-assets.json")), "packaged license provenance matches the actual original game asset inventory");
         check(File.ReadAllText(Path.Combine(root, "LICENSES/openhud-icons.json")) == File.ReadAllText(Path.Combine(webroot, "assets/openhud-icons.json")), "packaged OpenHud provenance matches the reviewed import inventory");
         using var openHud = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "LICENSES/openhud-icons.json")));
@@ -28,7 +39,7 @@ static class BroadcastReferenceTests
         }), "all imported icons and retained Valve assets match their recorded source bytes and hashes");
         check(imports.All(asset => XDocument.Load(Path.Combine(webroot, asset.GetProperty("path").GetString()!)).Root?.Name == XName.Get("svg", "http://www.w3.org/2000/svg")), "all imported SVGs declare their namespace for standalone browser image loading");
         check(imports.All(asset => asset.GetProperty("path").GetString() == "assets/weapons/flashbang.svg" || asset.GetProperty("sourceSha256").GetString() == asset.GetProperty("sha256").GetString()), "only the documented Flashbang namespace repair changes upstream SVG bytes");
-        check(Cs2Icons.Status("dead") == "ui/skull" && Cs2Icons.Status("fire") == "ui/burning" && Cs2Icons.Status("hostage") == "ui/hostage_rescued" && Cs2Icons.Status("flashassist") == "weapons/flashbang_assist", "death and fire use dedicated OpenHud status art while symbols absent upstream retain their existing art");
+        check(Cs2Icons.Status("dead") == "ui/skull" && Cs2Icons.Status("fire") == "ui/burning" && Cs2Icons.Status("hostage") == "ui/hostage_rescued" && Cs2Icons.Status("flashassist") == "weapons/flashbang_assist", "legacy catalog preserves original source identities independently of the active outline renderer");
         using var optical = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "docs/cs2-icon-geometry.json")));
         var geometry = optical.RootElement.GetProperty("icons").EnumerateArray().ToArray();
         var expectedIcons = new[] { "weapons", "ui", "killfeed" }.SelectMany(folder => Directory.GetFiles(Path.Combine(webroot, "assets", folder), "*.svg").Select(file => folder + "/" + Path.GetFileNameWithoutExtension(file))).ToHashSet(StringComparer.Ordinal);

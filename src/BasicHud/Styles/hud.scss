@@ -1,4 +1,5 @@
 // Ordered modules preserve the shipped cascade and component geometry.
+@use "base/fonts" as base-fonts;
 @use "live/frame" as live-frame;
 @use "live/scoreboard-position" as live-scoreboard-position;
 @use "live/map-series" as live-map-series;
@@ -36,3 +37,5 @@
 @use "live/horizontal-rosters" as live-horizontal-rosters;
 @use "live/round-mvp" as live-round-mvp;
 @use "live/branding" as live-branding;
+@use "components/hud-ui-icons" as components-hud-ui-icons;
+@use "live/card-colors" as live-card-colors;

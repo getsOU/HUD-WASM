@@ -1,5 +1,4 @@
 .hud.scene-live {
-    /* Observer reference: large portrait and compact identity/vitals strip. */
     .observed {
         left: 41.15%;
         top: auto;
@@ -39,12 +38,16 @@
     .observed-summary {
         position: relative;
         display: grid;
-        grid-template-columns: 1.65cqw minmax(0, 1fr) auto 2.45cqw;
+        grid-template-columns: 1.65cqw 3.3cqw minmax(0, 1fr) max-content;
+        grid-template-rows: 1.05cqw 1.45cqw;
+        grid-template-areas: "team name name vitals" "team stats loadout loadout";
         align-items: center;
-        gap: 0.35cqw;
-        min-height: 2.7cqw;
+        align-content: center;
+        column-gap: 0.25cqw;
+        row-gap: 0.1cqw;
+        min-height: 3.1cqw;
         padding: 0.3cqw 0.35cqw 0.22cqw;
-        background: #091a3bf2;
+        background: var(--card-fill, var(--broadcast-blue));
     }
     .observed-health-track {
         position: absolute;
@@ -52,7 +55,7 @@
         left: 0;
         right: 0;
         height: 0.13cqw;
-        background: #ffffff16;
+        background: #ffffff55;
     }
     .observed-health-track > span {
         display: block;
@@ -60,6 +63,7 @@
         background: var(--side);
     }
     .observed-team {
+        grid-area: team;
         display: grid;
         place-items: center;
         width: 1.65cqw;
@@ -76,23 +80,30 @@
         height: 1.5cqw;
         margin: 0;
         font-size: 1cqw;
-        color: var(--side);
         background: none;
     }
     .observed-identity {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: auto auto;
+        display: contents;
+    }
+    .observed-loadout {
+        grid-area: loadout;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.4cqw;
+        width: 100%;
+        min-width: 0;
         height: auto;
-        gap: 0.12cqw;
-        align-content: center;
     }
     .observed .player-name {
+        grid-area: name;
         position: static;
         width: auto;
         height: auto;
         min-width: 0;
-        font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+        font-family:
+            "sOU Bahnschrift", "Bahnschrift", "Arial Narrow", sans-serif;
+        font-stretch: condensed;
         font-size: 0.95cqw;
         line-height: 1.1;
         text-transform: uppercase;
@@ -101,96 +112,88 @@
         text-overflow: ellipsis;
     }
     .observed-stats {
+        grid-area: stats;
         display: flex;
         gap: 0.4cqw;
         align-items: center;
-        color: var(--side);
-        font-size: 0.57cqw;
+        font-size: 0.65cqw;
     }
     .observed-stats > span {
         display: inline-flex;
         align-items: center;
         gap: 0.13cqw;
     }
-    .observed-stats .status-icon {
-        --icon-height: 0.53cqw;
-        --icon-max-width: 0.65cqw;
-    }
-    .observed-loadout {
-        display: grid;
-        grid-template-columns: auto;
-        grid-template-rows: auto auto;
-        height: auto;
-        gap: 0.12cqw;
-        align-items: center;
-        justify-items: end;
+    .observed-stat-value {
+        color: #fff;
     }
     .observed-loadout > .weapon-cell {
         position: static;
-        width: 2.9cqw;
-        height: 0.6cqw;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex: 0 1 5cqw;
+        width: 5cqw;
+        max-width: 5cqw;
+        min-width: 0;
+        height: 1.4cqw;
+        overflow: hidden;
     }
     .observed-weapon {
-        --icon-height: 0.6cqw;
-        --icon-max-width: 2.9cqw;
+        --icon-height: 1.35cqw;
+        --icon-max-width: 5cqw;
     }
     .observed-loadout > .ammo-cell {
         position: static;
+        flex: 0 0 auto;
         height: auto;
-        gap: 0.2cqw;
-        flex-wrap: wrap;
-        justify-content: end;
+        min-width: 0;
+        flex-wrap: nowrap;
+        justify-self: end;
+        align-items: center;
     }
     .observed .ammo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45cqw;
         font:
-            700 0.85cqw "Bahnschrift Condensed",
+            700 0.9cqw/1 "sOU Bahnschrift",
+            "Bahnschrift",
             "Arial Narrow",
             sans-serif;
-        gap: 0.05cqw;
+        font-stretch: condensed;
+        white-space: nowrap;
     }
-    .observed .ammo > small,
-    .observed .ammo > span:last-child {
-        font-size: 0.58cqw;
-        color: #bac8da;
+    .observed .ammo-part {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.14cqw;
+    }
+    .observed .ammo-number {
+        color: #fff;
     }
     .observed-vitals {
-        display: grid;
-        grid-template-columns: auto;
-        gap: 0.1cqw;
-        justify-items: stretch;
+        grid-area: vitals;
+        display: inline-flex;
+        align-items: center;
+        justify-self: end;
+        gap: 0.2cqw;
         height: auto;
     }
-    .observed-health {
-        position: static;
-        display: flex;
+    .observed-armor {
+        display: inline-flex;
         align-items: center;
-        justify-content: center;
-        gap: 0.2cqw;
-        padding: 0.12cqw 0.15cqw;
-        background: var(--card-fill, #12336d);
+    }
+    .observed-health {
+        min-inline-size: 3ch;
+        padding: 0;
+        background: transparent;
         color: #fff;
         font:
-            700 1.05cqw "Bahnschrift Condensed",
+            700 1.15cqw/1 "sOU Bahnschrift",
+            "Bahnschrift",
             "Arial Narrow",
             sans-serif;
-        line-height: 1;
-    }
-    .observed-health .status-icon {
-        display: inline-block;
-        --icon-height: 0.7cqw;
-        --icon-max-width: 0.75cqw;
-    }
-    .observed-armor {
-        position: static;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        gap: 0.15cqw;
-        font-size: 0.5cqw;
-        color: #bac8da;
-    }
-    .observed-armor .status-icon {
-        --icon-height: 0.5cqw;
-        --icon-max-width: 0.65cqw;
+        font-stretch: condensed;
+        text-align: right;
     }
 }

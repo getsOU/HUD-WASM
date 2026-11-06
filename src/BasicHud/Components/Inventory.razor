@@ -7,7 +7,7 @@
             {
             <span class="weapon-item @(weapon.State is WeaponStatus.Active or WeaponStatus.Reloading ? "active" : "")" title="@(weapon.State?.ToString() ?? "Unknown state")">
                 <EquipmentIcon Name="@weapon.Name" /><span>@EquipmentPresentation.Label(weapon.Name)</span>
-                @if (EquipmentPresentation.UsesAmmo(weapon)) { <small>@EquipmentPresentation.Ammo(weapon)</small> }
+                <Ammunition Weapon="weapon" />
                 @if (weapon.State == WeaponStatus.Reloading) { <small>RELOAD</small> }
             </span>
             }

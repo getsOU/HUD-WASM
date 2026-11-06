@@ -1,0 +1,133 @@
+// Shared outlines: no original-asset crop, aspect ratio or white filter.
+.hud-ui-icon {
+    display: inline-block;
+    width: max(12px, var(--icon-height, 1em));
+    height: max(12px, var(--icon-height, 1em));
+    flex: 0 0 auto;
+    vertical-align: middle;
+    overflow: hidden;
+    stroke-width: var(--hud-ui-stroke, 2);
+}
+
+.hud-ui-icon[data-ui-icon="armor"],
+.hud-ui-icon[data-ui-icon="helmet"],
+.hud-ui-icon[data-ui-icon="kit"] {
+    color: #fff;
+}
+
+.ammo,
+.ammo-part {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.ammo {
+    gap: 0.5em;
+    font-variant-numeric: tabular-nums;
+}
+
+.ammo-part {
+    gap: 0.15em;
+}
+
+.player-card {
+    color: #fff;
+
+    .player-vitals,
+    .player-vitals b,
+    .kda,
+    .money,
+    .weapon-item,
+    .player-round,
+    .player-conditions,
+    .coverage {
+        color: #fff;
+    }
+
+    .hud-ui-icon,
+    .card-currency {
+        color: var(--side, #fff);
+    }
+
+    .player-equipment [data-ui-icon="armor"],
+    .player-equipment [data-ui-icon="helmet"],
+    .player-equipment [data-ui-icon="kit"] {
+        color: #fff;
+    }
+
+    .card-money-value {
+        color: #d4edb2;
+    }
+
+    .kda,
+    .kda > span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25em;
+    }
+
+    .kda {
+        gap: 0.6em;
+    }
+}
+
+.utility-outlines .utility-item {
+    width: var(--utility-height);
+    flex: 0 0 var(--utility-height);
+}
+
+.utility-outlines .hud-utility-icon {
+    --icon-height: var(--utility-height);
+}
+
+.hud.scene-live {
+    .roster .card-equipment .utility-outlines {
+        --utility-height: clamp(16px, 1cqw, 20px);
+        gap: 0.12cqw;
+    }
+
+    .roster .card-stats .hud-ui-icon {
+        --icon-height: clamp(12px, 0.78cqw, 16px);
+    }
+
+    .roster .card-status .hud-ui-icon {
+        --icon-height: clamp(14px, 0.85cqw, 18px);
+    }
+
+    .observed-stats .hud-ui-icon {
+        --icon-height: 12px;
+    }
+
+    .observed-armor .hud-ui-icon {
+        --icon-height: clamp(12px, 0.85cqw, 18px);
+    }
+
+    .observed .ammo-symbol {
+        --icon-height: clamp(12px, 0.8cqw, 18px);
+    }
+
+    .observed-loadout .hud-utility-icon {
+        --icon-height: clamp(16px, 1.1cqw, 24px);
+    }
+}
+
+.hud.scene-live.rosters-horizontal {
+    .roster .card-loadout {
+        grid-template-rows: minmax(0, 1fr) max(0.7cqw, 12px);
+    }
+
+    .roster .card-equipment {
+        height: max(0.7cqw, 12px);
+    }
+
+    .roster .card-equipment .utility-outlines {
+        --utility-height: 12px;
+        gap: 0.1cqw;
+    }
+
+    .roster .card-stats .hud-ui-icon,
+    .roster .card-status .hud-ui-icon {
+        --icon-height: 12px;
+    }
+}

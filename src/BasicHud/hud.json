@@ -1,6 +1,6 @@
 {
   "id": "sou-basic-wasm",
-  "version": "0.4.21",
+  "version": "0.4.22",
   "name": "sOU Default HUD",
   "infoUrl": "https://github.com/getsOU/HUD-WASM",
   "outlineColors": {
@@ -40,5 +40,5 @@
       "route": "views/spotlight"
     }
   ],
-  "releaseNotes": "Fix killfeed player names: killer, victim and assists now use the same sOU-provided profile names as the player cards, matched by Steam ID.\nApply profile-name changes to existing killfeed entries. Keep the event name when no matching profile is available, and reject profiles from unrelated match teams.\nRequires sOU desktop 0.3.34 or newer."
+  "releaseNotes": "- Unify HUD status, killfeed, round-history, utility and ammunition icons with a local Lucide/custom outline system. Keep original weapon, knife and C4 silhouettes.\n- Apply consistent team-colored card icons, white text and equipment exceptions, and green money amounts with a team-colored dollar sign. Color all round-result icons by the winning side, including C4 and defuse kits.\n- Improve the observer strip with a larger white weapon and separate loaded-rounds/reserve icons on the existing lower row. Omit unavailable ammunition and show armor directly left of health.\n- Fix Bahnschrift Condensed selection in Firefox and Chromium, health-fill proportions outside the observer-slot strip, slot/name alignment, and mirrored skull cropping on dead cards.\n- Animate the neutral-blue MVP card with a proportional gap below the matchbar. Keep it visible for up to eight seconds, ending early at the next freeze, including during pauses and after match end.\n- Expand the Debug preview with all supported killfeed icons, winner-colored round results, varied utility and armor examples. Preserve production SDK subscriptions and dynamic radar drawing.\n- Requires sOU desktop 0.3.34 or newer. Select version 0.4.22 and reopen outputs after importing."
 }

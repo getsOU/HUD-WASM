@@ -1,5 +1,11 @@
 # sOU Default HUD · Blazor WebAssembly
 
+The HUD uses one local Lucide/custom-outline icon system across live player/observer cards, killfeed, round history, inventory and presentation cards. Six utility outlines and separate round/magazine symbols follow the same design. Original firearm/knife/C4 silhouettes stay white; dynamic radar artwork remains unchanged. See the [complete mapping and design rules](docs/icon-system.md).
+
+Card typography remains **Bahnschrift Condensed**. An explicit local variable-font face selects the installed Windows `Bahnschrift` with its weight/width ranges and `font-stretch: condensed`, avoiding different instance-name matching in Firefox and Chromium. No font binaries are bundled or downloaded by the HUD; the existing fallback stack applies where Bahnschrift is unavailable. Segoe UI, Impact and radar typography retain their existing roles.
+
+The observer strip shows the name and armor/HP above, with kills/deaths, a larger bounded white weapon and ammunition on the existing lower row. Weapon and ammo form a close group on the right, with more space to kills/deaths; loaded rounds have a cartridge icon and reserve has a magazine icon. Unknown ammunition fields are omitted individually; a real zero stays visible. Known armor is a white Kevlar/helmet icon immediately left of numeric HP, with no health icon or armor amount. All numbers remain white.
+
 Maintainers: [configure automatic sOU Creator uploads](docs/sou-upload.md).
 Only the `SOU_CREATOR_API_KEY` repository secret is needed. Future published tags
 upload automatically; the manual **Upload release to sOU** workflow also accepts
@@ -23,7 +29,7 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 The installed HUD is named **sOU Default HUD**; its stable package ID remains `sou-basic-wasm`.
 
-1. Download `sou-basic-wasm-0.4.21.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.22.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
@@ -35,9 +41,9 @@ In the live HUD, the active competition's logo and sponsors appear above the kil
 
 Competition and sponsor logos have equal-width slots at full size. **Branding → Höhe Wettbewerbslogo** and **Höhe Sponsoren** independently set each image's height to 0–100% of the available branding height; width scales by the same factor. For example, 50% halves both dimensions. The default is 100%; decimal points/commas and a percent suffix are accepted. Image proportions and placement stay intact; 0% hides that image without moving the other logo.
 
-The round MVP card attaches directly below the matchbar at the same width. Both areas have no outside border; the MVP uses the player's CT/T card background. There is no separate round-winner banner. The card appears only after an unambiguous MVP-counter increase has been observed and retains the completed round's kills and damage through the following freeze. It hides automatically after five seconds, including during pauses and after match end; repeated updates do not extend the display. Live play or lost data continuity can clear it earlier. Initial/stale/disconnected data and ambiguous counter jumps do not create an award; unavailable round statistics remain `—`.
+The round MVP card sits below the matchbar at the same width, with the same proportional gap as the vertical player cards (12 px at 1920 px HUD width). Both areas have no outside border and use the same neutral HUD-blue background. There is no separate round-winner banner. The card appears only after an unambiguous MVP-counter increase has been observed and displays the completed round's kills and damage. Bundled Motion reveals it over 420 ms, with slightly staggered portrait/text movement and matching round-history motion. After eight seconds, including during pauses and after match end, it starts a 260 ms exit; the next freeze triggers that exit earlier. Repeated updates do not extend the display or reopen it during freeze. Reduced-motion preferences skip the movement. Live play, lost data continuity or changed session/map/match clear it immediately. Initial/stale/disconnected data and ambiguous counter jumps do not create an award; unavailable round statistics remain `—`.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.21**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.22**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
 
 The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) in `hud.json` under `outlineColors`. With a supporting sOU/HLAE host, opening the HUD through **Über CS2 anzeigen** selects these colors for X-Ray/outlines, utility trails and derived smoke coloring. Browser/OBS output alone does not select the in-game palette. Trails and smoke created after the palette is applied use the colors; existing effects may retain their previous appearance. See the [sOU HLAE color documentation](https://www.getsou.app/docs/cs2-hlae#hud-farben).
 
@@ -49,7 +55,7 @@ The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) 
 - Compact mirrored live roster cards with observer digits, central optional portraits, HP/armor, real weapon silhouettes, utility/equipment/status icons, money and K/D/A. The complete inventory, round damage/kills and recorded metrics remain in presentation/statistics views.
 - Actual observed player with active/reloading weapon, firearm ammunition and utility icons. Dead players show no stale current weapons or inventory; an alive player without an active weapon has an empty weapon area. In the observer, holstered equipment is never substituted for an active weapon. Roster rows instead show carried primary firearm, otherwise pistol, otherwise knife, independently of held state. A genuinely supplied unknown active weapon keeps its own fallback. No grenade ammo fractions are invented.
 - Complete-or-unknown per-side economy, alive/kit/utility/timeouts/loss-streak detail in statistics; numbered recent round results appear only during freeze, pause, timeout or intermission. The statistics view retains the complete supplied history.
-- A side-colored round MVP card attached to the matchbar, driven by observed MVP-counter increases and source round statistics. Each award expires after five seconds, including during pauses and after match end.
+- A neutral HUD-blue round MVP card below the matchbar, driven by observed MVP-counter increases and source round statistics. Each award expires after eight seconds, including during pauses and after match end; the next freeze ends its display earlier.
 - Competition branding and rotating sponsor images above the killfeed, with panel controls for rotation duration and independent proportional logo sizes.
 - Real HLAE killfeed, keyed by connection/epoch/event ID, with all supplied modifier flags and the same sOU-provided profile names as the player cards. Existing entries update after profile-name changes; unmatched participants retain event names. No kills inferred from health changes.
 - Original Boltobserv radar with the original transparent maps, coordinate metadata and object-specific Nuke/Vertigo split projection. Original-style direction drops, observer digits, observed ring, bomb carrier, flashed/dead markers and utility connect to actual public data. Buyzones appear only during source freeze/warmup. Fresh HLAE supplies the whole player frame; absent/expired HLAE falls back to GSI; optional custom calibration and separately attributed Valve overview fallbacks remain available. No permanent technical radar caption or empty replacement grid.
@@ -72,8 +78,8 @@ pwsh ./scripts/Build.ps1
 The script restores pinned Sass dependencies, checks the compiled stylesheet against its SCSS sources, performs locked NuGet restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata/region-selection tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.21.souhud
-artifacts/sou-basic-wasm-0.4.21.souhud.sha256
+artifacts/sou-basic-wasm-0.4.22.souhud
+artifacts/sou-basic-wasm-0.4.22.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:
@@ -99,6 +105,8 @@ dotnet run --project src/BasicHud --urls http://127.0.0.1:5178
 ```
 
 Open <http://127.0.0.1:5178/?preview=live>. Scene previews: `prematch`, `lineups`, `veto`, `break`, `postmatch`, `statistics`, `spotlight`. Additional cases: `waiting`, `stale`, `swapped`, `missing`, `bomb`, `overview`, `production` (lower-third action). Fixtures include source weapons/stats, real-shaped metadata, local original synthetic SVG art, radar/grenades/kills, maps/veto, competition/sponsors and panel references.
+
+Open <http://127.0.0.1:5178/?preview=mvp&portraits=missing> to replay the MVP animation continuously. A CT award exits when freeze starts; a T award reaches its eight-second deadline. Each cycle supplies a live baseline and real-shaped MVP-counter increments, so the preview exercises the actual component rather than a static imitation. Keep the development server running while using these URLs.
 
 Preview activation requires **Debug compilation**, **loopback hostname** and an **explicit recognized query**. The output does not display a connection-status or preview badge. It is a read-only browser feed; it neither connects to nor injects fixtures into an actual cast/GSI host. Release excludes the preview classes and synthetic asset. Opening a normal development URL does not supply the installed sOU package identity/session. For actual subview routing/base/CSP testing, import the built Release package into an isolated sOU-compatible test host or the real desktop app; the development server does not replace that integration check.
 
@@ -191,7 +199,7 @@ Player dots and upright labels use Boltobserv's original Arial bold font, 5.6-un
 
 ## Original CS2 icons (0.4.4)
 
-All game status, equipment, killfeed and round-result icons use local original CS2 SVGs. Icon sizes preserve the original aspect ratios. Unknown or unavailable artwork uses a text label, never a fabricated replacement icon. Game artwork retains separate Valve rights; GPLv3 covers HUD code, and the public SDK remains MIT.
+This historical release introduced local original CS2 SVGs. Current UI/status and grenade displays use the shared outline system documented above; firearm, knife and C4 silhouettes still use the originals. Original silhouettes preserve their aspect ratios. Unknown or unavailable artwork uses a text label. Game artwork retains separate Valve rights; GPLv3 covers HUD code, and the public SDK remains MIT.
 
 ## Icon balance and killfeed order (0.4.5)
 
@@ -226,13 +234,13 @@ The 1920 × 1080 layout uses 312 × 64 pixel cards with 4 pixel gaps inside a 31
 
 The live scene follows the user-supplied broadcast reference: a narrow central blue scoreboard with upright series markers, a compact map/pick strip above the larger Boltobserv radar, and mirrored blue/gold rosters at the bottom edges. Each 320 × 76.8 reference-pixel card has an outer slot strip, identity/stats/cash, a fixed central portrait crop, and weapon/large HP above grouped utility and status icons. The background fill follows actual health; dead players retain their existing empty inventory behavior. Optional team economy remains in a slim rail above the rosters.
 
-The centered observed-player card uses an optional existing portrait, active weapon, ammo and a bottom name/HP strip. No webcam, camera feed, event/club branding, video frames or portraits from the private reference are shipped. Dynamic media still comes from the workspace. Missing media keeps fixed empty areas; unknown game values remain unknown. Other presentation scenes, source selection, radar interpolation, roster weapon priority and chronological killfeed are unchanged.
+The centered observed-player card uses an optional existing portrait, active weapon, ammo and a bottom name/HP strip in the player's CT/T team color, with a contrasting separator below the portrait and no separate HP-box background. No webcam, camera feed, event/club branding, video frames or portraits from the private reference are shipped. Dynamic media still comes from the workspace. Missing media keeps fixed empty areas; unknown game values remain unknown. Other presentation scenes, source selection, radar interpolation, roster weapon priority and chronological killfeed are unchanged.
 
 The live layout is now maintained in `Styles/live/` and scoped to the live scene. The original geometry shipped in 0.4.10; existing release assets are unchanged.
 
 
 #### Player-card structure correction (0.4.10)
 
-The card structure now follows the detailed reference: name, original CS2 kill/death icons with counts, and cash on the outside; portrait in the middle; large carried weapon and HP above utility on the inside. Assists remain in the full statistics title and accessible label. Utility is anchored beside the portrait, with a separate kit/bomb/armor group at the inner edge. Transient conditions use their own small indicator row rather than pushing the equipment group. Health fill is confined to the loadout area; identity and portrait do not lose their background with health.
+The card structure now follows the detailed reference: name, original CS2 kill/death icons with counts, and cash on the outside; portrait in the middle; large carried weapon and HP above utility on the inside. Assists remain in the full statistics title and accessible label. Utility is anchored beside the portrait, with a separate kit/bomb/armor group at the inner edge. Transient conditions use their own small indicator row rather than pushing the equipment group. Health percentages use only the content area beside the observer-slot strip, so the strip cannot hide low-health fill. CT and T fill from their respective outer content edges. The horizontal layout fills the content height from bottom to top, also excluding its slot strip.
 
 Known-dead players use a 224.64-pixel grey card, no visible slot number, no health/loadout and a large original CS2 death icon. Row height and identity/portrait areas remain fixed. On the right the short card remains anchored to the outside edge; text and artwork stay upright and kills still precede deaths. The observed player uses a white outline. Missing health does not become death, and missing portraits keep their own empty area.

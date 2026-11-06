@@ -1,0 +1,10 @@
+// Keep the selected Windows typeface. The explicit variable-face descriptors
+// avoid browser-dependent matching of the "Bahnschrift Condensed" instance name.
+@font-face {
+    font-family: "sOU Bahnschrift";
+    src: local("Bahnschrift");
+    font-style: normal;
+    font-weight: 300 700;
+    font-stretch: 75% 100%;
+    font-display: swap;
+}

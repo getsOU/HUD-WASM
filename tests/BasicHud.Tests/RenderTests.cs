@@ -74,22 +74,36 @@ static class RenderTests
             check(!renderer.HasElement(weapon, "img") && !renderer.HasElement(weapon, "svg") && renderer.HasText(weapon, "Knife"), "unavailable equipment artwork retains its label without a fabricated replacement icon");
 
             var status = renderer.Attach(new StatusIcon());
-            foreach (var name in new[] { "health", "armor", "helmet", "kit", "bomb", "dead", "headshot", "wallbang", "blind", "smoke", "noscope", "flashassist", "fire", "time", "hostage" })
+            foreach (var name in new[] { "health", "kills", "armor", "helmet", "kit", "dead", "headshot", "wallbang", "blind", "smoke", "noscope", "flashassist", "fire", "time", "hostage" })
             {
                 await renderer.Render(status, new() { [nameof(StatusIcon.Name)] = name, [nameof(StatusIcon.Label)] = name });
-                check(renderer.HasAttribute(status, "src", $"assets/{Cs2Icons.Status(name)}.svg") && !renderer.HasElement(status, "svg") && renderer.ErrorHandler(status) != 0, $"actual {name} status renders an original SVG image, not a hand-drawn path");
+                check(renderer.HasDescendantAttribute(status, "data-ui-icon", name) && renderer.HasDescendantAttribute(status, "href", $"assets/icons/hud-ui.svg#{name}") && !renderer.HasElement(status, "img"), $"shared {name} status uses the semantic outline in every HUD view");
             }
+            await renderer.Render(status, new() { [nameof(StatusIcon.Name)] = "bomb", [nameof(StatusIcon.Label)] = "Bomb carrier" });
+            check(renderer.HasAttribute(status, "src", "assets/weapons/c4.svg") && renderer.ErrorHandler(status) != 0, "C4 retains its original identifiable artwork and image-error fallback");
             await renderer.DispatchEventAsync(renderer.ErrorHandler(status), null, EventArgs.Empty);
-            check(!renderer.HasElement(status, "img") && !renderer.HasElement(status, "svg") && renderer.HasText(status, "hostage"), "failed status artwork retains text without substitute symbols");
+            check(!renderer.HasElement(status, "img") && !renderer.HasElement(status, "svg") && renderer.HasText(status, "Bomb carrier"), "failed original C4 artwork retains text without substitute symbols");
             await renderer.Render(status, new() { [nameof(StatusIcon.Name)] = "health", [nameof(StatusIcon.Label)] = "Health" });
-            check(renderer.HasElement(status, "img"), "a different original status asset remains available after an image error");
+            check(renderer.HasDescendantAttribute(status, "data-ui-icon", "health"), "switching from failed original art to a status outline remains available");
             await renderer.Render(status, new() { [nameof(StatusIcon.Name)] = "future-status", [nameof(StatusIcon.Label)] = "Future status" });
             check(!renderer.HasElement(status, "img") && !renderer.HasElement(status, "svg") && renderer.HasText(status, "Future status"), "unknown status uses its honest label without guessing artwork");
+
+            var uiIcon = renderer.Attach(new HudUiIcon());
+            await renderer.Render(uiIcon, new() { [nameof(HudUiIcon.Name)] = "health", [nameof(HudUiIcon.Label)] = "Health" });
+            check(renderer.HasElement(uiIcon, "svg") && renderer.HasAttribute(uiIcon, "aria-label", "Health") && renderer.HasAttribute(uiIcon, "stroke", "currentColor")
+                && renderer.HasAttribute(uiIcon, "href", "assets/icons/hud-ui.svg#health"), "shared outline uses a local SVG symbol with an accessible label and inherited color");
+            await renderer.Render(uiIcon, new() { [nameof(HudUiIcon.Name)] = "bomb", [nameof(HudUiIcon.Label)] = "Bomb carrier" });
+            check(renderer.HasDescendantAttribute(uiIcon, "src", "assets/weapons/c4.svg") && !renderer.HasElement(uiIcon, "svg"), "outline component preserves the original CS2 C4 instead of substituting a generic bomb");
+            await renderer.Render(uiIcon, new() { [nameof(HudUiIcon.Name)] = "headshot", [nameof(HudUiIcon.Label)] = "Headshot" });
+            check(renderer.HasAttribute(uiIcon, "data-ui-icon", "headshot"), "approved custom headshot outline is enabled in the shared icon system");
 
             var livePlayer = renderer.Attach(new LivePlayerCard());
             var agentPlayer = new PlayerState("agent", "Agent player", TeamSide.CounterTerrorists, null, 100) { ObserverSlot = 0 };
             await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = agentPlayer, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
             check(renderer.HasDescendantAttribute(livePlayer, "src", "assets/agents/ct-0.png"), "actual live roster uses slot zero's CT agent when the manager supplies no portrait");
+            await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = agentPlayer with { Health = 5 } });
+            check(renderer.HasText(livePlayer, "5") && renderer.HasAttribute(livePlayer, "style", "--player-health:5%")
+                && !renderer.HasAttribute(livePlayer, "class", "health-track"), "five HP drives both the number and card-content fill without a second loadout health layer");
             var agentObserved = renderer.Attach(new ObservedPlayer());
             await renderer.Render(agentObserved, new() { [nameof(ObservedPlayer.Player)] = agentPlayer, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
             check(renderer.HasDescendantAttribute(agentObserved, "src", "assets/agents/ct-0.png"), "the observer and roster use the same slot agent");
@@ -99,7 +113,7 @@ static class RenderTests
             check(renderer.HasText(livePlayer, "Rogue <script>") && !renderer.HasMarkup(livePlayer, "Rogue"), "decoded source names remain actual Razor text, never markup");
             await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = new PlayerState("1", "Dead player", TeamSide.CounterTerrorists, null, 0), [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
             check((renderer.HasAttribute(livePlayer, "class", "card-death") || renderer.HasMarkup(livePlayer, "class=\"card-death\"")) && !renderer.HasAttribute(livePlayer, "class", "card-loadout") && !renderer.HasAttribute(livePlayer, "class", "card-health"), "dead reference card retains identity but replaces health and loadout with the death cue");
-            check(renderer.HasDescendantAttribute(livePlayer, "data-icon", "ui/crosshair_circle") && renderer.HasDescendantAttribute(livePlayer, "data-icon", "ui/skull"), "reference card uses OpenHud kill and skull artwork for statistics");
+            check(renderer.HasDescendantAttribute(livePlayer, "data-ui-icon", "kills") && renderer.HasDescendantAttribute(livePlayer, "data-ui-icon", "dead"), "live card opts into Lucide kill/death outlines without replacing the shared status renderer");
             var spotlight = renderer.Attach(new SpotlightView());
             var agentPanel = new HudPanelState(1, new() { ["feature"] = new() { ["player"] = JsonSerializer.SerializeToElement("agent") }, ["display"] = new() { ["agentsOnly"] = JsonSerializer.SerializeToElement(false) } })
             { References = new() { ["feature"] = new() { ["player"] = new("agent", "Agent player", "/cast-media/featured.png", null, false) } } };
@@ -190,8 +204,18 @@ static class RenderTests
                 && renderer.HasText(mvpCard, "2") && renderer.HasText(mvpCard, "200")
                 && renderer.HasDescendantAttribute(mvpCard, "src", "assets/agents/ct-1.png"),
                 "the actual MVP card renders player identity, completed-round kills/damage and the side/slot portrait fallback");
+            var mvpFreeze = mvpSnapshot with { Revision = 3, Game = mvpSnapshot.Game! with { RoundPhase = RoundPhase.FreezeTime } };
+            await renderer.Render(mvpCard, new() { [nameof(RoundMvp.Context)] = mvpContext with { Snapshot = mvpFreeze } });
+            check(renderer.HasElement(mvpCard, "section") && renderer.HasAttribute(mvpCard, "data-mvp-visible", "false") && renderer.HasAttribute(mvpCard, "aria-hidden", "true"),
+                "freeze immediately starts the MVP exit and hides its retained animation frame from accessibility");
             await renderer.Render(mvpCard, new() { [nameof(RoundMvp.Context)] = mvpContext with { Snapshot = null } });
             check(!renderer.HasElement(mvpCard, "section"), "the actual MVP component removes its DOM when the session loses its baseline");
+            await renderer.Render(mvpCard, new() { [nameof(RoundMvp.Context)] = mvpContext });
+            await renderer.Render(mvpCard, new() { [nameof(RoundMvp.Context)] = mvpContext with { Snapshot = mvpSnapshot } });
+            await Task.Delay(400);
+            check(renderer.HasElement(mvpCard, "section") && renderer.HasAttribute(mvpCard, "data-mvp-visible", "true") && !renderer.HasAttribute(mvpCard, "aria-hidden", "true"),
+                "a cancelled exit cannot remove a newly displayed award after its old cleanup deadline");
+            await renderer.Render(mvpCard, new() { [nameof(RoundMvp.Context)] = mvpContext with { Snapshot = null } });
             var series = renderer.Attach(new LiveMapSeries());
             await renderer.Render(series, new() { [nameof(LiveMapSeries.Context)] = reference });
             check(renderer.HasText(series, "Inferno") && !renderer.HasAttribute(series, "aria-current", "step") && !renderer.HasText(series, "Pending"), "actual compact map series does not mark unrelated Inferno current during Dust2 or expose technical status names");
@@ -200,7 +224,7 @@ static class RenderTests
             check(!renderer.HasElement(history, "section"), "actual history component has no residual DOM during live combat");
             var frozenReference = reference with { Snapshot = reference.Snapshot! with { Game = referenceGame with { RoundPhase = RoundPhase.FreezeTime, Countdown = new(CountdownPhase.FreezeTime, 12) } } };
             await renderer.Render(history, new() { [nameof(RoundHistory.Context)] = frozenReference });
-            check(renderer.HasElement(history, "section") && renderer.HasText(history, "1") && renderer.HasDescendantAttribute(history, "alt", "Time expired"), "actual freeze history renders numbered results and the correct result icon description");
+            check(renderer.HasElement(history, "section") && renderer.HasText(history, "1") && renderer.HasDescendantAttribute(history, "aria-label", "Time expired") && renderer.HasDescendantAttribute(history, "data-ui-icon", "time"), "actual freeze history renders numbered results and the accessible outline result icon");
             await renderer.Render(history, new() { [nameof(RoundHistory.Context)] = reference, [nameof(RoundHistory.Always)] = true });
             check(renderer.HasElement(history, "section"), "statistics history explicitly stays available independently of live-phase gating");
 
@@ -215,7 +239,7 @@ static class RenderTests
             {
                 await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = source, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
                 await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = source, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
-                check(!renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && !renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && !renderer.HasAttribute(observedPlayer, "class", "ammo") && !renderer.HasDescendantText(observedPlayer, "Unknown weapon"), $"actual live/observer Razor omits active weapon, fallback and ammo for {description}");
+                check(!renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && !renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && !renderer.HasDescendantAttribute(observedPlayer, "class", "ammo") && !renderer.HasDescendantText(observedPlayer, "Unknown weapon"), $"actual live/observer Razor omits active weapon, fallback and ammo for {description}");
                 if (source.Health is <= 0 || PlayerPresentation.Weapons(source).Count == 0)
                 {
                     await renderer.Render(inventory, new() { [nameof(Inventory.Player)] = source });
@@ -229,25 +253,52 @@ static class RenderTests
             var unknownWeaponPlayer = weaponPlayer with { Weapons = [held with { Name = null, Type = WeaponCategory.Unknown, Kind = WeaponKind.Unknown }] };
             await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = unknownWeaponPlayer, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = unknownWeaponPlayer, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
-            check(!renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && renderer.HasDescendantText(observedPlayer, "Unknown weapon") && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "unknown category is not guessed as a roster firearm while observer preserves a supplied unknown held weapon");
+            check(!renderer.HasComponent(livePlayer, typeof(EquipmentIcon)) && renderer.HasDescendantText(observedPlayer, "Unknown weapon") && !renderer.HasDescendantAttribute(observedPlayer, "class", "ammo"), "unknown category is not guessed as a roster firearm while observer preserves a supplied unknown held weapon");
             await renderer.Render(livePlayer, new() { [nameof(LivePlayerCard.Player)] = weaponPlayer with { Weapons = [held with { Name = "weapon_future_rifle" }] }, [nameof(LivePlayerCard.Context)] = BroadcastContext.Empty });
             check(renderer.HasComponent(livePlayer, typeof(EquipmentIcon)), "a classified roster rifle with unknown artwork retains its honest fallback");
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Weapons = [held with { State = WeaponStatus.Reloading }] }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
-            check(renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && renderer.HasAttribute(observedPlayer, "aria-label", "7 / 61") && !renderer.HasText(observedPlayer, "RELOAD") && !renderer.HasMarkup(observedPlayer, "RELOAD") && !renderer.HasAttribute(observedPlayer, "class", "reload"), "reloading preserves the observer weapon and ammunition without an additional reload label");
+            check(renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && renderer.HasDescendantAttribute(observedPlayer, "aria-label", "Loaded rounds: 7, Reserve: 61") && !renderer.HasText(observedPlayer, "RELOAD") && !renderer.HasMarkup(observedPlayer, "RELOAD") && !renderer.HasAttribute(observedPlayer, "class", "reload"), "reloading preserves the observer weapon and ammunition without an additional reload label");
             check(!renderer.HasAttribute(observedPlayer, "class", "observed-weapon-name") && !renderer.HasDescendantText(observedPlayer, "AK-47"), "observer has no duplicate weapon label beside its accessible original icon");
+            check(renderer.HasDescendantAttribute(observedPlayer, "data-ui-icon", "rounds") && renderer.HasDescendantAttribute(observedPlayer, "data-ui-icon", "magazine"), "loaded rounds and reserve each have their own ammunition icon");
+            foreach (var (clip, reserve, expectedParts) in new (int?, int?, string[])[] {
+                (null, null, []), (-1, -1, []), (0, 0, ["rounds", "magazine"]), (7, null, ["rounds"]), (null, 61, ["magazine"]) })
+            {
+                await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Weapons = [held with { AmmoClip = clip, AmmoReserve = reserve }] }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
+                var ammoIcons = renderer.AttributeValues(observedPlayer, "data-ui-icon").Where(name => name is "rounds" or "magazine");
+                check(ammoIcons.SequenceEqual(expectedParts) && renderer.HasDescendantAttribute(observedPlayer, "class", "ammo") == (expectedParts.Length > 0), $"observer only shows supplied nonnegative ammunition fields ({clip}, {reserve}), retaining a real zero");
+            }
+            await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Armor = 54, Helmet = false }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
+            check(renderer.HasDescendantAttribute(observedPlayer, "data-ui-icon", "armor") && !renderer.HasDescendantAttribute(observedPlayer, "data-ui-icon", "health") && !renderer.HasDescendantText(observedPlayer, "54"), "observer shows armor as an icon and health as a number, without the health icon or armor amount");
+            await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Armor = 0, Helmet = true }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
+            check(!renderer.HasDescendantAttribute(observedPlayer, "data-ui-icon", "armor") && !renderer.HasDescendantAttribute(observedPlayer, "data-ui-icon", "helmet"), "no armor means no stale armor or helmet icon beside health");
             await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Health = 0 }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
-            check(!renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && !renderer.HasAttribute(observedPlayer, "class", "ammo"), "transition from armed/reloading to dead clears the rendered current weapon and ammunition immediately");
+            check(!renderer.HasComponent(observedPlayer, typeof(EquipmentIcon)) && !renderer.HasDescendantAttribute(observedPlayer, "class", "ammo"), "transition from armed/reloading to dead clears the rendered current weapon and ammunition immediately");
             var utility = renderer.Attach(new UtilityIcons());
             await renderer.Render(utility, new() { [nameof(UtilityIcons.Player)] = weaponPlayer with { Weapons = [held with { Name = "weapon_flashbang", Type = WeaponCategory.Grenade, AmmoReserve = 2 }] } });
-            check(renderer.AltTexts(utility).SequenceEqual(new[] { "Flashbang", "Flashbang" }) && !renderer.HasDescendantText(utility, "2"), "actual compact utility renders two original flashbang icons instead of a number");
+            check(renderer.AttributeValues(utility, "data-ui-icon").SequenceEqual(new[] { "utility-flashbang", "utility-flashbang" }) && !renderer.HasDescendantText(utility, "2"), "compact utility preserves two flashbangs as two outline icons instead of a number");
+            foreach (var name in new[] { "hegrenade", "flashbang", "smokegrenade", "decoy", "molotov", "incgrenade" })
+            {
+                await renderer.Render(observedPlayer, new() { [nameof(ObservedPlayer.Player)] = weaponPlayer with { Weapons = [held with { Name = "weapon_" + name, Type = WeaponCategory.Grenade, AmmoReserve = 1 }] }, [nameof(ObservedPlayer.Context)] = BroadcastContext.Empty });
+                check(renderer.HasDescendantAttribute(observedPlayer, "data-ui-icon", "utility-" + name) && !renderer.HasDescendantAttribute(observedPlayer, "class", "ammo"), $"held {name} uses the same outline as the utility row without firearm ammunition");
+            }
+            var utilityIcon = renderer.Attach(new UtilityIcon());
+            await renderer.Render(utilityIcon, new() { [nameof(UtilityIcon.Name)] = "weapon_future_grenade" });
+            check(renderer.HasDescendantAttribute(utilityIcon, "src", "assets/weapons/future_grenade.svg"), "unknown grenade keys preserve the existing equipment image/text fallback");
+            await renderer.Render(inventory, new() { [nameof(Inventory.Player)] = weaponPlayer with { Weapons = [held with { AmmoClip = 0, AmmoReserve = null }, held with { Name = "weapon_flashbang", Type = WeaponCategory.Grenade, AmmoReserve = 2 }] } });
+            check(renderer.HasDescendantAttribute(inventory, "src", "assets/weapons/ak47.svg") && renderer.AttributeValues(inventory, "data-ui-icon").SequenceEqual(new[] { "rounds", "utility-flashbang", "utility-flashbang" }) && renderer.HasDescendantAttribute(inventory, "aria-label", "Loaded rounds: 0"), "detail inventory shares utility and ammunition outlines, preserving a real zero, absent reserve and two flashbangs");
+            var detailCard = renderer.Attach(new PlayerCard());
+            await renderer.Render(detailCard, new() { [nameof(PlayerCard.Player)] = weaponPlayer with { Armor = 100, Helmet = false, DefuseKit = true, Money = null }, [nameof(PlayerCard.Context)] = BroadcastContext.Empty });
+            check(renderer.HasDescendantAttribute(detailCard, "data-ui-icon", "armor") && renderer.HasDescendantAttribute(detailCard, "data-ui-icon", "kit") && renderer.HasDescendantAttribute(detailCard, "data-ui-icon", "kills") && !renderer.HasDescendantAttribute(detailCard, "data-ui-icon", "helmet") && !renderer.HasDescendantText(detailCard, "ARM") && !renderer.HasDescendantText(detailCard, "HELM"), "presentation card shares Kevlar, kit and K/D symbols without obsolete equipment badges or guessed helmet");
             var feed = renderer.Attach(new Killfeed());
             var longName = "Complete player name without any abbreviation or ellipsis";
             var entry = new KillFeedEntry(1, Guid.NewGuid(), 1, 100, new(1, "killer", longName, TeamSide.CounterTerrorists), new(3, "victim", longName + " victim", TeamSide.Terrorists), new(2, "assist", longName + " assist", TeamSide.Terrorists), "weapon_ak47", WeaponKind.Ak47, true, true, true, true, true, true);
             await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("key", entry) } });
             check(renderer.HasAttribute(feed, "class", "kill-assist t") && renderer.HasText(feed, longName + " assist") && renderer.HasText(feed, longName + " victim"), "actual killfeed preserves full participant names and the assister's own side");
-            check(renderer.AltTexts(feed).SequenceEqual(new[] { "Attacker blind", "Flash assist", "AK-47", "Through smoke", "No scope", "Wallbang", "Headshot" }), "actual killfeed attaches blind and flash icons to participants and shot modifiers before the victim");
+            check(renderer.AltTexts(feed).SequenceEqual(new[] { "AK-47" }) && renderer.AttributeValues(feed, "data-ui-icon").SequenceEqual(new[] { "blind", "flashassist", "smoke", "noscope", "wallbang", "headshot" }), "killfeed uses ordered outline modifiers while preserving the original white weapon silhouette");
             await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("key", entry with { Assister = null }) } });
-            check(!renderer.AltTexts(feed).Contains("Flash assist"), "a missing assister does not leave an unattached flash-assist icon");
+            check(!renderer.AttributeValues(feed, "data-ui-icon").Contains("flashassist"), "a missing assister does not leave an unattached flash-assist icon");
+            await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("utility", entry with { Weapon = "weapon_hegrenade" }) } });
+            check(renderer.HasDescendantAttribute(feed, "data-ui-icon", "utility-hegrenade") && !renderer.AltTexts(feed).Any(), "grenade kill methods use the same utility outline as inventory and playercards");
             var killMetadata = MetadataCatalog.Bind(new BrowserMetadata
             {
                 Match = new() { Left = new() { Id = "a", SteamIds = ["killer"] }, Right = new() { Id = "b", SteamIds = ["victim", "assist"] } },
@@ -273,6 +324,7 @@ static class RenderTests
         public bool HasElement(int id, string name) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Element && frame.ElementName == name);
         public bool HasText(int id, string text) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Text && frame.TextContent == text);
         public string[] AltTexts(int id) => Descendants(id).Where(frame => frame.FrameType == RenderTreeFrameType.Attribute && frame.AttributeName == "alt").Select(frame => frame.AttributeValue?.ToString() ?? "").ToArray();
+        public string[] AttributeValues(int id, string name) => Descendants(id).Where(frame => frame.FrameType == RenderTreeFrameType.Attribute && frame.AttributeName == name).Select(frame => frame.AttributeValue?.ToString() ?? "").ToArray();
         public bool HasAttribute(int id, string name, string value) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Attribute && frame.AttributeName == name && Equals(frame.AttributeValue, value));
         public bool HasComponent(int id, Type type) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Component && frame.ComponentType == type);
         public bool HasMarkup(int id, string text) => Frames(id).Any(frame => frame.FrameType == RenderTreeFrameType.Markup && frame.MarkupContent.Contains(text, StringComparison.Ordinal));

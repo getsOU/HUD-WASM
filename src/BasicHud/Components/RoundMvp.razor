@@ -1,7 +1,8 @@
 @implements IDisposable
 @if (mvp is { } award)
 {
-    <section class="round-mvp @PlayerPresentation.SideClass(award.Player.Side)" aria-label="Round MVP">
+    <section class="round-mvp @PlayerPresentation.SideClass(award.Player.Side)" aria-label="Round MVP" aria-hidden="@(leaving ? "true" : null)"
+             data-mvp-motion="true" data-mvp-key="@presentationId" data-mvp-visible="@(leaving ? "false" : "true")" data-mvp-enter-ms="420" data-mvp-exit-ms="@ExitMilliseconds">
         <PlayerPortrait Player="award.Player" Context="Context" Class="mvp-portrait" OmitFallback="true" />
         <div class="mvp-details">
             <span class="mvp-round">ROUND @award.RoundNumber MVP</span>
@@ -18,8 +19,11 @@
     private readonly RoundMvpProjection projection = new();
     private RoundMvpView? mvp;
     private (Guid Session, string? Map, string? Match, int Round, string? Player)? awardKey;
-    private CancellationTokenSource? expiry;
-    private bool expired, disposed;
+    private (Guid Session, string? Map, string? Match)? displayedBinding;
+    private CancellationTokenSource? expiry, exit;
+    private const int ExitMilliseconds = 260;
+    private int presentationId;
+    private bool expired, disposed, leaving;
     protected override void OnParametersSet()
     {
         var next = projection.Update(Context.Snapshot);
@@ -30,22 +34,59 @@
             CancelExpiry(); awardKey = key; expired = false;
             if (next is not null)
             {
+                ++presentationId;
                 expiry = new();
                 _ = HideAfterDelay(expiry, expiry.Token);
             }
         }
-        mvp = expired ? null : next;
+        Present(expired ? null : next);
+    }
+    private void Present(RoundMvpView? next)
+    {
+        if (next is not null)
+        {
+            CancelExit(); leaving = false; mvp = next;
+            displayedBinding = (Context.Snapshot!.SessionId, Context.Game?.Map, Context.Match?.Id);
+            return;
+        }
+        // Never retain an old identity over a new session/map/match or active play.
+        var animate = mvp is not null && Context.Snapshot is { Freshness: DataFreshness.Live, Game: { Phase: MatchPhase.Live or MatchPhase.GameOver, RoundPhase: RoundPhase.Over or RoundPhase.FreezeTime, Players.IsDefaultOrEmpty: false } game } snapshot
+            && displayedBinding == (snapshot.SessionId, game.Map, Context.Match?.Id)
+            && Context.Players.Any(player => player.SteamId == mvp.Player.SteamId);
+        if (!animate)
+        {
+            CancelExit(); leaving = false; mvp = null; displayedBinding = null;
+        }
+        else if (mvp is not null && !leaving)
+        {
+            leaving = true; exit = new();
+            _ = RemoveAfterExit(exit, exit.Token);
+        }
+    }
+    private async Task RemoveAfterExit(CancellationTokenSource owner, CancellationToken token)
+    {
+        try
+        {
+            // Share the exit duration with Motion; allow a final browser frame before removal.
+            await Task.Delay(ExitMilliseconds + 60, token);
+            if (disposed || token.IsCancellationRequested) return;
+            await InvokeAsync(() => {
+                if (disposed || token.IsCancellationRequested || !ReferenceEquals(exit, owner)) return;
+                exit = null; owner.Dispose(); leaving = false; mvp = null; displayedBinding = null; StateHasChanged();
+            });
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
     }
     private async Task HideAfterDelay(CancellationTokenSource owner, CancellationToken token)
     {
         try
         {
             // One local presentation deadline, independent of game time and feed updates.
-            await Task.Delay(TimeSpan.FromSeconds(5), token);
+            await Task.Delay(TimeSpan.FromSeconds(8), token);
             if (disposed || token.IsCancellationRequested) return;
             await InvokeAsync(() => {
                 if (disposed || token.IsCancellationRequested || !ReferenceEquals(expiry, owner)) return;
-                expired = true; mvp = null; StateHasChanged();
+                expired = true; Present(null); StateHasChanged();
             });
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested) { }
@@ -54,5 +95,9 @@
     {
         expiry?.Cancel(); expiry?.Dispose(); expiry = null;
     }
-    public void Dispose() { disposed = true; CancelExpiry(); }
+    private void CancelExit()
+    {
+        exit?.Cancel(); exit?.Dispose(); exit = null;
+    }
+    public void Dispose() { disposed = true; CancelExpiry(); CancelExit(); }
 }

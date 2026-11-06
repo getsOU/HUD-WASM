@@ -1,9 +1,15 @@
 .hud.scene-live {
     --mvp-height: 6cqw;
+    --mvp-gap: 0.625cqw;
     .round-mvp {
+        --mvp-progress: 1;
+        --mvp-content-progress: 1;
         position: absolute;
         left: var(--matchbar-left);
-        top: calc(var(--matchbar-top) + var(--matchbar-height));
+        top: calc(
+            var(--matchbar-top) + var(--matchbar-height) + var(--mvp-gap) *
+                var(--mvp-progress)
+        );
         width: var(--matchbar-width);
         height: var(--mvp-height);
         display: grid;
@@ -11,9 +17,16 @@
         align-items: stretch;
         gap: 0.6cqw;
         padding: 0 0.65cqw 0 0.2cqw;
-        background: var(--card-fill, var(--broadcast-blue));
+        background: var(--broadcast-blue);
         border: 0;
         overflow: hidden;
+        clip-path: inset(0 0 calc((1 - var(--mvp-progress)) * 100%) 0);
+        opacity: clamp(0, calc(var(--mvp-progress) * 1.6), 1);
+        pointer-events: none;
+    }
+    .round-mvp[data-mvp-visible="false"] {
+        --mvp-progress: 0;
+        --mvp-content-progress: 0;
     }
     .mvp-portrait {
         width: 100%;
@@ -23,6 +36,7 @@
         object-position: center bottom;
         --avatar-fit: contain;
         --avatar-position: center bottom;
+        transform: translateY(calc((var(--mvp-progress) - 1) * 0.65cqw));
     }
     .mvp-details {
         min-width: 0;
@@ -31,6 +45,10 @@
         justify-content: center;
         gap: 0.3cqw;
         text-align: left;
+        transform: translateY(
+            calc((var(--mvp-content-progress) - 1) * 0.45cqw)
+        );
+        opacity: var(--mvp-content-progress);
     }
     .mvp-round {
         color: var(--side);
@@ -59,8 +77,7 @@
     }
     &:has(> .round-mvp) > .round-history {
         top: calc(
-            var(--matchbar-top) + var(--matchbar-height) + var(--mvp-height) +
-                0.4cqw
+            7cqw + (var(--mvp-height) + var(--mvp-gap)) * var(--mvp-reveal, 1)
         );
     }
 }

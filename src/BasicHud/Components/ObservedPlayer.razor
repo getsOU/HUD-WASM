@@ -3,6 +3,7 @@
         <span class="portrait-cell"><PlayerPortrait Player="Player" Context="Context" Class="portrait" OmitFallback="true" /></span>
     </div>
     <div class="observed-summary">
+        @{ var active = Active; }
         <div class="observed-health-track" aria-hidden="true"><span style="@($"width:{Math.Clamp(Player.Health ?? 0, 0, 100)}%")"></span></div>
         <span class="observed-team">
             @if (TeamLogo is { } logo) { <ImageTile Source="@logo" Label="@TeamName" Class="observed-team-logo" OmitFallback="true" /> }
@@ -11,17 +12,31 @@
         <div class="observed-identity">
             <strong class="player-name" title="@Context.Name(Player)">@Context.Name(Player)</strong>
             <span class="observed-stats" aria-label="@($"Kills / deaths / assists: {PlayerPresentation.Kda(Player)}")">
-                <span><StatusIcon Name="kills" Label="Kills" />@BroadcastContext.Number(Player.Stats?.Kills)</span>
-                <span><StatusIcon Name="dead" Label="Deaths" />@BroadcastContext.Number(Player.Stats?.Deaths)</span>
+                <span><HudUiIcon Name="kills" Label="Kills" /><span class="observed-stat-value">@BroadcastContext.Number(Player.Stats?.Kills)</span></span>
+                <span><HudUiIcon Name="dead" Label="Deaths" /><span class="observed-stat-value">@BroadcastContext.Number(Player.Stats?.Deaths)</span></span>
             </span>
         </div>
         <div class="observed-loadout">
-            <span class="weapon-cell">@if (Active is { } active) { <EquipmentIcon Name="@active.Name" Class="observed-weapon" /> }</span>
-            <span class="ammo-cell">@if (EquipmentPresentation.UsesAmmo(Active)) { <strong class="ammo" aria-label="@EquipmentPresentation.Ammo(Active)"><span>@BroadcastContext.Number(Active!.AmmoClip)</span><small>/</small><span>@BroadcastContext.Number(Active.AmmoReserve)</span></strong> }</span>
+            @if (active is not null)
+            {
+                <span class="weapon-cell">
+                    @if (active.Type == WeaponCategory.Grenade) { <UtilityIcon Name="@active.Name" Class="observed-weapon" /> }
+                    else { <EquipmentIcon Name="@active.Name" Class="observed-weapon" /> }
+                </span>
+                @if (EquipmentPresentation.UsesAmmo(active) && (active.AmmoClip is >= 0 || active.AmmoReserve is >= 0))
+                {
+                    <span class="ammo-cell">
+                        <Ammunition Weapon="active" />
+                    </span>
+                }
+            }
         </div>
         <span class="observed-vitals">
-            <span class="observed-health"><StatusIcon Name="health" Label="Health" /><span>@BroadcastContext.Number(Player.Health)</span></span>
-            <span class="observed-armor"><StatusIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="Armor" /><span>@BroadcastContext.Number(Player.Armor)</span></span>
+            @if (Player.Armor is > 0)
+            {
+                <span class="observed-armor"><HudUiIcon Name="@(Player.Helmet == true ? "helmet" : "armor")" Label="@(Player.Helmet == true ? "Armor and helmet" : "Armor")" /></span>
+            }
+            <strong class="observed-health" aria-label="Health">@BroadcastContext.Number(Player.Health)</strong>
         </span>
     </div>
 </section>

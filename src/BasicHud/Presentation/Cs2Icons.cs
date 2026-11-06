@@ -1,6 +1,6 @@
 namespace BasicHud.Presentation;
 
-/// <summary>Local HUD icons; source notices and hashes ship in assets/openhud-icons.json and assets/valve-assets.json.</summary>
+/// <summary>Legacy CS2 source catalog and original C4 fallback. Shared UI outlines are mapped by HudUiIcons.</summary>
 public static class Cs2Icons
 {
     public static string? Status(string? name) => name switch

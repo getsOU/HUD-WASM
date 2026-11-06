@@ -1,11 +1,11 @@
 @if (Player.Health is not <= 0)
 {
-    <span class="utility-icons" aria-label="Utility">
+    <span class="utility-icons utility-outlines" aria-label="Utility">
         @foreach (var utility in EquipmentPresentation.Utility(Player))
         {
             @for (var copy = 0; copy < EquipmentPresentation.UtilityCopies(utility.Count); copy++)
             {
-                <span class="utility-item" data-utility="@utility.Name" @key="(utility.Name, copy)" title="@utility.Label"><EquipmentIcon Name="@utility.Name" /></span>
+                <span class="utility-item" data-utility="@utility.Name" @key="(utility.Name, copy)" title="@utility.Label"><UtilityIcon Name="@utility.Name" /></span>
             }
         }
         @if (Player.Weapons is null || Player.Weapons.Value.IsDefault) { <span title="Utility not supplied">—</span> }
