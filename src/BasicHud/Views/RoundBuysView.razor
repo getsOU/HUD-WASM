@@ -18,8 +18,8 @@
             var all = round.Players.Where(p => (side is null ? p.Side is not (TeamSide.CounterTerrorists or TeamSide.Terrorists) : p.Side == side) && (Options.PlayerId is null || p.SteamId == Options.PlayerId)).ToArray();
             var players = all;
             var layout = RecordingLayout.Cards(players.Length, 8, 2, players.Length > 8 ? .5 : .85);
-            <section class="buy-team @SideClass(side)">
-                <header class="buy-team-heading"><ImageTile Source="@Logo(Context, team?.TeamId)" Label="@Locale.Team(Context, team?.TeamId, side)" Class="recorded-team-logo" /><div><small>@Locale.Side(side)</small><h2>@Locale.Team(Context, team?.TeamId, side)</h2></div><strong class="buy-class">@Locale.Buy(team?.BuyClass ?? HudBuyClass.Unknown)</strong></header>
+            <section class="buy-team @SideClass(DisplaySide(Context, team?.TeamId, side))">
+                <header class="buy-team-heading"><ImageTile Source="@Logo(Context, team?.TeamId)" Label="@Locale.Team(Context, team?.TeamId, side)" Class="recorded-team-logo" /><div><small class="@SideClass(side)">@Locale.Side(side)</small><h2>@Locale.Team(Context, team?.TeamId, side)</h2></div><strong class="buy-class">@Locale.Buy(team?.BuyClass ?? HudBuyClass.Unknown)</strong></header>
                 <div class="buy-team-summary"><span><small>@Locale["freezeEquipment"]</small><b>@Locale.Money(team?.EquipmentValue)</b><small>@Locale.Number(team?.BuyPlayers) @Locale["observedPlayers"]</small></span><span><small>@Locale["phase.end"]</small><b>@Locale.Number(team?.Survivors)<i> @Locale["survivors"]</i></b><small>@Locale.Number(team?.EndPlayers) @Locale["players"] · @Locale.Money(team?.SavedEquipmentValue) @Locale["equipment"]</small></span></div>
                 <div class="buy-player-labels"><span>@Locale["players"] / @Locale["buyClass"]</span><span>@Locale["freezeToEnd"]</span></div>
                 <div class="buy-players all-player-grid" style="@(layout.Style)">

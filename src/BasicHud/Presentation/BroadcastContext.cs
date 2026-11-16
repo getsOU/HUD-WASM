@@ -40,6 +40,12 @@ public sealed record BroadcastContext(LiveSnapshot? Snapshot, HudPanelState? Pan
         return resolution.TeamId == match.TeamA.Id ? match.TeamA : resolution.TeamId == match.TeamB.Id ? match.TeamB : null;
     }
     public string TeamName(string? id) => id is not null && id == Match?.TeamA.Id ? Match.TeamA.Name : id is not null && id == Match?.TeamB.Id ? Match.TeamB.Name : "Unassigned";
+    public TeamSide? CurrentTeamSide(string? id)
+    {
+        if (string.IsNullOrWhiteSpace(id)) return null;
+        var sides = new[] { TeamSide.CounterTerrorists, TeamSide.Terrorists }.Where(side => SideTeam(side)?.Id == id).ToArray();
+        return sides.Length == 1 ? sides[0] : null;
+    }
     public IReadOnlyList<string> SponsorImages()
     {
         var images = Match?.Competition?.Sponsors?.Select(sponsor => sponsor.Image) ?? [];

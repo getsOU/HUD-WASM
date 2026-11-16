@@ -1,19 +1,24 @@
 @use "../tokens" as theme;
 
-// Shared scalable canvas frame for the original and recorded broadcast views.
+// Opaque full-output backdrop, including space outside the fitted 16:9 content canvas.
+.viewport:has(> .hud:not(.scene-live)) {
+    background: linear-gradient(125deg, #071c50, #0b1730 62%, #14233a);
+}
+
+// Shared full-canvas frame; safe areas are padding, never transparent outside margins.
 .broadcast-scene {
     --ct: #{theme.$ct-accent};
     --t: #{theme.$t-accent};
     --muted: #a9bbd1;
     --cast-muted: var(--muted);
     position: absolute;
-    inset: 4% 5% 8%;
-    padding: 1.5em 2em;
+    inset: 0;
+    padding: 3.75em 7em 6em;
     display: grid;
     grid-template-rows: 5em minmax(0, 1fr);
     gap: 1em;
     color: #fff;
-    background: linear-gradient(125deg, #071c50f5, #0b1730f5 62%, #14233af5);
+    background: transparent;
     border: 0;
     font-family:
         "sOU Bahnschrift", "Bahnschrift Condensed", "Arial Narrow", sans-serif;
@@ -105,7 +110,8 @@
     }
 }
 .has-lower-third:not(.scene-live) .broadcast-scene {
-    bottom: 24%;
+    bottom: 0;
+    padding-bottom: 15em;
 }
 
 .presentation {
@@ -296,3 +302,8 @@
     :is(.scene-body, .recording-stage) {
     font-size: 0.8em;
 }
+
+.broadcast-scene .duel-team h2, .broadcast-scene .lineup-team h2 { color: var(--side, #bdc8d7); }
+
+.recording-scene .compare-side > span { color: var(--side, var(--cast-muted)); }
+.recording-scene .buy-team-heading h2 { color: var(--side, var(--cast-muted)); }

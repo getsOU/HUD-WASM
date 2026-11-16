@@ -114,6 +114,140 @@
         color: #fff;
     }
     .bomb-clock {
-        background: #8b3023;
+        background: none;
+    }
+    .bomb-status {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--t);
+        transition: color min(220ms, var(--bomb-time-budget, 220ms)) ease;
+    }
+    .bomb-dial {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 3.6cqw;
+        height: 3.6cqw;
+    }
+    .bomb-status-ring {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2.5;
+    }
+    .bomb-ring-track {
+        opacity: 0.22;
+    }
+    .bomb-ring-state {
+        transform-origin: center;
+        transform: rotate(-90deg);
+    }
+    .bomb-state-symbol {
+        width: 2.1cqw;
+        height: 2.1cqw;
+        color: inherit;
+        scale: 1;
+        transition: scale min(180ms, var(--bomb-time-budget, 180ms)) ease;
+    }
+    .bomb-glyph {
+        opacity: 0;
+        transform: scale(0.92);
+        transform-origin: center;
+        transition:
+            opacity min(180ms, var(--bomb-time-budget, 180ms)) ease,
+            transform min(180ms, var(--bomb-time-budget, 180ms)) ease;
+    }
+    .bomb-glyph.shown {
+        opacity: 1;
+        transform: scale(1);
+    }
+    .bomb-status[data-shake="none"][data-pulse-ms] .bomb-state-symbol,
+    .bomb-status[data-shake="light"][data-pulse-ms] .bomb-state-symbol {
+        animation: bomb-breathe 1s ease-in-out infinite;
+    }
+    .bomb-ring-progress {
+        stroke-linecap: round;
+        transition: stroke-dashoffset min(100ms, var(--bomb-time-budget, 100ms))
+            linear;
+    }
+    .bomb-status[data-kit="no"] {
+        color: #d4dce8;
+    }
+    .bomb-status[data-kit="unknown"][data-bomb-state="defusing"]
+        .bomb-ring-track {
+        stroke-dasharray: 3 3;
+    }
+    .bomb-status[data-urgency="warning"],
+    .bomb-status[data-urgency="critical"] {
+        color: #ff785f;
+    }
+    .bomb-status[data-shake="strong"] .bomb-state-symbol {
+        animation: bomb-rattle 300ms ease-in-out infinite;
+        transition: none;
+    }
+    .bomb-status[data-bomb-state="defusing"][data-kit="yes"] {
+        color: var(--ct);
+    }
+    .bomb-status[data-bomb-state="defused"] {
+        color: #9fe2b5;
+    }
+    .bomb-status[data-bomb-state="exploded"] {
+        color: #ff9c81;
+    }
+    .bomb-status.held[data-bomb-state] .bomb-state-symbol {
+        animation-play-state: paused;
+    }
+    .bomb-status[data-bomb-state][data-motion-expired="true"]
+        .bomb-state-symbol {
+        animation: none;
+        transition: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .bomb-status[data-bomb-state][data-urgency] .bomb-state-symbol {
+            animation: none;
+        }
+        .bomb-status,
+        .bomb-state-symbol,
+        .bomb-glyph,
+        .bomb-ring-progress {
+            transition: none;
+        }
+    }
+}
+/* Two shakes in 200 ms, followed by exactly 100 ms at rest. */
+@keyframes bomb-rattle {
+    0%,
+    30%,
+    66.666667%,
+    100% {
+        transform: translateX(0) rotate(0deg);
+    }
+    8.333333%,
+    38.333333% {
+        transform: translateX(calc(-1 * var(--bomb-shake-offset)))
+            rotate(calc(-1 * var(--bomb-shake-angle)));
+    }
+    16.666667%,
+    46.666667% {
+        transform: translateX(var(--bomb-shake-offset))
+            rotate(var(--bomb-shake-angle));
+    }
+}
+
+@keyframes bomb-breathe {
+    0%,
+    18%,
+    40%,
+    100% {
+        scale: 1;
+    }
+    8%,
+    28% {
+        scale: 1.08;
     }
 }

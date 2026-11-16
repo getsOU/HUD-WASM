@@ -18,6 +18,24 @@ public static class RecordingTests
         var firstPlayer = new PlayerState("recorded-player", "Player", TeamSide.Terrorists, null, null) { ObserverSlot = 3 };
         var game = new GameState("de_mirage", MatchPhase.Live, 6, RoundPhase.Live, null, null, firstPlayer, [firstPlayer]);
         var identityContext = BroadcastContext.Empty with { Snapshot = new(2, Guid.NewGuid(), 1, DateTimeOffset.UtcNow, DataFreshness.Live, game) };
+        var match = new ManagedMatch("example", "Match", 1, new("example-alpha", "Alpha", "A", null, 0), new("example-bravo", "Bravo", "B", null, 0),
+            new(TeamSide.CounterTerrorists, TeamRecognitionStatus.Manual, "example-bravo", 0, 0), new(TeamSide.Terrorists, TeamRecognitionStatus.Manual, "example-alpha", 0, 0));
+        var teamContext = identityContext with { Snapshot = identityContext.Snapshot! with { ManagedMatch = match } };
+        check(teamContext.CurrentTeamSide("example-alpha") == TeamSide.Terrorists && teamContext.CurrentTeamSide("example-bravo") == TeamSide.CounterTerrorists,
+            "team display colors follow current confirmed sides instead of Team A/B order");
+        var swappedContext = teamContext with { Snapshot = teamContext.Snapshot! with { ManagedMatch = match with { Ct = match.Ct with { TeamId = "example-alpha" }, T = match.T with { TeamId = "example-bravo" } } } };
+        check(swappedContext.CurrentTeamSide("example-alpha") == TeamSide.CounterTerrorists && swappedContext.CurrentTeamSide("example-bravo") == TeamSide.Terrorists,
+            "a current halftime recognition change updates both team display colors");
+        check(RecordingCast.DisplaySide(teamContext, "example-alpha", TeamSide.CounterTerrorists) == TeamSide.Terrorists
+            && RecordingCast.DisplaySide(teamContext, null, TeamSide.CounterTerrorists) == TeamSide.CounterTerrorists,
+            "identified historical teams use current colors while unidentified CT/T samples retain side colors");
+        var unrecognized = teamContext with { Snapshot = teamContext.Snapshot! with { ManagedMatch = match with { Ct = match.Ct with { Status = TeamRecognitionStatus.Unknown } } } };
+        check(RecordingCast.DisplaySide(unrecognized, "example-bravo", TeamSide.CounterTerrorists) is null
+            && RecordingCast.EconomyColor(null, 0) != RecordingCast.EconomyColor(null, 1),
+            "unknown current team assignments stay neutral and graph lines remain distinguishable");
+        var conflicting = teamContext with { Snapshot = teamContext.Snapshot! with { ManagedMatch = match with { Ct = match.Ct with { TeamId = "example-alpha" } } } };
+        check(conflicting.CurrentTeamSide("example-alpha") is null && teamContext.CurrentTeamSide("foreign-team") is null,
+            "conflicting and foreign current team assignments cannot claim a CT/T color");
         check(AgentPortraits.ForRecorded(identityContext, firstPlayer.SteamId) == AgentPortraits.For(firstPlayer),
             "recorded identities reuse the live agent portrait by Steam ID");
         check(AgentPortraits.ForRecorded(BroadcastContext.Empty, "historical", TeamSide.Terrorists)?.StartsWith("assets/agents/t-", StringComparison.Ordinal) == true

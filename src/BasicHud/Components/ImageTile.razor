@@ -2,7 +2,7 @@
 {
     @if (Effects is not null)
     {
-        <span class="local-image avatar-frame @Class">
+        <span class="local-image avatar-frame @Class" style="@PositionStyle">
             <img class="avatar-image" src="@source" alt="@ImageLabel(source)" data-image-fallback="@(source == FallbackSource ? "true" : null)" @onerror="() => ImageFailed(source)" />
             @if (EffectsAllowed)
             {
@@ -14,7 +14,7 @@
     }
     else
     {
-        <img class="local-image @Class" src="@source" alt="@ImageLabel(source)" data-image-fallback="@(source == FallbackSource ? "true" : null)" @onerror="() => ImageFailed(source)" />
+        <img class="local-image @Class" src="@source" alt="@ImageLabel(source)" style="@PositionStyle" data-image-fallback="@(source == FallbackSource ? "true" : null)" @onerror="() => ImageFailed(source)" />
     }
 }
 else if (!OmitFallback)
@@ -26,12 +26,14 @@ else if (!OmitFallback)
     [Parameter] public string? FallbackSource { get; set; }
     [Parameter] public string Label { get; set; } = "";
     [Parameter] public string Class { get; set; } = "";
+    [Parameter] public string? Position { get; set; }
     [Parameter] public bool OmitFallback { get; set; }
     [Parameter] public PortraitEffects? Effects { get; set; }
     [Parameter] public string? EffectsBinding { get; set; }
     [Parameter] public bool EffectsAllowed { get; set; } = true;
     private static string Flag(bool active) => active ? "true" : "false";
     private string? previous;
+    private string? PositionStyle => Position is null ? null : $"--avatar-position:{Position};object-position:{Position}";
     private string? previousFallback;
     private bool failed;
     private bool fallbackFailed;

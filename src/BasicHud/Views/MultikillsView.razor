@@ -7,7 +7,8 @@
     <div class="multikill-players all-player-grid" style="@(layout.Style)">
         @foreach (var p in players)
         {
-            <article class="multikill-player" data-player="@p.SteamId">
+            var teamId = RecordingCast.AnalysisPlayerTeamId(Analysis, p.SteamId);
+            <article class="multikill-player" data-player="@p.SteamId" style="--player-color:@RecordingCast.EconomyColor(Context.CurrentTeamSide(teamId), 0)">
                 <RecordedIdentity SteamId="@p.SteamId" Side="@Analysis.Rounds.OrderByDescending(r => r.Number).SelectMany(r => r.Players).FirstOrDefault(r => r.SteamId == p.SteamId)?.Side" Name="@p.Name" Context="Context" />
                 <div class="multikill-values">
                     <span><small>2K</small><b>@Locale.Number(p.DoubleKills)</b></span>

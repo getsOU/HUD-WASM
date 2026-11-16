@@ -302,7 +302,7 @@
         gap: 2em;
     }
     .economy-headline {
-        --line-color: var(--ct);
+        --line-color: var(--economy-0, var(--ct));
         display: flex;
         align-items: center;
         gap: 0.9em;
@@ -311,7 +311,7 @@
         background: #ffffff06;
     }
     .economy-headline.team-1 {
-        --line-color: var(--t);
+        --line-color: var(--economy-1, var(--t));
     }
     .economy-headline .team-name {
         display: block;
@@ -349,12 +349,12 @@
         stroke-width: 3.5;
     }
     .chart-team-0 {
-        stroke: var(--ct);
-        fill: var(--ct);
+        stroke: var(--economy-0, var(--ct));
+        fill: var(--economy-0, var(--ct));
     }
     .chart-team-1 {
-        stroke: var(--t);
-        fill: var(--t);
+        stroke: var(--economy-1, var(--t));
+        fill: var(--economy-1, var(--t));
     }
     svg text {
         font-family: inherit;
@@ -1225,7 +1225,7 @@
         gap: 1em;
         padding: 0.8em 1em;
         background: #ffffff06;
-        border-left: 0.15em solid var(--ct);
+        border-left: 0.15em solid var(--player-color, var(--cast-muted));
     }
     .multikill-values {
         display: grid;
@@ -1242,7 +1242,7 @@
         display: block;
         font-size: 1.8em;
         font-weight: 500;
-        color: var(--ct);
+        color: var(--player-color, var(--cast-muted));
     }
     .multikill-coverage b {
         font-size: 1.2em;

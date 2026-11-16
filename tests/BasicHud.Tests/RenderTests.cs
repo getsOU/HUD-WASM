@@ -92,8 +92,11 @@ static class RenderTests
             await renderer.Render(effectImage, new() { [nameof(ImageTile.Source)] = "/cast-media/portrait.png", [nameof(ImageTile.FallbackSource)] = "assets/agents/ct-1.png", [nameof(ImageTile.Effects)] = new PortraitEffects(true, true, true), [nameof(ImageTile.OmitFallback)] = true });
             check(renderer.HasElement(effectImage, "canvas") && renderer.HasAttribute(effectImage, "data-smoke", "true") && renderer.HasAttribute(effectImage, "data-fire", "true") && renderer.HasAttribute(effectImage, "data-flash", "true"), "actual avatar passes independent simultaneous conditions to the procedural Motion renderer");
             check(renderer.HasAttribute(effectImage, "style", "--avatar-mask:url(\"/cast-media/portrait.png\")") && renderer.HasAttribute(effectImage, "aria-hidden", "true"), "avatar mask uses the actual supplied image and decorative layers stay out of accessibility text");
+            await renderer.Render(effectImage, new() { [nameof(ImageTile.Position)] = "center top" });
+            check(renderer.HasAttribute(effectImage, "style", "--avatar-position:center top;object-position:center top"), "portrait image and alpha effects share the same top-anchored position");
             await renderer.DispatchEventAsync(renderer.ErrorHandler(effectImage), null, EventArgs.Empty);
             check(renderer.HasAttribute(effectImage, "src", "assets/agents/ct-1.png") && renderer.HasAttribute(effectImage, "style", "--avatar-mask:url(\"assets/agents/ct-1.png\")"), "failed profile image updates both portrait and alpha mask to the agent fallback");
+            check(renderer.HasAttribute(effectImage, "style", "--avatar-position:center top;object-position:center top"), "agent fallback preserves the selected portrait alignment");
             await renderer.Render(effectImage, new() { [nameof(ImageTile.Effects)] = PortraitEffects.None });
             check(renderer.HasElement(effectImage, "canvas") && renderer.HasAttribute(effectImage, "data-smoke", "false") && renderer.HasAttribute(effectImage, "data-flash", "false") && renderer.HasAttribute(effectImage, "data-fire", "false"), "cleared live conditions retain the canvas for Motion to reverse from its current intensity");
             await renderer.Render(effectImage, new() { [nameof(ImageTile.EffectsAllowed)] = false });
@@ -208,6 +211,14 @@ static class RenderTests
             await renderer.Render(scoreboard, new() { [nameof(Scoreboard.Context)] = reference });
             check(renderer.HasText(scoreboard, "Chosen caption") && !renderer.HasText(scoreboard, "Division 3 | Group B | Round 4"), "missing competition restores caption fallback without retaining another match's section path");
             var liveBranding = renderer.Attach(new LiveBranding());
+            var bombIndicator = renderer.Attach(new BombClock());
+            await renderer.Render(bombIndicator, new() { [nameof(BombClock.State)] = new BombClockView("planting", "PLANTING", "bomb", true, false, 0.5) });
+            check(!renderer.HasText(bombIndicator, "PLANTING") && renderer.HasAttribute(bombIndicator, "aria-label", "PLANTING")
+                && renderer.HasAttribute(bombIndicator, "stroke-dashoffset", "50"), "bomb status keeps accessible labels without visible captions and renders actual progress");
+            var finalBombContext = reference with { Snapshot = reference.Snapshot! with { ReceivedAt = reference.Now, Game = reference.Game! with { RoundPhase = RoundPhase.Live, Bomb = new(BombStatus.Planted, null, null, 0.1) } } };
+            await renderer.Render(scoreboard, new() { [nameof(Scoreboard.Context)] = finalBombContext });
+            await renderer.Render(scoreboard, new() { [nameof(Scoreboard.Context)] = finalBombContext with { Snapshot = finalBombContext.Snapshot! with { Game = finalBombContext.Game! with { Bomb = new(BombStatus.Planted, null, null, null) } } } });
+            check(renderer.HasDescendantAttribute(scoreboard, "data-urgency", "critical"), "actual matchbar retains critical styling through a missing final countdown sample");
             var brandingMatch = competitionMatch with
             {
                 Competition = competitionMatch.Competition! with

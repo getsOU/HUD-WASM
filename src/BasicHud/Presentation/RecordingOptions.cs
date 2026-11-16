@@ -49,6 +49,29 @@ public sealed record RecordingOptions(string Section, bool Equipment, HudRoundCh
 
 public static class RecordingCast
 {
+    public static TeamSide? DisplaySide(BroadcastContext context, string? teamId, TeamSide? historicalSide) =>
+        string.IsNullOrWhiteSpace(teamId) ? historicalSide : context.CurrentTeamSide(teamId);
+    public static string? CheckpointTeamId(HudRoundCheckpoint? point, TeamSide? side) => side switch
+    {
+        TeamSide.CounterTerrorists => point?.CtTeamId,
+        TeamSide.Terrorists => point?.TTeamId,
+        _ => null
+    };
+    public static string? PlayerTeamId(HudRecordedRound? round, string steamId)
+    {
+        var ids = (round?.Checkpoints ?? []).SelectMany(c => c.Players.Where(p => p.SteamId == steamId)
+            .Select(p => p.TeamId ?? CheckpointTeamId(c, p.Side)))
+            .Where(id => !string.IsNullOrWhiteSpace(id)).Distinct(StringComparer.Ordinal).ToArray();
+        return ids.Length == 1 ? ids[0] : null;
+    }
+    public static string? AnalysisPlayerTeamId(HudMapAnalysis analysis, string steamId) => analysis.Rounds.OrderByDescending(r => r.Number)
+        .SelectMany(r => r.Players).FirstOrDefault(p => p.SteamId == steamId)?.TeamId;
+    public static string EconomyColor(TeamSide? side, int index) => side switch
+    {
+        TeamSide.CounterTerrorists => "var(--ct)",
+        TeamSide.Terrorists => "var(--t)",
+        _ => index == 0 ? "#bdc8d7" : "#8d9eb5"
+    };
     // Only recorded identities from this round may name its historical side.
     // Current CT/T recognition can refer to the opposite team after halftime.
     public static string? TeamId(HudRecordedRound? round, TeamSide side)

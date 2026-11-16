@@ -33,6 +33,20 @@ var bomb = HudView.From(Snapshot(Game() with { Bomb = new(BombStatus.Planted, nu
 Check(bomb.Timer.IsBomb && bomb.Timer.Value == "—", "missing bomb timer does not reuse unrelated round time");
 var defused = HudView.From(Snapshot(Game() with { Bomb = new(BombStatus.Defused, null, null, 0), Countdown = new(CountdownPhase.Live, 91) }));
 var exploded = HudView.From(Snapshot(Game() with { Bomb = new(BombStatus.Exploded, null, null, null) }));
+BroadcastContext BombContext(BombStatus? status, CountdownPhase? phase = CountdownPhase.Live) => BroadcastContext.Empty with
+{
+    Snapshot = Snapshot(Game() with { Bomb = new(status, null, null, null), Countdown = new(phase, 90) })
+};
+Check(new[] { BombStatus.Planting, BombStatus.Planted, BombStatus.Defusing }.All(state => BombClockView.From(BombContext(state)) is { Active: true, Paused: false }), "bomb actions have active status rings even when remaining seconds are unknown");
+Check(BombClockView.From(BombContext(BombStatus.Defused)) is { State: "defused", Icon: "check", Active: false }
+    && BombClockView.From(BombContext(BombStatus.Exploded)) is { State: "exploded", Icon: "explosion", Active: false }, "defused and exploded have distinct completed status symbols");
+Check(new BombStatus?[] { null, BombStatus.Unknown, BombStatus.Carried, BombStatus.Dropped }.All(state => BombClockView.From(BombContext(state)) is null), "carried, dropped and aborted plants retain the round clock");
+Check(BombClockView.From(BombContext(null, CountdownPhase.Bomb))?.State == "planted"
+    && BombClockView.From(BombContext(null, CountdownPhase.Defuse))?.State == "defusing", "bomb countdown phases provide a fallback when detailed bomb state is absent");
+Check(BombClockView.From(BombContext(BombStatus.Planted, CountdownPhase.Paused))?.Paused == true
+    && BombClockView.From(BombContext(BombStatus.Planted) with { Snapshot = BombContext(BombStatus.Planted).Snapshot! with { Freshness = DataFreshness.Stale } })?.Paused == true, "paused and stale data hold status ring animation");
+Check(BombClockView.From(BroadcastContext.Empty) is null
+    && BombClockView.From(BombContext(null) with { Snapshot = Snapshot(Game() with { RoundBomb = BombStatus.Defused }) })?.State == "defused", "empty contexts clear the indicator and public round-bomb fallback retains terminal state");
 Check(defused.Timer.Label == "BOMB DEFUSED" && defused.Timer.Value == "0:00" && exploded.Timer.Label == "BOMB EXPLODED" && exploded.Timer.Value == "—", "terminal bomb states show only their own source seconds, never round time");
 var slots = new[] { 0, 9, 1, -1 }.Select(slot => new PlayerState(slot.ToString(), "Player", TeamSide.CounterTerrorists, null, null) { ObserverSlot = slot }).ToImmutableArray();
 Check(HudView.From(Snapshot(Game(slots))).Ct.Players.Select(player => player.Slot).SequenceEqual(["1", "9", "0", "—"]), "observer digits sort 1..9 then zero, unknown last");
@@ -141,6 +155,8 @@ await RenderTests.Run(Check);
 await CompactTests.Run(Check);
 await BroadcastReferenceTests.Run(Check);
 AgentPortraitTests.Run(Check);
+PortraitAlignmentTests.Run(Check);
+BombProgressTests.Run(Check);
 PortraitEffectTests.Run(Check);
 WeaponPresenceTests.Run(Check);
 RadarMotionAndPicksTests.Run(Check);

@@ -497,9 +497,126 @@
   color: #fff;
 }
 .hud.scene-live .bomb-clock {
-  background: #8b3023;
+  background: none;
+}
+.hud.scene-live .bomb-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--t);
+  transition: color min(220ms, var(--bomb-time-budget, 220ms)) ease;
+}
+.hud.scene-live .bomb-dial {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 3.6cqw;
+  height: 3.6cqw;
+}
+.hud.scene-live .bomb-status-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+}
+.hud.scene-live .bomb-ring-track {
+  opacity: 0.22;
+}
+.hud.scene-live .bomb-ring-state {
+  transform-origin: center;
+  transform: rotate(-90deg);
+}
+.hud.scene-live .bomb-state-symbol {
+  width: 2.1cqw;
+  height: 2.1cqw;
+  color: inherit;
+  scale: 1;
+  transition: scale min(180ms, var(--bomb-time-budget, 180ms)) ease;
+}
+.hud.scene-live .bomb-glyph {
+  opacity: 0;
+  transform: scale(0.92);
+  transform-origin: center;
+  transition: opacity min(180ms, var(--bomb-time-budget, 180ms)) ease, transform min(180ms, var(--bomb-time-budget, 180ms)) ease;
+}
+.hud.scene-live .bomb-glyph.shown {
+  opacity: 1;
+  transform: scale(1);
+}
+.hud.scene-live .bomb-status[data-shake=none][data-pulse-ms] .bomb-state-symbol,
+.hud.scene-live .bomb-status[data-shake=light][data-pulse-ms] .bomb-state-symbol {
+  animation: bomb-breathe 1s ease-in-out infinite;
+}
+.hud.scene-live .bomb-ring-progress {
+  stroke-linecap: round;
+  transition: stroke-dashoffset min(100ms, var(--bomb-time-budget, 100ms)) linear;
+}
+.hud.scene-live .bomb-status[data-kit=no] {
+  color: #d4dce8;
+}
+.hud.scene-live .bomb-status[data-kit=unknown][data-bomb-state=defusing] .bomb-ring-track {
+  stroke-dasharray: 3 3;
+}
+.hud.scene-live .bomb-status[data-urgency=warning],
+.hud.scene-live .bomb-status[data-urgency=critical] {
+  color: #ff785f;
+}
+.hud.scene-live .bomb-status[data-shake=strong] .bomb-state-symbol {
+  animation: bomb-rattle 300ms ease-in-out infinite;
+  transition: none;
+}
+.hud.scene-live .bomb-status[data-bomb-state=defusing][data-kit=yes] {
+  color: var(--ct);
+}
+.hud.scene-live .bomb-status[data-bomb-state=defused] {
+  color: #9fe2b5;
+}
+.hud.scene-live .bomb-status[data-bomb-state=exploded] {
+  color: #ff9c81;
+}
+.hud.scene-live .bomb-status.held[data-bomb-state] .bomb-state-symbol {
+  animation-play-state: paused;
+}
+.hud.scene-live .bomb-status[data-bomb-state][data-motion-expired=true] .bomb-state-symbol {
+  animation: none;
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hud.scene-live .bomb-status[data-bomb-state][data-urgency] .bomb-state-symbol {
+    animation: none;
+  }
+  .hud.scene-live .bomb-status,
+  .hud.scene-live .bomb-state-symbol,
+  .hud.scene-live .bomb-glyph,
+  .hud.scene-live .bomb-ring-progress {
+    transition: none;
+  }
 }
 
+/* Two shakes in 200 ms, followed by exactly 100 ms at rest. */
+@keyframes bomb-rattle {
+  0%, 30%, 66.666667%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  8.333333%, 38.333333% {
+    transform: translateX(calc(-1 * var(--bomb-shake-offset))) rotate(calc(-1 * var(--bomb-shake-angle)));
+  }
+  16.666667%, 46.666667% {
+    transform: translateX(var(--bomb-shake-offset)) rotate(var(--bomb-shake-angle));
+  }
+}
+@keyframes bomb-breathe {
+  0%, 18%, 40%, 100% {
+    scale: 1;
+  }
+  8%, 28% {
+    scale: 1.08;
+  }
+}
 .hud.scene-live .radar-widget {
   left: 0.8cqw;
   top: 3.15cqw;
@@ -4015,7 +4132,6 @@ body,
 
 .hud.scene-live .roster .live-player,
 .hud.scene-live .roster .player-name,
-.hud.scene-live .roster .card-slot,
 .hud.scene-live .roster .card-stats,
 .hud.scene-live .roster .card-money,
 .hud.scene-live .observed,
@@ -4048,7 +4164,8 @@ body,
   color: #d4edb2;
 }
 .hud.scene-live .roster .card-slot {
-  text-shadow: 0 1px 1px rgba(7, 28, 80, 0.6);
+  color: var(--card-fill, #071c50);
+  text-shadow: none;
 }
 .hud.scene-live .roster .live-player.is-dead {
   filter: none;
@@ -4424,7 +4541,7 @@ body,
   gap: 2em;
 }
 .recording-scene .economy-headline {
-  --line-color: var(--ct);
+  --line-color: var(--economy-0, var(--ct));
   display: flex;
   align-items: center;
   gap: 0.9em;
@@ -4433,7 +4550,7 @@ body,
   background: rgba(255, 255, 255, 0.0235294118);
 }
 .recording-scene .economy-headline.team-1 {
-  --line-color: var(--t);
+  --line-color: var(--economy-1, var(--t));
 }
 .recording-scene .economy-headline .team-name {
   display: block;
@@ -4471,12 +4588,12 @@ body,
   stroke-width: 3.5;
 }
 .recording-scene .chart-team-0 {
-  stroke: var(--ct);
-  fill: var(--ct);
+  stroke: var(--economy-0, var(--ct));
+  fill: var(--economy-0, var(--ct));
 }
 .recording-scene .chart-team-1 {
-  stroke: var(--t);
-  fill: var(--t);
+  stroke: var(--economy-1, var(--t));
+  fill: var(--economy-1, var(--t));
 }
 .recording-scene svg text {
   font-family: inherit;
@@ -5341,7 +5458,7 @@ body,
   gap: 1em;
   padding: 0.8em 1em;
   background: rgba(255, 255, 255, 0.0235294118);
-  border-left: 0.15em solid var(--ct);
+  border-left: 0.15em solid var(--player-color, var(--cast-muted));
 }
 .recording-scene .multikill-values {
   display: grid;
@@ -5358,7 +5475,7 @@ body,
   display: block;
   font-size: 1.8em;
   font-weight: 500;
-  color: var(--ct);
+  color: var(--player-color, var(--cast-muted));
 }
 .recording-scene .multikill-coverage b {
   font-size: 1.2em;
@@ -5529,19 +5646,23 @@ body,
   color: #b6def5;
 }
 
+.viewport:has(> .hud:not(.scene-live)) {
+  background: linear-gradient(125deg, #071c50, #0b1730 62%, #14233a);
+}
+
 .broadcast-scene {
   --ct: #b6def5;
   --t: #eee1a0;
   --muted: #a9bbd1;
   --cast-muted: var(--muted);
   position: absolute;
-  inset: 4% 5% 8%;
-  padding: 1.5em 2em;
+  inset: 0;
+  padding: 3.75em 7em 6em;
   display: grid;
   grid-template-rows: 5em minmax(0, 1fr);
   gap: 1em;
   color: #fff;
-  background: linear-gradient(125deg, rgba(7, 28, 80, 0.9607843137), rgba(11, 23, 48, 0.9607843137) 62%, rgba(20, 35, 58, 0.9607843137));
+  background: transparent;
   border: 0;
   font-family: "sOU Bahnschrift", "Bahnschrift Condensed", "Arial Narrow", sans-serif;
   font-stretch: condensed;
@@ -5633,7 +5754,8 @@ body,
 }
 
 .has-lower-third:not(.scene-live) .broadcast-scene {
-  bottom: 24%;
+  bottom: 0;
+  padding-bottom: 15em;
 }
 
 .presentation .scene-body {
@@ -5831,4 +5953,16 @@ body,
 
 .has-lower-third:not(.scene-live) .broadcast-scene :is(.scene-body, .recording-stage) {
   font-size: 0.8em;
+}
+
+.broadcast-scene .duel-team h2, .broadcast-scene .lineup-team h2 {
+  color: var(--side, #bdc8d7);
+}
+
+.recording-scene .compare-side > span {
+  color: var(--side, var(--cast-muted));
+}
+
+.recording-scene .buy-team-heading h2 {
+  color: var(--side, var(--cast-muted));
 }

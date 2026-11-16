@@ -14,8 +14,9 @@
         @foreach (var id in players)
         {
             var before = a?.Players.FirstOrDefault(p => p.SteamId == id); var after = b?.Players.FirstOrDefault(p => p.SteamId == id);
-            <article data-player="@id" class="compare-player @SideClass(after?.Side ?? before?.Side)">
-                <div class="compare-identity"><RecordedIdentity SteamId="@id" Side="@(after?.Side ?? before?.Side)" Name="@(after?.Name ?? before?.Name ?? Locale["unknownName"])" Context="Context" /><span class="compare-side">@Locale.Side(before?.Side) <i>→</i> @Locale.Side(after?.Side)</span></div>
+            var teamId = after?.TeamId ?? CheckpointTeamId(b, after?.Side) ?? before?.TeamId ?? CheckpointTeamId(a, before?.Side);
+            <article data-player="@id" class="compare-player @SideClass(DisplaySide(Context, teamId, after?.Side ?? before?.Side))">
+                <div class="compare-identity"><RecordedIdentity SteamId="@id" Side="@(after?.Side ?? before?.Side)" Name="@(after?.Name ?? before?.Name ?? Locale["unknownName"])" Context="Context" /><span class="compare-side"><span class="@SideClass(before?.Side)">@Locale.Side(before?.Side)</span> <i>→</i> <span class="@SideClass(after?.Side)">@Locale.Side(after?.Side)</span></span></div>
                 <div class="compare-loadout"><RecordedLoadout Player="before" InventoryPage="Options.InventoryPage" /></div>
                 <div class="compare-loadout"><RecordedLoadout Player="after" InventoryPage="Options.InventoryPage" /></div>
                 <div class="compare-deltas"><span><small>@Locale["money"]</small><b>@Locale.Delta(before?.Money, after?.Money)</b></span><span><small>@Locale["equipment"]</small><b>@Locale.Delta(before?.EquipmentValue, after?.EquipmentValue)</b></span><span><small>@Locale["armor"]</small><b>@Locale.Delta(before?.Armor, after?.Armor)</b></span></div>

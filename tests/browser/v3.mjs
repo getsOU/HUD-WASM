@@ -271,6 +271,17 @@ try {
     'layout switching must preserve the actual player-card elements');
   assert(await hud.evaluate(before => before.every((node, index) => node === document.querySelectorAll('.live-player canvas')[index]), beforeCanvases),
     'layout switching must preserve the existing effect canvases');
+  const checkSlotContrast = async () => {
+  const slots = await hud.locator('.roster .live-player:not(.is-dead) .card-slot').evaluateAll(elements => elements.map(e => {
+    const color = getComputedStyle(e).color, background = getComputedStyle(e).backgroundColor;
+    const rgb = value => value.match(/[\d.]+/g).slice(0, 3).map(Number);
+    const luminance = channels => channels.map(n => n / 255).map(n => n <= .04045 ? n / 12.92 : ((n + .055) / 1.055) ** 2.4).reduce((sum,n,i) => sum + n * [.2126,.7152,.0722][i],0);
+    const a=luminance(rgb(color)), b=luminance(rgb(background));
+    return { side: e.closest('.live-player').classList.contains('ct') ? 'ct' : 't', color, contrast: (Math.max(a,b)+.05)/(Math.min(a,b)+.05) };
+  }));
+  assert(slots.some(s => s.side === 'ct') && slots.some(s => s.side === 't'));
+  assert(slots.every(s => s.color === (s.side === 'ct' ? 'rgb(18, 51, 109)' : 'rgb(101, 91, 32)') && s.contrast >= 4.5), 'slot digits use the dark team fill with readable contrast');
+  };
   const horizontalGeometry = async () => hud.evaluate(() => {
     const rect = element => { const box = element.getBoundingClientRect(); return { x: box.x, y: box.y, right: box.right, bottom: box.bottom, width: box.width, height: box.height }; };
     return { observer: rect(document.querySelector('.observed')), viewport: rect(document.querySelector('.hud')),
@@ -351,6 +362,7 @@ try {
     Math.abs(card.querySelector('.card-slot').getBoundingClientRect().left - card.getBoundingClientRect().left) < 1),
     'dead T cards retain their left-hand strip');
   checkHorizontal(await horizontalGeometry());
+  await checkSlotContrast();
   await page.screenshot({ path: path.join(scratch, 'horizontal-1920x1080.png') });
   await page.setViewportSize({ width: 1600, height: 900 });
   checkHorizontal(await horizontalGeometry());
@@ -365,7 +377,9 @@ try {
   await page.setViewportSize({ width: 1920, height: 1080 });
   assert.notEqual(await hud.locator('.roster.t .live-player.is-dead .card-death').evaluate(element => getComputedStyle(element).display), 'none',
     'vertical dead cards retain their original death marker');
+  await checkSlotContrast();
   console.log('PASS horizontal playercards, dead-card spacing, unclipped health, observer clearance, proportional scaling and vertical restoration');
+  console.log('PASS dark team-colored observer-slot digits retain clear contrast');
   assert.equal(await hud.locator('.round-mvp').count(), 0);
   await hud.evaluate(() => {
     window.mvpMotionSamples = [];

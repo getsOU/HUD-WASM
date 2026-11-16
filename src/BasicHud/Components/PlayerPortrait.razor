@@ -1,4 +1,4 @@
-<ImageTile Source="@Context.ProfileImage(Player.SteamId, ReferenceImage)" FallbackSource="@AgentPortraits.For(Player)" Label="@(DisplayName ?? Context.Name(Player))" Class="@Class" OmitFallback="OmitFallback" Effects="@PortraitEffects.From(Player, Context.Snapshot?.Freshness)" EffectsBinding="@Binding" EffectsAllowed="@(Context.Snapshot?.Freshness == DataFreshness.Live && Player.Health is not <= 0)" />
+<ImageTile Source="@Context.ProfileImage(Player.SteamId, ReferenceImage)" FallbackSource="@AgentPortraits.For(Player)" Label="@(DisplayName ?? Context.Name(Player))" Class="@Class" Position="@DisplayOptions.PortraitPosition(Context.Panel)" OmitFallback="OmitFallback" Effects="@PortraitEffects.From(Player, Context.Snapshot?.Freshness)" EffectsBinding="@Binding" EffectsAllowed="@(Context.Snapshot?.Freshness == DataFreshness.Live && Player.Health is not <= 0)" />
 @code {
     [Parameter, EditorRequired] public PlayerState Player { get; set; } = null!;
     [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;

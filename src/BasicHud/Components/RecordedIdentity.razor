@@ -1,5 +1,5 @@
 <div class="recorded-identity">
-    <ImageTile Source="@Context.ProfileImage(SteamId)" FallbackSource="@AgentPortraits.ForRecorded(Context, SteamId, Side)" Label="@DisplayName" Class="recorded-avatar" />
+    <ImageTile Source="@Context.ProfileImage(SteamId)" FallbackSource="@AgentPortraits.ForRecorded(Context, SteamId, Side)" Label="@DisplayName" Class="recorded-avatar" Position="@DisplayOptions.PortraitPosition(Context.Panel)" />
     <span class="recorded-name">@DisplayName</span>
 </div>
 @code {

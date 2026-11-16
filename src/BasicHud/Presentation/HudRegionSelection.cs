@@ -87,13 +87,15 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
                 values.Add(graph?.Freshness);
                 values.Add(info?.Map); values.Add(info?.Phase); values.Add(info?.RoundNumber); values.Add(info?.RoundPhase);
                 values.Add(info?.Ct); values.Add(info?.T); values.Add(info?.RoundBomb); values.Add(graph?.Clock);
+                if (graph?.Clock?.Bomb is { State: BombStatus.Defusing, PlayerSteamId: { } defuser })
+                    values.Add(graph.Players.Values.FirstOrDefault(player => player.Identity.SteamId == defuser)?.Equipment.DefuseKit);
                 values.Add(state.Options?.Caption); Match(); Field("display", "caption"); Field("display", "hideSeries"); Field("branding", "logo"); break;
             case HudArea.History:
                 values.Add(info?.RoundWins); values.Add(info?.RoundNumber); values.Add(info?.RoundPhase); values.Add(info?.Phase);
                 values.Add(info?.RoundBomb); values.Add(graph?.Clock?.Countdown?.Phase); values.Add(graph?.Clock?.Bomb?.State); Match(); break;
             case HudArea.Mvp:
                 values.Add(graph?.Freshness); values.Add(info?.Map); values.Add(info?.Phase); values.Add(info?.RoundNumber);
-                values.Add(info?.RoundPhase); values.Add(info?.RoundWinner); Match(); Field("display", "agentsOnly");
+                values.Add(info?.RoundPhase); values.Add(info?.RoundWinner); Match(); Field("display", "agentsOnly"); Field("display", "portraitAlignment");
                 values.Add(graph?.Roster);
                 if (graph is not null)
                     foreach (var player in graph.Players.OrderBy(player => player.Key, StringComparer.Ordinal))
@@ -117,7 +119,7 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
                 if (area == HudArea.Player) { values.Add(info?.RoundPhase); values.Add(info?.Phase); }
                 values.Add(area == HudArea.Observed ? (object?)graph?.Roster?.Observed
                     : graph?.Player(playerKey ?? "")?.Identity.SteamId is { Length: > 0 } steamId && graph.ObservedPlayer?.Identity.SteamId == steamId);
-                Match(); Field("display", "agentsOnly");
+                Match(); Field("display", "agentsOnly"); Field("display", "portraitAlignment");
                 Player(area == HudArea.Observed ? graph?.ObservedPlayer : playerKey is null ? null : graph?.Player(playerKey));
                 break;
             case HudArea.Radar:

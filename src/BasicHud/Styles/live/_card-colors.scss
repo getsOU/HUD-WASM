@@ -2,7 +2,6 @@
 .hud.scene-live {
     .roster .live-player,
     .roster .player-name,
-    .roster .card-slot,
     .roster .card-stats,
     .roster .card-money,
     .observed,
@@ -39,7 +38,8 @@
     }
 
     .roster .card-slot {
-        text-shadow: 0 1px 1px #071c5099;
+        color: var(--card-fill, #071c50);
+        text-shadow: none;
     }
 
     // Keep dead portraits neutral without removing the requested icon/money colors.

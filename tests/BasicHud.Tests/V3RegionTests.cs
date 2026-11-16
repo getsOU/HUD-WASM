@@ -28,6 +28,13 @@ internal static class V3RegionTests
         bool Same(HudSessionSnapshot<HudOptions> a, HudSessionSnapshot<HudOptions> b, HudArea area, string? key = null) =>
             HudRegionSelection.Comparer.Equals(HudRegionSelection.Select(a, area, key), HudRegionSelection.Select(b, area, key));
 
+        var defuseSource = source with { Game = source.Game! with { Bomb = new(BombStatus.Defusing, p1.SteamId, null, 2.5) } };
+        var bombEncoder = new HudV3Encoder();
+        var bombReducer = new HudV3State();
+        var defuse = first with { Game = bombReducer.ApplyGraph(bombEncoder.Encode(defuseSource)) };
+        var kitChange = first with { Game = bombReducer.ApplyGraph(bombEncoder.Encode(defuseSource with { Revision = 2, Game = defuseSource.Game! with { Players = [p1 with { DefuseKit = true }, p2], ObservedPlayer = p1 with { DefuseKit = true } } })) };
+        check(!Same(defuse, kitChange, HudArea.Scoreboard), "defuser kit updates invalidate the matchbar even when the bomb clock itself is unchanged");
+
         var moved = p1 with { Position = new(10, 20, 3) };
         var pose = Frame(source with { Revision = 2, Game = source.Game! with { Players = [moved, p2], ObservedPlayer = moved } });
         check(!Same(first, pose, HudArea.Radar) && Same(first, pose, HudArea.Scoreboard) && Same(first, pose, HudArea.Player, keys[0])

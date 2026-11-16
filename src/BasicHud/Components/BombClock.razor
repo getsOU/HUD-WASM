@@ -1,0 +1,33 @@
+<div class="bomb-status @(State.Active ? "active" : "complete") @(State.Paused ? "held" : "")" data-bomb-state="@State.State" data-kit="@(State.Kit switch { true => "yes", false => "no", _ => "unknown" })" data-urgency="@State.Urgency" data-shake="@State.Shake" data-pulse-ms="@State.PulseMilliseconds?.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)" data-progress="@(State.Progress is null ? "unknown" : "known")" data-time-left-ms="@State.RemainingMilliseconds?.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)" data-motion-expired="@(State.MotionExpired ? "true" : "false")" style="@MotionStyle" role="img" aria-label="@State.Label">
+    <div class="bomb-dial">
+        @if (State.State is "planting" or "defusing" && State.Progress is { } progress)
+        {
+            <svg class="bomb-status-ring" viewBox="0 0 48 48" aria-hidden="true">
+                <circle class="bomb-ring-track" cx="24" cy="24" r="21" />
+                <circle class="bomb-ring-state bomb-ring-progress" cx="24" cy="24" r="21" pathLength="100" stroke-dasharray="100" stroke-dashoffset="@((100 * (1 - progress)).ToString("0.###", System.Globalization.CultureInfo.InvariantCulture))" />
+            </svg>
+        }
+        <svg class="bomb-state-symbol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <g class="@GlyphClass("bomb")" data-glyph="bomb" stroke-width="1.8"><rect x="5" y="5" width="14" height="17" rx="2" /><path d="M9 5V2h7v3M8 9h8M8 13h2m4 0h2m-8 4h2m4 0h2" /></g>
+            <g class="@GlyphClass("check")" data-glyph="check" stroke-width="2.5"><path d="m5 12 4 4 10-10" /></g>
+            <g class="@GlyphClass("explosion")" data-glyph="explosion"><path d="m12 2 2.5 5 5-2-1 6 4 3-6 1-1 6-4-4-5 3 1-6-5-3 6-2z" /></g>
+            <g class="@GlyphClass("hand")" data-glyph="hand" stroke-width="1.7"><path d="M8 13V5a1.5 1.5 0 0 1 3 0v6-8a1.5 1.5 0 0 1 3 0v8-6a1.5 1.5 0 0 1 3 0v7-4a1.5 1.5 0 0 1 3 0v7c0 4-2 7-6 7h-2c-2 0-3-1-4-3l-4-6a1.5 1.5 0 0 1 2-2z" /></g>
+            <g class="@GlyphClass("defuse")" data-glyph="defuse"><path d="M4 20v-5l5-5m6-6 5-1-1 5-6 6-3-3zM4 4l4 4m8 8 4 4" /></g>
+            <g class="@GlyphClass("kit")" data-glyph="kit"><use href="assets/icons/hud-ui.svg#kit" /></g>
+        </svg>
+    </div>
+</div>
+@code {
+    private string? MotionStyle
+    {
+        get
+        {
+            var culture = System.Globalization.CultureInfo.InvariantCulture;
+            double? budget = !State.Active ? 0 : State.RemainingMilliseconds / 2;
+            var style = budget is { } time ? $"--bomb-time-budget:{Math.Max(0, time).ToString("0.###", culture)}ms;" : null;
+            return State.Shake == "strong" ? $"{style}--bomb-shake-offset:{(0.04 + 0.05 * State.ShakeStrength).ToString("0.####", culture)}cqw;--bomb-shake-angle:{(4 + 6 * State.ShakeStrength).ToString("0.###", culture)}deg" : style;
+        }
+    }
+    private string GlyphClass(string icon) => State.Icon == icon ? "bomb-glyph shown" : "bomb-glyph";
+    [Parameter, EditorRequired] public BombClockView State { get; set; } = new("planted", "BOMB PLANTED", "bomb", true, false);
+}

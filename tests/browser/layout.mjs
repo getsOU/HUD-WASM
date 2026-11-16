@@ -272,15 +272,17 @@ try {
                                 `${view} ${key} scales proportionally`,
                             );
             } else baseline = data;
-            if (width === 1920 || width === 390)
+            if (width === 1920 || width === 390 || width === 1024 || (width === 2560 && height === 1080))
                 await hud.screenshot({
-                    path: path.join(scratch, `${view}-${width}.png`),
+                    path: path.join(scratch, `${view}-${width}x${height}.png`),
+                    omitBackground: true,
                 });
         }
         if (view !== "live") {
-            assert(Math.abs(baseline.frame.x - 0.05) < 0.002);
-            assert(Math.abs(baseline.frame.y - 0.0225) < 0.002);
-            assert(Math.abs(baseline.frame.w - 0.9) < 0.002);
+            assert(Math.abs(baseline.frame.x) < 0.002);
+            assert(Math.abs(baseline.frame.y) < 0.002);
+            assert(Math.abs(baseline.frame.w - 1) < 0.002);
+            assert(Math.abs(baseline.frame.h - 9 / 16) < 0.002);
         }
         // The same scene also scales inside a constrained container within a large window.
         await hud.setViewportSize({ width: 1920, height: 1080 });

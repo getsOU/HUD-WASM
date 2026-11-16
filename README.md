@@ -29,7 +29,7 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 The installed HUD is named **sOU Default HUD**; its stable package ID remains `sou-basic-wasm`.
 
-1. Download `sou-basic-wasm-0.4.31.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.51.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
@@ -47,7 +47,7 @@ Live playercards show positive SDK-provided round kills as a vertical icon stack
 
 The round MVP card sits below the matchbar at the same width, with the same proportional gap as the vertical player cards (12 px at 1920 px HUD width). Both areas have no outside border and use the same neutral HUD-blue background. There is no separate round-winner banner. The card appears only after an unambiguous MVP-counter increase has been observed and displays the completed round's kills and damage. Bundled Motion reveals it over 420 ms, with slightly staggered portrait/text movement and matching round-history motion. After eight seconds, including during pauses and after match end, it starts a 260 ms exit; the next freeze triggers that exit earlier. Repeated updates do not extend the display or reopen it during freeze. Reduced-motion preferences skip the movement. Live play, lost data continuity or changed session/map/match clear it immediately. Initial/stale/disconnected data and ambiguous counter jumps do not create an award; unavailable round statistics remain `—`.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.31**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all fourteen views remain available. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.51**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all fourteen views remain available. Previous releases and already running outputs are unchanged.
 
 The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) in `hud.json` under `outlineColors`. With a supporting sOU/HLAE host, opening the HUD through **Über CS2 anzeigen** selects these colors for X-Ray/outlines, utility trails and derived smoke coloring. Browser/OBS output alone does not select the in-game palette. Trails and smoke created after the palette is applied use the colors; existing effects may retain their previous appearance. See the [sOU HLAE color documentation](https://www.getsou.app/docs/cs2-hlae#hud-farben).
 
@@ -84,8 +84,8 @@ pwsh ./scripts/Build.ps1
 The script restores pinned Sass dependencies, checks the compiled stylesheet against its SCSS sources, performs locked NuGet restore, restores the project-local public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata/region-selection tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.31.souhud
-artifacts/sou-basic-wasm-0.4.31.souhud.sha256
+artifacts/sou-basic-wasm-0.4.51.souhud
+artifacts/sou-basic-wasm-0.4.51.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:

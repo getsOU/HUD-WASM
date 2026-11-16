@@ -74,7 +74,50 @@
       {
         "type": "checkbox",
         "name": "agentsOnly",
-        "label": "Nur Agenten anzeigen"
+        "label": "Agents only"
+      },
+      {
+        "type": "select",
+        "name": "portraitAlignment",
+        "label": "Player image alignment",
+        "values": [
+          {
+            "name": "top",
+            "label": "Top center (default)"
+          },
+          {
+            "name": "top-left",
+            "label": "Top left"
+          },
+          {
+            "name": "top-right",
+            "label": "Top right"
+          },
+          {
+            "name": "left",
+            "label": "Center left"
+          },
+          {
+            "name": "center",
+            "label": "Center"
+          },
+          {
+            "name": "right",
+            "label": "Center right"
+          },
+          {
+            "name": "bottom-left",
+            "label": "Bottom left"
+          },
+          {
+            "name": "bottom",
+            "label": "Bottom center"
+          },
+          {
+            "name": "bottom-right",
+            "label": "Bottom right"
+          }
+        ]
       },
       {
         "type": "checkbox",

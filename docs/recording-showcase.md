@@ -1,11 +1,11 @@
-# Recording broadcasts · 0.4.31
+# Recording broadcasts · 0.4.51
 
 The six recording scenes are passive broadcast graphics. They share the existing
 16:9 HUD canvas, blue palette, CT/T accents, condensed card typography, local
 weapon silhouettes, branding and player imagery. There are no controls,
 navigation links, debug tables, revision identifiers, raw IDs, expandable
 sections or scroll areas in the output. Narrow outputs scale with the same
-canvas as the live HUD.
+canvas as the live HUD. All subviews have an opaque background covering the entire output, including areas outside the fitted 16:9 content canvas. Scene safe areas are internal padding, so neither regular views nor lower-third layouts leave transparent borders.
 
 | View | Output |
 | --- | --- |
@@ -149,3 +149,7 @@ assessments where they qualify an actual interpretation.
 Player lists share the live HUD profile-image setting and Agents only option. Missing or failed profile images use the bundled decorative agents. Recorded side and a matching live Steam ID provide the side/observer digit; historical players without a live digit use a stable decorative selection. Unknown sides are never assigned a CT/T portrait by guesswork. Portraits are decoration, not evidence of the actual in-game character.
 
 Economy Review resolves team names and logos from the selected recorded round history in the shared push state. It never uses current side recognition for a historical round. Missing or conflicting recorded IDs keep the CT/T side label. Round Loadouts and Team Economy already use their recorded team IDs. CT/T statistics retain their side labels because those identify the statistic sample.
+
+## Team identity colors
+
+Team names, graph series and player/team identity accents use the confirmed current CT/T assignment of the stable team ID, including when an older round is selected. Team A/B order never determines side colors. A side swap recolors the same series without swapping its historical values. Unknown or conflicting current recognition uses neutral colors. Explicit historical CT/T sample labels retain the recorded side colors; multikills remain one combined total per player.

@@ -7,10 +7,12 @@
     var ids = checkpoints.SelectMany(c => new[] { c.CtTeamId, c.TTeamId }.Concat(c.Players.Select(p => p.TeamId))).Where(id => !string.IsNullOrEmpty(id)).Cast<string>().Distinct(StringComparer.Ordinal).OrderBy(id => id == Context.Match?.TeamA.Id ? 0 : id == Context.Match?.TeamB.Id ? 1 : 2).ThenBy(id => id, StringComparer.Ordinal).ToArray();
     var missingIdentity = checkpoints.Any(c => c.Players.Any(p => p.TeamId is null && (p.Side == TeamSide.CounterTerrorists ? c.CtTeamId : p.Side == TeamSide.Terrorists ? c.TTeamId : null) is null));
     var teams = ids.Length == 2 && !missingIdentity;
+    var colors = teams ? ids.Select((id, index) => EconomyColor(Context.CurrentTeamSide(id), index)).ToArray()
+        : new[] { EconomyColor(TeamSide.CounterTerrorists, 0), EconomyColor(TeamSide.Terrorists, 1) };
     var lines = teams ? ids.Select(id => (Label: Locale.Team(Context, id), Points: RecordingData.Points(rounds, Options.Phase, id, null, Options.Equipment))).ToArray()
         : new[] { (Label: Locale["ctSide"], Points: RecordingData.Points(rounds, Options.Phase, null, TeamSide.CounterTerrorists, Options.Equipment)), (Label: Locale["tSide"], Points: RecordingData.Points(rounds, Options.Phase, null, TeamSide.Terrorists, Options.Equipment)) };
 }
-<div class="recording-view economy-view">
+<div class="recording-view economy-view" style="--economy-0:@colors[0];--economy-1:@colors[1]">
     <div class="cast-caption"><span>@(Options.Equipment ? Locale["equipmentValue"] : Locale["money"])</span><b>@Locale.Phase(Options.Phase) · @Locale["round"] @Locale.Number(end > 0 ? end : null)</b></div>
     <div class="economy-headlines">
         @for (var index = 0; index < lines.Length; index++)

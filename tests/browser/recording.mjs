@@ -147,9 +147,9 @@ try {
     await push(fixture); await push(fixture);
     assert.deepEqual(await hud.locator('.sample-values').allTextContents(),totals,'map summaries replace, never accumulate');
     await visit('economy-evidence'); await panel('recordingEvidence',{round:'1'});
-    await until(async()=>await hud.locator('.force-assessment.ct .recorded-team-name').textContent()==='Example Alpha');
+    await until(async()=>await hud.locator('.force-assessment:first-child .recorded-team-name').textContent()==='Example Alpha');
     await panel('recordingEvidence',{round:'4'});
-    await until(async () => await hud.locator('.force-assessment.ct .recorded-team-name').textContent() === 'Example Bravo');
+    await until(async () => await hud.locator('.force-assessment:first-child .recorded-team-name').textContent() === 'Example Bravo');
     await until(async () => await hud.locator('.recorded-team-logo').evaluateAll(images=>images.length===2&&images.every(i=>i.complete&&i.naturalWidth>0)));
     await hud.screenshot({path:path.join(scratch,'historical-team-identities.png')});
     console.log('PASS map summaries are not added twice and team names/logos follow halftime');

@@ -31,6 +31,18 @@ public sealed record DisplayOptions(string Caption, bool ShowRosters, bool ShowO
     };
 
     public static bool PlayerImagesVisible(HudPanelState? state) => state is null || ReadVisible(state, "agentsOnly");
+    public static string PortraitPosition(HudPanelState? state) => state?.Text("display", "portraitAlignment") switch
+    {
+        "top-left" => "left top",
+        "top-right" => "right top",
+        "left" => "left center",
+        "center" => "center center",
+        "right" => "right center",
+        "bottom-left" => "left bottom",
+        "bottom" => "center bottom",
+        "bottom-right" => "right bottom",
+        _ => "center top"
+    };
 
     // The host normalizes unset checkboxes to false. Opt-out fields keep the HUD visible
     // both before the first save and when an unrelated caption change is saved.
