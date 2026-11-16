@@ -1,6 +1,8 @@
-<section class="presentation prematch-scene"><SceneHeader Title="Match preview" Context="Context" />
+<section lang="en" class="presentation broadcast-scene prematch-scene"><SceneHeader Title="Match preview" Context="Context" />
+    <div class="scene-body">
     <MatchDuel Context="Context" />
     <ScheduledStart Schedule="Context.MatchStart" Now="Context.Now" />
     <MapSeries Context="Context" />
+    </div>
 </section>
 @code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

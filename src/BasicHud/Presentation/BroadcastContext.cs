@@ -8,6 +8,7 @@ public sealed record BroadcastContext(LiveSnapshot? Snapshot, HudPanelState? Pan
     DateTimeOffset Now, Func<string?, string?> ResolveMedia)
 {
     public RadarCatalog RadarCatalog { get; init; } = RadarCatalog.Empty;
+    public bool SessionReady { get; init; } = true;
     public BoltRadarCatalog BoltRadarCatalog { get; init; } = BoltRadarCatalog.Empty;
     public Func<string, string?> ResolveAsset { get; init; } = _ => null;
     public static BroadcastContext Empty { get; } = new(null, null, MetadataCatalog.Empty, DateTimeOffset.UtcNow, _ => null);

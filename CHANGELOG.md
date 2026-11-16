@@ -1,5 +1,62 @@
 # Changelog
 
+## 0.4.31 - 2026-11-16
+
+- Use the published SOU 0.3.0-preview.9 NuGet packages and matching tool instead of the earlier unpublished local build.
+- Declare package format 2, the embedded SDK version and the host capabilities required by the existing API 3 HUD.
+- Keep all existing views, design and recording subscriptions unchanged; build and validate the complete Blazor publish output.
+
+## 0.4.30 (local, unreleased)
+
+- Unify all thirteen presentation views with one broadcast frame, shared header, typography, colors and spacing while retaining their dedicated content and operator panels.
+- Scale the entire live and presentation canvas to its containing output, including embedded previews, height-limited windows, ultrawide and portrait screens.
+- Replace fixed-pixel icon limits with canvas-relative sizes and reserve lower-third space consistently without broadcast scrollbars.
+- Verify every view at eight output sizes, embedded preview sizing, populated lineups and vetoes, plus existing live and recording-push regressions.
+
+## 0.4.29 (local, unreleased)
+
+- Use the verified, cleaned SDK 0.3.0-preview.9 ZIP with a project-local package source and a fresh isolated NuGet cache.
+- Replace recording reads and pagination with one shared WatchRecordingAsync subscription for all six recording views, cancelled on exit or match/map changes.
+- Replace complete SDK states and map summaries, including late earlier-round events and lower round totals; retain stale data visibly during reconnection until synchronization.
+- Show optional observed cash movements separately from net cash changes, and keep historical team identities, agent fallbacks and evidence distinctions.
+- Exercise the SDK push simulator with late events, round replacement, halftime, missing checkpoints, reconnect and context changes; no real CS2 acceptance is claimed.
+
+## 0.4.28 (local, unreleased)
+
+- Use the existing profile-image and agents-only settings in every recording player list, with bundled agent fallbacks for unavailable portraits.
+- Identify Economy Review teams with recorded round team IDs, names and logos across side swaps; keep CT/T labels for side statistics.
+- Verify historical team attribution, portrait loading, agents-only switching and failed-image recovery in the packaged HUD.
+
+## 0.4.27 (local, unreleased)
+
+- Show every observed player simultaneously with adaptive columns and rows; remove player-page controls from the recording panels.
+- Combine exclusive multikill samples into one total row per Steam ID, including historically unassigned samples, without a CT/T split or side selector.
+- Decode recorded source player names once through the existing plain-text renderer, fixing apostrophes, encoded entities and Unicode without allowing HTML.
+- Label native pickup events as Item received because the SDK does not distinguish starting-equipment grants from ground pickups. Remove routine Confirmed receipt badges from native event rows while retaining evidence levels on derived assessments and carryover.
+- Verify ten-player and larger historical lineups, safe player names, passive layouts, freeze-end gating and the existing live HUD workflow.
+
+## 0.4.26 (local, unreleased)
+
+- Keep all recording views, operator controls and default copy in English, matching the existing HUD. Remove the unnecessary language selector.
+- Remove technical explanations and redundant pagination instructions from the broadcast; retain concise metric labels, observed scope and evidence badges. Use CT SIDE / T SIDE when historical team IDs are unavailable.
+- Treat FreezeLast as provisional until a saved round-start or round-end checkpoint at or after the sample proves freeze has ended. Keep the automatic economy graph on the latest eligible round and show explicitly selected unfinished samples as unknown.
+- Add regression checks for changing provisional loadouts, phase completion, English output in a German browser, and the absence of operator-only text in every view.
+
+## 0.4.25 (local, unreleased)
+
+- Rebuild all six recording and economy views as passive 16:9 broadcast graphics using the existing HUD palette, condensed typography, player imagery and weapon silhouettes.
+- Move every round, phase, metric, player-focus, page and refresh setting into dedicated host panel sections. Remove navigation, forms, debug identifiers and scrolling from the output.
+- Add bounded visual pages for larger observed lineups and inventories while retaining unknown values, historical samples, roster coverage and evidence levels.
+- Preserve the SDK 0.3.0-preview.7 data lifecycle, independent revisions, HTTP 409 recovery and request cancellation. Verify panel-driven output and packaged browser layouts.
+
+## 0.4.24 (local, unreleased)
+
+- Add six recording and economy scenes: Team Economy, round/loadout comparison, CT/T statistics, exclusive multikills, SDK buy classes and received end inventories, and economy evidence.
+- Use matching public SDK 0.3.0-preview.7 packages with a project-local package source, preserving the existing Blazor session and package identity.
+- Preserve unknown, zero and empty values, observed player counts, independent metric samples and confirmed/derived/unknown evidence. Keep historical team identity across side changes and leave missing graph values as gaps.
+- Add cancellable, revision-pinned pagination with bounded HTTP 409 recovery and manual refresh, without per-frame requests or polling.
+- Add portable SDK fixtures, packaged browser checks at wide and narrow widths, and documentation of recording and backend limits. Prepare local test version 0.4.24 without publishing or installing it.
+
 ## 0.4.23
 
 - Add spaced, team-colored kill symbols for the current round outside playercards, without numbers, backgrounds or frames. Align side-layout indicators with the card's top edge and place horizontal-layout indicators above the card. Retain kills after death, hide them during freeze/warmup, and animate newly added symbols with reduced-motion support.

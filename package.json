@@ -10,7 +10,9 @@
     "styles:build": "node scripts/build-styles.mjs",
     "styles:check": "node scripts/build-styles.mjs --check",
     "styles:format": "prettier --write src/BasicHud/Styles",
-    "styles:watch": "node scripts/build-styles.mjs --watch"
+    "styles:watch": "node scripts/build-styles.mjs --watch",
+    "test:layout": "node tests/browser/layout.mjs",
+    "test:recording": "node tests/browser/recording.mjs"
   },
   "devDependencies": {
     "playwright": "1.64.1",

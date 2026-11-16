@@ -1,0 +1,85 @@
+@using SOU.Hud.Sdk
+@implements IDisposable
+@inject IServiceProvider Services
+<section lang="en" data-language="en" class="recording-scene broadcast-scene cast-recording @(recording?.Stale == true ? "recording-stale" : "")" data-stale="@(recording?.Stale == true ? "true" : "false")" data-view="@View" data-state="@State" aria-label="@Title">
+    <SceneHeader Title="@Title" Context="DisplayContext" PanelSection="@options.Section" />
+    @if (DisplayContext.Match?.Id is "recording-showcase-example" or "recording-showcase-context-two") { <span class="recording-example">@locale["example"]</span> }
+    @if (recording?.Stale == true) { <div class="recording-stale-label">STALE · @(State == "reconnecting" ? "RECONNECTING" : State == "loading" ? "SYNCHRONIZING" : "CONNECTION LOST")</div> }
+    <div class="recording-stage">
+        @if (NeedsHistory && History is { Status: HudRoundHistoryStatus.Available } raw && raw.Rounds.Length > 0)
+        {
+            @if (View == "team-economy") { <TeamEconomyView History="raw" Context="DisplayContext" Options="options" /> }
+            else { <RoundCompareView History="raw" Context="DisplayContext" Options="options" /> }
+        }
+        else if (NeedsAnalysis && Analysis is { Status: HudRoundHistoryStatus.Available } map && (map.Rounds.Length > 0 || map.Players.Length > 0))
+        {
+            @if (View == "round-buys") { <RoundBuysView Analysis="map" Context="DisplayContext" Options="options" /> }
+            else if (View == "multikills") { <MultikillsView Analysis="map" Context="DisplayContext" Options="options" /> }
+            else { <SideRecordingView Analysis="map" Context="DisplayContext" Options="options" /> }
+        }
+        else if (NeedsEconomy && Economy is { Status: HudRoundHistoryStatus.Available } eco && eco.Rounds.Length > 0)
+        {
+            <EconomyEvidenceView History="eco" RoundHistory="History" Context="DisplayContext" Options="options" />
+        }
+        else
+        {
+            <div class="recording-empty"><span class="recording-empty-symbol">—</span><h2>@StatusTitle</h2></div>
+        }
+    </div>
+</section>
+@code {
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter] public string View { get; set; } = "team-economy";
+    private string Title => locale["title." + View];
+    private string MapName => (DisplayContext.Game?.Map ?? locale["mapUnknown"]).Replace("de_", "", StringComparison.Ordinal).ToUpperInvariant();
+    private bool NeedsHistory => View is "team-economy" or "round-compare";
+    private bool NeedsAnalysis => View is "side-statistics" or "multikills" or "round-buys";
+    private bool NeedsEconomy => View == "economy-evidence";
+    private BroadcastContext? retainedContext;
+    private BroadcastContext DisplayContext => Context.SessionReady ? Context : retainedContext ?? Context;
+    private RecordingSubscription? recording;
+    private HudRoundHistory? History => recording?.State?.RoundHistory;
+    private HudMapAnalysis? Analysis => recording?.State?.MapAnalysis;
+    private HudEconomyHistory? Economy => recording?.State?.EconomyHistory;
+    private RecordingOptions options = RecordingOptions.From(BroadcastContext.Empty, "team-economy");
+    private HudSession<BasicHud.HudOptions>? session;
+    private Guid? lastAction;
+    private static readonly RecordingCopy locale = RecordingCopy.Instance;
+    private bool disposed;
+    private string State => recording?.Status ?? "error";
+    private string StatusTitle => locale["state." + State];
+    protected override void OnInitialized()
+    {
+        if (Services.GetService(typeof(IRecordingFeed)) is IRecordingFeed feed)
+        {
+            recording = new(feed);
+            recording.Changed += RecordingChanged;
+        }
+        session = Services.GetService(typeof(HudSession<BasicHud.HudOptions>)) as HudSession<BasicHud.HudOptions>;
+        if (session is not null) session.PanelAction += PanelAction;
+    }
+    protected override void OnParametersSet()
+    {
+        if (Context.SessionReady) retainedContext = Context;
+        options = RecordingOptions.From(DisplayContext, View);
+        // A live transport reconnect temporarily clears its graph; it is not a
+        // user-selected match/map change and must not discard retained recordings.
+        if (Context.SessionReady) recording?.Bind(null, Context.Match?.Id, Context.Game?.Map);
+    }
+    private void RecordingChanged()
+    {
+        if (!disposed) _ = InvokeAsync(StateHasChanged);
+    }
+    private void PanelAction(HudPanelAction action)
+    {
+        if (disposed || action.Section != options.Section || action.Name != "refresh" || action.Value != "refresh" || lastAction == action.Id) return;
+        lastAction = action.Id;
+        if (Context.SessionReady) _ = InvokeAsync(() => recording?.Bind(null, Context.Match?.Id, Context.Game?.Map, restart: true));
+    }
+    public void Dispose()
+    {
+        disposed = true;
+        if (recording is not null) { recording.Changed -= RecordingChanged; recording.Dispose(); }
+        if (session is not null) session.PanelAction -= PanelAction;
+    }
+}

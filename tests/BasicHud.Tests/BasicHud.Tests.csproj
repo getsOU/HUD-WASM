@@ -3,14 +3,15 @@
   <ItemGroup>
     <Compile Include="../../src/BasicHud/Presentation/**/*.cs" Link="Presentation/%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Include="../../src/BasicHud/HudOptions.cs" Link="HudOptions.cs" />
-    <PackageReference Include="SOU.Live.Contracts" Version="0.3.0-preview.3" />
-    <PackageReference Include="SOU.Hud.Sdk.Blazor" Version="0.3.0-preview.3" />
+    <PackageReference Include="SOU.Live.Contracts" Version="0.3.0-preview.9" />
+    <PackageReference Include="SOU.Hud.Sdk.Blazor" Version="0.3.0-preview.9" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <RazorComponent Include="../../src/BasicHud/_Imports.razor" Link="_Imports.razor" />
     <RazorComponent Include="../../src/BasicHud/Components/*.razor" Link="Components/%(Filename)%(Extension)" />
     <RazorComponent Include="../../src/BasicHud/Views/*.razor" Link="Views/%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup><None Include="../../src/BasicHud/wwwroot/panel.json" Link="panel.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+  <ItemGroup><None Include="../fixtures/recording-showcase.json" Link="recording-showcase.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
   <ItemGroup>
     <None Include="../../src/BasicHud/hud.json" Link="hud.json" CopyToOutputDirectory="PreserveNewest" />
     <Compile Include="../../src/BasicHud/Development/MetadataPoller.cs" Link="MetadataPoller.cs" />

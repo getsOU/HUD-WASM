@@ -1,8 +1,8 @@
 // Shared outlines: no original-asset crop, aspect ratio or white filter.
 .hud-ui-icon {
     display: inline-block;
-    width: max(12px, var(--icon-height, 1em));
-    height: max(12px, var(--icon-height, 1em));
+    width: max(0.625cqw, var(--icon-height, 1em));
+    height: max(0.625cqw, var(--icon-height, 1em));
     flex: 0 0 auto;
     vertical-align: middle;
     overflow: hidden;
@@ -83,51 +83,51 @@
 
 .hud.scene-live {
     .roster .card-equipment .utility-outlines {
-        --utility-height: clamp(16px, 1cqw, 20px);
+        --utility-height: 1cqw;
         gap: 0.12cqw;
     }
 
     .roster .card-stats .hud-ui-icon {
-        --icon-height: clamp(12px, 0.78cqw, 16px);
+        --icon-height: 0.78cqw;
     }
 
     .roster .card-status .hud-ui-icon {
-        --icon-height: clamp(14px, 0.85cqw, 18px);
+        --icon-height: 0.85cqw;
     }
 
     .observed-stats .hud-ui-icon {
-        --icon-height: 12px;
+        --icon-height: 0.625cqw;
     }
 
     .observed-armor .hud-ui-icon {
-        --icon-height: clamp(12px, 0.85cqw, 18px);
+        --icon-height: 0.85cqw;
     }
 
     .observed .ammo-symbol {
-        --icon-height: clamp(12px, 0.8cqw, 18px);
+        --icon-height: 0.8cqw;
     }
 
     .observed-loadout .hud-utility-icon {
-        --icon-height: clamp(16px, 1.1cqw, 24px);
+        --icon-height: 1.1cqw;
     }
 }
 
 .hud.scene-live.rosters-horizontal {
     .roster .card-loadout {
-        grid-template-rows: minmax(0, 1fr) max(0.7cqw, 12px);
+        grid-template-rows: minmax(0, 1fr) 0.7cqw;
     }
 
     .roster .card-equipment {
-        height: max(0.7cqw, 12px);
+        height: 0.7cqw;
     }
 
     .roster .card-equipment .utility-outlines {
-        --utility-height: 12px;
+        --utility-height: 0.625cqw;
         gap: 0.1cqw;
     }
 
     .roster .card-stats .hud-ui-icon,
     .roster .card-status .hud-ui-icon {
-        --icon-height: 12px;
+        --icon-height: 0.625cqw;
     }
 }

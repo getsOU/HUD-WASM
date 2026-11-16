@@ -24,13 +24,16 @@ body,
     height: 100%;
     display: grid;
     place-items: center;
+    container-type: size;
 }
 .hud {
+    container-type: inline-size;
     position: relative;
-    width: min(100vw, 177.777778vh);
+    width: min(100cqw, 177.777778cqh);
     aspect-ratio: 16 / 9;
-    font-size: min(1vw, 1.777778vh);
+    font-size: min(1cqw, 1.777778cqh);
     font-variant-numeric: tabular-nums;
+    --utility-height: 0.833333cqw;
 }
 .ct {
     --side: var(--ct);

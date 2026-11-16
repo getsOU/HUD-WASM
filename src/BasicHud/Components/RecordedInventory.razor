@@ -1,0 +1,30 @@
+@using System.Collections.Immutable
+@if (Weapons is null || Weapons.Value.IsDefault)
+{
+    <span class="inventory-unknown">@Locale["inventoryUnknown"]</span>
+}
+else if (Weapons.Value.Length == 0)
+{
+    <span class="inventory-empty">@Locale["inventoryEmpty"]</span>
+}
+else
+{
+    var page = RecordingOptions.PageNumber(Weapons.Value.Length, Page, Limit);
+    <div class="recorded-inventory">
+        @foreach (var weapon in Weapons.Value.Skip((page - 1) * Limit).Take(Limit))
+        {
+            <span class="recorded-weapon">
+                <EquipmentIcon Name="@weapon.Name" />
+                @if (EquipmentPresentation.UsesAmmo(weapon) || weapon.Type != WeaponCategory.Grenade && (weapon.AmmoClip.HasValue || weapon.AmmoReserve.HasValue)) { <small>@Locale.Number(weapon.AmmoClip)<i>/</i>@Locale.Number(weapon.AmmoReserve)</small> }
+                else if (weapon.Type == WeaponCategory.Grenade) { <small>×@Locale.Number(weapon.AmmoClip ?? weapon.AmmoReserve)</small> }
+            </span>
+        }
+        @if (Weapons.Value.Length > Limit) { <small class="inventory-count">@Locale.Scope(Math.Min(Limit, Math.Max(0, Weapons.Value.Length - (page - 1) * Limit)), Weapons.Value.Length, "items")</small> }
+    </div>
+}
+@code {
+    private static readonly RecordingCopy Locale = RecordingCopy.Instance;
+    [Parameter] public ImmutableArray<WeaponState>? Weapons { get; set; }
+    [Parameter] public int Limit { get; set; } = 4;
+    [Parameter] public int Page { get; set; } = 1;
+}

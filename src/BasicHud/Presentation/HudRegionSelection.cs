@@ -145,7 +145,7 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
                 values.Add(info is null ? null : info with { Provider = null }); Match();
                 values.Add(graph?.Roster); values.Add(graph?.Freshness); values.Add(graph?.Clock);
                 if (graph is not null) foreach (var player in graph.Players.OrderBy(player => player.Key, StringComparer.Ordinal)) { values.Add(player.Key); Player(player.Value); }
-                foreach (var section in new[] { "production", "feature", "branding", "display" }) Section(section);
+                foreach (var section in new[] { "production", "feature", "branding", "display", "recordingEconomy", "recordingCompare", "recordingSides", "recordingMultikills", "recordingBuys", "recordingEvidence" }) Section(section);
                 break;
         }
         return new(state, values.ToArray());

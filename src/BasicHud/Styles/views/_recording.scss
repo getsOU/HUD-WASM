@@ -1,0 +1,1404 @@
+@use "../tokens" as theme;
+
+// Recording scenes are passive 16:9 broadcast compositions, just like the live HUD.
+// All selection and refresh controls belong to the host panel.
+.recording-scene {
+    --ct: #{theme.$ct-accent};
+    --t: #{theme.$t-accent};
+    --cast-muted: #a9bbd1;
+    position: absolute;
+    inset: 4% 5% 8%;
+    padding: 1.5em 2em;
+    display: grid;
+    grid-template-rows: 5em minmax(0, 1fr);
+    gap: 1em;
+    color: #fff;
+    background: linear-gradient(125deg, #071c50f5, #0b1730f5 62%, #14233af5);
+    font-family:
+        "sOU Bahnschrift", "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+    font-stretch: condensed;
+    overflow: hidden;
+    pointer-events: none;
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 0.22em;
+        background: var(--ct);
+    }
+    * {
+        min-width: 0;
+    }
+    h1,
+    h2,
+    p {
+        margin: 0;
+    }
+    small {
+        color: var(--cast-muted);
+    }
+    .ct {
+        --side: var(--ct);
+    }
+    .t {
+        --side: var(--t);
+    }
+    .neutral {
+        --side: #bdc8d7;
+    }
+    .recording-heading {
+        display: grid;
+        grid-template-columns: 5em minmax(0, 1fr) 12em;
+        align-items: center;
+        gap: 1.8em;
+        border-bottom: 0.05em solid #8097bf44;
+        padding-bottom: 0.8em;
+    }
+    .recording-mark {
+        border-right: 0.05em solid #8097bf44;
+        height: 3em;
+        display: flex;
+        align-items: center;
+    }
+    .recording-wordmark {
+        font-family: Impact, sans-serif;
+        font-size: 2em;
+    }
+    .recording-mark .branding {
+        margin: 0;
+    }
+    .recording-mark .branding:not(:has(img)) {
+        display: none;
+    }
+    .recording-mark:has(.branding img) .recording-wordmark {
+        display: none;
+    }
+    .recording-mark img {
+        max-width: 4em;
+        max-height: 2.5em;
+        object-fit: contain;
+    }
+    .recording-mark .competition-name {
+        display: none;
+    }
+    .recording-kicker {
+        display: block;
+        color: var(--cast-muted);
+        font-size: 0.65em;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .recording-title h1 {
+        font-size: 2.35em;
+        line-height: 1.15;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .recording-map {
+        text-align: right;
+        text-transform: uppercase;
+    }
+    .recording-map strong {
+        display: block;
+        font-size: 1.55em;
+        font-weight: 500;
+    }
+    .recording-map > span {
+        color: var(--cast-muted);
+        font-size: 0.58em;
+        letter-spacing: 0.2em;
+    }
+    .recording-example {
+        position: absolute;
+        top: 0.3em;
+        right: 3.4em;
+        color: var(--t);
+        letter-spacing: 0.12em;
+        font-size: 0.48em;
+    }
+    .recording-stage {
+        min-height: 0;
+    }
+    .recording-view {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8em;
+        min-height: 0;
+    }
+    .cast-caption {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        color: var(--cast-muted);
+        letter-spacing: 0.09em;
+        font-size: 0.7em;
+        flex: 0 0 auto;
+    }
+    .cast-caption b {
+        color: #fff;
+        font-weight: 500;
+    }
+    .cast-footnote {
+        display: flex;
+        justify-content: space-between;
+        gap: 1em;
+        align-items: center;
+        border-top: 0.05em solid #8097bf33;
+        color: var(--cast-muted);
+        font-size: 0.51em;
+        line-height: 1.5;
+        letter-spacing: 0.04em;
+        padding-top: 0.8em;
+        margin-top: auto;
+        flex: 0 0 auto;
+    }
+    .cast-footnote > :last-child {
+        text-align: right;
+    }
+    .cast-no-sample,
+    .recording-empty {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        color: var(--cast-muted);
+        text-align: center;
+        min-height: 0;
+    }
+    .recording-empty {
+        height: 100%;
+        flex-direction: column;
+        gap: 0.8em;
+    }
+    .recording-empty-symbol {
+        color: var(--ct);
+        font-size: 5em;
+        line-height: 1;
+    }
+    .recording-empty h2 {
+        font-size: 1.65em;
+        color: #fff;
+        font-weight: 500;
+    }
+    .recording-empty p {
+        font-size: 0.8em;
+    }
+    .recorded-identity {
+        display: flex;
+        align-items: center;
+        gap: 0.65em;
+    }
+    .recorded-avatar {
+        flex: 0 0 2em;
+        width: 2em;
+        height: 2em;
+        object-fit: cover;
+        background: #273d61;
+        border: 0;
+        display: grid;
+        place-items: center;
+        font-size: 1em;
+    }
+    .recorded-name {
+        font-size: 1em;
+        font-weight: 500;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+    .recorded-team-logo {
+        width: 2.5em;
+        height: 2.5em;
+        flex: 0 0 2.5em;
+        object-fit: contain;
+        display: grid;
+        place-items: center;
+        background: #ffffff0b;
+        border: 0;
+        font-size: 1em;
+    }
+    .recorded-inventory {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.28em 0.65em;
+        min-height: 1.2em;
+        line-height: 1.1;
+    }
+    .recorded-weapon {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35em;
+    }
+    .recorded-weapon .equipment-icon,
+    .recorded-weapon .hud-utility-icon {
+        --icon-height: 1.1em;
+        --icon-max-width: 3em;
+        color: #fff;
+    }
+    .recorded-weapon small {
+        color: #fff;
+        font-size: 0.65em;
+        white-space: nowrap;
+    }
+    .recorded-weapon i {
+        color: var(--cast-muted);
+        font-style: normal;
+        padding: 0 0.2em;
+    }
+    .inventory-unknown,
+    .inventory-empty,
+    .inventory-count,
+    .loadout-unknown {
+        font-size: 0.6em;
+        color: var(--cast-muted);
+    }
+    .evidence {
+        font-family: "Segoe UI", sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35em;
+        padding: 0.3em 0.5em;
+        border-radius: 0.15em;
+        font-size: 0.5em;
+        white-space: nowrap;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .evidence::before {
+        content: "";
+        width: 0.45em;
+        height: 0.45em;
+        background: currentColor;
+        border-radius: 50%;
+    }
+    .evidence-confirmed {
+        color: #a7efd0;
+        background: #65c69c13;
+    }
+    .evidence-derived {
+        color: var(--t);
+        background: #eee1a010;
+    }
+    .evidence-unknown {
+        color: #a9bbd1;
+        background: #a9bbd112;
+    }
+
+    // Team economy: two stable team identities, a clean plot and sampled roster coverage.
+    .economy-headlines {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2em;
+    }
+    .economy-headline {
+        --line-color: var(--ct);
+        display: flex;
+        align-items: center;
+        gap: 0.9em;
+        border-left: 0.18em solid var(--line-color);
+        padding: 0.65em 1.1em;
+        background: #ffffff06;
+    }
+    .economy-headline.team-1 {
+        --line-color: var(--t);
+    }
+    .economy-headline .team-name {
+        display: block;
+        font-size: 1.4em;
+        color: var(--line-color);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .economy-headline small {
+        font-size: 0.55em;
+        letter-spacing: 0.03em;
+    }
+    .economy-headline strong {
+        margin-left: auto;
+        font-size: 2.5em;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    .economy-chart {
+        flex: 1;
+        min-height: 0;
+    }
+    .economy-chart svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+    .chart-grid {
+        stroke: #9ab0d32b;
+        stroke-width: 1;
+        stroke-dasharray: 4 7;
+    }
+    .chart-line {
+        stroke-width: 3.5;
+    }
+    .chart-team-0 {
+        stroke: var(--ct);
+        fill: var(--ct);
+    }
+    .chart-team-1 {
+        stroke: var(--t);
+        fill: var(--t);
+    }
+    svg text {
+        font-family: inherit;
+        stroke: none !important;
+    }
+    .chart-y,
+    .chart-round {
+        fill: #a9bbd1;
+        font-size: 18px;
+    }
+    .chart-coverage {
+        font-size: 17px;
+        opacity: 0.85;
+    }
+    .chart-small {
+        fill: #a9bbd1;
+        font-size: 12px;
+        letter-spacing: 1px;
+    }
+    .chart-no-values {
+        fill: #a9bbd1;
+        font-size: 25px;
+    }
+
+    // Matched historical loadouts: aligned columns, no raw identifiers.
+    .compare-heading,
+    .compare-player {
+        display: grid;
+        grid-template-columns: 20% 30% 30% 20%;
+    }
+    .compare-heading {
+        color: var(--cast-muted);
+        font-size: 0.6em;
+        align-items: end;
+        padding: 0 1em;
+    }
+    .compare-heading > div {
+        padding-left: 1.5em;
+    }
+    .compare-heading b {
+        display: block;
+        font-size: 2em;
+        color: #fff;
+        font-weight: 500;
+    }
+    .compare-heading small {
+        display: block;
+        margin-top: 0.2em;
+        font-size: 1em;
+    }
+    .compare-players {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-auto-rows: minmax(0, 1fr);
+        gap: 0.45em;
+    }
+    .compare-player {
+        background: #ffffff06;
+        border-left: 0.15em solid var(--side);
+        align-items: center;
+        padding: 0.6em 0.6em;
+    }
+    .compare-identity {
+        padding: 0.5em 0.75em 0.5em 0.2em;
+    }
+    .compare-identity .recorded-avatar {
+        width: 2.3em;
+        height: 2.3em;
+        flex-basis: 2.3em;
+    }
+    .compare-side {
+        display: block;
+        font-size: 0.55em;
+        letter-spacing: 0.15em;
+        color: var(--side);
+        margin: 0.7em 0 0 5.4em;
+    }
+    .compare-side i {
+        font-style: normal;
+        color: #a9bbd1;
+        padding: 0 0.5em;
+    }
+    .compare-loadout {
+        padding: 0 1.1em;
+        border-left: 0.05em solid #8097bf33;
+        min-height: 4.5em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.45em;
+    }
+    .loadout-numbers {
+        display: flex;
+        gap: 2em;
+    }
+    .loadout-numbers span small,
+    .compare-deltas small {
+        display: block;
+        font-size: 0.5em;
+        letter-spacing: 0.08em;
+    }
+    .loadout-numbers b {
+        font-size: 1.45em;
+        font-weight: 500;
+    }
+    .loadout-armor {
+        display: flex;
+        gap: 1.1em;
+        font-size: 0.5em;
+        color: var(--cast-muted);
+    }
+    .loadout-armor b {
+        color: #fff;
+        padding-left: 0.3em;
+        font-weight: 500;
+    }
+    .compare-deltas {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65em 1em;
+        padding-left: 1em;
+    }
+    .compare-deltas b {
+        font-size: 1.1em;
+        font-weight: 500;
+    }
+
+    // Side summaries and exclusive multikills share the broadcast scoreboard geometry.
+    .side-board {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.22em;
+    }
+    .side-board-heading,
+    .side-board-row {
+        display: grid;
+        grid-template-columns: 32% 34% 34%;
+    }
+    .side-board-heading {
+        font-size: 0.7em;
+        align-items: center;
+        color: var(--cast-muted);
+        padding: 0.3em 1em 0.65em;
+    }
+    .side-board-heading > div {
+        display: flex;
+        align-items: center;
+        padding: 0 1.4em;
+        gap: 1.4em;
+    }
+    .side-board-heading b {
+        color: var(--side);
+        font-size: 1.3em;
+    }
+    .side-board-heading span {
+        white-space: pre;
+    }
+    .side-board-row {
+        flex: 1;
+        max-height: 5.6em;
+        min-height: 0;
+        align-items: center;
+        padding: 0.4em 1em;
+        background: #ffffff06;
+    }
+    .side-board-row > .recorded-identity {
+        padding-right: 1.8em;
+    }
+    .side-board-row > .ct,
+    .side-board-row > .t {
+        padding: 0.15em 1em;
+        border-left: 0.05em solid #8097bf33;
+    }
+    .sample-values {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        text-align: center;
+    }
+    .sample-values.four-values {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .sample-values b {
+        font-size: 1.5em;
+        font-weight: 500;
+        line-height: 1.05;
+    }
+    .ct .sample-values b {
+        color: var(--ct);
+    }
+    .t .sample-values b {
+        color: var(--t);
+    }
+    .sample-coverage,
+    .headshot-sample {
+        display: block;
+        text-align: center;
+        font-size: 0.48em;
+        margin-top: 0.4em;
+        line-height: 1;
+        letter-spacing: 0.03em;
+    }
+    .headshot-sample {
+        font-size: 0.43em;
+        opacity: 0.8;
+    }
+    .unassigned-sample {
+        grid-column: 2 / 4;
+        display: grid;
+        grid-template-columns: 32% minmax(0, 1fr);
+        align-items: center;
+        padding-left: 1em;
+        border-left: 0.05em solid #8097bf33;
+    }
+    .unassigned-label {
+        color: var(--cast-muted);
+        font-size: 0.6em;
+        grid-row: span 3;
+    }
+    .unassigned-sample .sample-values b {
+        font-size: 1.25em;
+    }
+    .unassigned-sample .sample-coverage {
+        margin-top: 0.25em;
+    }
+
+    // Round equipment, mirrored team columns with five visual slots per panel page.
+    .buy-teams {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.7em;
+    }
+    .buy-teams:has(> :only-child) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .buy-team {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        border-top: 0.17em solid var(--side);
+        background: #ffffff04;
+        padding: 0.8em 1em 0.5em;
+    }
+    .buy-team-heading {
+        display: flex;
+        align-items: center;
+        gap: 0.75em;
+    }
+    .buy-team-heading small {
+        font-size: 0.55em;
+        color: var(--side);
+    }
+    .buy-team-heading h2 {
+        font-size: 1.3em;
+        font-weight: 500;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .buy-class {
+        margin-left: auto;
+        font-size: 1.6em;
+        color: var(--side);
+        font-weight: 500;
+    }
+    .buy-team-summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1em;
+        margin: 0.9em 0 0.8em;
+    }
+    .buy-team-summary small {
+        display: block;
+        font-size: 0.48em;
+        letter-spacing: 0.04em;
+    }
+    .buy-team-summary b {
+        display: block;
+        font-size: 1.65em;
+        font-weight: 500;
+        margin: 0.12em 0;
+    }
+    .buy-team-summary i {
+        font-style: normal;
+        font-size: 0.4em;
+    }
+    .buy-player-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.45em;
+        color: var(--cast-muted);
+        padding-bottom: 0.6em;
+    }
+    .buy-players {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-auto-rows: minmax(0, 1fr);
+        gap: 0.3em;
+    }
+    .buy-player {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.5em;
+        border-top: 0.05em solid #8097bf33;
+        padding: 0.3em 0;
+    }
+    .buy-player-main {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 3em 9em 5.5em;
+        gap: 0.5em;
+        align-items: center;
+    }
+    .buy-player .recorded-avatar {
+        width: 1.7em;
+        height: 1.7em;
+        flex-basis: 1.7em;
+    }
+    .buy-player .recorded-name {
+        font-size: 0.75em;
+    }
+    .buy-player-class {
+        font-size: 0.58em;
+        color: var(--side);
+    }
+    .buy-player-values {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.8em;
+    }
+    .buy-player-values b {
+        font-weight: 500;
+    }
+    .buy-player-values i {
+        font-style: normal;
+        color: var(--cast-muted);
+    }
+    .survival {
+        font-size: 0.48em;
+        color: var(--cast-muted);
+        text-align: right;
+    }
+    .survival.survived {
+        color: #a7efd0;
+    }
+    .buy-player .recorded-inventory {
+        padding-left: 2.4em;
+        font-size: 0.8em;
+    }
+    .buy-player .inventory-empty,
+    .buy-player .inventory-unknown {
+        margin-left: 3.2em;
+    }
+    .buy-team-page {
+        font-size: 0.45em;
+        color: var(--cast-muted);
+        padding-top: 0.8em;
+    }
+    .cast-unassigned-notice {
+        font-size: 0.5em;
+        color: var(--cast-muted);
+    }
+
+    // Economy review: event roles on the left, cash and carryover evidence on the right.
+    .force-assessments {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.3em;
+    }
+    .force-assessment {
+        display: flex;
+        align-items: center;
+        gap: 0.8em;
+        background: #ffffff06;
+        padding: 0.65em 1em;
+        border-left: 0.18em solid var(--side);
+    }
+    .recorded-team {
+        display: flex;
+        align-items: center;
+        gap: 0.6em;
+        min-width: 0;
+    }
+    .recorded-team > div { min-width: 0; }
+    .recorded-team .recorded-team-logo {
+        width: 2.2em;
+        height: 2.2em;
+        object-fit: contain;
+        flex: 0 0 2.2em;
+    }
+    .force-assessment .recorded-team { flex: 1; }
+    .force-assessment .recorded-team-name {
+        color: var(--side);
+        overflow-wrap: anywhere;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+    .force-assessment .force-details { flex: 1; min-width: 0; }
+    .force-side {
+        color: var(--side);
+        font-size: 1.4em;
+    }
+    .force-assessment strong {
+        display: block;
+        font-size: 0.85em;
+        font-weight: 500;
+    }
+    .force-assessment small {
+        display: block;
+        font-size: 0.45em;
+        margin-top: 0.3em;
+    }
+    .force-assessment .evidence {
+        margin-left: auto;
+    }
+    .evidence-columns {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 1.3em;
+    }
+    .event-board,
+    .evidence-players {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+    .event-board > header,
+    .evidence-players > header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        margin: 0.3em 0 0.7em;
+    }
+    .evidence-columns h2 {
+        font-size: 0.8em;
+        font-weight: 500;
+    }
+    .evidence-columns header > span {
+        font-size: 0.42em;
+        color: var(--cast-muted);
+    }
+    .evidence-columns footer {
+        font-size: 0.45em;
+        color: var(--cast-muted);
+        padding-top: 0.8em;
+        margin-top: auto;
+    }
+    .evidence-event {
+        display: grid;
+        grid-template-columns: 6.2em minmax(0, 1fr) 5em 5.3em;
+        align-items: center;
+        gap: 0.7em;
+        background: #ffffff06;
+        padding: 0.8em 0.8em;
+        margin-bottom: 0.32em;
+        flex: 1;
+        max-height: 5em;
+        min-height: 0;
+    }
+    .event-kind {
+        font-size: 0.64em;
+        color: var(--side);
+    }
+    .event-kind small {
+        display: block;
+        font-size: 0.65em;
+        margin-top: 0.4em;
+    }
+    .event-actor small {
+        display: block;
+        font-size: 0.43em;
+        letter-spacing: 0.08em;
+    }
+    .event-actor strong {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        overflow-wrap: anywhere;
+        font-size: 0.88em;
+        font-weight: 500;
+        line-height: 1.12;
+    }
+    .event-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3em;
+    }
+    .event-item .equipment-icon {
+        --icon-height: 1.3em;
+        --icon-max-width: 4.5em;
+    }
+    .event-item small {
+        font-size: 0.45em;
+    }
+    .event-no-data {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1em;
+        color: var(--cast-muted);
+    }
+    .event-no-data b {
+        color: #fff;
+        font-size: 0.85em;
+        font-weight: 500;
+    }
+    .event-no-data span {
+        font-size: 0.55em;
+    }
+    .evidence-player {
+        flex: 1;
+        min-height: 0;
+        padding: 0.7em 1em;
+        margin-bottom: 0.4em;
+        background: #ffffff06;
+        border-left: 0.15em solid var(--side);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 10em;
+        gap: 0.5em 0.8em;
+        align-content: center;
+    }
+    .evidence-player .recorded-name {
+        font-size: 0.9em;
+    }
+    .evidence-player .recorded-avatar {
+        width: 1.7em;
+        height: 1.7em;
+        flex-basis: 1.7em;
+    }
+    .evidence-cash {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        gap: 1em;
+        font-size: 0.75em;
+    }
+    .evidence-cash b {
+        font-weight: 500;
+    }
+    .evidence-counts {
+        grid-column: 1 / 3;
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.46em;
+        color: var(--cast-muted);
+    }
+    .evidence-counts b {
+        color: #fff;
+        padding-left: 0.3em;
+    }
+    .refund-evidence {
+        grid-column: 1 / 3;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+    .refund-evidence > span:first-child {
+        color: var(--cast-muted);
+        font-size: 0.43em;
+    }
+    .carry-evidence {
+        grid-column: 1 / 3;
+    }
+    .carry-evidence > small {
+        font-size: 0.43em;
+    }
+    .carry-evidence > div {
+        display: flex;
+        align-items: center;
+        gap: 0.7em;
+        margin-top: 0.3em;
+    }
+    .carry-evidence .equipment-icon {
+        --icon-height: 1em;
+        --icon-max-width: 3em;
+    }
+    .carry-evidence > div > span:not(.cs2-icon):not(.evidence) {
+        font-size: 0.55em;
+    }
+    .carry-evidence small {
+        display: block;
+        font-size: 0.65em;
+    }
+    .carry-evidence .evidence {
+        margin-left: auto;
+    }
+}
+
+// Broadcast hierarchy: coverage stays readable, while values lead the composition.
+.recording-scene {
+    .cast-footnote {
+        font-size: 0.62em;
+    }
+    .side-board-heading {
+        font-size: 1em;
+        padding: 0.3em 1em 0.65em;
+    }
+    .side-board-heading > span {
+        font-size: 0.6em;
+    }
+    .side-board-heading > div {
+        display: block;
+        position: relative;
+        padding: 0 1em;
+    }
+    .side-board-heading > div > b {
+        position: absolute;
+        left: -0.4em;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.85em;
+    }
+    .sample-labels {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        text-align: center;
+        font-size: 0.65em;
+    }
+    .sample-labels.four-values {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .sample-coverage {
+        font-size: 0.6em;
+    }
+    .headshot-sample {
+        font-size: 0.53em;
+    }
+    .loadout-numbers b {
+        font-size: 1.65em;
+    }
+    .loadout-numbers span small,
+    .compare-deltas small {
+        font-size: 0.6em;
+    }
+    .loadout-armor {
+        font-size: 0.6em;
+    }
+    .buy-players {
+        grid-template-rows: repeat(5, minmax(0, 1fr));
+    }
+    .buy-player .recorded-name {
+        font-size: 0.95em;
+    }
+    .buy-player-values {
+        font-size: 1.05em;
+    }
+    .buy-player .recorded-inventory {
+        font-size: 1em;
+    }
+    .buy-team-summary small,
+    .buy-player-labels,
+    .buy-team-page {
+        font-size: 0.58em;
+    }
+    .survival {
+        font-size: 0.56em;
+    }
+    .force-assessment strong {
+        font-size: 1em;
+    }
+    .force-assessment small {
+        font-size: 0.58em;
+    }
+    .evidence-columns h2 {
+        font-size: 1em;
+    }
+    .evidence-columns header > span,
+    .evidence-columns footer {
+        font-size: 0.55em;
+    }
+    .event-kind {
+        font-size: 0.75em;
+    }
+    .event-actor small {
+        font-size: 0.55em;
+    }
+    .event-actor strong {
+        font-size: 1.05em;
+    }
+    .event-item small {
+        font-size: 0.55em;
+    }
+    .evidence-player .recorded-name {
+        font-size: 1.05em;
+    }
+    .evidence-cash {
+        font-size: 0.9em;
+    }
+    .evidence-counts {
+        font-size: 0.58em;
+    }
+    .refund-evidence > span:first-child {
+        font-size: 0.55em;
+    }
+    .carry-evidence > small {
+        font-size: 0.55em;
+    }
+}
+
+.recording-scene .buy-player {
+    gap: 0.3em;
+    padding: 0.12em 0;
+}
+.recording-scene .recording-mark .branding > img ~ img {
+    display: none;
+}
+
+// Every observed player stays on screen. Columns and density follow actual counts.
+.recording-scene {
+    .all-player-grid {
+        display: grid;
+        grid-template-columns: repeat(var(--list-columns), minmax(0, 1fr));
+        grid-template-rows: repeat(var(--list-rows), minmax(0, 1fr));
+        gap: 0.45em;
+        flex: 1;
+        min-height: 0;
+    }
+    .all-player-grid > article {
+        font-size: calc(1em * var(--list-scale));
+        min-height: 0;
+        min-width: 0;
+    }
+    .compare-heading {
+        display: flex;
+        justify-content: space-between;
+        gap: 2em;
+    }
+    .compare-heading > span {
+        display: none;
+    }
+    .compare-heading > div {
+        padding: 0;
+    }
+    .compare-player {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 0.35em 0.6em;
+        padding: 0.6em 0.8em;
+    }
+    .compare-identity {
+        grid-column: 1 / 3;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5em;
+    }
+    .compare-identity .recorded-identity {
+        flex: 1;
+    }
+    .compare-identity .recorded-avatar {
+        width: 1.5em;
+        height: 1.5em;
+        flex-basis: 1.5em;
+    }
+    .compare-side {
+        margin: 0;
+        font-size: 0.65em;
+        white-space: nowrap;
+    }
+    .compare-loadout {
+        min-height: 0;
+        gap: 0.25em;
+        padding: 0.15em 0.5em;
+        border-left: 0.06em solid #8097bf33;
+    }
+    .compare-loadout .loadout-numbers {
+        gap: 1em;
+    }
+    .compare-loadout .loadout-numbers b {
+        font-size: 1.25em;
+    }
+    .compare-loadout .loadout-armor {
+        gap: 0.6em;
+        font-size: 0.55em;
+    }
+    .compare-loadout .recorded-inventory {
+        font-size: 0.85em;
+        gap: 0.15em 0.5em;
+    }
+    .compare-deltas {
+        grid-column: 1 / 3;
+        border-top: 0.05em solid #8097bf33;
+        padding: 0.3em 0 0;
+        justify-content: space-between;
+        gap: 0.4em;
+    }
+    .compare-deltas span {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5em;
+    }
+    .compare-deltas b {
+        font-size: 0.85em;
+    }
+    .side-board-row {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: stretch;
+        max-height: none;
+        padding: 0.5em 0.8em;
+        gap: 0.35em;
+    }
+    .side-board-row > .recorded-identity {
+        padding: 0;
+    }
+    .side-board-row .recorded-avatar {
+        width: 1.5em;
+        height: 1.5em;
+        flex-basis: 1.5em;
+    }
+    .stat-card-samples {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.8em;
+    }
+    .stat-card-samples > div {
+        position: relative;
+        padding-left: 0.7em;
+        border-left: 0.08em solid var(--side, #8097bf44);
+    }
+    .stat-card-samples > .unassigned-card-sample {
+        grid-column: 1 / 3;
+    }
+    .stat-card-side {
+        display: block;
+        font-size: 0.6em;
+        color: var(--side, var(--cast-muted));
+        letter-spacing: 0.1em;
+        margin-bottom: 0.25em;
+    }
+    .stat-card-samples .sample-labels {
+        font-size: 0.5em;
+        color: var(--cast-muted);
+        margin-bottom: 0.1em;
+    }
+    .stat-card-samples .sample-values b {
+        font-size: 1.35em;
+    }
+    .stat-card-samples .sample-coverage {
+        font-size: 0.5em;
+        margin-top: 0.25em;
+    }
+    .stat-card-samples .headshot-sample {
+        font-size: 0.45em;
+        margin-top: 0.2em;
+    }
+    .multikill-player {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+        align-items: center;
+        gap: 1em;
+        padding: 0.8em 1em;
+        background: #ffffff06;
+        border-left: 0.15em solid var(--ct);
+    }
+    .multikill-values {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) 1.6fr;
+        gap: 0.5em;
+        text-align: center;
+    }
+    .multikill-values small {
+        display: block;
+        font-size: 0.6em;
+        white-space: nowrap;
+    }
+    .multikill-values b {
+        display: block;
+        font-size: 1.8em;
+        font-weight: 500;
+        color: var(--ct);
+    }
+    .multikill-coverage b {
+        font-size: 1.2em;
+        color: #fff;
+        margin-top: 0.3em;
+    }
+    .buy-teams {
+        grid-template-columns: repeat(var(--team-columns, 2), minmax(0, 1fr));
+        gap: 1em;
+    }
+    .buy-player {
+        padding: 0.4em 0.5em;
+        justify-content: center;
+        gap: 0.4em;
+    }
+    .buy-player-main {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.3em 0.6em;
+    }
+    .buy-player-main .recorded-identity {
+        grid-column: 1;
+    }
+    .buy-player-class {
+        grid-column: 2;
+        text-align: right;
+    }
+    .buy-player-values {
+        grid-column: 1;
+        justify-content: start;
+        gap: 0.7em;
+        font-size: 1em;
+    }
+    .survival {
+        grid-column: 2;
+    }
+    .buy-player .recorded-inventory {
+        padding: 0;
+        font-size: 0.85em;
+    }
+    .buy-player .inventory-empty,
+    .buy-player .inventory-unknown {
+        margin: 0;
+    }
+    .evidence-columns {
+        grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.6fr);
+    }
+    .evidence-event {
+        grid-template-columns: 4.5em minmax(0, 1fr) 4em 5.3em;
+        gap: 0.45em;
+        font-size: 0.85em;
+    }
+    .evidence-player-grid {
+        gap: 0.4em;
+    }
+    .evidence-player {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        padding: 0.6em 0.7em;
+        margin: 0;
+        gap: 0.5em;
+    }
+    .evidence-player .recorded-identity {
+        min-height: 1.7em;
+    }
+    .evidence-player .recorded-name {
+        font-size: 1em;
+    }
+    .evidence-cash {
+        justify-content: space-between;
+        font-size: 1em;
+    }
+    .evidence-counts {
+        gap: 0.35em;
+        font-size: 0.55em;
+    }
+    .evidence-counts span {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15em;
+    }
+    .refund-evidence > span:first-child {
+        font-size: 0.5em;
+    }
+    .carry-evidence > div {
+        gap: 0.4em;
+    }
+}
+
+.recording-scene .evidence-event {
+    grid-template-columns: 5.5em minmax(0, 1fr) 4em;
+}
+
+.recording-scene .evidence-player {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-content: center;
+    padding: 0.4em 0.6em;
+    gap: 0.35em 0.5em;
+}
+.recording-scene .evidence-player .recorded-identity {
+    min-height: 0;
+}
+.recording-scene .evidence-player .evidence-cash {
+    font-size: 0.75em;
+    gap: 0.5em;
+}
+.recording-scene .evidence-player .evidence-counts {
+    grid-column: 1 / 3;
+}
+
+.recording-scene .compare-player .recorded-name {
+    -webkit-line-clamp: 1;
+}
+.recording-scene .compare-loadout {
+    align-self: stretch;
+    font-size: 0.8em;
+    padding: 0 0.4em;
+    gap: 0.15em;
+}
+.recording-scene .compare-loadout .loadout-armor {
+    line-height: 1.1;
+}
+
+.recording-scene .compare-player {
+    padding: 0.3em 0.6em;
+    gap: 0.2em 0.5em;
+}
+.recording-scene .compare-identity .recorded-avatar {
+    width: 1.1em;
+    height: 1.1em;
+    flex-basis: 1.1em;
+}
+.recording-scene .compare-deltas {
+    font-size: 0.75em;
+    padding-top: 0.2em;
+}
+
+.recording-scene .recording-stale-label {
+    position: absolute;
+    top: 1em;
+    right: 2em;
+    padding: 0.3em 0.6em;
+    color: #eee1a0;
+    background: #11244a;
+    font-size: 0.65em;
+    letter-spacing: 0.1em;
+    z-index: 2;
+}
+.recording-scene.recording-stale .recording-stage { opacity: 0.7; }
+.recording-scene .evidence-movements {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5em;
+    font-size: 0.65em;
+    color: #b6def5;
+}

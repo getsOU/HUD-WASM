@@ -28,12 +28,19 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Compiled styles do not match SCSS sources.' }
     Invoke-Dotnet @('restore', 'src/BasicHud/BasicHud.csproj', '--configfile', 'NuGet.Config', '--locked-mode')
     Invoke-Dotnet @('restore', 'tests/BasicHud.Tests/BasicHud.Tests.csproj', '--configfile', 'NuGet.Config', '--locked-mode')
-    Invoke-Dotnet @('tool', 'restore', '--configfile', 'NuGet.Config')
+    # A private preview used the same version. Avoid the per-user tool resolver,
+    # which can retain that older executable even after restoring public packages.
+    $sdkVersion = (Get-Content -LiteralPath '.config/dotnet-tools.json' -Raw | ConvertFrom-Json).tools.'sou.hud.tool'.version
+    $toolDirectory = Join-Path $repo 'artifacts/published-sdk-tools'
+    $sdkTool = Join-Path $toolDirectory ".store/sou.hud.tool/$sdkVersion/sou.hud.tool/$sdkVersion/tools/net10.0/any/SOU.Hud.Tool.dll"
+    if (!(Test-Path -LiteralPath $sdkTool)) {
+        Invoke-Dotnet @('tool', 'install', 'SOU.Hud.Tool', '--version', $sdkVersion, '--configfile', 'NuGet.Config', '--tool-path', $toolDirectory)
+    }
     Invoke-Dotnet @('format', 'SOU.BasicHud.slnx', 'whitespace', '--no-restore', '--verify-no-changes', '--verbosity', 'minimal')
     Invoke-Dotnet @('run', '--project', 'tests/BasicHud.Tests/BasicHud.Tests.csproj', '-c', 'Release', '--no-restore')
     Invoke-Dotnet @('publish', 'src/BasicHud/BasicHud.csproj', '-c', 'Release', '--no-restore', '-o', $package)
-    Invoke-Dotnet @('tool', 'run', 'sou-hud', '--', 'pack', $package, $archive)
-    Invoke-Dotnet @('tool', 'run', 'sou-hud', '--', 'validate', $archive)
+    Invoke-Dotnet @($sdkTool, 'pack', $package, $archive)
+    Invoke-Dotnet @($sdkTool, 'validate', $archive)
     $hash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
     [IO.File]::WriteAllText("$archive.sha256", "$hash  $([IO.Path]::GetFileName($archive))`n", [Text.UTF8Encoding]::new($false))
     Write-Host "Package: $archive"

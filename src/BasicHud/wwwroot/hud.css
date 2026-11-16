@@ -1726,14 +1726,17 @@ body,
   height: 100%;
   display: grid;
   place-items: center;
+  container-type: size;
 }
 
 .hud {
+  container-type: inline-size;
   position: relative;
-  width: min(100vw, 177.777778vh);
+  width: min(100cqw, 177.777778cqh);
   aspect-ratio: 16/9;
-  font-size: min(1vw, 1.777778vh);
+  font-size: min(1cqw, 1.777778cqh);
   font-variant-numeric: tabular-nums;
+  --utility-height: 0.833333cqw;
 }
 
 .ct {
@@ -3898,8 +3901,8 @@ body,
 }
 .hud-ui-icon {
   display: inline-block;
-  width: max(12px, var(--icon-height, 1em));
-  height: max(12px, var(--icon-height, 1em));
+  width: max(0.625cqw, var(--icon-height, 1em));
+  height: max(0.625cqw, var(--icon-height, 1em));
   flex: 0 0 auto;
   vertical-align: middle;
   overflow: hidden;
@@ -3973,41 +3976,41 @@ body,
 }
 
 .hud.scene-live .roster .card-equipment .utility-outlines {
-  --utility-height: clamp(16px, 1cqw, 20px);
+  --utility-height: 1cqw;
   gap: 0.12cqw;
 }
 .hud.scene-live .roster .card-stats .hud-ui-icon {
-  --icon-height: clamp(12px, 0.78cqw, 16px);
+  --icon-height: 0.78cqw;
 }
 .hud.scene-live .roster .card-status .hud-ui-icon {
-  --icon-height: clamp(14px, 0.85cqw, 18px);
+  --icon-height: 0.85cqw;
 }
 .hud.scene-live .observed-stats .hud-ui-icon {
-  --icon-height: 12px;
+  --icon-height: 0.625cqw;
 }
 .hud.scene-live .observed-armor .hud-ui-icon {
-  --icon-height: clamp(12px, 0.85cqw, 18px);
+  --icon-height: 0.85cqw;
 }
 .hud.scene-live .observed .ammo-symbol {
-  --icon-height: clamp(12px, 0.8cqw, 18px);
+  --icon-height: 0.8cqw;
 }
 .hud.scene-live .observed-loadout .hud-utility-icon {
-  --icon-height: clamp(16px, 1.1cqw, 24px);
+  --icon-height: 1.1cqw;
 }
 
 .hud.scene-live.rosters-horizontal .roster .card-loadout {
-  grid-template-rows: minmax(0, 1fr) max(0.7cqw, 12px);
+  grid-template-rows: minmax(0, 1fr) 0.7cqw;
 }
 .hud.scene-live.rosters-horizontal .roster .card-equipment {
-  height: max(0.7cqw, 12px);
+  height: 0.7cqw;
 }
 .hud.scene-live.rosters-horizontal .roster .card-equipment .utility-outlines {
-  --utility-height: 12px;
+  --utility-height: 0.625cqw;
   gap: 0.1cqw;
 }
 .hud.scene-live.rosters-horizontal .roster .card-stats .hud-ui-icon,
 .hud.scene-live.rosters-horizontal .roster .card-status .hud-ui-icon {
-  --icon-height: 12px;
+  --icon-height: 0.625cqw;
 }
 
 .hud.scene-live .roster .live-player,
@@ -4082,7 +4085,7 @@ body,
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.7333333333));
 }
 .hud.scene-live .round-kill-indicator .hud-ui-icon {
-  --icon-height: clamp(12px, 0.7cqw, 14px);
+  --icon-height: 0.7cqw;
   color: var(--side, #fff);
 }
 .hud.scene-live .roster.t .round-kill-indicator {
@@ -4122,4 +4125,1710 @@ body,
   .hud.scene-live .new-round-kill {
     animation: none;
   }
+}
+.recording-scene {
+  --ct: #b6def5;
+  --t: #eee1a0;
+  --cast-muted: #a9bbd1;
+  position: absolute;
+  inset: 4% 5% 8%;
+  padding: 1.5em 2em;
+  display: grid;
+  grid-template-rows: 5em minmax(0, 1fr);
+  gap: 1em;
+  color: #fff;
+  background: linear-gradient(125deg, rgba(7, 28, 80, 0.9607843137), rgba(11, 23, 48, 0.9607843137) 62%, rgba(20, 35, 58, 0.9607843137));
+  font-family: "sOU Bahnschrift", "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+  font-stretch: condensed;
+  overflow: hidden;
+  pointer-events: none;
+}
+.recording-scene::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.22em;
+  background: var(--ct);
+}
+.recording-scene * {
+  min-width: 0;
+}
+.recording-scene h1,
+.recording-scene h2,
+.recording-scene p {
+  margin: 0;
+}
+.recording-scene small {
+  color: var(--cast-muted);
+}
+.recording-scene .ct {
+  --side: var(--ct);
+}
+.recording-scene .t {
+  --side: var(--t);
+}
+.recording-scene .neutral {
+  --side: #bdc8d7;
+}
+.recording-scene .recording-heading {
+  display: grid;
+  grid-template-columns: 5em minmax(0, 1fr) 12em;
+  align-items: center;
+  gap: 1.8em;
+  border-bottom: 0.05em solid rgba(128, 151, 191, 0.2666666667);
+  padding-bottom: 0.8em;
+}
+.recording-scene .recording-mark {
+  border-right: 0.05em solid rgba(128, 151, 191, 0.2666666667);
+  height: 3em;
+  display: flex;
+  align-items: center;
+}
+.recording-scene .recording-wordmark {
+  font-family: Impact, sans-serif;
+  font-size: 2em;
+}
+.recording-scene .recording-mark .branding {
+  margin: 0;
+}
+.recording-scene .recording-mark .branding:not(:has(img)) {
+  display: none;
+}
+.recording-scene .recording-mark:has(.branding img) .recording-wordmark {
+  display: none;
+}
+.recording-scene .recording-mark img {
+  max-width: 4em;
+  max-height: 2.5em;
+  object-fit: contain;
+}
+.recording-scene .recording-mark .competition-name {
+  display: none;
+}
+.recording-scene .recording-kicker {
+  display: block;
+  color: var(--cast-muted);
+  font-size: 0.65em;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recording-scene .recording-title h1 {
+  font-size: 2.35em;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.recording-scene .recording-map {
+  text-align: right;
+  text-transform: uppercase;
+}
+.recording-scene .recording-map strong {
+  display: block;
+  font-size: 1.55em;
+  font-weight: 500;
+}
+.recording-scene .recording-map > span {
+  color: var(--cast-muted);
+  font-size: 0.58em;
+  letter-spacing: 0.2em;
+}
+.recording-scene .recording-example {
+  position: absolute;
+  top: 0.3em;
+  right: 3.4em;
+  color: var(--t);
+  letter-spacing: 0.12em;
+  font-size: 0.48em;
+}
+.recording-scene .recording-stage {
+  min-height: 0;
+}
+.recording-scene .recording-view {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  min-height: 0;
+}
+.recording-scene .cast-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  color: var(--cast-muted);
+  letter-spacing: 0.09em;
+  font-size: 0.7em;
+  flex: 0 0 auto;
+}
+.recording-scene .cast-caption b {
+  color: #fff;
+  font-weight: 500;
+}
+.recording-scene .cast-footnote {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  align-items: center;
+  border-top: 0.05em solid rgba(128, 151, 191, 0.2);
+  color: var(--cast-muted);
+  font-size: 0.51em;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  padding-top: 0.8em;
+  margin-top: auto;
+  flex: 0 0 auto;
+}
+.recording-scene .cast-footnote > :last-child {
+  text-align: right;
+}
+.recording-scene .cast-no-sample,
+.recording-scene .recording-empty {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  color: var(--cast-muted);
+  text-align: center;
+  min-height: 0;
+}
+.recording-scene .recording-empty {
+  height: 100%;
+  flex-direction: column;
+  gap: 0.8em;
+}
+.recording-scene .recording-empty-symbol {
+  color: var(--ct);
+  font-size: 5em;
+  line-height: 1;
+}
+.recording-scene .recording-empty h2 {
+  font-size: 1.65em;
+  color: #fff;
+  font-weight: 500;
+}
+.recording-scene .recording-empty p {
+  font-size: 0.8em;
+}
+.recording-scene .recorded-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.65em;
+}
+.recording-scene .recorded-avatar {
+  flex: 0 0 2em;
+  width: 2em;
+  height: 2em;
+  object-fit: cover;
+  background: #273d61;
+  border: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1em;
+}
+.recording-scene .recorded-name {
+  font-size: 1em;
+  font-weight: 500;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.recording-scene .recorded-team-logo {
+  width: 2.5em;
+  height: 2.5em;
+  flex: 0 0 2.5em;
+  object-fit: contain;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.0431372549);
+  border: 0;
+  font-size: 1em;
+}
+.recording-scene .recorded-inventory {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.28em 0.65em;
+  min-height: 1.2em;
+  line-height: 1.1;
+}
+.recording-scene .recorded-weapon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+.recording-scene .recorded-weapon .equipment-icon,
+.recording-scene .recorded-weapon .hud-utility-icon {
+  --icon-height: 1.1em;
+  --icon-max-width: 3em;
+  color: #fff;
+}
+.recording-scene .recorded-weapon small {
+  color: #fff;
+  font-size: 0.65em;
+  white-space: nowrap;
+}
+.recording-scene .recorded-weapon i {
+  color: var(--cast-muted);
+  font-style: normal;
+  padding: 0 0.2em;
+}
+.recording-scene .inventory-unknown,
+.recording-scene .inventory-empty,
+.recording-scene .inventory-count,
+.recording-scene .loadout-unknown {
+  font-size: 0.6em;
+  color: var(--cast-muted);
+}
+.recording-scene .evidence {
+  font-family: "Segoe UI", sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.3em 0.5em;
+  border-radius: 0.15em;
+  font-size: 0.5em;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.recording-scene .evidence::before {
+  content: "";
+  width: 0.45em;
+  height: 0.45em;
+  background: currentColor;
+  border-radius: 50%;
+}
+.recording-scene .evidence-confirmed {
+  color: #a7efd0;
+  background: rgba(101, 198, 156, 0.0745098039);
+}
+.recording-scene .evidence-derived {
+  color: var(--t);
+  background: rgba(238, 225, 160, 0.062745098);
+}
+.recording-scene .evidence-unknown {
+  color: #a9bbd1;
+  background: rgba(169, 187, 209, 0.0705882353);
+}
+.recording-scene .economy-headlines {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em;
+}
+.recording-scene .economy-headline {
+  --line-color: var(--ct);
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  border-left: 0.18em solid var(--line-color);
+  padding: 0.65em 1.1em;
+  background: rgba(255, 255, 255, 0.0235294118);
+}
+.recording-scene .economy-headline.team-1 {
+  --line-color: var(--t);
+}
+.recording-scene .economy-headline .team-name {
+  display: block;
+  font-size: 1.4em;
+  color: var(--line-color);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.recording-scene .economy-headline small {
+  font-size: 0.55em;
+  letter-spacing: 0.03em;
+}
+.recording-scene .economy-headline strong {
+  margin-left: auto;
+  font-size: 2.5em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.recording-scene .economy-chart {
+  flex: 1;
+  min-height: 0;
+}
+.recording-scene .economy-chart svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.recording-scene .chart-grid {
+  stroke: rgba(154, 176, 211, 0.168627451);
+  stroke-width: 1;
+  stroke-dasharray: 4 7;
+}
+.recording-scene .chart-line {
+  stroke-width: 3.5;
+}
+.recording-scene .chart-team-0 {
+  stroke: var(--ct);
+  fill: var(--ct);
+}
+.recording-scene .chart-team-1 {
+  stroke: var(--t);
+  fill: var(--t);
+}
+.recording-scene svg text {
+  font-family: inherit;
+  stroke: none !important;
+}
+.recording-scene .chart-y,
+.recording-scene .chart-round {
+  fill: #a9bbd1;
+  font-size: 18px;
+}
+.recording-scene .chart-coverage {
+  font-size: 17px;
+  opacity: 0.85;
+}
+.recording-scene .chart-small {
+  fill: #a9bbd1;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.recording-scene .chart-no-values {
+  fill: #a9bbd1;
+  font-size: 25px;
+}
+.recording-scene .compare-heading,
+.recording-scene .compare-player {
+  display: grid;
+  grid-template-columns: 20% 30% 30% 20%;
+}
+.recording-scene .compare-heading {
+  color: var(--cast-muted);
+  font-size: 0.6em;
+  align-items: end;
+  padding: 0 1em;
+}
+.recording-scene .compare-heading > div {
+  padding-left: 1.5em;
+}
+.recording-scene .compare-heading b {
+  display: block;
+  font-size: 2em;
+  color: #fff;
+  font-weight: 500;
+}
+.recording-scene .compare-heading small {
+  display: block;
+  margin-top: 0.2em;
+  font-size: 1em;
+}
+.recording-scene .compare-players {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 0.45em;
+}
+.recording-scene .compare-player {
+  background: rgba(255, 255, 255, 0.0235294118);
+  border-left: 0.15em solid var(--side);
+  align-items: center;
+  padding: 0.6em 0.6em;
+}
+.recording-scene .compare-identity {
+  padding: 0.5em 0.75em 0.5em 0.2em;
+}
+.recording-scene .compare-identity .recorded-avatar {
+  width: 2.3em;
+  height: 2.3em;
+  flex-basis: 2.3em;
+}
+.recording-scene .compare-side {
+  display: block;
+  font-size: 0.55em;
+  letter-spacing: 0.15em;
+  color: var(--side);
+  margin: 0.7em 0 0 5.4em;
+}
+.recording-scene .compare-side i {
+  font-style: normal;
+  color: #a9bbd1;
+  padding: 0 0.5em;
+}
+.recording-scene .compare-loadout {
+  padding: 0 1.1em;
+  border-left: 0.05em solid rgba(128, 151, 191, 0.2);
+  min-height: 4.5em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.45em;
+}
+.recording-scene .loadout-numbers {
+  display: flex;
+  gap: 2em;
+}
+.recording-scene .loadout-numbers span small,
+.recording-scene .compare-deltas small {
+  display: block;
+  font-size: 0.5em;
+  letter-spacing: 0.08em;
+}
+.recording-scene .loadout-numbers b {
+  font-size: 1.45em;
+  font-weight: 500;
+}
+.recording-scene .loadout-armor {
+  display: flex;
+  gap: 1.1em;
+  font-size: 0.5em;
+  color: var(--cast-muted);
+}
+.recording-scene .loadout-armor b {
+  color: #fff;
+  padding-left: 0.3em;
+  font-weight: 500;
+}
+.recording-scene .compare-deltas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65em 1em;
+  padding-left: 1em;
+}
+.recording-scene .compare-deltas b {
+  font-size: 1.1em;
+  font-weight: 500;
+}
+.recording-scene .side-board {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22em;
+}
+.recording-scene .side-board-heading,
+.recording-scene .side-board-row {
+  display: grid;
+  grid-template-columns: 32% 34% 34%;
+}
+.recording-scene .side-board-heading {
+  font-size: 0.7em;
+  align-items: center;
+  color: var(--cast-muted);
+  padding: 0.3em 1em 0.65em;
+}
+.recording-scene .side-board-heading > div {
+  display: flex;
+  align-items: center;
+  padding: 0 1.4em;
+  gap: 1.4em;
+}
+.recording-scene .side-board-heading b {
+  color: var(--side);
+  font-size: 1.3em;
+}
+.recording-scene .side-board-heading span {
+  white-space: pre;
+}
+.recording-scene .side-board-row {
+  flex: 1;
+  max-height: 5.6em;
+  min-height: 0;
+  align-items: center;
+  padding: 0.4em 1em;
+  background: rgba(255, 255, 255, 0.0235294118);
+}
+.recording-scene .side-board-row > .recorded-identity {
+  padding-right: 1.8em;
+}
+.recording-scene .side-board-row > .ct,
+.recording-scene .side-board-row > .t {
+  padding: 0.15em 1em;
+  border-left: 0.05em solid rgba(128, 151, 191, 0.2);
+}
+.recording-scene .sample-values {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  text-align: center;
+}
+.recording-scene .sample-values.four-values {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.recording-scene .sample-values b {
+  font-size: 1.5em;
+  font-weight: 500;
+  line-height: 1.05;
+}
+.recording-scene .ct .sample-values b {
+  color: var(--ct);
+}
+.recording-scene .t .sample-values b {
+  color: var(--t);
+}
+.recording-scene .sample-coverage,
+.recording-scene .headshot-sample {
+  display: block;
+  text-align: center;
+  font-size: 0.48em;
+  margin-top: 0.4em;
+  line-height: 1;
+  letter-spacing: 0.03em;
+}
+.recording-scene .headshot-sample {
+  font-size: 0.43em;
+  opacity: 0.8;
+}
+.recording-scene .unassigned-sample {
+  grid-column: 2/4;
+  display: grid;
+  grid-template-columns: 32% minmax(0, 1fr);
+  align-items: center;
+  padding-left: 1em;
+  border-left: 0.05em solid rgba(128, 151, 191, 0.2);
+}
+.recording-scene .unassigned-label {
+  color: var(--cast-muted);
+  font-size: 0.6em;
+  grid-row: span 3;
+}
+.recording-scene .unassigned-sample .sample-values b {
+  font-size: 1.25em;
+}
+.recording-scene .unassigned-sample .sample-coverage {
+  margin-top: 0.25em;
+}
+.recording-scene .buy-teams {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.7em;
+}
+.recording-scene .buy-teams:has(> :only-child) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.recording-scene .buy-team {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-top: 0.17em solid var(--side);
+  background: rgba(255, 255, 255, 0.0156862745);
+  padding: 0.8em 1em 0.5em;
+}
+.recording-scene .buy-team-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+}
+.recording-scene .buy-team-heading small {
+  font-size: 0.55em;
+  color: var(--side);
+}
+.recording-scene .buy-team-heading h2 {
+  font-size: 1.3em;
+  font-weight: 500;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.recording-scene .buy-class {
+  margin-left: auto;
+  font-size: 1.6em;
+  color: var(--side);
+  font-weight: 500;
+}
+.recording-scene .buy-team-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+  margin: 0.9em 0 0.8em;
+}
+.recording-scene .buy-team-summary small {
+  display: block;
+  font-size: 0.48em;
+  letter-spacing: 0.04em;
+}
+.recording-scene .buy-team-summary b {
+  display: block;
+  font-size: 1.65em;
+  font-weight: 500;
+  margin: 0.12em 0;
+}
+.recording-scene .buy-team-summary i {
+  font-style: normal;
+  font-size: 0.4em;
+}
+.recording-scene .buy-player-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.45em;
+  color: var(--cast-muted);
+  padding-bottom: 0.6em;
+}
+.recording-scene .buy-players {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 0.3em;
+}
+.recording-scene .buy-player {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5em;
+  border-top: 0.05em solid rgba(128, 151, 191, 0.2);
+  padding: 0.3em 0;
+}
+.recording-scene .buy-player-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3em 9em 5.5em;
+  gap: 0.5em;
+  align-items: center;
+}
+.recording-scene .buy-player .recorded-avatar {
+  width: 1.7em;
+  height: 1.7em;
+  flex-basis: 1.7em;
+}
+.recording-scene .buy-player .recorded-name {
+  font-size: 0.75em;
+}
+.recording-scene .buy-player-class {
+  font-size: 0.58em;
+  color: var(--side);
+}
+.recording-scene .buy-player-values {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8em;
+}
+.recording-scene .buy-player-values b {
+  font-weight: 500;
+}
+.recording-scene .buy-player-values i {
+  font-style: normal;
+  color: var(--cast-muted);
+}
+.recording-scene .survival {
+  font-size: 0.48em;
+  color: var(--cast-muted);
+  text-align: right;
+}
+.recording-scene .survival.survived {
+  color: #a7efd0;
+}
+.recording-scene .buy-player .recorded-inventory {
+  padding-left: 2.4em;
+  font-size: 0.8em;
+}
+.recording-scene .buy-player .inventory-empty,
+.recording-scene .buy-player .inventory-unknown {
+  margin-left: 3.2em;
+}
+.recording-scene .buy-team-page {
+  font-size: 0.45em;
+  color: var(--cast-muted);
+  padding-top: 0.8em;
+}
+.recording-scene .cast-unassigned-notice {
+  font-size: 0.5em;
+  color: var(--cast-muted);
+}
+.recording-scene .force-assessments {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.3em;
+}
+.recording-scene .force-assessment {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  background: rgba(255, 255, 255, 0.0235294118);
+  padding: 0.65em 1em;
+  border-left: 0.18em solid var(--side);
+}
+.recording-scene .recorded-team {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  min-width: 0;
+}
+.recording-scene .recorded-team > div {
+  min-width: 0;
+}
+.recording-scene .recorded-team .recorded-team-logo {
+  width: 2.2em;
+  height: 2.2em;
+  object-fit: contain;
+  flex: 0 0 2.2em;
+}
+.recording-scene .force-assessment .recorded-team {
+  flex: 1;
+}
+.recording-scene .force-assessment .recorded-team-name {
+  color: var(--side);
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.recording-scene .force-assessment .force-details {
+  flex: 1;
+  min-width: 0;
+}
+.recording-scene .force-side {
+  color: var(--side);
+  font-size: 1.4em;
+}
+.recording-scene .force-assessment strong {
+  display: block;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+.recording-scene .force-assessment small {
+  display: block;
+  font-size: 0.45em;
+  margin-top: 0.3em;
+}
+.recording-scene .force-assessment .evidence {
+  margin-left: auto;
+}
+.recording-scene .evidence-columns {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1.3em;
+}
+.recording-scene .event-board,
+.recording-scene .evidence-players {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.recording-scene .event-board > header,
+.recording-scene .evidence-players > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin: 0.3em 0 0.7em;
+}
+.recording-scene .evidence-columns h2 {
+  font-size: 0.8em;
+  font-weight: 500;
+}
+.recording-scene .evidence-columns header > span {
+  font-size: 0.42em;
+  color: var(--cast-muted);
+}
+.recording-scene .evidence-columns footer {
+  font-size: 0.45em;
+  color: var(--cast-muted);
+  padding-top: 0.8em;
+  margin-top: auto;
+}
+.recording-scene .evidence-event {
+  display: grid;
+  grid-template-columns: 6.2em minmax(0, 1fr) 5em 5.3em;
+  align-items: center;
+  gap: 0.7em;
+  background: rgba(255, 255, 255, 0.0235294118);
+  padding: 0.8em 0.8em;
+  margin-bottom: 0.32em;
+  flex: 1;
+  max-height: 5em;
+  min-height: 0;
+}
+.recording-scene .event-kind {
+  font-size: 0.64em;
+  color: var(--side);
+}
+.recording-scene .event-kind small {
+  display: block;
+  font-size: 0.65em;
+  margin-top: 0.4em;
+}
+.recording-scene .event-actor small {
+  display: block;
+  font-size: 0.43em;
+  letter-spacing: 0.08em;
+}
+.recording-scene .event-actor strong {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  font-size: 0.88em;
+  font-weight: 500;
+  line-height: 1.12;
+}
+.recording-scene .event-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+}
+.recording-scene .event-item .equipment-icon {
+  --icon-height: 1.3em;
+  --icon-max-width: 4.5em;
+}
+.recording-scene .event-item small {
+  font-size: 0.45em;
+}
+.recording-scene .event-no-data {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  color: var(--cast-muted);
+}
+.recording-scene .event-no-data b {
+  color: #fff;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+.recording-scene .event-no-data span {
+  font-size: 0.55em;
+}
+.recording-scene .evidence-player {
+  flex: 1;
+  min-height: 0;
+  padding: 0.7em 1em;
+  margin-bottom: 0.4em;
+  background: rgba(255, 255, 255, 0.0235294118);
+  border-left: 0.15em solid var(--side);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 10em;
+  gap: 0.5em 0.8em;
+  align-content: center;
+}
+.recording-scene .evidence-player .recorded-name {
+  font-size: 0.9em;
+}
+.recording-scene .evidence-player .recorded-avatar {
+  width: 1.7em;
+  height: 1.7em;
+  flex-basis: 1.7em;
+}
+.recording-scene .evidence-cash {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 1em;
+  font-size: 0.75em;
+}
+.recording-scene .evidence-cash b {
+  font-weight: 500;
+}
+.recording-scene .evidence-counts {
+  grid-column: 1/3;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.46em;
+  color: var(--cast-muted);
+}
+.recording-scene .evidence-counts b {
+  color: #fff;
+  padding-left: 0.3em;
+}
+.recording-scene .refund-evidence {
+  grid-column: 1/3;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.recording-scene .refund-evidence > span:first-child {
+  color: var(--cast-muted);
+  font-size: 0.43em;
+}
+.recording-scene .carry-evidence {
+  grid-column: 1/3;
+}
+.recording-scene .carry-evidence > small {
+  font-size: 0.43em;
+}
+.recording-scene .carry-evidence > div {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  margin-top: 0.3em;
+}
+.recording-scene .carry-evidence .equipment-icon {
+  --icon-height: 1em;
+  --icon-max-width: 3em;
+}
+.recording-scene .carry-evidence > div > span:not(.cs2-icon):not(.evidence) {
+  font-size: 0.55em;
+}
+.recording-scene .carry-evidence small {
+  display: block;
+  font-size: 0.65em;
+}
+.recording-scene .carry-evidence .evidence {
+  margin-left: auto;
+}
+
+.recording-scene .cast-footnote {
+  font-size: 0.62em;
+}
+.recording-scene .side-board-heading {
+  font-size: 1em;
+  padding: 0.3em 1em 0.65em;
+}
+.recording-scene .side-board-heading > span {
+  font-size: 0.6em;
+}
+.recording-scene .side-board-heading > div {
+  display: block;
+  position: relative;
+  padding: 0 1em;
+}
+.recording-scene .side-board-heading > div > b {
+  position: absolute;
+  left: -0.4em;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85em;
+}
+.recording-scene .sample-labels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  text-align: center;
+  font-size: 0.65em;
+}
+.recording-scene .sample-labels.four-values {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.recording-scene .sample-coverage {
+  font-size: 0.6em;
+}
+.recording-scene .headshot-sample {
+  font-size: 0.53em;
+}
+.recording-scene .loadout-numbers b {
+  font-size: 1.65em;
+}
+.recording-scene .loadout-numbers span small,
+.recording-scene .compare-deltas small {
+  font-size: 0.6em;
+}
+.recording-scene .loadout-armor {
+  font-size: 0.6em;
+}
+.recording-scene .buy-players {
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+}
+.recording-scene .buy-player .recorded-name {
+  font-size: 0.95em;
+}
+.recording-scene .buy-player-values {
+  font-size: 1.05em;
+}
+.recording-scene .buy-player .recorded-inventory {
+  font-size: 1em;
+}
+.recording-scene .buy-team-summary small,
+.recording-scene .buy-player-labels,
+.recording-scene .buy-team-page {
+  font-size: 0.58em;
+}
+.recording-scene .survival {
+  font-size: 0.56em;
+}
+.recording-scene .force-assessment strong {
+  font-size: 1em;
+}
+.recording-scene .force-assessment small {
+  font-size: 0.58em;
+}
+.recording-scene .evidence-columns h2 {
+  font-size: 1em;
+}
+.recording-scene .evidence-columns header > span,
+.recording-scene .evidence-columns footer {
+  font-size: 0.55em;
+}
+.recording-scene .event-kind {
+  font-size: 0.75em;
+}
+.recording-scene .event-actor small {
+  font-size: 0.55em;
+}
+.recording-scene .event-actor strong {
+  font-size: 1.05em;
+}
+.recording-scene .event-item small {
+  font-size: 0.55em;
+}
+.recording-scene .evidence-player .recorded-name {
+  font-size: 1.05em;
+}
+.recording-scene .evidence-cash {
+  font-size: 0.9em;
+}
+.recording-scene .evidence-counts {
+  font-size: 0.58em;
+}
+.recording-scene .refund-evidence > span:first-child {
+  font-size: 0.55em;
+}
+.recording-scene .carry-evidence > small {
+  font-size: 0.55em;
+}
+
+.recording-scene .buy-player {
+  gap: 0.3em;
+  padding: 0.12em 0;
+}
+
+.recording-scene .recording-mark .branding > img ~ img {
+  display: none;
+}
+
+.recording-scene .all-player-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--list-columns), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--list-rows), minmax(0, 1fr));
+  gap: 0.45em;
+  flex: 1;
+  min-height: 0;
+}
+.recording-scene .all-player-grid > article {
+  font-size: calc(1em * var(--list-scale));
+  min-height: 0;
+  min-width: 0;
+}
+.recording-scene .compare-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 2em;
+}
+.recording-scene .compare-heading > span {
+  display: none;
+}
+.recording-scene .compare-heading > div {
+  padding: 0;
+}
+.recording-scene .compare-player {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.35em 0.6em;
+  padding: 0.6em 0.8em;
+}
+.recording-scene .compare-identity {
+  grid-column: 1/3;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+.recording-scene .compare-identity .recorded-identity {
+  flex: 1;
+}
+.recording-scene .compare-identity .recorded-avatar {
+  width: 1.5em;
+  height: 1.5em;
+  flex-basis: 1.5em;
+}
+.recording-scene .compare-side {
+  margin: 0;
+  font-size: 0.65em;
+  white-space: nowrap;
+}
+.recording-scene .compare-loadout {
+  min-height: 0;
+  gap: 0.25em;
+  padding: 0.15em 0.5em;
+  border-left: 0.06em solid rgba(128, 151, 191, 0.2);
+}
+.recording-scene .compare-loadout .loadout-numbers {
+  gap: 1em;
+}
+.recording-scene .compare-loadout .loadout-numbers b {
+  font-size: 1.25em;
+}
+.recording-scene .compare-loadout .loadout-armor {
+  gap: 0.6em;
+  font-size: 0.55em;
+}
+.recording-scene .compare-loadout .recorded-inventory {
+  font-size: 0.85em;
+  gap: 0.15em 0.5em;
+}
+.recording-scene .compare-deltas {
+  grid-column: 1/3;
+  border-top: 0.05em solid rgba(128, 151, 191, 0.2);
+  padding: 0.3em 0 0;
+  justify-content: space-between;
+  gap: 0.4em;
+}
+.recording-scene .compare-deltas span {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+.recording-scene .compare-deltas b {
+  font-size: 0.85em;
+}
+.recording-scene .side-board-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  max-height: none;
+  padding: 0.5em 0.8em;
+  gap: 0.35em;
+}
+.recording-scene .side-board-row > .recorded-identity {
+  padding: 0;
+}
+.recording-scene .side-board-row .recorded-avatar {
+  width: 1.5em;
+  height: 1.5em;
+  flex-basis: 1.5em;
+}
+.recording-scene .stat-card-samples {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8em;
+}
+.recording-scene .stat-card-samples > div {
+  position: relative;
+  padding-left: 0.7em;
+  border-left: 0.08em solid var(--side, rgba(128, 151, 191, 0.2666666667));
+}
+.recording-scene .stat-card-samples > .unassigned-card-sample {
+  grid-column: 1/3;
+}
+.recording-scene .stat-card-side {
+  display: block;
+  font-size: 0.6em;
+  color: var(--side, var(--cast-muted));
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25em;
+}
+.recording-scene .stat-card-samples .sample-labels {
+  font-size: 0.5em;
+  color: var(--cast-muted);
+  margin-bottom: 0.1em;
+}
+.recording-scene .stat-card-samples .sample-values b {
+  font-size: 1.35em;
+}
+.recording-scene .stat-card-samples .sample-coverage {
+  font-size: 0.5em;
+  margin-top: 0.25em;
+}
+.recording-scene .stat-card-samples .headshot-sample {
+  font-size: 0.45em;
+  margin-top: 0.2em;
+}
+.recording-scene .multikill-player {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  align-items: center;
+  gap: 1em;
+  padding: 0.8em 1em;
+  background: rgba(255, 255, 255, 0.0235294118);
+  border-left: 0.15em solid var(--ct);
+}
+.recording-scene .multikill-values {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) 1.6fr;
+  gap: 0.5em;
+  text-align: center;
+}
+.recording-scene .multikill-values small {
+  display: block;
+  font-size: 0.6em;
+  white-space: nowrap;
+}
+.recording-scene .multikill-values b {
+  display: block;
+  font-size: 1.8em;
+  font-weight: 500;
+  color: var(--ct);
+}
+.recording-scene .multikill-coverage b {
+  font-size: 1.2em;
+  color: #fff;
+  margin-top: 0.3em;
+}
+.recording-scene .buy-teams {
+  grid-template-columns: repeat(var(--team-columns, 2), minmax(0, 1fr));
+  gap: 1em;
+}
+.recording-scene .buy-player {
+  padding: 0.4em 0.5em;
+  justify-content: center;
+  gap: 0.4em;
+}
+.recording-scene .buy-player-main {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.3em 0.6em;
+}
+.recording-scene .buy-player-main .recorded-identity {
+  grid-column: 1;
+}
+.recording-scene .buy-player-class {
+  grid-column: 2;
+  text-align: right;
+}
+.recording-scene .buy-player-values {
+  grid-column: 1;
+  justify-content: start;
+  gap: 0.7em;
+  font-size: 1em;
+}
+.recording-scene .survival {
+  grid-column: 2;
+}
+.recording-scene .buy-player .recorded-inventory {
+  padding: 0;
+  font-size: 0.85em;
+}
+.recording-scene .buy-player .inventory-empty,
+.recording-scene .buy-player .inventory-unknown {
+  margin: 0;
+}
+.recording-scene .evidence-columns {
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.6fr);
+}
+.recording-scene .evidence-event {
+  grid-template-columns: 4.5em minmax(0, 1fr) 4em 5.3em;
+  gap: 0.45em;
+  font-size: 0.85em;
+}
+.recording-scene .evidence-player-grid {
+  gap: 0.4em;
+}
+.recording-scene .evidence-player {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  padding: 0.6em 0.7em;
+  margin: 0;
+  gap: 0.5em;
+}
+.recording-scene .evidence-player .recorded-identity {
+  min-height: 1.7em;
+}
+.recording-scene .evidence-player .recorded-name {
+  font-size: 1em;
+}
+.recording-scene .evidence-cash {
+  justify-content: space-between;
+  font-size: 1em;
+}
+.recording-scene .evidence-counts {
+  gap: 0.35em;
+  font-size: 0.55em;
+}
+.recording-scene .evidence-counts span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+}
+.recording-scene .refund-evidence > span:first-child {
+  font-size: 0.5em;
+}
+.recording-scene .carry-evidence > div {
+  gap: 0.4em;
+}
+
+.recording-scene .evidence-event {
+  grid-template-columns: 5.5em minmax(0, 1fr) 4em;
+}
+
+.recording-scene .evidence-player {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: center;
+  padding: 0.4em 0.6em;
+  gap: 0.35em 0.5em;
+}
+
+.recording-scene .evidence-player .recorded-identity {
+  min-height: 0;
+}
+
+.recording-scene .evidence-player .evidence-cash {
+  font-size: 0.75em;
+  gap: 0.5em;
+}
+
+.recording-scene .evidence-player .evidence-counts {
+  grid-column: 1/3;
+}
+
+.recording-scene .compare-player .recorded-name {
+  -webkit-line-clamp: 1;
+}
+
+.recording-scene .compare-loadout {
+  align-self: stretch;
+  font-size: 0.8em;
+  padding: 0 0.4em;
+  gap: 0.15em;
+}
+
+.recording-scene .compare-loadout .loadout-armor {
+  line-height: 1.1;
+}
+
+.recording-scene .compare-player {
+  padding: 0.3em 0.6em;
+  gap: 0.2em 0.5em;
+}
+
+.recording-scene .compare-identity .recorded-avatar {
+  width: 1.1em;
+  height: 1.1em;
+  flex-basis: 1.1em;
+}
+
+.recording-scene .compare-deltas {
+  font-size: 0.75em;
+  padding-top: 0.2em;
+}
+
+.recording-scene .recording-stale-label {
+  position: absolute;
+  top: 1em;
+  right: 2em;
+  padding: 0.3em 0.6em;
+  color: #eee1a0;
+  background: #11244a;
+  font-size: 0.65em;
+  letter-spacing: 0.1em;
+  z-index: 2;
+}
+
+.recording-scene.recording-stale .recording-stage {
+  opacity: 0.7;
+}
+
+.recording-scene .evidence-movements {
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+  font-size: 0.65em;
+  color: #b6def5;
+}
+
+.broadcast-scene {
+  --ct: #b6def5;
+  --t: #eee1a0;
+  --muted: #a9bbd1;
+  --cast-muted: var(--muted);
+  position: absolute;
+  inset: 4% 5% 8%;
+  padding: 1.5em 2em;
+  display: grid;
+  grid-template-rows: 5em minmax(0, 1fr);
+  gap: 1em;
+  color: #fff;
+  background: linear-gradient(125deg, rgba(7, 28, 80, 0.9607843137), rgba(11, 23, 48, 0.9607843137) 62%, rgba(20, 35, 58, 0.9607843137));
+  border: 0;
+  font-family: "sOU Bahnschrift", "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+  font-stretch: condensed;
+  overflow: hidden;
+  pointer-events: none;
+}
+.broadcast-scene::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.22em;
+  background: var(--ct);
+}
+.broadcast-scene * {
+  min-width: 0;
+}
+.broadcast-scene .broadcast-heading {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 5em minmax(0, 1fr) 12em;
+  align-items: center;
+  gap: 1.8em;
+  border-bottom: 0.05em solid rgba(128, 151, 191, 0.2666666667);
+  padding-bottom: 0.8em;
+}
+.broadcast-scene .recording-mark {
+  border-right: 0.05em solid rgba(128, 151, 191, 0.2666666667);
+  height: 3em;
+  display: flex;
+  align-items: center;
+}
+.broadcast-scene .recording-mark .branding {
+  margin: 0;
+}
+.broadcast-scene .recording-mark .branding:not(:has(img)) {
+  display: none;
+}
+.broadcast-scene .recording-mark:has(.branding img) .recording-wordmark {
+  display: none;
+}
+.broadcast-scene .recording-mark img {
+  max-width: 4em;
+  max-height: 2.5em;
+  object-fit: contain;
+}
+.broadcast-scene .recording-mark .competition-name,
+.broadcast-scene .recording-mark .branding > img ~ img {
+  display: none;
+}
+.broadcast-scene .recording-wordmark {
+  font-family: Impact, sans-serif;
+  font-size: 2em;
+}
+.broadcast-scene .recording-kicker {
+  text-transform: uppercase;
+  display: block;
+  font-size: 0.62em;
+  color: var(--ct);
+  letter-spacing: 0.16em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.broadcast-scene .broadcast-heading h1 {
+  margin: 0.1em 0 0;
+  font-size: 2.2em;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.broadcast-scene .recording-map {
+  text-align: right;
+  text-transform: uppercase;
+}
+.broadcast-scene .recording-map strong {
+  font-size: 1.5em;
+  font-weight: 500;
+}
+.broadcast-scene .scene-subtitle {
+  margin: 0.25em 0 0;
+  font-size: 0.6em;
+  color: var(--muted);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.has-lower-third:not(.scene-live) .broadcast-scene {
+  bottom: 24%;
+}
+
+.presentation .scene-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  min-height: 0;
+}
+.presentation h2,
+.presentation h3,
+.presentation p {
+  margin-top: 0;
+}
+.presentation .ct {
+  --side: var(--ct);
+}
+.presentation .t {
+  --side: var(--t);
+}
+.presentation .player-card,
+.presentation .feature-reference,
+.presentation .veto-card,
+.presentation .map-item,
+.presentation .match-duel {
+  background: rgba(255, 255, 255, 0.0235294118);
+}
+.presentation .feature-reference,
+.presentation .map-item {
+  border-color: rgba(128, 151, 191, 0.2666666667);
+}
+.presentation .player-card {
+  border-left-width: 0.18em;
+}
+.presentation .match-duel {
+  border-block: 0.05em solid rgba(128, 151, 191, 0.2666666667);
+}
+.presentation .scheduled-start,
+.presentation .break-clock {
+  margin: 0;
+}
+.presentation .stats-context {
+  margin: 0;
+}
+.presentation .empty-state {
+  margin: auto;
+}
+.presentation .statistics-table-wrap {
+  overflow: hidden;
+  min-height: 0;
+}
+.presentation .statistics-table {
+  table-layout: fixed;
+  font-size: 0.9em;
+}
+.presentation .statistics-table th,
+.presentation .statistics-table td {
+  padding: 0.5em 0.3em;
+  border-bottom-width: 0.05em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.presentation .statistics-table th:first-child {
+  width: 22%;
+}
+.presentation .statistics-table th:last-child {
+  width: 14%;
+}
+.presentation .statistics-table th:nth-child(10),
+.presentation .statistics-table th:nth-child(11) {
+  width: 7%;
+}
+.presentation .statistics-table td:last-child {
+  white-space: normal;
+}
+.presentation .round-history {
+  position: static;
+  margin: 0;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.presentation .map-list {
+  flex-wrap: nowrap;
+}
+.presentation .map-item {
+  flex-basis: 0;
+  border-width: 0.05em;
+}
+.presentation .map-series h3 {
+  margin: 0 0 0.5em;
+}
+
+.lineups-scene .lineup-columns {
+  flex: 1;
+  min-height: 0;
+  gap: 1.3em;
+}
+.lineups-scene .lineup-team {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+.lineups-scene .lineup-team h2 {
+  margin: 0;
+  flex-shrink: 0;
+}
+.lineups-scene .lineup-team .player-card {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  font-size: 0.9em;
+  padding: 0.4em 0.65em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.lineups-scene .lineup-team .portrait {
+  width: 2em;
+  height: 2em;
+}
+.lineups-scene .inventory {
+  flex-wrap: nowrap;
+}
+
+.postmatch-scene .match-duel,
+.veto-scene .match-duel {
+  padding: 0.4em 1em;
+}
+.postmatch-scene .duel-logo,
+.veto-scene .duel-logo {
+  width: 2em;
+  height: 2em;
+}
+.postmatch-scene .duel-team h2,
+.veto-scene .duel-team h2 {
+  margin: 0.2em 0;
+  font-size: 1.25em;
+}
+.postmatch-scene .duel-score,
+.veto-scene .duel-score {
+  gap: 0.2em;
+}
+.postmatch-scene .duel-score strong,
+.veto-scene .duel-score strong {
+  font-size: 2em;
+}
+.postmatch-scene .scene-body > h3,
+.veto-scene .scene-body > h3 {
+  margin: 0;
+  font-size: 0.85em;
+}
+.postmatch-scene .series-winner,
+.veto-scene .series-winner {
+  padding: 0;
+}
+.postmatch-scene .statistics-table,
+.veto-scene .statistics-table {
+  font-size: 0.6em;
+}
+
+.veto-scene .veto-timeline {
+  flex: 1;
+  min-height: 0;
+  grid-auto-rows: minmax(0, 1fr);
+  margin: 0;
+  gap: 0.7em;
+}
+
+.veto-scene .veto-card {
+  padding: 0.7em;
+}
+
+.veto-scene .veto-card h3 {
+  margin: 0.3em 0;
+}
+
+.spotlight-scene .spotlight-layout {
+  min-height: 0;
+  gap: 1.3em;
+}
+
+.spotlight-scene .spotlight-portrait {
+  width: 7em;
+  height: 7em;
+  margin: 0.5em auto;
+}
+
+.spotlight-scene .player-card {
+  font-size: 0.85em;
+}
+
+.spotlight-scene .feature-reference {
+  border-width: 0.05em;
+}
+
+.has-lower-third:not(.scene-live) .broadcast-scene :is(.scene-body, .recording-stage) {
+  font-size: 0.8em;
 }

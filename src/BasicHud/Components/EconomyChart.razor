@@ -1,0 +1,49 @@
+@using System.Globalization
+@using static BasicHud.Presentation.RecordingData
+<div class="economy-chart">
+    <svg viewBox="0 0 1400 470" role="img" aria-label="@Locale["chartLabel"]">
+        @for (var tick = 0; tick <= 4; tick++)
+        {
+            var value = Maximum * tick / 4; var y = 330 - tick * 72;
+            <line x1="90" y1="@y" x2="1360" y2="@y" class="chart-grid" />
+            <g><text x="70" y="@(y + 6)" text-anchor="end" class="chart-y">@Locale.Compact(value)</text></g>
+        }
+        @for (var index = 0; index < Lines.Length; index++)
+        {
+            var line = Lines[index]; var previous = (EconomyPoint?)null;
+            @foreach (var point in line.Points)
+            {
+                @if (point.Value is { } value)
+                {
+                    @if (previous is { Value: not null } before) { <line class="chart-line chart-team-@index" x1="@X(before.Round)" y1="@Y(before.Value.Value)" x2="@X(point.Round)" y2="@Y(value)" /> }
+                    <circle data-round="@point.Round" class="chart-point chart-team-@index" cx="@X(point.Round)" cy="@Y(value)" r="5" />
+                }
+                previous = point.Value.HasValue ? point : null;
+            }
+        }
+        @foreach (var point in Lines.FirstOrDefault().Points ?? [])
+        {
+            @if ((point.Round - First) % Stride == 0 || point.Round == Last)
+            {
+                <g><text x="@X(point.Round)" y="368" text-anchor="middle" class="chart-round">@point.Round</text></g>
+                @for (var index = 0; index < Lines.Length; index++)
+                {
+                    var coverage = Lines[index].Points.FirstOrDefault(p => p.Round == point.Round);
+                    <g><text x="@X(point.Round)" y="@(410 + index * 30)" text-anchor="middle" class="chart-coverage chart-team-@index">@(coverage is null ? "—" : $"{coverage.Known}/{coverage.Observed}")</text></g>
+                }
+            }
+        }
+        <g><text x="4" y="368" class="chart-round">@Locale["round"]</text><text x="4" y="408" class="chart-small">@Locale["players"]</text></g>
+        @if (!Lines.SelectMany(l => l.Points).Any(p => p.Value.HasValue)) { <g><text x="720" y="195" text-anchor="middle" class="chart-no-values">@Locale["noValues"]</text></g> }
+    </svg>
+</div>
+@code {
+    private static readonly RecordingCopy Locale = RecordingCopy.Instance;
+    [Parameter] public (string Label, IReadOnlyList<EconomyPoint> Points)[] Lines { get; set; } = [];
+    private int Maximum => Math.Max(1000, Lines.SelectMany(l => l.Points).MaxBy(p => p.Value)?.Value ?? 1000);
+    private int First => Lines.SelectMany(l => l.Points).MinBy(p => p.Round)?.Round ?? 1;
+    private int Last => Lines.SelectMany(l => l.Points).MaxBy(p => p.Round)?.Round ?? 2;
+    private int Stride => Math.Max(1, (Last - First + 13) / 14);
+    private string X(int round) => (90 + (round - First) * 1270.0 / Math.Max(1, Last - First)).ToString("0.##", CultureInfo.InvariantCulture);
+    private string Y(int value) => (330 - value * 288.0 / Maximum).ToString("0.##", CultureInfo.InvariantCulture);
+}

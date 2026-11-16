@@ -11,9 +11,9 @@ Only the `SOU_CREATOR_API_KEY` repository secret is needed. Future published tag
 upload automatically; the manual **Upload release to sOU** workflow also accepts
 existing release tags without rebuilding their immutable packages. Uploads await sOU review.
 
-A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk**, **SOU.Hud.Sdk.Blazor** and **SOU.Live.Contracts** NuGet packages `0.3.0-preview.3`; no private application source is required.
+A public C#/Blazor WebAssembly reference project for a complete CS2 broadcast: live HUD, prematch, real lineups, map veto, break, results, statistics and player spotlight. Modular components consume the published **SOU.Hud.Sdk**, **SOU.Hud.Sdk.Blazor** and **SOU.Live.Contracts** NuGet packages `0.3.0-preview.9` from nuget.org; no private application source is required.
 
-The working source now targets **HUD API v3** and requires sOU desktop **0.3.34 or newer**. Version 0.4.19 introduces this migration; historical releases through 0.4.18 remain API v2.
+The working source now targets **HUD API v3** and requires sOU desktop **0.3.42 or newer**. Version 0.4.19 introduces this migration; historical releases through 0.4.18 remain API v2.
 
 The current source imports 81 weapon, grenade, status and killfeed SVGs from [JohnTimmermann/OpenHud-React-Hud](https://github.com/JohnTimmermann/OpenHud-React-Hud/tree/b2c1cedc4f03e0a1df86c9be6f9794ce0a7f8cc0). Dedicated skull and burning symbols replace the previous status art. Symbols absent from that reference retain their existing local assets; radar artwork is unchanged. Artwork remains unchanged, with newly measured optical sizing; Flashbang adds a missing SVG namespace for standalone browser loading. See [source and license details](LICENSES/OPENHUD-ICONS.md). These changes ship in 0.4.11; previous release packages remain unchanged.
 
@@ -29,7 +29,7 @@ The screenshot shows the actual packaged renderer with synthetic HUD data in an 
 
 The installed HUD is named **sOU Default HUD**; its stable package ID remains `sou-basic-wasm`.
 
-1. Download `sou-basic-wasm-0.4.23.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
+1. Download `sou-basic-wasm-0.4.31.souhud` and its SHA-256 file from [Releases](https://github.com/getsOU/HUD-WASM/releases).
 2. In the [sOU desktop app](https://www.getsou.app/get-sou), choose **HUDs → Paket importieren**, select the package and install it.
 3. Select the HUD and **Ansicht**, then copy the address for an OBS Browser Source or open the CS2 output. Use **1920 × 1080** and a transparent browser background. Use sOU's actual address rather than guessing the local port.
 4. Open its **Panel** and save/apply any captions, scene choices, references or images. All Hide checkboxes are unchecked by default: components stay enabled unless explicitly hidden.
@@ -47,7 +47,7 @@ Live playercards show positive SDK-provided round kills as a vertical icon stack
 
 The round MVP card sits below the matchbar at the same width, with the same proportional gap as the vertical player cards (12 px at 1920 px HUD width). Both areas have no outside border and use the same neutral HUD-blue background. There is no separate round-winner banner. The card appears only after an unambiguous MVP-counter increase has been observed and displays the completed round's kills and damage. Bundled Motion reveals it over 420 ms, with slightly staggered portrait/text movement and matching round-history motion. After eight seconds, including during pauses and after match end, it starts a 260 ms exit; the next freeze triggers that exit earlier. Repeated updates do not extend the display or reopen it during freeze. Reduced-motion preferences skip the movement. Live play, lost data continuity or changed session/map/match clear it immediately. Initial/stale/disconnected data and ambiguous counter jumps do not create an award; unavailable round statistics remain `—`.
 
-The stable package ID remains `sou-basic-wasm`; the current version is **0.4.23**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all eight views remain compatible. Previous releases and already running outputs are unchanged.
+The stable package ID remains `sou-basic-wasm`; the current version is **0.4.31**, protocol v3. Select the new version and reopen outputs after installing. Caption/Hide fields and all fourteen views remain available. Previous releases and already running outputs are unchanged.
 
 The current source declares matching CT blue (`#B6DEF5`) and T gold (`#EEE1A0`) in `hud.json` under `outlineColors`. With a supporting sOU/HLAE host, opening the HUD through **Über CS2 anzeigen** selects these colors for X-Ray/outlines, utility trails and derived smoke coloring. Browser/OBS output alone does not select the in-game palette. Trails and smoke created after the palette is applied use the colors; existing effects may retain their previous appearance. See the [sOU HLAE color documentation](https://www.getsou.app/docs/cs2-hlae#hud-farben).
 
@@ -71,19 +71,21 @@ Missing values remain `—`. Team A is never assumed CT. Unknown health is not t
 
 The live composition targets a 1920×1080 canvas and scales proportionally in smaller or wider windows. The matchbar and MVP occupy the upper center, radar the upper left, and competition/sponsor branding the space above the killfeed on the right. Rosters use the default side layout or the panel's horizontal layout; the observer remains centered at the bottom. Missing live logos are omitted, and missing player portraits use a side/slot agent when those values are known.
 
+Version **0.4.31** adds six [recording and economy showcase views](docs/recording-showcase.md), as passive 16:9 broadcast graphics, configured exclusively through six dedicated panel sections, with portable SDK fixtures and explicit data/evidence coverage.
+
 ## Build, test and package
 
-Install **.NET SDK 10.0.403**, **Node.js 22+** and **PowerShell 7**. The application targets .NET/ASP.NET Core **10.0.14**. `NuGet.Config` permits only nuget.org; SDK/package/tool versions and dependency hashes are committed in `global.json`, NuGet lock files, `package-lock.json` and the local tool manifest. No private feed or credentials are required.
+Install **.NET SDK 10.0.403**, **Node.js 22+** and **PowerShell 7**. The application targets .NET/ASP.NET Core **10.0.14**. `NuGet.Config` restores the published packages from nuget.org into the project-local `artifacts/nuget-published-preview9` cache. The SDK version remains `0.3.0-preview.9`, but its published content replaces the earlier private build; both NuGet lock files pin the public package hashes. Build.ps1 restores the matching tool into `artifacts/published-sdk-tools` and invokes that exact tool assembly to avoid a stale same-version user tool cache. No private feed or credentials are required.
 
 ```powershell
 pwsh ./scripts/Build.ps1
 ```
 
-The script restores pinned Sass dependencies, checks the compiled stylesheet against its SCSS sources, performs locked NuGet restore, restores the public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata/region-selection tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
+The script restores pinned Sass dependencies, checks the compiled stylesheet against its SCSS sources, performs locked NuGet restore, restores the project-local public `SOU.Hud.Tool`, verifies formatting, runs focused model/lifecycle/metadata/region-selection tests and actual Razor image-error event checks, publishes Release WASM, packs and validates the HUD and writes a checksum:
 
 ```text
-artifacts/sou-basic-wasm-0.4.23.souhud
-artifacts/sou-basic-wasm-0.4.23.souhud.sha256
+artifacts/sou-basic-wasm-0.4.31.souhud
+artifacts/sou-basic-wasm-0.4.31.souhud.sha256
 ```
 
 Existing output directories/packages are never overwritten. Repeat in a fresh directory:

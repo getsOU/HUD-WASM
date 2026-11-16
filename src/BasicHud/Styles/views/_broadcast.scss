@@ -1,0 +1,298 @@
+@use "../tokens" as theme;
+
+// Shared scalable canvas frame for the original and recorded broadcast views.
+.broadcast-scene {
+    --ct: #{theme.$ct-accent};
+    --t: #{theme.$t-accent};
+    --muted: #a9bbd1;
+    --cast-muted: var(--muted);
+    position: absolute;
+    inset: 4% 5% 8%;
+    padding: 1.5em 2em;
+    display: grid;
+    grid-template-rows: 5em minmax(0, 1fr);
+    gap: 1em;
+    color: #fff;
+    background: linear-gradient(125deg, #071c50f5, #0b1730f5 62%, #14233af5);
+    border: 0;
+    font-family:
+        "sOU Bahnschrift", "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+    font-stretch: condensed;
+    overflow: hidden;
+    pointer-events: none;
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 0.22em;
+        background: var(--ct);
+    }
+    * {
+        min-width: 0;
+    }
+    .broadcast-heading {
+        margin: 0;
+        display: grid;
+        grid-template-columns: 5em minmax(0, 1fr) 12em;
+        align-items: center;
+        gap: 1.8em;
+        border-bottom: 0.05em solid #8097bf44;
+        padding-bottom: 0.8em;
+    }
+    .recording-mark {
+        border-right: 0.05em solid #8097bf44;
+        height: 3em;
+        display: flex;
+        align-items: center;
+        .branding {
+            margin: 0;
+        }
+        .branding:not(:has(img)) {
+            display: none;
+        }
+        &:has(.branding img) .recording-wordmark {
+            display: none;
+        }
+        img {
+            max-width: 4em;
+            max-height: 2.5em;
+            object-fit: contain;
+        }
+        .competition-name,
+        .branding > img ~ img {
+            display: none;
+        }
+    }
+    .recording-wordmark {
+        font-family: Impact, sans-serif;
+        font-size: 2em;
+    }
+    .recording-kicker {
+        text-transform: uppercase;
+        display: block;
+        font-size: 0.62em;
+        color: var(--ct);
+        letter-spacing: 0.16em;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .broadcast-heading h1 {
+        margin: 0.1em 0 0;
+        font-size: 2.2em;
+        line-height: 1.1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    .recording-map {
+        text-align: right;
+        text-transform: uppercase;
+    }
+    .recording-map strong {
+        font-size: 1.5em;
+        font-weight: 500;
+    }
+    .scene-subtitle {
+        margin: 0.25em 0 0;
+        font-size: 0.6em;
+        color: var(--muted);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}
+.has-lower-third:not(.scene-live) .broadcast-scene {
+    bottom: 24%;
+}
+
+.presentation {
+    .scene-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8em;
+        min-height: 0;
+    }
+    h2,
+    h3,
+    p {
+        margin-top: 0;
+    }
+    .ct {
+        --side: var(--ct);
+    }
+    .t {
+        --side: var(--t);
+    }
+    .player-card,
+    .feature-reference,
+    .veto-card,
+    .map-item,
+    .match-duel {
+        background: #ffffff06;
+    }
+    .feature-reference,
+    .map-item {
+        border-color: #8097bf44;
+    }
+    .player-card {
+        border-left-width: 0.18em;
+    }
+    .match-duel {
+        border-block: 0.05em solid #8097bf44;
+    }
+    .scheduled-start,
+    .break-clock {
+        margin: 0;
+    }
+    .stats-context {
+        margin: 0;
+    }
+    .empty-state {
+        margin: auto;
+    }
+    .statistics-table-wrap {
+        overflow: hidden;
+        min-height: 0;
+    }
+    .statistics-table {
+        table-layout: fixed;
+        font-size: 0.9em;
+    }
+    .statistics-table th,
+    .statistics-table td {
+        padding: 0.5em 0.3em;
+        border-bottom-width: 0.05em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .statistics-table th:first-child {
+        width: 22%;
+    }
+    .statistics-table th:last-child {
+        width: 14%;
+    }
+    .statistics-table th:nth-child(10),
+    .statistics-table th:nth-child(11) {
+        width: 7%;
+    }
+    .statistics-table td:last-child {
+        white-space: normal;
+    }
+    .round-history {
+        position: static;
+        margin: 0;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+    .map-list {
+        flex-wrap: nowrap;
+    }
+    .map-item {
+        flex-basis: 0;
+        border-width: 0.05em;
+    }
+    .map-series h3 {
+        margin: 0 0 0.5em;
+    }
+}
+.lineups-scene {
+    .lineup-columns {
+        flex: 1;
+        min-height: 0;
+        gap: 1.3em;
+    }
+    .lineup-team {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25em;
+    }
+    .lineup-team h2 {
+        margin: 0;
+        flex-shrink: 0;
+    }
+    .lineup-team .player-card {
+        flex: 1;
+        min-height: 0;
+        margin: 0;
+        font-size: 0.9em;
+        padding: 0.4em 0.65em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .lineup-team .portrait {
+        width: 2em;
+        height: 2em;
+    }
+    .inventory {
+        flex-wrap: nowrap;
+    }
+}
+.postmatch-scene,
+.veto-scene {
+    .match-duel {
+        padding: 0.4em 1em;
+    }
+    .duel-logo {
+        width: 2em;
+        height: 2em;
+    }
+    .duel-team h2 {
+        margin: 0.2em 0;
+        font-size: 1.25em;
+    }
+    .duel-score {
+        gap: 0.2em;
+    }
+    .duel-score strong {
+        font-size: 2em;
+    }
+    .scene-body > h3 {
+        margin: 0;
+        font-size: 0.85em;
+    }
+    .series-winner {
+        padding: 0;
+    }
+    .statistics-table {
+        font-size: 0.6em;
+    }
+}
+.veto-scene .veto-timeline {
+    flex: 1;
+    min-height: 0;
+    grid-auto-rows: minmax(0, 1fr);
+    margin: 0;
+    gap: 0.7em;
+}
+.veto-scene .veto-card {
+    padding: 0.7em;
+}
+.veto-scene .veto-card h3 {
+    margin: 0.3em 0;
+}
+.spotlight-scene .spotlight-layout {
+    min-height: 0;
+    gap: 1.3em;
+}
+.spotlight-scene .spotlight-portrait {
+    width: 7em;
+    height: 7em;
+    margin: 0.5em auto;
+}
+.spotlight-scene .player-card {
+    font-size: 0.85em;
+}
+.spotlight-scene .feature-reference {
+    border-width: 0.05em;
+}
+
+.has-lower-third:not(.scene-live)
+    .broadcast-scene
+    :is(.scene-body, .recording-stage) {
+    font-size: 0.8em;
+}

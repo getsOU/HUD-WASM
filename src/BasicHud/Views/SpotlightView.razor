@@ -1,4 +1,5 @@
-<section class="presentation spotlight-scene"><SceneHeader Title="Spotlight" Context="Context" />
+<section lang="en" class="presentation broadcast-scene spotlight-scene"><SceneHeader Title="Spotlight" Context="Context" />
+    <div class="scene-body">
     <div class="spotlight-layout"><div class="spotlight-player">
         <h2>@Context.TextOr("feature", "headline", "Player spotlight")</h2><p>@Context.Text("feature", "subline")</p>
         @if (PlayerReference?.Missing == true) { <p class="empty-state">Selected player is no longer available</p> }
@@ -24,6 +25,7 @@
             </article>
         }
     </div></div>
+    </div>
 </section>
 @code {
     [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;

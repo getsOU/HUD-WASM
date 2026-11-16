@@ -1,0 +1,30 @@
+@{
+    var players = RecordedMultikills.From(Analysis.Players).Where(p => Options.PlayerId is null || p.SteamId == Options.PlayerId).ToArray();
+    var layout = RecordingLayout.Cards(players.Length, 8, 3);
+}
+<div class="recording-view multikill-view">
+    <div class="cast-caption"><span>@Locale["multiRounds"]</span><b>@Locale["mapStats"]</b></div>
+    <div class="multikill-players all-player-grid" style="@(layout.Style)">
+        @foreach (var p in players)
+        {
+            <article class="multikill-player" data-player="@p.SteamId">
+                <RecordedIdentity SteamId="@p.SteamId" Side="@Analysis.Rounds.OrderByDescending(r => r.Number).SelectMany(r => r.Players).FirstOrDefault(r => r.SteamId == p.SteamId)?.Side" Name="@p.Name" Context="Context" />
+                <div class="multikill-values">
+                    <span><small>2K</small><b>@Locale.Number(p.DoubleKills)</b></span>
+                    <span><small>3K</small><b>@Locale.Number(p.TripleKills)</b></span>
+                    <span><small>4K</small><b>@Locale.Number(p.QuadKills)</b></span>
+                    <span><small>5+</small><b>@Locale.Number(p.FivePlusKills)</b></span>
+                    <span class="multikill-coverage"><small>@Locale["killRounds"]</small><b>@p.KillRounds / @p.Rounds</b></span>
+                </div>
+            </article>
+        }
+        @if (players.Length == 0) { <div class="cast-no-sample">@Locale["noPlayerValues"]</div> }
+    </div>
+    <footer class="cast-footnote"><span>@Locale.Scope(players.Length, players.Length, "players")</span></footer>
+</div>
+@code {
+    private static readonly RecordingCopy Locale = RecordingCopy.Instance;
+    [Parameter, EditorRequired] public HudMapAnalysis Analysis { get; set; } = default!;
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter, EditorRequired] public RecordingOptions Options { get; set; } = default!;
+}

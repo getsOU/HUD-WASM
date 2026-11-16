@@ -1,0 +1,9 @@
+@if (Player is null) { <div class="loadout-unknown">@Locale["playerUnknown"]</div> }
+else
+{
+    <div class="loadout-numbers"><span><small>@Locale["money"]</small><b>@Locale.Money(Player.Money)</b></span><span><small>@Locale["equipment"]</small><b>@Locale.Money(Player.EquipmentValue)</b></span></div>
+    <div class="loadout-armor"><span>@Locale["armor"] <b>@Locale.Number(Player.Armor)</b></span><span>@Locale["helmet"] <b>@Locale.Flag(Player.Helmet)</b></span><span>@Locale["kit"] <b>@Locale.Flag(Player.DefuseKit)</b></span></div>
+    <RecordedInventory Weapons="Player.Weapons" Limit="4" Page="InventoryPage" />
+}
+@code {
+    private static readonly RecordingCopy Locale = RecordingCopy.Instance; [Parameter] public HudRoundPlayer? Player { get; set; } [Parameter] public int InventoryPage { get; set; } = 1; }

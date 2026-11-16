@@ -1,0 +1,3 @@
+<span class="evidence evidence-@Level.ToString().ToLowerInvariant()">@Locale.Evidence(Level)</span>
+@code {
+    private static readonly RecordingCopy Locale = RecordingCopy.Instance; [Parameter] public HudEvidence Level { get; set; } }

@@ -1,6 +1,6 @@
 {
   "id": "sou-basic-wasm",
-  "version": "0.4.23",
+  "version": "0.4.31",
   "name": "sOU Default HUD",
   "infoUrl": "https://github.com/getsOU/HUD-WASM",
   "outlineColors": {
@@ -38,7 +38,47 @@
     {
       "name": "Spotlight",
       "route": "views/spotlight"
+    },
+    {
+      "name": "Team Economy",
+      "route": "views/team-economy"
+    },
+    {
+      "name": "Loadout Comparison",
+      "route": "views/round-compare"
+    },
+    {
+      "name": "CT/T Statistics",
+      "route": "views/side-statistics"
+    },
+    {
+      "name": "Multikills",
+      "route": "views/multikills"
+    },
+    {
+      "name": "Round Loadouts",
+      "route": "views/round-buys"
+    },
+    {
+      "name": "Economy Review",
+      "route": "views/economy-evidence"
     }
   ],
-  "releaseNotes": "- Add spaced, team-colored kill symbols for the current round outside playercards, without numbers, backgrounds or frames. Align side-layout indicators with the card's top edge and place horizontal-layout indicators above the card. Retain kills after death, hide them during freeze/warmup, and animate newly added symbols with reduced-motion support.\n- Position the competition logo at the right edge with rotating sponsors directly to its left. Size both by their panel-controlled height and original aspect ratio, without fixed-width slots.\n- Respect configured delayed match starts in prematch and break countdowns, label the delay and show the original schedule when known. Restore the regular schedule when a delay is cleared and support delayed-only or unknown start times.\n- Hide the complete start display when its effective target is reached; show it again when a new future start is supplied.\n- Display all planned and delayed start dates in the browser/OBS local timezone, including daylight saving time, without visible timezone suffixes. Keep countdowns on the SDK synchronized clock.\n- Update the public SDK, Blazor adapter, contracts and HUD tool to 0.3.0-preview.3. Delayed-start data requires sOU Desktop 0.3.38 or newer; older senders retain the regular-start fallback. Select version 0.4.23 and reopen outputs after importing."
+  "releaseNotes": "- Use the published SOU 0.3.0-preview.9 NuGet packages and matching tool instead of the earlier unpublished local build.\n- Declare package format 2, the embedded SDK version and the host capabilities required by the existing API 3 HUD.\n- Keep all existing views, design and recording subscriptions unchanged; build and validate the complete Blazor publish output.",
+  "formatVersion": 2,
+  "sdkVersion": "0.3.0-preview.9",
+  "requirements": {
+    "requiredFeatures": [
+      "host.compatibility.v1",
+      "game.v3",
+      "session.v3",
+      "panel.v1",
+      "clock.v1",
+      "recordings.push.v1",
+      "recordings.round-history.v1",
+      "recordings.stage2.v1",
+      "recordings.economy.v1"
+    ],
+    "optionalFeatures": []
+  }
 }

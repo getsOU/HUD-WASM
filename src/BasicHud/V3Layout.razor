@@ -35,6 +35,7 @@
                 case "postmatch": <PostmatchView Context="state.Context" /> break;
                 case "statistics": <StatisticsView Context="state.Context" /> break;
                 case "spotlight": <SpotlightView Context="state.Context" /> break;
+                case var recorded when RecordingData.IsView(recorded): <RecordingView View="@recorded" Context="state.Context" /> break;
             }
         </ChildContent></SelectedHudRegion>
     }

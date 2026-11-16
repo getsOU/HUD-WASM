@@ -1,8 +1,8 @@
-# 0.4.23
+# 0.4.31
 
-- Add spaced, team-colored kill symbols for the current round outside playercards, without numbers, backgrounds or frames. Align side-layout indicators with the card's top edge and place horizontal-layout indicators above the card. Retain kills after death, hide them during freeze/warmup, and animate newly added symbols with reduced-motion support.
-- Position the competition logo at the right edge with rotating sponsors directly to its left. Size both by their panel-controlled height and original aspect ratio, without fixed-width slots.
-- Respect configured delayed match starts in prematch and break countdowns, label the delay and show the original schedule when known. Restore the regular schedule when a delay is cleared and support delayed-only or unknown start times.
-- Hide the complete start display when its effective target is reached; show it again when a new future start is supplied.
-- Display all planned and delayed start dates in the browser/OBS local timezone, including daylight saving time, without visible timezone suffixes. Keep countdowns on the SDK synchronized clock.
-- Update the public SDK, Blazor adapter, contracts and HUD tool to 0.3.0-preview.3. Delayed-start data requires sOU Desktop 0.3.38 or newer; older senders retain the regular-start fallback. Select version 0.4.23 and reopen outputs after importing.
+- Add six passive recording views: Team Economy, Loadout Comparison, CT/T Statistics, Multikills, Round Loadouts and Economy Review, configured through their existing host panels.
+- Use the published SOU 0.3.0-preview.9 packages and SDK-owned recording push with complete state replacement, reconnect synchronization and cancellation on match/map changes.
+- Declare package format 2, SDK version and the capabilities required by the existing API 3 HUD for sOU Desktop 0.3.42 or newer.
+- Unify all presentation frames, headers, colors and typography; scale the live HUD, text and icons with output size, embedded previews and lower-third space.
+- Show all observed players without player pagination, combine exclusive multikill totals per player, preserve historical team names/logos and reuse profile images with agent fallbacks.
+- Keep unfinished freeze values out of freeze-end graphs, decode player-name entities safely and distinguish unknown values, real zero, missing inventory and SDK evidence levels.

@@ -29,7 +29,7 @@
     }
 
     .round-kill-indicator .hud-ui-icon {
-        --icon-height: clamp(12px, 0.7cqw, 14px);
+        --icon-height: 0.7cqw;
         color: var(--side, #fff);
     }
 

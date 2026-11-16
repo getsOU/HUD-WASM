@@ -64,3 +64,18 @@ To override the automatic map with your own local overview, configure all six fi
 Use a decimal point for numeric values. All boundaries must be finite and within the renderer's safety range (absolute value below 100 million). Calibration assumes image right = positive X and image up = positive Y; no unconfigured rotation or coordinate transformation is guessed. Use an image for which you know these bounds and have distribution/use rights. A wrong/missing map name, invalid bounds or failed image falls back to the matching bundled overview when available, otherwise to the compact unavailable indicator. Markers outside calibrated bounds are omitted instead of clamped into fake map corners.
 
 HLAE positions are preferred only for a fresh frame no older than 750ms and a valid timeline; otherwise actual GSI positions are used. Fresh HLAE does not change GSI data freshness. Last known live death positions are retained within the round, with session/map/round/freezetime/timeline resets. No unknown historical death location is reconstructed.
+
+## Recording broadcasts
+
+Each recording scene has its own host panel section. The output is passive and has no form controls, navigation, refresh button or scroll area.
+
+| Section | Operator settings |
+| --- | --- |
+| Team Economy | Title, money/equipment, received phase, final round and round window |
+| Loadout comparison | Title, two rounds and phases, player focus, inventory page |
+| CT/T statistics | Title, CT/T/unassigned sample selection, player focus |
+| Multikills | Title, player focus |
+| Buy classes and round end | Title, round, team/unassigned group, player focus, inventory page |
+| Economy evidence | Title, round, player focus, event page and carryover-weapon page |
+
+Every section includes **Synchronize recording**. This cancels and replaces the shared push subscription with a new SDK baseline. The other views' actions have no effect. There are no recording data HTTP reads or polling. Blank round fields choose the newest saved round; comparison A chooses the preceding saved round. Explicit unavailable rounds/phases stay unavailable. All players are shown simultaneously using adaptive columns/rows. Only event and inventory pages remain. Multikills have no side selector. See [recording showcase](recording-showcase.md).

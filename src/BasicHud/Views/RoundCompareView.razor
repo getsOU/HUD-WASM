@@ -1,0 +1,33 @@
+@using static BasicHud.Presentation.RecordingCast
+@{
+    var numberA = RecordingOptions.RoundNumber(History.Rounds.Select(r => r.Number), Options.RoundA, previous: true);
+    var numberB = RecordingOptions.RoundNumber(History.Rounds.Select(r => r.Number), Options.RoundB);
+    var a = RecordingData.Checkpoint(History.Rounds.FirstOrDefault(r => r.Number == numberA), Options.PhaseA);
+    var b = RecordingData.Checkpoint(History.Rounds.FirstOrDefault(r => r.Number == numberB), Options.PhaseB);
+    var all = (a?.Players.Select(p => p.SteamId) ?? []).Union(b?.Players.Select(p => p.SteamId) ?? [], StringComparer.Ordinal).Where(id => Options.PlayerId is null || id == Options.PlayerId).ToArray();
+    var players = all;
+    var layout = RecordingLayout.Cards(players.Length, 5, 4, players.Length > 12 ? .7 : .95);
+}
+<div class="recording-view compare-view">
+    <div class="compare-heading"><span>@Locale["players"]</span><div><b>@Locale["round"] @numberA</b><small>@Locale.Phase(Options.PhaseA) @(a is null ? "· " + Locale["missing"] : "")</small></div><div><b>@Locale["round"] @numberB</b><small>@Locale.Phase(Options.PhaseB) @(b is null ? "· " + Locale["missing"] : "")</small></div><span>@Locale["change"]</span></div>
+    <div class="compare-players all-player-grid" style="@(layout.Style)">
+        @foreach (var id in players)
+        {
+            var before = a?.Players.FirstOrDefault(p => p.SteamId == id); var after = b?.Players.FirstOrDefault(p => p.SteamId == id);
+            <article data-player="@id" class="compare-player @SideClass(after?.Side ?? before?.Side)">
+                <div class="compare-identity"><RecordedIdentity SteamId="@id" Side="@(after?.Side ?? before?.Side)" Name="@(after?.Name ?? before?.Name ?? Locale["unknownName"])" Context="Context" /><span class="compare-side">@Locale.Side(before?.Side) <i>→</i> @Locale.Side(after?.Side)</span></div>
+                <div class="compare-loadout"><RecordedLoadout Player="before" InventoryPage="Options.InventoryPage" /></div>
+                <div class="compare-loadout"><RecordedLoadout Player="after" InventoryPage="Options.InventoryPage" /></div>
+                <div class="compare-deltas"><span><small>@Locale["money"]</small><b>@Locale.Delta(before?.Money, after?.Money)</b></span><span><small>@Locale["equipment"]</small><b>@Locale.Delta(before?.EquipmentValue, after?.EquipmentValue)</b></span><span><small>@Locale["armor"]</small><b>@Locale.Delta(before?.Armor, after?.Armor)</b></span></div>
+            </article>
+        }
+        @if (players.Length == 0) { <div class="cast-no-sample">@Locale["noPlayerStates"]</div> }
+    </div>
+    <footer class="cast-footnote"><span>@Locale.Scope(players.Length, all.Length, "players")</span></footer>
+</div>
+@code {
+    private static readonly RecordingCopy Locale = RecordingCopy.Instance;
+    [Parameter, EditorRequired] public HudRoundHistory History { get; set; } = default!;
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter, EditorRequired] public RecordingOptions Options { get; set; } = default!;
+}

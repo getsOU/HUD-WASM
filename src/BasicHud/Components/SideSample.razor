@@ -1,0 +1,21 @@
+@using static BasicHud.Presentation.RecordingCast
+@if (Sample is null)
+{
+    <div class="sample-values @(Multikills ? "four-values" : "")">@for (var i = 0; i < (Multikills ? 4 : 3); i++) { <b>—</b> }</div><small class="sample-coverage">@Locale["noSample"]</small>
+}
+else if (Multikills)
+{
+    <div class="sample-values four-values"><b>@Locale.Number(Sample.KillRounds > 0 ? Sample.DoubleKills : null)</b><b>@Locale.Number(Sample.KillRounds > 0 ? Sample.TripleKills : null)</b><b>@Locale.Number(Sample.KillRounds > 0 ? Sample.QuadKills : null)</b><b>@Locale.Number(Sample.KillRounds > 0 ? Sample.FivePlusKills : null)</b></div>
+    <small class="sample-coverage">@Sample.KillRounds / @Sample.Rounds @Locale["killRounds"]</small>
+}
+else
+{
+    <div class="sample-values"><b>@Locale.Number(Sample.Kills)</b><b>@Locale.Decimal(Sample.HeadshotPercentage)</b><b>@Locale.Decimal(Sample.AverageDamagePerRound)</b></div>
+    <small class="sample-coverage">K @Sample.KillRounds · HS @Sample.HeadshotRounds · DMG @Sample.DamageRounds / @Sample.Rounds @Locale["rounds"] @(Sample.CoversObservedRounds ? "" : "· " + Locale["partial"])</small>
+    <small class="headshot-sample">@Locale["headshotKills"] @Locale.Number(Sample.HeadshotRounds > 0 ? Sample.HeadshotKills : null) / @Locale.Number(Sample.HeadshotRounds > 0 ? Sample.HeadshotSampleKills : null) @Locale["kills"]</small>
+}
+@code {
+    private static readonly RecordingCopy Locale = RecordingCopy.Instance;
+    [Parameter] public HudPlayerSideStatistics? Sample { get; set; }
+    [Parameter] public bool Multikills { get; set; }
+}

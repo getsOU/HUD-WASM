@@ -1,1 +1,13 @@
-{"version":1,"isRoot":true,"tools":{"sou.hud.tool":{"version":"0.3.0-preview.3","commands":["sou-hud"],"rollForward":false}}}
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "sou.hud.tool": {
+      "version": "0.3.0-preview.9",
+      "commands": [
+        "sou-hud"
+      ],
+      "rollForward": false
+    }
+  }
+}

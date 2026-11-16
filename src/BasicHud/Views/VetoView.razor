@@ -1,4 +1,5 @@
-<section class="presentation veto-scene"><SceneHeader Title="Map veto" Context="Context" />
+<section lang="en" class="presentation broadcast-scene veto-scene"><SceneHeader Title="Map veto" Context="Context" />
+    <div class="scene-body">
     <MatchDuel Context="Context" />
     <div class="veto-timeline">
         @if (Context.Match?.Vetos.Count is not > 0) { <p class="empty-state">No pick or ban decisions supplied</p> }
@@ -8,5 +9,6 @@
         }
     </div>
     <MapSeries Context="Context" />
+    </div>
 </section>
 @code { [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty; }

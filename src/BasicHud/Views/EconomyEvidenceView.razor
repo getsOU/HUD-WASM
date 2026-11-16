@@ -1,0 +1,64 @@
+@using static BasicHud.Presentation.RecordingCast
+@{
+    var number = RecordingOptions.RoundNumber(History.Rounds.Select(r => r.Number), Options.Round);
+    var round = History.Rounds.FirstOrDefault(r => r.Number == number);
+}
+<div class="recording-view evidence-view">
+    <div class="cast-caption"><span>@Locale["eventKinds"]</span><b>@Locale["round"] @number</b></div>
+    @if (round is not null)
+    {
+        var events = round.Events.Where(e => Options.PlayerId is null || e.SteamId == Options.PlayerId).ToArray();
+        var players = round.Players.Where(p => Options.PlayerId is null || p.SteamId == Options.PlayerId).ToArray();
+        var shownEvents = RecordingOptions.PageOf(events, Options.EventPage, 6);
+        var shownPlayers = players;
+        var playerLayout = RecordingLayout.Cards(players.Length, 5, 4, players.Length > 12 ? .65 : .85);
+        <div class="force-assessments">
+        @foreach (var side in new[] { TeamSide.CounterTerrorists, TeamSide.Terrorists })
+        {
+            var team = round.Teams.FirstOrDefault(t => t.Side == side);
+            var teamId = TeamId(RoundHistory?.Rounds.FirstOrDefault(r => r.Number == number), side);
+            <article class="force-assessment @SideClass(side)"><RecordedTeam TeamId="@teamId" Side="side" Context="Context" /><div class="force-details"><strong>@Locale.Force(team?.Classification ?? HudForceBuyKind.Unknown)</strong><small>@Locale.Number(team?.Players) @Locale["observedPlayers"] · @Locale.Number(team?.ObservedBuyers) @Locale["observedBuyers"]</small></div><EvidenceBadge Level="@(team?.Evidence ?? HudEvidence.Unknown)" /></article>
+        }
+        </div>
+        <div class="evidence-columns">
+            <section class="event-board"><header><h2>@Locale["observedEvents"]</h2><span>@Locale.Number(events.Length)</span></header>
+            @foreach (var e in shownEvents)
+            {
+                var actor = round.Players.FirstOrDefault(p => p.SteamId == e.SteamId);
+                <article class="evidence-event @SideClass(actor?.Side)"><span class="event-kind @e.Kind.ToString().ToLowerInvariant()">@(e.Kind == HudEconomyEventKind.Purchase ? Locale["purchase"] : e.Kind == HudEconomyEventKind.Pickup ? Locale["pickup"] : Locale["removal"])<small>@(e.Phase == RoundPhase.FreezeTime ? Locale["freeze"] : e.Phase == RoundPhase.Live ? Locale["live"] : e.Phase == RoundPhase.Over ? Locale["end"] : Locale["phaseUnknown"])</small></span><div class="event-actor"><small>@(e.Kind == HudEconomyEventKind.Purchase ? Locale["buyer"] : e.Kind == HudEconomyEventKind.Pickup ? Locale["picker"] : Locale["remover"])</small><strong>@SourceText.Name(actor?.Name, Locale["unknownName"])</strong></div><div class="event-item"><EquipmentIcon Name="@e.Item" /><small>@Locale.Weapon(e.Item)</small></div></article>
+            }
+            @if (events.Length == 0) { <div class="event-no-data"><b>@Locale["noEvents"]</b></div> }
+            <footer>@Locale.Scope(shownEvents.Count, events.Length, "events")</footer>
+            </section>
+            <section class="evidence-players"><header><h2>@Locale["cashCarry"]</h2><span>@Locale["netCash"]</span></header>
+            <div class="evidence-player-grid all-player-grid" style="@playerLayout.Style">
+            @foreach (var p in shownPlayers)
+            {
+                <article data-player="@p.SteamId" class="evidence-player @SideClass(p.Side)">
+                    <RecordedIdentity SteamId="@p.SteamId" Side="p.Side" Name="@(p.Name ?? Locale["unknownName"])" Context="Context" />
+                    <div class="evidence-cash"><span>↓ <b>@Locale.Money(p.ObservedCashDecrease)</b></span><span>↑ <b>@Locale.Money(p.ObservedCashIncrease)</b></span></div>
+                    <div class="evidence-counts"><span>@Locale["purchases"] <b>@Locale.Number(p.ObservedPurchases)</b></span><span>@Locale["pickups"] <b>@Locale.Number(p.ObservedPickups)</b></span><span>@Locale["removed"] <b>@Locale.Number(p.ObservedRemovals)</b></span></div>
+                    @if (p.CashFlow is { } flow) { <div class="evidence-movements"><span>OBS. CASH MOVEMENTS</span><span>↓ @Locale.Money(flow.Decrease) · ↑ @Locale.Money(flow.Increase) · @flow.Changes CHANGES @(flow.HasGap ? "· PARTIAL" : "")</span></div> }
+                    @if (p.RefundEvidence != HudEvidence.Unknown) { <div class="refund-evidence"><span>@Locale["refund"]</span><EvidenceBadge Level="p.RefundEvidence" /></div> }
+                    @if (p.CarriedWeapons.Length > 0) { <div class="carry-evidence">
+                    @foreach (var w in p.CarriedWeapons.Skip((RecordingOptions.PageNumber(p.CarriedWeapons.Length, Options.InventoryPage, 2) - 1) * 2).Take(2)) { <div><EquipmentIcon Name="@w.Item" /><span>@Locale["fromRound"] @w.FromRound</span><EvidenceBadge Level="w.Evidence" /></div> }
+                    @if (p.CarriedWeapons.Length > 2) { <small>@Locale.Scope(Math.Min(2, p.CarriedWeapons.Length - (RecordingOptions.PageNumber(p.CarriedWeapons.Length, Options.InventoryPage, 2) - 1) * 2), p.CarriedWeapons.Length, "weapons")</small> }
+
+                    </div> }
+                </article>
+            }
+            </div>
+            <footer>@Locale.Scope(shownPlayers.Length, players.Length, "players")</footer>
+            </section>
+        </div>
+    }
+    else { <div class="cast-no-sample">@Locale["round"] @number @Locale["notRecorded"]</div> }
+    @if (round?.HasGap == true) { <footer class="cast-footnote"><span>@Locale["recordPartial"]</span></footer> }
+</div>
+@code {
+    private static readonly RecordingCopy Locale = RecordingCopy.Instance;
+    [Parameter, EditorRequired] public HudEconomyHistory History { get; set; } = default!;
+    [Parameter] public HudRoundHistory? RoundHistory { get; set; }
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter, EditorRequired] public RecordingOptions Options { get; set; } = default!;
+}

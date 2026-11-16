@@ -4,11 +4,13 @@ import { mkdtemp, readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright';
 
+const sdkTool = path.resolve("artifacts/published-sdk-tools/.store/sou.hud.tool/0.3.0-preview.9/sou.hud.tool/0.3.0-preview.9/tools/net10.0/any/SOU.Hud.Tool.dll");
+
 const packagePath = path.resolve(process.argv[2] ?? 'artifacts/package');
 await mkdir('artifacts', { recursive: true });
 const scratch = await mkdtemp(path.resolve('artifacts/browser-v3-'));
 const original = path.join(scratch, 'example.json');
-execFileSync('dotnet', ['tool', 'run', 'sou-hud', '--', 'fixtures', 'create', original]);
+execFileSync('dotnet', [sdkTool, 'fixtures', 'create', original]);
 const example = JSON.parse(await readFile(original, 'utf8'));
 const baseline = structuredClone(example.snapshots[0]);
 baseline.game.roundPhase = 'live';
@@ -111,7 +113,7 @@ await writeFile(fixture, JSON.stringify({ schemaVersion: 1, intervalMilliseconds
   snapshots: [...Array(100).fill(baseline), moved, shot, hurt, dead, earlyAward, roundOver, pausedOver, nextFreeze, pausedFreeze, nextLive, finalAward, finalHeartbeat, finalUpdate, competitionBranding,
     scheduledStart, delayedStart, laterStart, clearedStart, delayedOnlyStart, unknownStart, competitionBranding] }));
 
-const host = spawn('dotnet', ['tool', 'run', 'sou-hud', '--', 'dev', packagePath, '--port', '0', '--fixture', fixture], { stdio: ['ignore', 'pipe', 'pipe'] });
+const host = spawn('dotnet', [sdkTool, 'dev', packagePath, '--port', '0', '--fixture', fixture], { stdio: ['ignore', 'pipe', 'pipe'] });
 let browser;
 let origin, controlPage;
 let hostOutput = '';
@@ -586,7 +588,7 @@ try {
   for (const view of manifest.subviews) {
     await command({ kind: 'view', route: view.route });
     await hud.waitForURL(new URL(view.route, output).href);
-    await hud.locator('.presentation').waitFor();
+    await hud.locator('.presentation, .recording-scene').waitFor();
   }
   await command({ kind: 'view', route: '' });
   await hud.waitForURL(output);

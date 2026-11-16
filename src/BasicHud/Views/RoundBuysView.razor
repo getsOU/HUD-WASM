@@ -1,0 +1,49 @@
+@using static BasicHud.Presentation.RecordingCast
+@{
+    var number = RecordingOptions.RoundNumber(Analysis.Rounds.Select(r => r.Number), Options.Round);
+    var round = Analysis.Rounds.FirstOrDefault(r => r.Number == number);
+    var groups = Options.Samples == "unassigned" ? new TeamSide?[] { null }
+        : round?.Players.Any(p => p.Side is not (TeamSide.CounterTerrorists or TeamSide.Terrorists)) == true
+            ? new TeamSide?[] { TeamSide.CounterTerrorists, TeamSide.Terrorists, null }
+            : new TeamSide?[] { TeamSide.CounterTerrorists, TeamSide.Terrorists };
+}
+<div class="recording-view buys-view">
+    <div class="cast-caption"><span>@Locale["loadouts"]</span><b>@Locale["round"] @number</b></div>
+    @if (round is not null)
+    {
+        <div class="buy-teams" style="--team-columns:@groups.Length">
+        @foreach (var side in groups)
+        {
+            var team = round.Teams.FirstOrDefault(t => t.Side == side);
+            var all = round.Players.Where(p => (side is null ? p.Side is not (TeamSide.CounterTerrorists or TeamSide.Terrorists) : p.Side == side) && (Options.PlayerId is null || p.SteamId == Options.PlayerId)).ToArray();
+            var players = all;
+            var layout = RecordingLayout.Cards(players.Length, 8, 2, players.Length > 8 ? .5 : .85);
+            <section class="buy-team @SideClass(side)">
+                <header class="buy-team-heading"><ImageTile Source="@Logo(Context, team?.TeamId)" Label="@Locale.Team(Context, team?.TeamId, side)" Class="recorded-team-logo" /><div><small>@Locale.Side(side)</small><h2>@Locale.Team(Context, team?.TeamId, side)</h2></div><strong class="buy-class">@Locale.Buy(team?.BuyClass ?? HudBuyClass.Unknown)</strong></header>
+                <div class="buy-team-summary"><span><small>@Locale["freezeEquipment"]</small><b>@Locale.Money(team?.EquipmentValue)</b><small>@Locale.Number(team?.BuyPlayers) @Locale["observedPlayers"]</small></span><span><small>@Locale["phase.end"]</small><b>@Locale.Number(team?.Survivors)<i> @Locale["survivors"]</i></b><small>@Locale.Number(team?.EndPlayers) @Locale["players"] · @Locale.Money(team?.SavedEquipmentValue) @Locale["equipment"]</small></span></div>
+                <div class="buy-player-labels"><span>@Locale["players"] / @Locale["buyClass"]</span><span>@Locale["freezeToEnd"]</span></div>
+                <div class="buy-players all-player-grid" style="@(layout.Style)">
+                @foreach (var p in players)
+                {
+                    <article class="buy-player" data-player="@p.SteamId">
+                        <div class="buy-player-main"><RecordedIdentity SteamId="@p.SteamId" Side="p.Side" Name="@(p.Name ?? Locale["unknownName"])" Context="Context" /><span class="buy-player-class">@Locale.Buy(p.BuyClass)</span><div class="buy-player-values"><b>@Locale.Money(p.BuyEquipmentValue)</b><i>→</i><b>@Locale.Money(p.SavedEquipmentValue)</b></div><span class="survival @(p.Survived == true ? "survived" : "")">@(p.Survived is null ? Locale["endMissing"] : p.Survived.Value ? Locale["survived"] : Locale["dead"])</span></div>
+                        <RecordedInventory Weapons="p.SavedWeapons" Page="Options.InventoryPage" />
+                    </article>
+                }
+                @if (players.Length == 0) { <div class="cast-no-sample">@Locale["noPlayerStates"]</div> }
+                </div>
+                <div class="buy-team-page">@Locale.Scope(players.Length, all.Length, "players")</div>
+            </section>
+        }
+        </div>
+        @if (round.Players.Any(p => p.Side is not (TeamSide.CounterTerrorists or TeamSide.Terrorists))) { <div class="cast-unassigned-notice">@round.Players.Count(p => p.Side is not (TeamSide.CounterTerrorists or TeamSide.Terrorists)) @Locale["unassigned"]</div> }
+    }
+    else { <div class="cast-no-sample">@Locale["round"] @number @Locale["notRecorded"]</div> }
+    @if (round?.EndReceivedAt is null) { <footer class="cast-footnote"><span>@Locale["endMissing"]</span></footer> }
+</div>
+@code {
+    private static readonly RecordingCopy Locale = RecordingCopy.Instance;
+    [Parameter, EditorRequired] public HudMapAnalysis Analysis { get; set; } = default!;
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter, EditorRequired] public RecordingOptions Options { get; set; } = default!;
+}

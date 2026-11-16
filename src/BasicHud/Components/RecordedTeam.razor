@@ -1,0 +1,14 @@
+@using static BasicHud.Presentation.RecordingCast
+<div class="recorded-team" data-team="@TeamId">
+    @if (Logo(Context, TeamId) is { } logo)
+    {
+        <ImageTile Source="@logo" Label="@Locale.Team(Context, TeamId, Side)" Class="recorded-team-logo" OmitFallback="true" />
+    }
+    <div><strong class="recorded-team-name">@Locale.Team(Context, TeamId, Side)</strong>@if (TeamId is not null) { <small>@Locale.Side(Side)</small> }</div>
+</div>
+@code {
+    private static readonly RecordingCopy Locale = RecordingCopy.Instance;
+    [Parameter] public string? TeamId { get; set; }
+    [Parameter] public TeamSide? Side { get; set; }
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+}

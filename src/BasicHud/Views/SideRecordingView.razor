@@ -1,0 +1,41 @@
+@using static BasicHud.Presentation.RecordingCast
+@{
+    var known = Analysis.Players.Where(p => p.Side is TeamSide.CounterTerrorists or TeamSide.Terrorists).Where(p => Options.PlayerId is null || p.SteamId == Options.PlayerId).GroupBy(p => p.SteamId).Select(g => new Row(g.Key, g.First().Name ?? Locale["unknownName"], g.FirstOrDefault(p => p.Side == TeamSide.CounterTerrorists), g.FirstOrDefault(p => p.Side == TeamSide.Terrorists), null));
+    var unassigned = Analysis.Players.Where(p => p.Side is not (TeamSide.CounterTerrorists or TeamSide.Terrorists)).Where(p => Options.PlayerId is null || p.SteamId == Options.PlayerId).Select(p => new Row(p.SteamId, p.Name ?? Locale["unknownName"], null, null, p));
+    var all = (Options.Samples == "unassigned" ? unassigned : Options.Samples is "ct" or "t" ? known.Where(p => Options.Samples == "ct" ? p.Ct is not null : p.T is not null) : known.Concat(unassigned)).ToArray();
+    var rows = all;
+    var layout = RecordingLayout.Cards(rows.Length, 5, 4, .85);
+}
+<div class="recording-view side-recording-view side-stats-view">
+    <div class="cast-caption"><span>@Locale["sidePerformance"]</span><b>@Locale["mapStats"]</b></div>
+    <div class="side-board all-player-grid" style="@(layout.Style)">
+        @foreach (var row in rows)
+        {
+            <article data-player="@row.Id" class="side-board-row @(row.Unassigned is not null ? "unassigned-row" : "")">
+                <RecordedIdentity SteamId="@row.Id" Side="@(row.Ct?.Side ?? row.T?.Side)" Name="@row.Name" Context="Context" />
+                <div class="stat-card-samples">
+                @if (row.Unassigned is { } unknown)
+                {
+                    <div class="unassigned-card-sample"><span class="stat-card-side">@Locale["unassigned"]</span><div class="sample-labels"><span>KILLS</span><span>HS%</span><span>ADR</span></div><SideSample Sample="unknown" /></div>
+                }
+                else
+                {
+                    @foreach (var side in new[] { TeamSide.CounterTerrorists, TeamSide.Terrorists })
+                    {
+                        <div class="@SideClass(side)"><span class="stat-card-side">@Locale.Side(side)</span><div class="sample-labels"><span>KILLS</span><span>HS%</span><span>ADR</span></div><SideSample Sample="@(side == TeamSide.CounterTerrorists ? Options.Samples == "t" ? null : row.Ct : Options.Samples == "ct" ? null : row.T)" /></div>
+                    }
+                }
+                </div>
+            </article>
+        }
+        @if (rows.Length == 0) { <div class="cast-no-sample">@Locale["noPlayerValues"]</div> }
+    </div>
+    <footer class="cast-footnote"><span>@Locale.Scope(rows.Select(r => r.Id).Distinct().Count(), all.Select(r => r.Id).Distinct().Count(), "players")</span></footer>
+</div>
+@code {
+    private static readonly RecordingCopy Locale = RecordingCopy.Instance;
+    [Parameter, EditorRequired] public HudMapAnalysis Analysis { get; set; } = default!;
+    [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter, EditorRequired] public RecordingOptions Options { get; set; } = default!;
+    private sealed record Row(string Id, string Name, HudPlayerSideStatistics? Ct, HudPlayerSideStatistics? T, HudPlayerSideStatistics? Unassigned);
+}

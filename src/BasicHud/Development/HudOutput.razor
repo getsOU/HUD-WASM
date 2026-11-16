@@ -34,6 +34,7 @@
                 case "postmatch": <PostmatchView Context="context" /> break;
                 case "statistics": <StatisticsView Context="context" /> break;
                 case "spotlight": <SpotlightView Context="context" /> break;
+                case var recorded when RecordingData.IsView(recorded): <RecordingView View="@recorded" Context="context" /> break;
             }
         }
         @if (scene != "live" && Options.ShowSponsors) { <Sponsors Context="context" /> }
