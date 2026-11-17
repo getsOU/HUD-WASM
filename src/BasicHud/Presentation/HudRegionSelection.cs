@@ -28,7 +28,7 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
             if (graph?.KillOrder is { Keys.IsDefault: false } order)
                 foreach (var key in order.Keys)
                     if (graph.GetKill(key) is { } kill)
-                        foreach (var participant in new[] { kill.Killer, kill.Assister, kill.Victim })
+                        foreach (var participant in new[] { kill.Killer, kill.Assister, kill.Victim, kill.TradedKill?.Victim })
                             if (Name(previous.Metadata, participant?.SteamId) != Name(current.Metadata, participant?.SteamId)) return true;
             return false;
         }
@@ -137,7 +137,7 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
                 }
                 OrderedObjects(HudObjectKindV3.Grenade, graph?.GrenadeOrder); Section("radar"); break;
             case HudArea.Killfeed:
-                values.Add(info?.Map); Match(); OrderedObjects(HudObjectKindV3.Kill, graph?.KillOrder); break;
+                values.Add(info?.Map); Match(); Field("display", "hideTrades"); OrderedObjects(HudObjectKindV3.Kill, graph?.KillOrder); break;
             case HudArea.Waiting:
                 values.Add(graph is not null); break;
             case HudArea.Sponsors: Match(); Section("branding"); Field("display", "hideSponsors"); break;

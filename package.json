@@ -7,6 +7,8 @@
   },
   "scripts": {
     "test:browser": "node tests/browser/v3.mjs",
+    "test:trades": "node tests/browser/trades.mjs",
+    "test:bomb-icons": "node tests/browser/bomb-icons.mjs",
     "styles:build": "node scripts/build-styles.mjs",
     "styles:check": "node scripts/build-styles.mjs --check",
     "styles:format": "prettier --write src/BasicHud/Styles",

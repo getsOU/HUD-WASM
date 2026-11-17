@@ -28,6 +28,13 @@ snapshot.game.managedMatch = snapshot.managedMatch;
 snapshot.game.map = "de_mirage";
 snapshot.game.roundNumber = 6;
 snapshot.game.roundPhase = "over";
+snapshot.managedMatch.competition = {
+    id: "layout-league", name: "Demo League", seasonId: null, seasonName: null,
+    sections: [], round: null, logo: "/cast-media/layout-league.svg",
+    sponsors: ["a", "b", "c"].map(id => ({
+        id, name: `Sponsor ${id}`, image: `/cast-media/layout-sponsor-${id}.svg`,
+    })),
+};
 snapshot.managedMatch.teamA.name = "Example Alpha";
 snapshot.managedMatch.teamB.name = "Example Bravo";
 snapshot.managedMatch.vetos = [
@@ -111,6 +118,10 @@ try {
         }),
         errors = [];
     hud.on("pageerror", (e) => errors.push(e.message));
+    await hud.route("**/cast-media/layout-*.svg", route => route.fulfill({
+        contentType: "image/svg+xml",
+        body: `<svg xmlns="http://www.w3.org/2000/svg" width="${route.request().url().includes("league") ? 120 : 300}" height="120"><rect width="100%" height="100%" fill="#b6def5"/><text x="12" y="70" font-size="24">Demo branding</text></svg>`,
+    }));
     const views = [
         "live",
         ...manifest.subviews.map((v) => v.route.replace("views/", "")),
@@ -172,6 +183,18 @@ try {
             await hud.locator(".player-card").first().waitFor();
 
         let baseline;
+        // Apply controls after this output has joined the SDK host.
+        await hud.locator(".live-competition-logo").waitFor();
+        await command({kind: "panel", values: {
+            display: {hideSponsors: false},
+            branding: {sponsorIntervalSeconds: "1", competitionLogoHeightPercent: "75", sponsorHeightPercent: "50"},
+        }});
+        await hud.waitForFunction(() => document.querySelector(".live-branding").style.getPropertyValue("--competition-logo-scale") === "0.75");
+        await hud.waitForFunction(() => [...document.querySelectorAll(".live-branding img")].every(i => i.complete && i.naturalWidth > 0));
+        const firstSponsor = await hud.locator(".live-branding .sponsor-image").getAttribute("src");
+        await until(async () => (await hud.locator(".live-branding .sponsor-image").getAttribute("src")) !== firstSponsor);
+        assert.equal(await hud.locator(".sponsor-image").count(), 1, `${view} rotates one sponsor`);
+        assert.equal(await hud.locator(".recording-mark .competition-logo").count(), 0, `${view} has no duplicate competition logo`);
         for (const [width, height] of sizes) {
             await hud.setViewportSize({ width, height });
             await hud.evaluate(
@@ -180,6 +203,26 @@ try {
                         requestAnimationFrame(() => requestAnimationFrame(r)),
                     ),
             );
+            const branding = await hud.locator(".live-branding").evaluate(e => {
+                const b = e.getBoundingClientRect(), c = e.closest(".hud").getBoundingClientRect();
+                const logo = e.querySelector(".live-competition-logo").getBoundingClientRect();
+                const sponsor = e.querySelector(".sponsor-image").getBoundingClientRect();
+                const map = document.querySelector(".recording-map")?.getBoundingClientRect();
+                const title = document.querySelector(".recording-title")?.getBoundingClientRect();
+                const header = document.querySelector(".broadcast-heading")?.getBoundingClientRect();
+                return {top: (b.top-c.top)/c.width, right: (c.right-b.right)/c.width,
+                    logo: logo.height/b.height, sponsor: sponsor.height/b.height,
+                    clearMap: !map || map.top >= b.bottom - 1,
+                    clearTitle: !title || title.right <= b.left + 1,
+                    insideHeader: !header || b.top >= header.top - 1 && b.bottom <= header.bottom + 1 && Math.abs(b.right - header.right) < 1,
+                    mapTop: map?.top, brandingBottom: b.bottom, titleRight: title?.right, brandingLeft: b.left};
+            });
+            const expectedTop = view === "live" ? .0125 : .0375;
+            const expectedRight = view === "live" ? .008 : .07;
+            assert(Math.abs(branding.top - expectedTop) < .001 && Math.abs(branding.right - expectedRight) < .001, `${view} aligns branding to its layout`);
+            assert(Math.abs(branding.logo - .75) < .01 && Math.abs(branding.sponsor - .5) < .01, `${view} uses branding panel sizes`);
+            assert(branding.clearMap && branding.clearTitle, `${view} branding clears map and title: ${JSON.stringify(branding)}`);
+            assert(branding.insideHeader, `${view} keeps branding inside the header and aligned to its right edge`);
             const data = await hud.evaluate(() => {
                 const canvas = document.querySelector(".hud"),
                     c = canvas.getBoundingClientRect(),
@@ -348,7 +391,11 @@ try {
             sizes: sizes.length,
             embedded: true,
             lowerThird: view !== "live",
+            branding: true,
         });
+        await command({kind: "panel", values: {display: {hideSponsors: true}}});
+        await hud.waitForFunction(() => !document.querySelector(".live-branding .sponsors"));
+        assert.equal(await hud.locator(".live-competition-logo").count(), 1, `${view} hides sponsors independently`);
         console.log("PASS", view, "shared frame and proportional sizing");
     }
     assert.deepEqual(errors, []);

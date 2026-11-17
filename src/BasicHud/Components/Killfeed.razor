@@ -2,16 +2,29 @@
     @foreach (var item in Entries)
     {
         var kill = item.Event;
+        var environmentMethod = EquipmentPresentation.Key(kill.Weapon) is null or "world" or "worldent" or "trigger_hurt";
+        var bombDeath = kill.Killer is null && (kill.WeaponKind == WeaponKind.C4 || EquipmentPresentation.IsBomb(kill.Weapon));
         <article class="kill-event" data-event-id="@kill.Id" @key="item.Key">
             <span class="kill-attacker @PlayerPresentation.SideClass(kill.Killer?.Side)">
-                @if (kill.AttackerBlind) { <StatusIcon Name="blind" Label="Attacker blind" Class="kill-modifier" /> }
-                <span class="kill-name" data-kill-role="killer" title="@Participant(kill.Killer)">@Participant(kill.Killer)</span>
+                @if (kill.Killer is null)
+                {
+                    <span data-kill-role="killer"><StatusIcon Name="@(bombDeath ? "bomb" : "world")" Label="@(bombDeath ? "Bomb explosion" : "Environment / unknown source")" Class="kill-modifier kill-world-source" /></span>
+                }
+                else
+                {
+                    <span class="kill-name" data-kill-role="killer" title="@Participant(kill.Killer)">@Participant(kill.Killer)</span>
+                }
             </span>
             @if (kill.Assister is { } assist)
             {
                 <span class="kill-assist @PlayerPresentation.SideClass(assist.Side)"><span aria-hidden="true">+</span>@if (kill.FlashAssist) { <StatusIcon Name="flashassist" Label="Flash assist" Class="kill-modifier" /> }<span class="kill-name" data-kill-role="assister" title="@Participant(assist)">@Participant(assist)</span></span>
             }
-            <span class="kill-method"><EquipmentIcon Name="@kill.Weapon" Class="kill-weapon" />@if (kill.ThroughSmoke) { <StatusIcon Name="smoke" Label="Through smoke" Class="kill-modifier" /> }@if (kill.NoScope) { <StatusIcon Name="noscope" Label="No scope" Class="kill-modifier" /> }@if (kill.Wallbang) { <StatusIcon Name="wallbang" Label="Wallbang" Class="kill-modifier" /> }@if (kill.Headshot) { <StatusIcon Name="headshot" Label="Headshot" Class="kill-modifier" /> }</span>
+            @if (ShowTrades && kill.TradedKill?.Victim is { } traded)
+            {
+                var tradedName = Participant(traded);
+                <span class="kill-trade @PlayerPresentation.SideClass(traded.Side)" title="@($"Möglicher Trade für {tradedName}")"><StatusIcon Name="trade" Label="@($"Möglicher Trade für {tradedName}")" Class="kill-modifier" /><span class="kill-name" data-kill-role="traded">@tradedName</span></span>
+            }
+            <span class="kill-method">@if (!bombDeath && (kill.Killer is not null || !environmentMethod)) { <EquipmentIcon Name="@(kill.WeaponKind == WeaponKind.C4 ? "c4" : kill.Weapon)" Class="kill-weapon" /> }@if (kill.AttackerBlind) { <StatusIcon Name="blind" Label="Attacker blind" Class="kill-modifier" /> }@if (kill.ThroughSmoke) { <StatusIcon Name="smoke" Label="Through smoke" Class="kill-modifier" /> }@if (kill.NoScope) { <StatusIcon Name="noscope" Label="No scope" Class="kill-modifier" /> }@if (kill.Wallbang) { <StatusIcon Name="wallbang" Label="Wallbang" Class="kill-modifier" /> }@if (kill.Headshot) { <StatusIcon Name="headshot" Label="Headshot" Class="kill-modifier" /> }</span>
             <span class="kill-name kill-victim @PlayerPresentation.SideClass(kill.Victim.Side)" data-kill-role="victim" title="@Participant(kill.Victim)">@Participant(kill.Victim)</span>
         </article>
     }
@@ -19,5 +32,6 @@
 @code {
     [Parameter] public IReadOnlyList<KillView> Entries { get; set; } = [];
     [Parameter] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    private bool ShowTrades => Context.Panel is null || DisplayOptions.FromPanel(Context.Panel).ShowTrades;
     private string Participant(KillParticipant? participant) => participant is null ? "WORLD" : Context.Name(participant);
 }

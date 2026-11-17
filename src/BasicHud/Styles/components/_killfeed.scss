@@ -1,19 +1,29 @@
 .kill-attacker,
-.kill-assist {
+.kill-assist,
+.kill-trade {
     display: inline-flex;
     align-items: center;
     gap: 0.25em;
     min-width: 0;
-    max-width: 100%;
+    max-width: 14em;
     color: var(--side, #e0e5ec);
 }
 .kill-name {
     min-width: 0;
-    max-width: 100%;
+    max-width: 14em;
     color: var(--side, #e0e5ec);
     font-weight: 650;
-    white-space: normal;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.kill-assist > [aria-hidden],
+.kill-assist .status-icon,
+.kill-trade .status-icon {
+    color: #fff;
+}
+.kill-world-source {
+    color: #fff;
 }
 .kill-method {
     display: inline-flex;

@@ -31,6 +31,8 @@ jobs:
         run: |
           npx playwright install --with-deps chromium
           npm run test:browser -- artifacts/package
+          npm run test:trades -- artifacts/package
+          npm run test:bomb-icons -- artifacts/package
       - name: Verify release guards without publishing
         shell: pwsh
         run: |

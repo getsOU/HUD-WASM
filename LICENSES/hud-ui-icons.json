@@ -4,7 +4,7 @@
   "revision": "1a49fd88d85202bad69f39462241b309a484bba0",
   "license": "ISC with included Feather MIT notice",
   "path": "assets/icons/hud-ui.svg",
-  "sha256": "52f6d1a3ba62f2e47aea01a452b329c8efb161ff5e99b24229e3be11f35cec25",
+  "sha256": "196431d564fe7e190a94546d8f75bac8dee2150440a51ff776860f5cdd5ffc5c",
   "imports": [
     {
       "source": "icons/heart.svg",
@@ -80,7 +80,10 @@
     "utility-molotov",
     "utility-incgrenade",
     "rounds",
-    "magazine"
+    "magazine",
+    "trade",
+    "bomb",
+    "world"
   ],
   "customNotice": "HUD-authored; helmet reuses the Lucide shield outline. All custom symbols are enabled through the shared icon system."
 }

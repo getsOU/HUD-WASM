@@ -4,11 +4,11 @@ Das freigegebene Kontur-System gilt jetzt im gesamten HUD: Live-Playercards, Obs
 
 ## Struktur und Regeln
 
-- `Components/StatusIcon.razor` leitet bekannte UI-Symbole an `HudUiIcon.razor` weiter. `Presentation/HudUiIcons.cs` enthält die gemeinsame Zuordnung. C4 behält das Original; unbekannte Statuswerte erhalten ihre Textbezeichnung.
-- `EquipmentIcon.razor` verwendet für die sechs bekannten Granatenschlüssel dieselben Konturen wie `UtilityIcon.razor` und `UtilityIcons.razor`. Waffen, Messer, Zeus, C4 und unbekannte Ausrüstung behalten ihre ursprünglichen Grafiken und den vorhandenen Fehler-/Text-Fallback.
+- `Components/StatusIcon.razor` leitet bekannte UI-Symbole an `HudUiIcon.razor` weiter. `Presentation/HudUiIcons.cs` enthält die gemeinsame Zuordnung. C4 verwendet dieselbe Kontur wie die Matchbar; unbekannte Statuswerte erhalten ihre Textbezeichnung.
+- `EquipmentIcon.razor` verwendet für die sechs bekannten Granatenschlüssel dieselben Konturen wie `UtilityIcon.razor` und `UtilityIcons.razor`. Schusswaffen, Messer, Zeus und unbekannte Ausrüstung behalten ihre ursprünglichen Grafiken und den vorhandenen Fehler-/Text-Fallback.
 - `Ammunition.razor` zeigt geladene Patronen und Reserve mit den beiden Munitionsicons in Observercard und Inventar. Nicht gelieferte oder negative Werte entfallen einzeln; eine gemeldete Null bleibt sichtbar. Messer und Granaten erhalten keine Munitionsanzeige.
-- Das lokale Sprite `wwwroot/assets/icons/hud-ui.svg` enthält 23 Symbole: zehn unveränderte Lucide-Geometrien und 13 eigene CS2-Symbole. Neue Icons verwenden 24×24, `fill="none"`, `stroke="currentColor"`, Strichstärke 2 und runde Linienenden/Übergänge. `--hud-ui-stroke` bleibt anpassbar. Der quadratische Rahmen ist mindestens 12 Pixel groß; optischer Original-Zuschnitt und Weißfilter werden auf Konturen nicht angewendet.
-- In Player- und Observercards sind Status-, Utility- und Munitionsicons teamfarben. Schrift und Zahlen bleiben weiß, nur Geldbeträge grün. Geld erscheint als `$ Zahl` mit einem Leerzeichen und teamfarbenem Dollarzeichen; fehlende Werte bleiben ein weißer Gedankenstrich. Waffen, Kit, Bombe und Kevlar/Helm bleiben in den Karten weiß. Im Rundenverlauf übernehmen dagegen alle Ergebnis-Icons die CT-/T-Farbe der Gewinnerseite, auch Kit und C4. Das Original-C4 wird ausschließlich dort per lokaler CSS-Maske gefärbt; seine SVG-Datei und sein Ladefehler-Fallback bleiben erhalten. Die Killfeed-Farben bleiben bestehen.
+- Das lokale Sprite `wwwroot/assets/icons/hud-ui.svg` enthält 26 Symbole: zehn unveränderte Lucide-Geometrien und 16 eigene HUD-Symbole. Neue Icons verwenden 24×24, `fill="none"`, `stroke="currentColor"`, Strichstärke 2 und runde Linienenden/Übergänge. `--hud-ui-stroke` bleibt anpassbar. Der quadratische Rahmen ist mindestens 12 Pixel groß; optischer Original-Zuschnitt und Weißfilter werden auf Konturen nicht angewendet.
+- In Player- und Observercards sind Status-, Utility- und Munitionsicons teamfarben. Schrift und Zahlen bleiben weiß, nur Geldbeträge grün. Geld erscheint als `$ Zahl` mit einem Leerzeichen und teamfarbenem Dollarzeichen; fehlende Werte bleiben ein weißer Gedankenstrich. Waffen, Kit, Bombe und Kevlar/Helm bleiben in den Karten weiß. Im Rundenverlauf übernehmen dagegen alle Ergebnis-Icons die CT-/T-Farbe der Gewinnerseite, auch Kit und C4. Die gemeinsame Bombenkontur übernimmt dort direkt die Gewinnerfarbe. Die Killfeed-Farben bleiben bestehen.
 - Keine neuen Laufzeitabhängigkeiten, CDN-Aufrufe, Icon-Fonts oder JavaScript-Icon-Renderer. Lizenz und Herkunft stehen in `LICENSES/LUCIDE-ICONS.md`, `LUCIDE-LICENSE.txt` und dem hashgesicherten Inventar `hud-ui-icons.json`.
 
 ## Vollständige Zuordnung
@@ -38,14 +38,14 @@ Das freigegebene Kontur-System gilt jetzt im gesamten HUD: Live-Playercards, Obs
 | Brandgranate | `weapons/incgrenade.svg` | Eigene `utility-incgrenade` | Utility-Reihe, aktive Granate, Inventar, Killfeed |
 | Geladene Munition | Bisher Zahl | Eigene `rounds`: zwei Patronen | Observercard und Inventar: Zahl vor Icon |
 | Reservemunition | Bisher Zahl | Eigene `magazine`: Magazin | Observercard und Inventar: Zahl vor Icon, breiterer Abstand zur geladenen Munition |
-| C4 / Bombenträger | `weapons/c4.svg`, `weapons/planted_c4.svg` | Original | Weiß; nur als Rundenergebnis in Gewinnerfarbe |
+| C4 / Bombenträger | `weapons/c4.svg`, `weapons/planted_c4.svg` | Gemeinsame Matchbar-Kontur `bomb` | Karten, Inventare, Killfeed, Radar und Rundenergebnisse |
 | Waffen, Messer, Zeus | `weapons/*.svg` | Original | Unverändert, weiß |
 
 Eigene CS2-Icons erhalten die Unterschiede zwischen Kevlar und Kevlar mit Helm sowie Defuse-Kit, Headshot, Wallbang und No-Scope. Alle sechs Utility-Icons besitzen dieselbe sichtbare Höhe und gleich große Rahmen. SDK-Reihenfolge, doppelte Flashbangs und Mengen bleiben erhalten; tote Spieler zeigen kein veraltetes Inventar.
 
 ## Unverändert
 
-Die 121 ursprünglichen SVG-Dateien bleiben bytegleich mit ihren Herkunftsnachweisen erhalten: 102 Waffen-/Ausrüstungsdateien, neun UI-Dateien und zehn Killfeed-Dateien. Alte Status- und Utility-Dateien dienen nicht mehr als aktive Darstellung bekannter UI-Symbole. `Presentation/Cs2Icons.cs` dokumentiert weiterhin die Legacy-Quellen und liefert insbesondere das Original-C4.
+Die 121 ursprünglichen SVG-Dateien bleiben bytegleich mit ihren Herkunftsnachweisen erhalten: 102 Waffen-/Ausrüstungsdateien, neun UI-Dateien und zehn Killfeed-Dateien. Alte Status- und Utility-Dateien dienen nicht mehr als aktive Darstellung bekannter UI-Symbole. `Presentation/Cs2Icons.cs` dokumentiert weiterhin die Legacy-Quellen; C4 wird über das gemeinsame Kontur-Sprite dargestellt.
 
 Die 23 Radar-WebPs, Karten, Projektionen, Spielerpositionen, Blickrichtungen, Wirkungsflächen und Animationen werden nicht geändert. Dasselbe gilt für die Maskierung der Avatar-Effekte. Teamlogos, Agentenporträts, Wettbewerbslogo und Sponsoren bleiben Bildmedien. Die Reserve-Assets für Assists, Suicide, Domination, Revenge, In-Air-Kill und Smoke-Impact bleiben ungenutzt; neue Ereignisse werden nicht erfunden.
 
@@ -61,4 +61,8 @@ Der Vorschau-Killfeed enthält zehn gleichzeitig sichtbare Beispiele: Ein AWP-Ki
 
 `http://127.0.0.1:5178/?preview=icons&portraits=missing` ergänzt eine feste Freeze-Time mit allen fünf Rundenergebnissen: Elimination, Bombenexplosion, Entschärfung, Zeitablauf und Geiselrettung. Beide Seiten gewinnen Beispielrunden; jedes Icon folgt der zugehörigen Gewinnerfarbe. Die reguläre Live-Vorschau behält ihre laufende Runde.
 
-Rendering-Prüfungen decken Statussymbole, Killfeed-Modifikatoren, Original-C4, unbekannte Assets, Utility-Mengen und fehlende/negative/Null-Munition ab. Browserprüfungen prüfen sichtbare SVG-Geometrie, CSS-Farbe, Mindestgröße sowie die unveränderte Radar- und SDK-Aktualisierungslogik. Die Herkunftsinventare sichern die Originaldateien und das neue Sprite mit SHA-256 ab.
+Rendering-Prüfungen decken Statussymbole, Killfeed-Modifikatoren, die gemeinsame Bombenkontur, unbekannte Assets, Utility-Mengen und fehlende/negative/Null-Munition ab. Browserprüfungen prüfen sichtbare SVG-Geometrie, CSS-Farbe, Mindestgröße sowie die unveränderte Radar- und SDK-Aktualisierungslogik. Die Herkunftsinventare sichern die Originaldateien und das neue Sprite mit SHA-256 ab.
+
+## Bomben- und Umgebungsquellen
+
+`bomb` enthält die bisherige Matchbar-Geometrie und wird auch in Karten, Inventaren, Radar und Rundenverlauf verwendet. Im Killfeed ersetzt es bei fehlendem Killer und eindeutigem C4-Waffentyp beziehungsweise C4-Quellnamen den WORLD-Text. Das Methodensymbol wird in diesem Fall nicht doppelt gezeigt. Ohne identifizierbaren Killer und ohne eindeutigen Bombennachweis erscheint ein neutrales `world`-Umgebungssymbol. Ein globaler Explosionsstatus wird nicht als Todesursache anderer Einträge verwendet.

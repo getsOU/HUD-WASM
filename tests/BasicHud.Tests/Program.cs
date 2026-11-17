@@ -97,7 +97,7 @@ Check(new[] { "false", "null", "\"true\"", "1" }.All(value => DisplayOptions.Fro
 Check(DisplayOptions.FromPanel(Panel("{\"display\":{\"hideRosters\":\"true\",\"caption\":\"  \"}}")) == DisplayOptions.Default, "malformed checkbox and blank caption use safe defaults");
 var schema = JsonSerializer.Deserialize<HudPanelSection[]>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "panel.json")), new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
 var fields = schema.Single(section => section.Name == "display").Inputs;
-Check(fields.Where(field => field.Type == HudPanelFieldType.Checkbox).Select(field => field.Name).Order().SequenceEqual(new[] { "agentsOnly", "hideKillfeed", "hideObservedPlayer", "hideRadar", "hideRosters", "hideRoundHistory", "hideSeries", "hideSponsors", "horizontalPlayercards" }), "shipped schema includes visibility, portrait and horizontal-layout checkboxes");
+Check(fields.Where(field => field.Type == HudPanelFieldType.Checkbox).Select(field => field.Name).Order().SequenceEqual(new[] { "agentsOnly", "hideKillfeed", "hideObservedPlayer", "hideRadar", "hideRosters", "hideRoundHistory", "hideSeries", "hideSponsors", "hideTrades", "horizontalPlayercards" }), "shipped schema includes visibility, trade, portrait and horizontal-layout checkboxes");
 // Model the documented host baseline from the actual shipped schema, rather than an empty
 // client-only state: the host sends false for every unset checkbox, including revision zero.
 HudPanelState HostDefault(long revision) => new(revision, schema.ToDictionary(section => section.Name,

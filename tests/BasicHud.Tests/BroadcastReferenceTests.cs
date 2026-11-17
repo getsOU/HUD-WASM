@@ -20,9 +20,9 @@ static class BroadcastReferenceTests
         XNamespace svgNamespace = "http://www.w3.org/2000/svg";
         var declaredSymbols = uiInventory.RootElement.GetProperty("imports").EnumerateArray().Select(icon => icon.GetProperty("symbol").GetString())
             .Concat(uiInventory.RootElement.GetProperty("customSymbols").EnumerateArray().Select(icon => icon.GetString())).ToArray();
-        check(uiSymbols.Length == 23 && declaredSymbols.Length == 23 && uiSymbols.Select(symbol => (string?)symbol.Attribute("id")).Order().SequenceEqual(declaredSymbols.Order()) && declaredSymbols.Distinct().Count() == 23
+        check(uiSymbols.Length == 26 && declaredSymbols.Length == 26 && uiSymbols.Select(symbol => (string?)symbol.Attribute("id")).Order().SequenceEqual(declaredSymbols.Order()) && declaredSymbols.Distinct().Count() == 26
             && uiSymbols.All(symbol => symbol.Name == svgNamespace + "symbol" && (string?)symbol.Attribute("viewBox") == "0 0 24 24"
-                && symbol.Elements().All(shape => shape.Name == svgNamespace + "path" || shape.Name == svgNamespace + "circle" || shape.Name == svgNamespace + "line")),
+                && symbol.Elements().All(shape => shape.Name == svgNamespace + "path" || shape.Name == svgNamespace + "circle" || shape.Name == svgNamespace + "line" || shape.Name == svgNamespace + "rect")),
             "shared symbols match the provenance manifest, have unique IDs, uniform viewBoxes and static SVG geometry");
         check(File.ReadAllText(Path.Combine(root, "LICENSES/valve-assets.json")) == File.ReadAllText(Path.Combine(webroot, "assets/valve-assets.json")), "packaged license provenance matches the actual original game asset inventory");
         check(File.ReadAllText(Path.Combine(root, "LICENSES/openhud-icons.json")) == File.ReadAllText(Path.Combine(webroot, "assets/openhud-icons.json")), "packaged OpenHud provenance matches the reviewed import inventory");

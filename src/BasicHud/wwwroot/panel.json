@@ -73,6 +73,11 @@
       },
       {
         "type": "checkbox",
+        "name": "hideTrades",
+        "label": "Hide trade indicators"
+      },
+      {
+        "type": "checkbox",
         "name": "agentsOnly",
         "label": "Agents only"
       },

@@ -225,6 +225,13 @@ try {
                 1,
                 "one glyph is selected for the current state",
             );
+            if (glyph === "kit")
+                assert.equal(await shown.locator("use").getAttribute("href"),
+                    "assets/icons/hud-ui.svg#kit", "defuse tools use the intact shared pliers geometry");
+            if (glyph === "defuse")
+                assert.equal(await shown.locator("path").getAttribute("d"),
+                    await indicator.locator('[data-glyph="hand"] path').getAttribute("d"),
+                    "generic defuse uses the intact hand instead of disconnected tool fragments");
             const glyphDurations = await shown.evaluate((e) =>
                 getComputedStyle(e)
                     .transitionDuration.split(",")

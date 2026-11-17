@@ -117,9 +117,7 @@ static class RenderTests
                 check(renderer.HasDescendantAttribute(status, "data-ui-icon", name) && renderer.HasDescendantAttribute(status, "href", $"assets/icons/hud-ui.svg#{name}") && !renderer.HasElement(status, "img"), $"shared {name} status uses the semantic outline in every HUD view");
             }
             await renderer.Render(status, new() { [nameof(StatusIcon.Name)] = "bomb", [nameof(StatusIcon.Label)] = "Bomb carrier" });
-            check(renderer.HasAttribute(status, "src", "assets/weapons/c4.svg") && renderer.ErrorHandler(status) != 0, "C4 retains its original identifiable artwork and image-error fallback");
-            await renderer.DispatchEventAsync(renderer.ErrorHandler(status), null, EventArgs.Empty);
-            check(!renderer.HasElement(status, "img") && !renderer.HasElement(status, "svg") && renderer.HasText(status, "Bomb carrier"), "failed original C4 artwork retains text without substitute symbols");
+            check(renderer.HasDescendantAttribute(status, "data-ui-icon", "bomb") && !renderer.HasElement(status, "img"), "bomb carrier status uses the shared matchbar bomb outline");
             await renderer.Render(status, new() { [nameof(StatusIcon.Name)] = "health", [nameof(StatusIcon.Label)] = "Health" });
             check(renderer.HasDescendantAttribute(status, "data-ui-icon", "health"), "switching from failed original art to a status outline remains available");
             await renderer.Render(status, new() { [nameof(StatusIcon.Name)] = "future-status", [nameof(StatusIcon.Label)] = "Future status" });
@@ -130,7 +128,7 @@ static class RenderTests
             check(renderer.HasElement(uiIcon, "svg") && renderer.HasAttribute(uiIcon, "aria-label", "Health") && renderer.HasAttribute(uiIcon, "stroke", "currentColor")
                 && renderer.HasAttribute(uiIcon, "href", "assets/icons/hud-ui.svg#health"), "shared outline uses a local SVG symbol with an accessible label and inherited color");
             await renderer.Render(uiIcon, new() { [nameof(HudUiIcon.Name)] = "bomb", [nameof(HudUiIcon.Label)] = "Bomb carrier" });
-            check(renderer.HasDescendantAttribute(uiIcon, "src", "assets/weapons/c4.svg") && !renderer.HasElement(uiIcon, "svg"), "outline component preserves the original CS2 C4 instead of substituting a generic bomb");
+            check(renderer.HasDescendantAttribute(uiIcon, "data-ui-icon", "bomb") && renderer.HasElement(uiIcon, "svg"), "outline component shares the matchbar bomb geometry");
             await renderer.Render(uiIcon, new() { [nameof(HudUiIcon.Name)] = "headshot", [nameof(HudUiIcon.Label)] = "Headshot" });
             check(renderer.HasAttribute(uiIcon, "data-ui-icon", "headshot"), "approved custom headshot outline is enabled in the shared icon system");
 
@@ -339,7 +337,7 @@ static class RenderTests
             var entry = new KillFeedEntry(1, Guid.NewGuid(), 1, 100, new(1, "killer", longName, TeamSide.CounterTerrorists), new(3, "victim", longName + " victim", TeamSide.Terrorists), new(2, "assist", longName + " assist", TeamSide.Terrorists), "weapon_ak47", WeaponKind.Ak47, true, true, true, true, true, true);
             await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("key", entry) } });
             check(renderer.HasAttribute(feed, "class", "kill-assist t") && renderer.HasText(feed, longName + " assist") && renderer.HasText(feed, longName + " victim"), "actual killfeed preserves full participant names and the assister's own side");
-            check(renderer.AltTexts(feed).SequenceEqual(new[] { "AK-47" }) && renderer.AttributeValues(feed, "data-ui-icon").SequenceEqual(new[] { "blind", "flashassist", "smoke", "noscope", "wallbang", "headshot" }), "killfeed uses ordered outline modifiers while preserving the original white weapon silhouette");
+            check(renderer.AltTexts(feed).SequenceEqual(new[] { "AK-47" }) && renderer.AttributeValues(feed, "data-ui-icon").SequenceEqual(new[] { "flashassist", "blind", "smoke", "noscope", "wallbang", "headshot" }), "killfeed uses ordered outline modifiers while preserving the original white weapon silhouette");
             await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("key", entry with { Assister = null }) } });
             check(!renderer.AttributeValues(feed, "data-ui-icon").Contains("flashassist"), "a missing assister does not leave an unattached flash-assist icon");
             await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("utility", entry with { Weapon = "weapon_hegrenade" }) } });
@@ -353,7 +351,30 @@ static class RenderTests
             check(new[] { "Profile killer &amp;", "Profile victim", "Profile assist" }.All(name => renderer.HasText(feed, name) && renderer.HasAttribute(feed, "title", name))
                 && !renderer.HasText(feed, longName), "actual killfeed applies managed names to killer, victim and assist text and tooltips without decoding profile text");
             await renderer.Render(feed, new() { [nameof(Killfeed.Context)] = BroadcastContext.Empty, [nameof(Killfeed.Entries)] = new[] { new KillView("key", entry with { Killer = null, Assister = null }) } });
-            check(renderer.HasText(feed, "WORLD") && renderer.HasText(feed, longName + " victim"), "world kills and unavailable profile data retain the event-name fallback");
+            check(renderer.HasDescendantAttribute(feed, "data-ui-icon", "world") && !renderer.HasText(feed, "WORLD") && renderer.HasText(feed, longName + " victim"), "anonymous kills use a neutral environment source and retain victim names");
+            foreach (var bombWeapon in new[] { "c4", "weapon_c4", "planted_c4", "weapon_planted_c4" })
+            {
+                await renderer.Render(weapon, new() { [nameof(EquipmentIcon.Name)] = bombWeapon });
+                check(renderer.HasDescendantAttribute(weapon, "data-ui-icon", "bomb") && !renderer.HasElement(weapon, "img"), "bomb inventory spelling uses the shared outline: " + bombWeapon);
+                await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("bomb", entry with { Killer = null, Assister = null, Weapon = bombWeapon, WeaponKind = WeaponKind.Unknown }) } });
+                check(renderer.AttributeValues(feed, "data-ui-icon").Count(icon => icon == "bomb") == 1 && !renderer.HasText(feed, "WORLD"), "anonymous bomb kills show one bomb source without duplicate method artwork: " + bombWeapon);
+            }
+            await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("bomb-kind", entry with { Killer = null, Weapon = "world", WeaponKind = WeaponKind.C4 }) } });
+            check(renderer.HasDescendantAttribute(feed, "data-ui-icon", "bomb") && !renderer.HasText(feed, "WORLD"), "typed SDK C4 identity identifies bomb deaths even with a generic weapon name");
+            var trade = entry with { TradedKill = entry with { Victim = entry.Assister!, TradedKill = entry } };
+            await renderer.Render(feed, new() { [nameof(Killfeed.Context)] = reference with { Metadata = killMetadata }, [nameof(Killfeed.Entries)] = new[] { new KillView("key", trade) } });
+            check(renderer.AttributeValues(feed, "data-kill-role").SequenceEqual(new[] { "killer", "assister", "traded", "victim" })
+                && renderer.HasAttribute(feed, "class", "kill-trade t")
+                && renderer.AttributeValues(feed, "data-ui-icon").Count(icon => icon == "trade") == 1
+                && renderer.HasAttribute(feed, "title", "Möglicher Trade für Profile assist"),
+                "trade renders only the immediate SDK victim after assist, with its resolved name and possible-trade tooltip");
+            await renderer.Render(feed, new() { [nameof(Killfeed.Entries)] = new[] { new KillView("key", trade with { Assister = null }) } });
+            check(renderer.AttributeValues(feed, "data-kill-role").SequenceEqual(new[] { "killer", "traded", "victim" }), "unassisted trades immediately follow the killer");
+            var hideTrades = new HudPanelState(1, new() { ["display"] = new() { ["hideTrades"] = JsonSerializer.SerializeToElement(true) } });
+            await renderer.Render(feed, new() { [nameof(Killfeed.Context)] = reference with { Panel = hideTrades } });
+            check(!renderer.AttributeValues(feed, "data-kill-role").Contains("traded") && !renderer.AttributeValues(feed, "data-ui-icon").Contains("trade"), "display panel hides the whole trade indicator without hiding the kill row");
+            await renderer.Render(feed, new() { [nameof(Killfeed.Context)] = BroadcastContext.Empty, [nameof(Killfeed.Entries)] = new[] { new KillView("key", trade with { TradedKill = entry with { Victim = new(1, "", "", TeamSide.Unknown) } }) } });
+            check(renderer.HasAttribute(feed, "title", "Möglicher Trade für —"), "a trade with an unknown teammate uses the existing unknown-name fallback");
         });
         if (renderer.Exception is { } exception) throw new InvalidOperationException("Actual component render or event failed.", exception);
     }

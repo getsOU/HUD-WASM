@@ -5,6 +5,7 @@ namespace BasicHud.Presentation;
 public sealed record UtilityItem(string Name, string Label, int? Count);
 public static class EquipmentPresentation
 {
+    public static bool IsBomb(string? name) => Key(name) is "c4" or "planted_c4";
     public static int UtilityCopies(int? count) => count is >= 0 and <= 10 ? count.Value : 1;
     public static WeaponState? Active(PlayerState player) => PlayerPresentation.Weapons(player).FirstOrDefault(weapon => weapon.State is WeaponStatus.Active or WeaponStatus.Reloading);
     public static WeaponState? RosterWeapon(PlayerState player)

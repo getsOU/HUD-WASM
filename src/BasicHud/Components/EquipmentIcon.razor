@@ -1,4 +1,8 @@
-@if (HudUiIcons.Utility(Name) is { } utility)
+@if (EquipmentPresentation.IsBomb(Name))
+{
+    <HudUiIcon Name="bomb" Label="Bomb" Class="@($"equipment-icon {Class}")" />
+}
+else if (HudUiIcons.Utility(Name) is { } utility)
 {
     <HudUiIcon Name="@utility" Label="@EquipmentPresentation.Label(Name)" Class="@($"hud-utility-icon {Class}")" />
 }

@@ -14,7 +14,6 @@
                 <Scoreboard View="@HudView.From(timed.Snapshot)" Caption="@Options.Caption" Context="timed" ShowSeries="Options.ShowSeries" />
             </ChildContent></TimedContext>
             <RoundMvp Context="context" />
-            <LiveBranding Context="context" ShowSponsors="Options.ShowSponsors" />
             @if (Options.ShowRoundHistory) { <RoundHistory Context="context" /> }
             @if (Options.ShowRadar) { <TimedContext Context="context" Milliseconds="100"><ChildContent Context="timed"><Radar View="@RadarView(timed)" OverviewFailed="OverviewFailed" /></ChildContent></TimedContext> }
             @if (Options.ShowSeries) { <LiveMapSeries Context="context" /> }
@@ -37,7 +36,7 @@
                 case var recorded when RecordingData.IsView(recorded): <RecordingView View="@recorded" Context="context" /> break;
             }
         }
-        @if (scene != "live" && Options.ShowSponsors) { <Sponsors Context="context" /> }
+        <LiveBranding Context="context" ShowSponsors="Options.ShowSponsors" />
         <ProductionLayer Context="context" LowerThirdVisible="@(LowerThirdVisible)" />
     </div>
 </main>

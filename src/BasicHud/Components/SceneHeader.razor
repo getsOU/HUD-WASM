@@ -1,5 +1,5 @@
 <header class="scene-header recording-heading broadcast-heading">
-    <div class="recording-mark"><Branding Context="Context" /><span class="recording-wordmark">sOU</span></div>
+    <div class="recording-mark"><Branding Context="Context" ShowCompetition="false" /><span class="recording-wordmark">sOU</span></div>
     <div class="recording-title"><span class="recording-kicker">@Context.Match?.Name</span>
         <h1 title="@Context.TextOr(PanelSection, "title", Title)">@Context.TextOr(PanelSection, "title", Title)</h1>
         @if (PanelSection == "production" && Context.Text("production", "subtitle") is { Length: > 0 } subtitle) { <p class="scene-subtitle">@subtitle</p> }

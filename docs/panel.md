@@ -13,6 +13,7 @@ Open the installed HUD's **Panel** in sOU. Edit the desired fields and use **Spe
 | `display.horizontalPlayercards` | **Playercards horizontal**: arrange each team's five cards in a horizontal row along the bottom, with the observer card in the center. Both teams use the same internal content order (name/stats left-aligned, weapon left, HP right, utility left, equipment right); observer digits and side strips sit on the left for both teams. Remaining HP fills the full card background from the bottom; damage clears it from top to bottom. Dead cards are shorter and keep portrait/name/statistics without the large death icon or lower equipment row. Unchecked/missing keeps the original vertical rosters. Applies only to the live scene; switching layouts preserves player data, portrait effects and observed-player highlighting. |
 | `display.hideObservedPlayer` | Hide the live observed-player card. |
 | `display.hideRadar` | Hide the live radar, including its unavailable indicator. |
+| `display.hideTrades` | Hide possible-trade icons and teammate names within killfeed rows. Unchecked or missing keeps them visible. Requires an SDK-provided trade mapping; never infers one from visible kills. |
 | `display.hideKillfeed` | Hide the live killfeed. |
 | `display.hideRoundHistory` | Hide recent numbered round results during freeze/pause/timeout/intermission. History is already absent during active/bomb/defuse rounds; the statistics view keeps full history. |
 | `display.hideSeries` | Hide the compact map-series cells below the radar and the team-aligned series-win marks in the header. |
@@ -46,7 +47,7 @@ The lower third is transient; a new source session clears it. It reserves space 
 
 ## Branding
 
-`branding.logo` is an optional local broadcast image in presentation headers. The live scoreboard uses the fixed local sOU wordmark in white. `branding.sponsors` accepts additional local images, combined with competition sponsors supplied by sOU. Only permitted local images are loaded; image failures use a neutral fallback in presentation scenes. Failed live team logos are omitted. Missing or failed player portraits use a local CS2 agent for the actual side and observer digit, when known. Sponsor rendering is limited to 24 distinct local images. In the live HUD, one sponsor rotates directly left of the right-aligned competition logo. Their independent height controls preserve each image aspect ratio; widths follow the content without fixed slots.
+`branding.logo` is an optional local broadcast image in presentation headers. The live scoreboard uses the fixed local sOU wordmark in white. `branding.sponsors` accepts additional local images, combined with competition sponsors supplied by sOU. Only permitted local images are loaded; missing or failed competition and sponsor images are omitted. Failed live team logos are omitted. Missing or failed player portraits use a local CS2 agent for the actual side and observer digit, when known. Sponsor rendering is limited to 24 distinct local images. In every view, one sponsor rotates directly left of the right-aligned competition logo in the upper-right area of each view's layout. Subview logos align with the header's inner edges. Rotation duration, logo sizes and Hide sponsors apply to all views. Presentation headers retain only the optional broadcast logo. Their independent height controls preserve each image aspect ratio; widths follow the content without fixed slots.
 
 ## Radar
 
@@ -89,3 +90,7 @@ Every section includes **Synchronize recording**. This cancels and replaces the 
 ## Player image alignment
 
 Display > **Player image alignment** defaults to **Top center**. Top/center/bottom and left/center/right combinations provide nine positions. Existing panel configurations without this field also use top center. The choice applies to live vertical/horizontal cards, observer and MVP portraits, lineup/spotlight views and recorded player images. Images keep their existing cover/contain fitting and card dimensions; cover-cropped portraits retain the chosen edge. Effect masks and agent fallbacks use the same position. Logos and other artwork retain their own alignment.
+
+## Possible trades
+
+The killfeed uses `KillFeedEntry.TradedKill.Victim` from SDK `0.3.0-preview.9` (sOU Desktop `0.3.42` or newer), with `killfeed.trades.v1` declared as an optional capability. Missing mappings produce no indicator. Nested chains show only the immediate teammate. Indicators share the row identity and lifetime; late mappings and alias changes update the existing row. See the [SDK reference](https://www.getsou.app/docs/hud-sdk-referenz?ui_lang=de#killfeed-trades).

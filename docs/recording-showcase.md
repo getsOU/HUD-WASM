@@ -1,4 +1,4 @@
-# Recording broadcasts · 0.4.51
+# Recording broadcasts · 0.4.52
 
 The six recording scenes are passive broadcast graphics. They share the existing
 16:9 HUD canvas, blue palette, CT/T accents, condensed card typography, local

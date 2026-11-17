@@ -103,6 +103,15 @@ static class ShowcaseTests
         check(kills.Project(Snapshot(game with { Map = "new-map", KillFeed = [] }), now).Count == 0, "map reset removes previous kill state");
 
         var orderedKills = new KillFeedProjection();
+        var tradeProjection = new KillFeedProjection();
+        var currentKill = kill with { Id = 3, GameTimeSeconds = 104 };
+        var initialTradeRow = tradeProjection.Project(Snapshot(game with { KillFeed = [currentKill] }), now).Single();
+        var linked = currentKill with { TradedKill = kill with { Id = 2, TradedKill = kill } };
+        var updatedTradeRow = tradeProjection.Project(Snapshot(game with { KillFeed = [linked], RoundPhase = RoundPhase.Over }), now.AddSeconds(6)).Single();
+        check(updatedTradeRow.Key == initialTradeRow.Key && updatedTradeRow.Event.TradedKill?.Victim == kill.Victim,
+            "late trade mapping keeps the row identity and immediate victim through round review without a visible prior kill");
+        check(tradeProjection.Project(Snapshot(game with { KillFeed = [linked] }), now.AddSeconds(9)).Count == 0,
+            "late nested trade mappings do not restart the killfeed lifetime");
         var events = Enumerable.Range(1, 7).Select(i => kill with { Id = i, GameTimeSeconds = 100 + i }).ToArray();
         check(orderedKills.Project(Snapshot(game with { KillFeed = [events[2], events[0], events[1]] }), now).Select(item => item.Event.Id).SequenceEqual(new long[] { 1, 2, 3 }), "killfeed places older kills above new kills, even when a frame arrives unordered");
         check(orderedKills.Project(Snapshot(game with { KillFeed = [.. events] }), now.AddMilliseconds(100)).Select(item => item.Event.Id).SequenceEqual(new long[] { 1, 2, 3, 4, 5, 6, 7 }), "all current kills remain visible beyond six with new kills appended below");

@@ -2764,6 +2764,11 @@ body,
   --icon-max-width: 4px;
 }
 
+.radar-bomb .hud-ui-icon {
+  width: 100%;
+  height: 100%;
+}
+
 .radar-bomb.defused {
   color: #5ab8f4;
   opacity: 0.65;
@@ -2795,7 +2800,7 @@ body,
 
 .kill-event {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-end;
   width: max-content;
@@ -2810,22 +2815,34 @@ body,
 }
 
 .kill-attacker,
-.kill-assist {
+.kill-assist,
+.kill-trade {
   display: inline-flex;
   align-items: center;
   gap: 0.25em;
   min-width: 0;
-  max-width: 100%;
+  max-width: 14em;
   color: var(--side, #e0e5ec);
 }
 
 .kill-name {
   min-width: 0;
-  max-width: 100%;
+  max-width: 14em;
   color: var(--side, #e0e5ec);
   font-weight: 650;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kill-assist > [aria-hidden],
+.kill-assist .status-icon,
+.kill-trade .status-icon {
+  color: #fff;
+}
+
+.kill-world-source {
+  color: #fff;
 }
 
 .kill-method {
@@ -3964,7 +3981,7 @@ body,
   top: calc(7cqw + (var(--mvp-height) + var(--mvp-gap)) * var(--mvp-reveal, 1));
 }
 
-.hud.scene-live .live-branding {
+.hud .live-branding {
   position: absolute;
   top: 1.25cqw;
   right: 0.8%;
@@ -3975,7 +3992,7 @@ body,
   justify-content: flex-end;
   gap: 0.8cqw;
 }
-.hud.scene-live .live-competition-logo {
+.hud .live-competition-logo {
   flex: 0 0 auto;
   width: auto;
   min-width: 0;
@@ -3984,7 +4001,7 @@ body,
   max-height: 100%;
   object-fit: contain;
 }
-.hud.scene-live .live-branding .sponsors {
+.hud .live-branding .sponsors {
   position: static;
   inset: auto;
   flex: 0 0 auto;
@@ -3997,7 +4014,7 @@ body,
   padding: 0;
   background: transparent;
 }
-.hud.scene-live .live-branding .sponsor-image {
+.hud .live-branding .sponsor-image {
   flex: 0 0 auto;
   width: auto;
   height: calc(100% * var(--sponsor-logo-scale, 1));
@@ -4156,6 +4173,7 @@ body,
 .hud.scene-live .roster .cs2-icon,
 .hud.scene-live .observed .cs2-icon,
 .hud.scene-live .observed-armor .status-icon,
+.hud.scene-live .observed [data-ui-icon=bomb],
 .hud.scene-live .observed [data-icon="weapons/c4"],
 .hud.scene-live .observed [data-icon="weapons/planted_c4"] {
   color: #fff;
@@ -5756,6 +5774,21 @@ body,
 .has-lower-third:not(.scene-live) .broadcast-scene {
   bottom: 0;
   padding-bottom: 15em;
+}
+
+.hud:not(.scene-live) .live-branding {
+  top: 3.75em;
+  right: 7em;
+  height: 3em;
+}
+
+.hud:not(.scene-live):has(.live-branding) .broadcast-heading {
+  grid-template-columns: 5em minmax(0, 1fr) 35cqw;
+  padding-bottom: 0.4em;
+}
+.hud:not(.scene-live):has(.live-branding) .broadcast-heading .recording-map {
+  align-self: end;
+  font-size: 0.6em;
 }
 
 .presentation .scene-body {

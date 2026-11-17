@@ -114,6 +114,22 @@
     padding-bottom: 15em;
 }
 
+// Align shared branding with the subview's header safe area, above the map name.
+.hud:not(.scene-live) .live-branding {
+    top: 3.75em;
+    right: 7em;
+    height: 3em;
+}
+
+.hud:not(.scene-live):has(.live-branding) .broadcast-heading {
+    grid-template-columns: 5em minmax(0, 1fr) 35cqw;
+    padding-bottom: 0.4em;
+    .recording-map {
+        align-self: end;
+        font-size: 0.6em;
+    }
+}
+
 .presentation {
     .scene-body {
         display: flex;

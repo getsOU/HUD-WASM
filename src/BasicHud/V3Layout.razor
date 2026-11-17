@@ -10,7 +10,6 @@
             </ChildContent></TimedContext>
         </ChildContent></SelectedHudRegion>
         <SelectedHudRegion Area="HudArea.Mvp" Resources="Resources"><ChildContent Context="state"><RoundMvp Context="state.Context" /></ChildContent></SelectedHudRegion>
-        <SelectedHudRegion Area="HudArea.Sponsors" Resources="Resources"><ChildContent Context="state"><LiveBranding Context="state.Context" ShowSponsors="state.Options.ShowSponsors" /></ChildContent></SelectedHudRegion>
         @if (options.ShowRoundHistory) { <SelectedHudRegion Area="HudArea.History" Resources="Resources"><ChildContent Context="state"><RoundHistory Context="state.Context" /></ChildContent></SelectedHudRegion> }
         @if (options.ShowRadar) { <SelectedHudRegion Area="HudArea.Radar" Resources="Resources"><ChildContent Context="state"><V3Radar Context="state.Context" /></ChildContent></SelectedHudRegion> }
         @if (options.ShowSeries) { <SelectedHudRegion Area="HudArea.Series" Resources="Resources"><ChildContent Context="state"><LiveMapSeries Context="state.Context" /></ChildContent></SelectedHudRegion> }
@@ -39,8 +38,7 @@
             }
         </ChildContent></SelectedHudRegion>
     }
-    @if (scene != "live" && options.ShowSponsors)
-    { <SelectedHudRegion Area="HudArea.Sponsors" Resources="Resources"><ChildContent Context="state"><Sponsors Context="state.Context" /></ChildContent></SelectedHudRegion> }
+    <SelectedHudRegion Area="HudArea.Sponsors" Resources="Resources"><ChildContent Context="state"><LiveBranding Context="state.Context" ShowSponsors="state.Options.ShowSponsors" /></ChildContent></SelectedHudRegion>
     <SelectedHudRegion Area="HudArea.Production" Resources="Resources" LowerThirdVisible="LowerThirdVisible"><ChildContent Context="state">
         <ProductionLayer Context="state.Context" LowerThirdVisible="LowerThirdVisible" />
     </ChildContent></SelectedHudRegion>
