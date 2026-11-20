@@ -66,7 +66,7 @@ internal static class V3RegionTests
         check(HudClockPresentation.View(context with { Snapshot = source with { ReceivedAt = null } }).Timer.Value == "—", "missing timer anchors remain unavailable rather than inventing elapsed time");
 
         var profiles = JsonSerializer.Deserialize("""{"caption":"First","players":{"same":{"name":"Profile name","avatar":"/cast-media/player.png","camera":"ignored"}},"match":{"left":{"id":"A","steamIds":["same"]},"right":{"id":"B","steamIds":["other"]}}}""", HudOptionsJson.Default.HudOptions)!;
-        var renamed = JsonSerializer.Deserialize("""{"caption":"Second","players":{"same":{"name":"Profile name","avatar":"/cast-media/player.png"}},"match":{"left":{"id":"A","steamIds":["same"]},"right":{"id":"B","steamIds":["other"]}}}""", HudOptionsJson.Default.HudOptions)!;
+        var renamed = JsonSerializer.Deserialize("""{"caption":"Second","players":{"same":{"name":"Profile name","avatar":"/cast-media/player.png","camera":"ignored"}},"match":{"left":{"id":"A","steamIds":["same"]},"right":{"id":"B","steamIds":["other"]}}}""", HudOptionsJson.Default.HudOptions)!;
         var match = new ManagedMatch("match", "Example", 1, new("A", "Alpha", "A", null, 0), new("B", "Bravo", "B", null, 0),
             new(TeamSide.CounterTerrorists, TeamRecognitionStatus.Manual, "A", 0, 0), new(TeamSide.Terrorists, TeamRecognitionStatus.Manual, "B", 0, 0));
         var catalog = MetadataCatalog.Bind(profiles.Metadata(), match);

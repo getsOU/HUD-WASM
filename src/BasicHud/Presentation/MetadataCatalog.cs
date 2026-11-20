@@ -2,7 +2,7 @@ using SOU.Live.Contracts;
 
 namespace BasicHud.Presentation;
 
-// Narrow local public metadata shapes. Camera is read as text only and is never embedded.
+// Narrow local public metadata shapes. Only allowlisted playercam viewer addresses may be embedded.
 public sealed class BrowserMetadata
 {
     public Dictionary<string, BrowserPlayer>? Players { get; set; }
@@ -22,6 +22,8 @@ public sealed class BrowserTeam
 public sealed record MetadataCatalog(string MatchId, IReadOnlyDictionary<string, BrowserPlayer> Players,
     IReadOnlyDictionary<string, IReadOnlyList<string>> Rosters)
 {
+    public string? LeftTeamId { get; init; }
+    public string? RightTeamId { get; init; }
     public static MetadataCatalog Empty { get; } = new("", new Dictionary<string, BrowserPlayer>(), new Dictionary<string, IReadOnlyList<string>>());
     public bool Matches(ManagedMatch? match) => match is not null && MatchId == match.Id && match.TeamA.Id != match.TeamB.Id && Rosters.ContainsKey(match.TeamA.Id) && Rosters.ContainsKey(match.TeamB.Id);
     public static MetadataCatalog Bind(BrowserMetadata? data, ManagedMatch? match)
@@ -36,7 +38,7 @@ public sealed record MetadataCatalog(string MatchId, IReadOnlyDictionary<string,
         var duplicates = rosters.Values.SelectMany(ids => ids).GroupBy(id => id, StringComparer.Ordinal).Where(group => group.Count() > 1).Select(group => group.Key).ToHashSet(StringComparer.Ordinal);
         foreach (var team in rosters.Keys.ToArray()) rosters[team] = rosters[team].Where(id => !duplicates.Contains(id)).ToArray();
         var players = (data.Players ?? []).Where(pair => allowed.Contains(pair.Key) && !duplicates.Contains(pair.Key) && pair.Value is not null)
-            .ToDictionary(pair => pair.Key, pair => new BrowserPlayer { Name = pair.Value.Name, Avatar = pair.Value.Avatar }, StringComparer.Ordinal);
-        return new(match.Id, players, rosters);
+            .ToDictionary(pair => pair.Key, pair => new BrowserPlayer { Name = pair.Value.Name, Avatar = pair.Value.Avatar, Camera = PlayercamUrls.Viewer(pair.Value.Camera) }, StringComparer.Ordinal);
+        return new(match.Id, players, rosters) { LeftTeamId = left.Id, RightTeamId = right.Id };
     }
 }

@@ -30,5 +30,16 @@ static class AgentPortraitTests
         var player = new PlayerState("player", "Player", TeamSide.CounterTerrorists, null, null) { ObserverSlot = 1 };
         check(AgentPortraits.For(player with { Side = null }) is null && AgentPortraits.For(player with { Side = TeamSide.Unknown }) is null, "unknown sides never receive an assumed CT or T agent");
         check(new int?[] { null, -1, 10, int.MaxValue }.All(slot => AgentPortraits.For(player with { ObserverSlot = slot }) is null), "missing or invalid observer slots never impersonate another numbered player");
+        check(AgentPortraits.ForRoster(player) == AgentPortraits.For(player), "camera-roster fallback preserves regular side/observer-digit agent selection");
+        foreach (var side in new TeamSide?[] { null, TeamSide.Unknown, TeamSide.CounterTerrorists, TeamSide.Terrorists })
+        {
+            var incomplete = player with { Side = side, ObserverSlot = null };
+            var portrait = AgentPortraits.ForRoster(incomplete);
+            check(paths.Contains(portrait) && portrait == AgentPortraits.ForRoster(incomplete with { Name = "Changed alias" })
+                && incomplete.Side == side && incomplete.ObserverSlot is null,
+                "camera-roster decorative fallback is bundled, stable by identity and never changes missing side or slot data");
+            if (side is TeamSide.CounterTerrorists or TeamSide.Terrorists)
+                check(portrait.StartsWith(side == TeamSide.CounterTerrorists ? "assets/agents/ct-" : "assets/agents/t-", StringComparison.Ordinal), "camera-roster fallback preserves a known side without requiring an observer digit");
+        }
     }
 }

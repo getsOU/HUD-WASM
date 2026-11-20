@@ -127,8 +127,6 @@ def upload(directory, tag, api):
         return existing, "already present"
     try:
         created = verify_release(read_json(*api.request("POST", TARGET + "/releases", package)), version, digest)
-        if created["state"] != "pending":
-            raise UploadError("A new upload must start pending.")
         return created, "uploaded"
     except UploadError:
         # Response loss or HTTP conflict may occur after commit. Read once; never POST again.

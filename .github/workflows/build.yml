@@ -33,6 +33,9 @@ jobs:
           npm run test:browser -- artifacts/package
           npm run test:trades -- artifacts/package
           npm run test:bomb-icons -- artifacts/package
+          npm run test:playercams -- artifacts/package
+          npm run test:camera-rosters -- artifacts/package
+          SOU_TEST_LOCAL_CAMERAS=1 npm run test:camera-rosters -- artifacts/package
       - name: Verify release guards without publishing
         shell: pwsh
         run: |

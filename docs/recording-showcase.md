@@ -36,9 +36,9 @@ Panel-only presentation changes use already loaded data. Only the active view's 
 
 ## SDK and lifecycle
 
-The HUD uses the published `0.3.0-preview.9` NuGet packages for desktop 0.3.42
+The HUD uses the published `0.3.0` NuGet packages for desktop 0.3.42
 or newer. Project NuGet.Config uses nuget.org and a separate
-`artifacts/nuget-published-preview9` cache, with public package hashes in the lock
+`artifacts/nuget-packages` cache, with public package hashes in the lock
 files. Build.ps1 invokes the public tool from `artifacts/published-sdk-tools`
 instead of a cached private executable with the same version number. No local
 sOU source projects or private SDK ZIPs are required. Package format 2 declares
@@ -71,7 +71,7 @@ capability result.
 
 ```powershell
 pwsh ./scripts/Build.ps1 -OutputDirectory artifacts/published-compatible-2026-11-16
-$sdkTool = "artifacts/published-sdk-tools/.store/sou.hud.tool/0.3.0-preview.9/sou.hud.tool/0.3.0-preview.9/tools/net10.0/any/SOU.Hud.Tool.dll"
+$sdkTool = "artifacts/published-sdk-tools/.store/sou.hud.tool/0.3.0/sou.hud.tool/0.3.0/tools/net10.0/any/SOU.Hud.Tool.dll"
 dotnet $sdkTool fixtures validate tests/fixtures/recording-showcase.json
 dotnet $sdkTool dev artifacts/published-compatible-2026-11-16/package --port 0 --fixture tests/fixtures/recording-showcase.json
 node tests/browser/recording.mjs artifacts/published-compatible-2026-11-16/package

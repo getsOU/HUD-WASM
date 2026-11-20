@@ -156,6 +156,7 @@ await CompactTests.Run(Check);
 await BroadcastReferenceTests.Run(Check);
 AgentPortraitTests.Run(Check);
 PortraitAlignmentTests.Run(Check);
+PlayercamTests.Run(Check);
 BombProgressTests.Run(Check);
 PortraitEffectTests.Run(Check);
 WeaponPresenceTests.Run(Check);

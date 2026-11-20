@@ -3,7 +3,7 @@ using SOU.Live.Contracts;
 
 namespace BasicHud.Presentation;
 
-public enum HudArea { Resources, Shell, Scoreboard, Mvp, History, Radar, Series, Killfeed, CtRoster, TRoster, Player, Observed, Waiting, Sponsors, Production, Presentation }
+public enum HudArea { Resources, Shell, Scoreboard, Mvp, History, Radar, Series, Killfeed, CtRoster, TRoster, Player, Observed, Waiting, Sponsors, Production, Presentation, Cameras }
 
 /// <summary>Presentation dependencies only; the frame is read after a selection changes.</summary>
 public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, object?[] dependencies)
@@ -19,6 +19,15 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
         if (area is HudArea.Shell or HudArea.CtRoster or HudArea.TRoster) return !ReferenceEquals(previous, current);
         if (area == HudArea.Radar) return !ReferenceEquals(previous.RadarCatalog, current.RadarCatalog)
             || !ReferenceEquals(previous.BoltRadarCatalog, current.BoltRadarCatalog) || !Equals(previous.ResolveAsset, current.ResolveAsset);
+        if (area == HudArea.Cameras)
+        {
+            var cameraMatch = current.Match ?? graph?.ManagedMatch ?? graph?.GameMatch;
+            bool RosterChanged(string team) => !(previous.Metadata.Rosters.GetValueOrDefault(team) ?? [])
+                .SequenceEqual(current.Metadata.Rosters.GetValueOrDefault(team) ?? []);
+            return !PlayercamPool.Sources(previous.Metadata, cameraMatch).SequenceEqual(PlayercamPool.Sources(current.Metadata, cameraMatch))
+                || previous.Metadata.LeftTeamId != current.Metadata.LeftTeamId || previous.Metadata.RightTeamId != current.Metadata.RightTeamId
+                || cameraMatch is { } managed && (RosterChanged(managed.TeamA.Id) || RosterChanged(managed.TeamB.Id));
+        }
         if (area is HudArea.Presentation or HudArea.Mvp) return !ReferenceEquals(previous.Metadata, current.Metadata);
         if (area == HudArea.Killfeed)
         {
@@ -35,8 +44,9 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
         if (area is not (HudArea.Player or HudArea.Observed)) return false;
         var steamId = (area == HudArea.Observed ? graph?.ObservedPlayer : playerKey is null ? null : graph?.Player(playerKey))?.Identity.SteamId;
         var match = graph?.ManagedMatch ?? graph?.GameMatch;
-        (string?, string?) Profile(MetadataCatalog metadata) => steamId is not null && metadata.Matches(match) && metadata.Players.TryGetValue(steamId, out var profile)
-            ? (profile.Name, profile.Avatar) : (null, null);
+        if (area == HudArea.Observed && !PlayercamPool.Sources(previous.Metadata, match).SequenceEqual(PlayercamPool.Sources(current.Metadata, match))) return true;
+        (string?, string?, string?) Profile(MetadataCatalog metadata) => steamId is not null && metadata.Matches(match) && metadata.Players.TryGetValue(steamId, out var profile)
+            ? (profile.Name, profile.Avatar, area == HudArea.Observed ? PlayercamUrls.Viewer(profile.Camera) : null) : (null, null, null);
         return Profile(previous.Metadata) != Profile(current.Metadata);
     }
 
@@ -83,6 +93,10 @@ public sealed class HudRegionSelection(HudSessionSnapshot<HudOptions> frame, obj
             case HudArea.Shell:
                 foreach (var name in new[] { "scene", "horizontalPlayercards", "hideRosters", "hideObservedPlayer", "hideRadar", "hideKillfeed", "hideRoundHistory", "hideSeries", "hideSponsors" }) Field("display", name);
                 values.Add(graph?.ObservedPlayer is not null); break;
+            case HudArea.Cameras:
+                Match(); values.Add(info?.Map); values.Add(graph?.ObservedPlayer?.Identity.SteamId);
+                foreach (var name in new[] { "scene", "agentsOnly", "hideObservedPlayer", "hideRosters" }) Field("display", name);
+                break;
             case HudArea.Scoreboard:
                 values.Add(graph?.Freshness);
                 values.Add(info?.Map); values.Add(info?.Phase); values.Add(info?.RoundNumber); values.Add(info?.RoundPhase);

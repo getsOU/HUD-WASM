@@ -1,0 +1,12 @@
+@{ var visible = CameraRoster.VisibleCameras(Context, Scene); }
+<div class="playercam-layer" aria-label="Player cameras">
+@foreach (var camera in CameraRoster.PoolEnabled(Context, Scene) ? Context.PlayerCameras(requireGame: !CameraRoster.IsScene(Scene)) : [])
+{
+    var active = visible.Contains(camera.SteamId);
+    <iframe @key="(Context.Match?.Id, Context.Game?.Map, camera.SteamId, camera.Viewer)" class="playercam-receiver observed-playercam @(active ? "is-active" : "")" data-playercam-player="@camera.SteamId" data-playercam-active="@(active ? "true" : "false")" aria-hidden="@(active ? "false" : "true")" tabindex="-1" loading="eager" src="@camera.Viewer" title="Player camera" allow="autoplay; camera 'none'; microphone 'none'" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin"></iframe>
+}
+</div>
+@code {
+    [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
+    [Parameter] public string Scene { get; set; } = "live";
+}

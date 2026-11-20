@@ -28,6 +28,8 @@
             @switch (scene)
             {
                 case "prematch": <TimedContext Context="state.Context" Milliseconds="250"><ChildContent Context="timed"><PrematchView Context="timed" /></ChildContent></TimedContext> break;
+                case "roster-left": <CameraRosterView Context="state.Context" /> break;
+                case "roster-right": <CameraRosterView Context="state.Context" Right="true" /> break;
                 case "lineups": <LineupsView Context="state.Context" /> break;
                 case "veto": <VetoView Context="state.Context" /> break;
                 case "break": <TimedContext Context="state.Context" Milliseconds="250"><ChildContent Context="timed"><BreakView Context="timed" /></ChildContent></TimedContext> break;
@@ -38,6 +40,9 @@
             }
         </ChildContent></SelectedHudRegion>
     }
+    <SelectedHudRegion Area="HudArea.Cameras" Resources="Resources"><ChildContent Context="state">
+        <PlayerCameraLayer Context="state.Context" Scene="@scene" />
+    </ChildContent></SelectedHudRegion>
     <SelectedHudRegion Area="HudArea.Sponsors" Resources="Resources"><ChildContent Context="state"><LiveBranding Context="state.Context" ShowSponsors="state.Options.ShowSponsors" /></ChildContent></SelectedHudRegion>
     <SelectedHudRegion Area="HudArea.Production" Resources="Resources" LowerThirdVisible="LowerThirdVisible"><ChildContent Context="state">
         <ProductionLayer Context="state.Context" LowerThirdVisible="LowerThirdVisible" />

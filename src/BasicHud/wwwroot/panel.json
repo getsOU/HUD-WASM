@@ -68,6 +68,14 @@
           {
             "name": "economy-evidence",
             "label": "Economy Review"
+          },
+          {
+            "name": "roster-left",
+            "label": "Roster left"
+          },
+          {
+            "name": "roster-right",
+            "label": "Roster right"
           }
         ]
       },

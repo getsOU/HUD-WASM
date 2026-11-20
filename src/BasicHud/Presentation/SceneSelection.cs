@@ -2,7 +2,7 @@ namespace BasicHud.Presentation;
 
 public static class SceneSelection
 {
-    public static IReadOnlyList<string> Names { get; } = ["live", "prematch", "lineups", "veto", "break", "postmatch", "statistics", "spotlight", "team-economy", "round-compare", "side-statistics", "multikills", "round-buys", "economy-evidence"];
+    public static IReadOnlyList<string> Names { get; } = ["live", "prematch", "lineups", "veto", "break", "postmatch", "statistics", "spotlight", "team-economy", "round-compare", "side-statistics", "multikills", "round-buys", "economy-evidence", "roster-left", "roster-right"];
     public static string Valid(string? value) => value is not null && Names.Contains(value, StringComparer.Ordinal) ? value : "live";
     public static string Resolve(string relativePath, string? panelScene)
     {

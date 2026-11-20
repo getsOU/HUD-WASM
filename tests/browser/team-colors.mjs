@@ -1,9 +1,10 @@
+import {sdkToolPath} from './sdk-tool.mjs';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { mkdtemp, readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright';
-const tool=path.resolve('artifacts/published-sdk-tools/.store/sou.hud.tool/0.3.0-preview.9/sou.hud.tool/0.3.0-preview.9/tools/net10.0/any/SOU.Hud.Tool.dll');
+const tool=path.resolve(sdkToolPath);
 const packagePath=path.resolve(process.argv[2]);const fixture=JSON.parse(await readFile('tests/fixtures/recording-showcase.json','utf8'));
 const first=structuredClone(fixture.snapshots[0]),second=structuredClone(first),unknown=structuredClone(first);
 second.managedMatch.ct.teamId='example-alpha';second.managedMatch.t.teamId='example-bravo';second.game.managedMatch=second.managedMatch;

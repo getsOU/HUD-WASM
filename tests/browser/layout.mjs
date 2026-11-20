@@ -1,10 +1,11 @@
+import {sdkToolPath} from './sdk-tool.mjs';
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import { mkdtemp, readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
 
-const sdkTool = path.resolve("artifacts/published-sdk-tools/.store/sou.hud.tool/0.3.0-preview.9/sou.hud.tool/0.3.0-preview.9/tools/net10.0/any/SOU.Hud.Tool.dll");
+const sdkTool = path.resolve(sdkToolPath);
 const packagePath = path.resolve(
     process.argv[2] ?? "artifacts/unified-preview-2026-11-15/package",
 );

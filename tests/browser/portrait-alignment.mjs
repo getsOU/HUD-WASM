@@ -1,9 +1,10 @@
+import {sdkToolPath} from './sdk-tool.mjs';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {mkdtemp,readFile,writeFile,mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import {chromium} from 'playwright';
-const tool=path.resolve('artifacts/published-sdk-tools/.store/sou.hud.tool/0.3.0-preview.9/sou.hud.tool/0.3.0-preview.9/tools/net10.0/any/SOU.Hud.Tool.dll');
+const tool=path.resolve(sdkToolPath);
 const packagePath=path.resolve(process.argv[2]),fixture=JSON.parse(await readFile('tests/fixtures/recording-showcase.json','utf8'));
 fixture.snapshots=[fixture.snapshots[0]];const source=fixture.snapshots[0];source.game.roundPhase='live';source.game.countdown={phase:'live',secondsRemaining:90};source.managedMatch.teamA.logo='/cast-media/alignment-logo.svg';source.game.managedMatch=source.managedMatch;fixture.loop=false;
 await mkdir('artifacts',{recursive:true});const scratch=await mkdtemp(path.resolve('artifacts/portrait-alignment-browser-')),fixturePath=path.join(scratch,'fixture.json');await writeFile(fixturePath,JSON.stringify(fixture));

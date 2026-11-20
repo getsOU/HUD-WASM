@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "sou.hud.tool": {
-      "version": "0.3.0-preview.9",
+      "version": "0.3.0",
       "commands": [
         "sou-hud"
       ],

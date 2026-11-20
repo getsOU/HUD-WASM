@@ -1,6 +1,6 @@
 <section class="observed @PlayerPresentation.SideClass(Player.Side)" aria-label="Observed player">
-    <div class="observed-hero">
-        <span class="portrait-cell"><PlayerPortrait Player="Player" Context="Context" Class="portrait" OmitFallback="true" /></span>
+    <div class="observed-hero" data-playercam-target="@Player.SteamId">
+        <span class="portrait-cell"><PlayerPortrait @key="Player.SteamId" Player="Player" Context="Context" Class="portrait" OmitFallback="true" /></span>
     </div>
     <div class="observed-summary">
         @{ var active = Active; }

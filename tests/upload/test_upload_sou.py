@@ -69,6 +69,12 @@ class UploadTests(unittest.TestCase):
                 self.assertEqual(outcome, "already present")
                 self.assertEqual([call[0] for call in calls], ["GET", "GET"])
 
+    def test_server_approved_new_upload(self):
+        release = {**self.release, "state": "approved"}
+        (created, outcome), calls = self.run_upload([(200, self.hud), (200, []), (200, release)])
+        self.assertEqual((created, outcome), (release, "uploaded"))
+        self.assertEqual([call[0] for call in calls], ["GET", "GET", "POST"])
+
     def test_different_hash_rejected_before_any_upload(self):
         api = FakeApi([(200, self.hud), (200, [{**self.release, "hash": "0" * 64}])])
         with self.assertRaisesRegex(uploader.UploadError, "never overwrite"):

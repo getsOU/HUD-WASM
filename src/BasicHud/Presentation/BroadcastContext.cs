@@ -11,7 +11,7 @@ public sealed record BroadcastContext(LiveSnapshot? Snapshot, HudPanelState? Pan
     public bool SessionReady { get; init; } = true;
     public BoltRadarCatalog BoltRadarCatalog { get; init; } = BoltRadarCatalog.Empty;
     public Func<string, string?> ResolveAsset { get; init; } = _ => null;
-    public static BroadcastContext Empty { get; } = new(null, null, MetadataCatalog.Empty, DateTimeOffset.UtcNow, _ => null);
+    public static BroadcastContext Empty { get; } = new(null, null, MetadataCatalog.Empty, default, _ => null);
     public GameState? Game => Snapshot?.Game;
     public ManagedMatch? Match => Snapshot?.ManagedMatch ?? Game?.ManagedMatch;
     public IReadOnlyList<PlayerState> Players => Game is { Players.IsDefault: false } game ? game.Players : [];
@@ -20,6 +20,11 @@ public sealed record BroadcastContext(LiveSnapshot? Snapshot, HudPanelState? Pan
     public HudPanelReference? Reference(string field) => Panel?.References.TryGetValue("feature", out var fields) == true && fields.TryGetValue(field, out var value) ? value : null;
     public string? ProfileImage(string? steamId, string? referenceImage = null) => !DisplayOptions.PlayerImagesVisible(Panel) ? null
         : ResolveMedia(referenceImage) ?? (steamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(steamId, out var player) ? ResolveMedia(player.Avatar) : null);
+    public string? ProfileCamera(string? steamId) => SessionReady && Snapshot?.Game is not null && DisplayOptions.PlayerImagesVisible(Panel)
+        && steamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(steamId, out var player)
+        ? PlayercamUrls.Viewer(player.Camera) : null;
+    public IReadOnlyList<PlayercamSource> PlayerCameras(bool requireGame = true) => SessionReady && (!requireGame || Snapshot?.Game is not null) && DisplayOptions.PlayerImagesVisible(Panel)
+        ? PlayercamPool.Sources(Metadata, Match) : [];
     public string Name(PlayerState player) => PlayerName(player.SteamId, player.Name);
     public string Name(KillParticipant participant) => PlayerName(participant.SteamId, participant.Name, HudView.Text(participant.SteamId));
     private string PlayerName(string? steamId, string? sourceName, string fallback = "—") => steamId is not null && Metadata.Matches(Match) && Metadata.Players.TryGetValue(steamId, out var profile)

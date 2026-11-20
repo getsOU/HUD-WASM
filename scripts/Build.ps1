@@ -39,6 +39,8 @@ try {
     Invoke-Dotnet @('format', 'SOU.BasicHud.slnx', 'whitespace', '--no-restore', '--verify-no-changes', '--verbosity', 'minimal')
     Invoke-Dotnet @('run', '--project', 'tests/BasicHud.Tests/BasicHud.Tests.csproj', '-c', 'Release', '--no-restore')
     Invoke-Dotnet @('publish', 'src/BasicHud/BasicHud.csproj', '-c', 'Release', '--no-restore', '-o', $package)
+    $runtimeVersion = (Get-Content -LiteralPath (Join-Path $package 'wwwroot/sou-hud-sdk.version') -Raw).Trim()
+    if ($runtimeVersion -cne $sdkVersion -or $manifest.sdkVersion -cne $sdkVersion) { throw 'SDK tool, published runtime and HUD manifest versions must match.' }
     Invoke-Dotnet @($sdkTool, 'pack', $package, $archive)
     Invoke-Dotnet @($sdkTool, 'validate', $archive)
     $hash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()

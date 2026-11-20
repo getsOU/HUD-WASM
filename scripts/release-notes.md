@@ -1,7 +1,6 @@
-# 0.4.52
+# 0.5.0
 
-- Share the live HUD competition logo and rotating sponsors across all 13 subviews, aligned inside their headers and controlled by the existing branding panels.
-- Add SDK-provided possible-trade indicators with the immediately traded teammate, resolved aliases and team colors; preserve row lifetime and late updates, and add Display > Hide trade indicators.
-- Keep trade arrows and assist symbols white, fit long killfeed names with ellipsis, and declare killfeed.trades.v1 as an optional capability.
-- Replace the malformed generic defuse graphic with the intact hand outline without changing kit detection or timing.
-- Use the matchbar bomb outline across playercards, observer cards, inventories, radar and round history; show bomb deaths with one bomb icon and anonymous sources with a neutral environment icon.
+- Show the observed player’s authorized camera in the live HUD and add Roster left and Roster right views for team cameras.
+- Keep up to ten authorized camera viewers ready when switching players or team views. Retain viewers when the HUD is hidden or the game timeline resets within the same match and map.
+- Show the configured player photo or a bundled agent portrait when a roster player has no camera feed, including before complete game data arrives.
+- Use sOU HUD SDK 0.3.0 and its synchronized clock. The desktop controls camera access and the shared broadcast delay.

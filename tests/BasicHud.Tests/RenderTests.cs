@@ -332,6 +332,25 @@ static class RenderTests
             var detailCard = renderer.Attach(new PlayerCard());
             await renderer.Render(detailCard, new() { [nameof(PlayerCard.Player)] = weaponPlayer with { Armor = 100, Helmet = false, DefuseKit = true, Money = null }, [nameof(PlayerCard.Context)] = BroadcastContext.Empty });
             check(renderer.HasDescendantAttribute(detailCard, "data-ui-icon", "armor") && renderer.HasDescendantAttribute(detailCard, "data-ui-icon", "kit") && renderer.HasDescendantAttribute(detailCard, "data-ui-icon", "kills") && !renderer.HasDescendantAttribute(detailCard, "data-ui-icon", "helmet") && !renderer.HasDescendantText(detailCard, "ARM") && !renderer.HasDescendantText(detailCard, "HELM"), "presentation card shares Kevlar, kit and K/D symbols without obsolete equipment badges or guessed helmet");
+            var cameraUrl = "https://getsou.cam/playercams/view#" + new string('a', 32) + ":" + new string('b', 64);
+            var cameraPlayer = agentPlayer with { SteamId = "camera-player" };
+            var cameraMatch = new ManagedMatch("camera-render", "Camera render", 1, new("A", "Alpha", "A", null, 0), new("B", "Bravo", "B", null, 0),
+                new(TeamSide.CounterTerrorists, TeamRecognitionStatus.Manual, "A", 0, 0), new(TeamSide.Terrorists, TeamRecognitionStatus.Manual, "B", 0, 0));
+            var cameraMetadata = MetadataCatalog.Bind(new BrowserMetadata { Match = new() { Left = new() { Id = "A", SteamIds = [cameraPlayer.SteamId!] }, Right = new() { Id = "B", SteamIds = [] } }, Players = new() { [cameraPlayer.SteamId!] = new() { Camera = cameraUrl } } }, cameraMatch);
+            var cameraContext = agentContext with { Panel = null, Metadata = cameraMetadata, Snapshot = agentContext.Snapshot! with { ManagedMatch = cameraMatch, Game = agentContext.Game! with { ObservedPlayer = cameraPlayer, Players = [cameraPlayer] } } };
+            await renderer.Render(agentObserved, new() { [nameof(ObservedPlayer.Player)] = cameraPlayer, [nameof(ObservedPlayer.Context)] = cameraContext });
+            check(renderer.HasAttribute(agentObserved, "data-playercam-target", cameraPlayer.SteamId!) && renderer.HasDescendantAttribute(agentObserved, "src", "assets/agents/ct-0.png"), "observer provides the actual camera target and retains its portrait fallback");
+            var cameraLayer = renderer.Attach(new PlayerCameraLayer());
+            await renderer.Render(cameraLayer, new() { [nameof(PlayerCameraLayer.Context)] = cameraContext });
+            check(renderer.HasDescendantAttribute(cameraLayer, "data-playercam-active", "true") && renderer.HasDescendantAttribute(cameraLayer, "src", cameraUrl)
+                && renderer.HasDescendantAttribute(cameraLayer, "referrerpolicy", "no-referrer") && renderer.HasDescendantAttribute(cameraLayer, "allow", "autoplay; camera 'none'; microphone 'none'"), "shared layer selects the actual observer and keeps the playback-only receiver restrictions");
+            await renderer.Render(cameraLayer, new() { [nameof(PlayerCameraLayer.Context)] = cameraContext with { Metadata = MetadataCatalog.Empty } });
+            check(!renderer.HasDescendantAttribute(cameraLayer, "data-playercam-player", cameraPlayer.SteamId!), "removing camera metadata tears down the shared receiver");
+            var roster = renderer.Attach(new CameraRosterView());
+            await renderer.Render(roster, new() { [nameof(CameraRosterView.Context)] = cameraContext });
+            check(renderer.HasDescendantAttribute(roster, "data-roster-player", cameraPlayer.SteamId!) && renderer.HasDescendantAttribute(roster, "data-playercam-target", cameraPlayer.SteamId!) && !renderer.HasElement(roster, "iframe"), "roster uses the verified team player and portrait target without creating duplicate receivers");
+            await renderer.Render(roster, new() { [nameof(CameraRosterView.Right)] = true });
+            check(!renderer.HasDescendantAttribute(roster, "data-roster-player", cameraPlayer.SteamId!), "right roster cannot include a left team player");
             var feed = renderer.Attach(new Killfeed());
             var longName = "Complete player name without any abbreviation or ellipsis";
             var entry = new KillFeedEntry(1, Guid.NewGuid(), 1, 100, new(1, "killer", longName, TeamSide.CounterTerrorists), new(3, "victim", longName + " victim", TeamSide.Terrorists), new(2, "assist", longName + " assist", TeamSide.Terrorists), "weapon_ak47", WeaponKind.Ak47, true, true, true, true, true, true);

@@ -10,8 +10,9 @@ This repository uploads published packages to the existing **sOU HUD WASM** entr
 | API | `https://www.getsou.app/api/v1/integration` |
 
 The workflow does not create another HUD, change its visibility/listing, approve
-a release, or update a running output. New uploads start as `pending` and require
-the regular sOU review before distribution.
+a release, or update a running output. The server can publish an upload immediately when
+the uploading account is a trusted creator. Other uploads enter `pending` and
+require a staff review before distribution.
 
 ## One-time GitHub secret
 
@@ -77,7 +78,6 @@ uploader tests use Python 3.11+ and need neither credentials nor network:
 python3 -m unittest discover -s tests/upload -v
 ```
 
-The HUD SDK and package version are unchanged by this integration. Authenticated
-production upload remains unverified until a run with the configured secret succeeds.
+The HUD SDK and package version are unchanged by this integration. Production uploads use the configured GitHub secret. See the corresponding tag workflow for its uploaded version and review state.
 
 [Public Creator API reference](https://www.getsou.app/docs/workspace-api#creator).

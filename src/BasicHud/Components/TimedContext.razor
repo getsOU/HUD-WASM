@@ -1,8 +1,13 @@
-<HudRenderBoundary RenderKey="Context" Now="Context.Now" ClockMilliseconds="Milliseconds" Context="now">
-    @ChildContent(Context with { Now = now })
+<HudRenderBoundary RenderKey="Context" Now="@Anchor" ClockMilliseconds="Milliseconds" Context="now">
+    @ChildContent(Context with { Now = Remember(now) })
 </HudRenderBoundary>
 @code {
     [Parameter, EditorRequired] public BroadcastContext Context { get; set; } = BroadcastContext.Empty;
     [Parameter] public int Milliseconds { get; set; } = 100;
     [Parameter, EditorRequired] public RenderFragment<BroadcastContext> ChildContent { get; set; } = default!;
+    [CascadingParameter] public HudRenderClock? Clock { get; set; }
+    private DateTimeOffset? lastNow;
+    private DateTimeOffset Anchor => Clock is null ? Context.Now
+        : Clock.TryGetNow(out var now) ? now : lastNow ?? Context.Now;
+    private DateTimeOffset Remember(DateTimeOffset now) { lastNow = now; return now; }
 }

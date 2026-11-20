@@ -14,7 +14,9 @@
     "styles:format": "prettier --write src/BasicHud/Styles",
     "styles:watch": "node scripts/build-styles.mjs --watch",
     "test:layout": "node tests/browser/layout.mjs",
-    "test:recording": "node tests/browser/recording.mjs"
+    "test:recording": "node tests/browser/recording.mjs",
+    "test:playercams": "node tests/browser/playercams.mjs",
+    "test:camera-rosters": "node tests/browser/camera-rosters.mjs"
   },
   "devDependencies": {
     "playwright": "1.64.1",

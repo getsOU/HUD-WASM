@@ -1,10 +1,11 @@
+import {sdkToolPath} from './sdk-tool.mjs';
 import assert from 'node:assert/strict';
 import {spawn, execFileSync} from 'node:child_process';
 import {mkdtemp, readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {chromium} from 'playwright';
 
-const tool=path.resolve('artifacts/published-sdk-tools/.store/sou.hud.tool/0.3.0-preview.9/sou.hud.tool/0.3.0-preview.9/tools/net10.0/any/SOU.Hud.Tool.dll');
+const tool=path.resolve(sdkToolPath);
 const pkg=path.resolve(process.argv[2] ?? 'artifacts/package');
 const scratch=await mkdtemp(path.resolve('artifacts/killfeed-trades-'));
 const file=path.join(scratch,'fixture.json');
